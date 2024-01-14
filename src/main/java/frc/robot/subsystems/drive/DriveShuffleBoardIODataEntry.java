@@ -9,9 +9,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.ControllerTypeStrings;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.InputScalingStrings;
-import frc.robot.Constants.DriveConstants.Auto;
-import frc.robot.Constants.DriveConstants.Drive;
-import frc.robot.Constants.DriveConstants.Manual;
 
 public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
   private ShuffleboardTab customizationTab;

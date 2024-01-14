@@ -227,13 +227,13 @@ public class Drive extends SubsystemBase {
     if (Constants.driveEnabled) {
       // update logs
       driveShuffleBoard.updateInputs(driveShuffleBoardInputs);
-      Logger.getInstance().processInputs("DriveShuffleBoard/DriveShuffleBoardInputs", driveShuffleBoardInputs);
+      Logger.processInputs("DriveShuffleBoard/DriveShuffleBoardInputs", driveShuffleBoardInputs);
       for (SwerveModule module : swerveModules) {
         module.periodic();
       }
       if (Constants.gyroEnabled) {
         gyro.updateInputs(gyroInputs);
-        Logger.getInstance().processInputs("Drive/Gyro", gyroInputs);
+        Logger.processInputs("Drive/Gyro", gyroInputs);
       }
       updateVelAcc();
 
@@ -542,11 +542,11 @@ public class Drive extends SubsystemBase {
     latestVelocity = velocityXY.getNorm() / 4;
     latestAcceleration = accelerationXY.getNorm() / 4;
 
-    Logger.getInstance().recordOutput("Drive/BotVelFtPerSec", latestVelocity);
-    Logger.getInstance().recordOutput("Drive/BotVelDegrees", velocityXY.getAngle().getDegrees());
-    Logger.getInstance().recordOutput("Drive/BotAccFtPerSec2", latestAcceleration);
-    Logger.getInstance().recordOutput("Drive/BotAccDegrees", accelerationXY.getAngle().getDegrees());
-    Logger.getInstance().recordOutput("Drive/Odometry", getPose2d());
+    Logger.recordOutput("Drive/BotVelFtPerSec", latestVelocity);
+    Logger.recordOutput("Drive/BotVelDegrees", velocityXY.getAngle().getDegrees());
+    Logger.recordOutput("Drive/BotAccFtPerSec2", latestAcceleration);
+    Logger.recordOutput("Drive/BotAccDegrees", accelerationXY.getAngle().getDegrees());
+    Logger.recordOutput("Drive/Odometry", getPose2d());
  
     velocityHistory
         .removeIf(n -> (n.getTime() < clock - DriveConstants.Tip.velocityHistorySeconds));

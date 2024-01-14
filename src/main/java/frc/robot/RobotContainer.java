@@ -103,7 +103,7 @@ public class RobotContainer {
   public void disabledPeriodic() {
     // update logs
     autoChooserIO.updateInputs(autoChooserInputs);
-    Logger.getInstance().processInputs("AutoChooser", autoChooserInputs);
+    Logger.processInputs("AutoChooser", autoChooserInputs);
 
     if (disableTimer.hasElapsed(Constants.DriveConstants.disableBreakSec)) {
       if (Constants.driveEnabled) {
@@ -134,7 +134,7 @@ public class RobotContainer {
       return null;
     }
 
-    Logger.getInstance().recordOutput("Auto", autoChooserInputs.autoCommand.getName());
+    Logger.recordOutput("Auto", autoChooserInputs.autoCommand.getName());
     
     return new SequentialCommandGroup(
       getAutoInitialize(),

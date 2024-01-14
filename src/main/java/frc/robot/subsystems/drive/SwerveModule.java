@@ -29,8 +29,8 @@ public class SwerveModule {
 
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.getInstance().processInputs("Drive/SwerveModule " + wheelPos.wheelNumber, inputs);
-    Logger.getInstance().recordOutput("Drive/SwerveModule " + wheelPos.wheelNumber + "/Drive1RotationsPerSecAbs", 
+    Logger.processInputs("Drive/SwerveModule " + wheelPos.wheelNumber, inputs);
+    Logger.recordOutput("Drive/SwerveModule " + wheelPos.wheelNumber + "/Drive1RotationsPerSecAbs", 
         Math.abs(inputs.driveRotationsPerSec));
   }
 
@@ -85,15 +85,15 @@ public class SwerveModule {
       double desiredRPS = state.speedMetersPerSecond / (DriveConstants.Drive.wheelDiameterInches * Constants.inchesToMeters 
           * Math.PI) * DriveConstants.Drive.gearRatio;
           
-      Logger.getInstance().recordOutput("Drive/SwerveModule " + wheelPos.wheelNumber + "/SetCalcMetersPerSec", 
+      Logger.recordOutput("Drive/SwerveModule " + wheelPos.wheelNumber + "/SetCalcMetersPerSec", 
           desiredState.speedMetersPerSecond);
-      Logger.getInstance().recordOutput("Drive/SwerveModule " + wheelPos.wheelNumber + "/SetOptMetersPerSec", 
+      Logger.recordOutput("Drive/SwerveModule " + wheelPos.wheelNumber + "/SetOptMetersPerSec", 
           state.speedMetersPerSecond);
-      Logger.getInstance().recordOutput("Drive/SwerveModule " + wheelPos.wheelNumber + " /SetOptRPS", 
+      Logger.recordOutput("Drive/SwerveModule " + wheelPos.wheelNumber + " /SetOptRPS", 
           desiredRPS);
-      Logger.getInstance().recordOutput("Drive/SwerveModule " + wheelPos.wheelNumber + "/SetCalcDegrees", 
+      Logger.recordOutput("Drive/SwerveModule " + wheelPos.wheelNumber + "/SetCalcDegrees", 
           desiredState.angle.getDegrees());
-      Logger.getInstance().recordOutput("Drive/SwerveModule " + wheelPos.wheelNumber + "/SetOptDegrees", 
+      Logger.recordOutput("Drive/SwerveModule " + wheelPos.wheelNumber + "/SetOptDegrees", 
           state.angle.getDegrees());
 
       io.setDriveVoltage(desiredRPS * 60);
