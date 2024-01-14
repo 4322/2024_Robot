@@ -70,7 +70,9 @@ public class RobotContainer {
       drive.setDefaultCommand(driveManualDefault);
     }
 
-    autoChooserIO = new AutoChooserIO() {};
+    if (autoChooserIO == null) {
+      autoChooserIO = new AutoChooserIO() {};
+    }
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be
