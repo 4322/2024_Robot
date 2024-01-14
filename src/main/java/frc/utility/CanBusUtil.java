@@ -1,7 +1,8 @@
 package frc.utility;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
+
 import frc.robot.Constants;
 
 public class CanBusUtil {
