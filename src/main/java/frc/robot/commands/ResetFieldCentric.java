@@ -1,13 +1,13 @@
 package frc.robot.commands;
 
-import frc.robot.subsystems.drive.Drive;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.subsystems.drive.Drive;
 
 public class ResetFieldCentric extends InstantCommand {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-
   private final Drive driveSubsystem;
+
   private final double offset;
   private final boolean runWhenEnabled;
 
@@ -17,7 +17,7 @@ public class ResetFieldCentric extends InstantCommand {
     this.runWhenEnabled = runWhenEnabled;
     // Interrupt the active DriveManual command so we don't auto-rotate
     // back to the old heading lock that is no longer valid after the reset.
-    addRequirements(driveSubsystem);  
+    addRequirements(driveSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -36,6 +36,6 @@ public class ResetFieldCentric extends InstantCommand {
 
   @Override
   public boolean runsWhenDisabled() {
-    return true;  // allow field orientation to be set before start of match
+    return true; // allow field orientation to be set before start of match
   }
 }

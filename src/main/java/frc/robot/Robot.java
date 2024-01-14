@@ -4,8 +4,16 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import java.util.Optional;
-
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -14,21 +22,10 @@ import org.littletonrobotics.junction.rlog.RLOGServer;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
 /**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the TimedRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the build.gradle file in the
+ * The VM is configured to automatically run this class, and to call the functions corresponding to
+ * each mode, as described in the TimedRobot documentation. If you change the name of this class or
+ * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
 public class Robot extends LoggedRobot {
@@ -41,13 +38,13 @@ public class Robot extends LoggedRobot {
   Timer updateAllianceTimer;
 
   /**
-   * This function is run when the robot is first started up and should be used
-   * for any initialization code.
+   * This function is run when the robot is first started up and should be used for any
+   * initialization code.
    */
   @Override
   public void robotInit() {
     // Record metadata
-    
+
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
     Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
@@ -67,21 +64,21 @@ public class Robot extends LoggedRobot {
 
     // Set up data receivers & replay source
     switch (Constants.currentMode) {
-      // Running on a real robot, log to a USB stick
-      // Don't publish to Network Tables to reduce CPU usage
+        // Running on a real robot, log to a USB stick
+        // Don't publish to Network Tables to reduce CPU usage
       case REAL:
         Logger.addDataReceiver(new WPILOGWriter("/media/sda1/"));
-        Logger.addDataReceiver(new RLOGServer(5800));  // for AdvantageScope
+        Logger.addDataReceiver(new RLOGServer(5800)); // for AdvantageScope
         break;
 
-      // Running a physics simulator, log to local folder
+        // Running a physics simulator, log to local folder
       case SIM:
         Logger.addDataReceiver(new WPILOGWriter(""));
-        Logger.addDataReceiver(new RLOGServer(5800));  // for AdvantageScope
-        Logger.addDataReceiver(new NT4Publisher());  // Network Tables
+        Logger.addDataReceiver(new RLOGServer(5800)); // for AdvantageScope
+        Logger.addDataReceiver(new NT4Publisher()); // Network Tables
         break;
 
-      // Replaying a log, set up replay source
+        // Replaying a log, set up replay source
       case REPLAY:
         setUseTiming(false); // Run as fast as possible
         String logPath = LogFileUtil.findReplayLog();
@@ -98,12 +95,10 @@ public class Robot extends LoggedRobot {
 
     updateAllianceTimer = new Timer();
     updateAllianceTimer.start();
-    
 
     tab = Shuffleboard.getTab("Enabled Subsystems");
     PDHTab = Shuffleboard.getTab("PDH Currents");
 
-    
     subsystemEnabled("Drivebase", 1, 0, Constants.driveEnabled);
 
     subsystemEnabled("Joysticks", 0, 1, Constants.joysticksEnabled);
@@ -113,13 +108,13 @@ public class Robot extends LoggedRobot {
     m_robotContainer = new RobotContainer();
   }
 
-    // create new shuffleboard tab to show whether or not subsystem is enabled
+  // create new shuffleboard tab to show whether or not subsystem is enabled
   // also print error to driver station if not
   private void subsystemEnabled(String title, int posX, int posY, boolean enabled) {
     tab.add(title, enabled)
-    .withWidget(BuiltInWidgets.kBooleanBox)
-    .withPosition(posX, posY)
-    .withSize(1, 1);
+        .withWidget(BuiltInWidgets.kBooleanBox)
+        .withPosition(posX, posY)
+        .withSize(1, 1);
 
     if (!enabled) {
       DriverStation.reportError(title + " not enabled", false);
@@ -137,8 +132,6 @@ public class Robot extends LoggedRobot {
       updateAllianceTimer.reset();
       updateAllianceTimer.start();
     }
-
-
   }
 
   /** This function is called once when the robot is disabled. */
@@ -153,10 +146,7 @@ public class Robot extends LoggedRobot {
     m_robotContainer.disabledPeriodic();
   }
 
-  /**
-   * This autonomous runs the autonomous command selected by your
-   * {@link RobotContainer} class.
-   */
+  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
     m_robotContainer.enableSubsystems();
@@ -171,8 +161,7 @@ public class Robot extends LoggedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {
-  }
+  public void autonomousPeriodic() {}
 
   /** This function is called once when teleop is enabled. */
   @Override
@@ -180,14 +169,13 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    
+
     m_robotContainer.enableSubsystems();
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {
-  }
+  public void teleopPeriodic() {}
 
   /** This function is called once when test mode is enabled. */
   @Override
@@ -198,18 +186,15 @@ public class Robot extends LoggedRobot {
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {
-  }
+  public void testPeriodic() {}
 
   /** This function is called once when the robot is first started up. */
   @Override
-  public void simulationInit() {
-  }
+  public void simulationInit() {}
 
   /** This function is called periodically whilst in simulation. */
   @Override
-  public void simulationPeriodic() {
-  }
+  public void simulationPeriodic() {}
 
   private void updateAllianceColor() {
     Optional<Alliance> temp = DriverStation.getAlliance();
@@ -221,5 +206,4 @@ public class Robot extends LoggedRobot {
   public static Alliance getAllianceColor() {
     return allianceColor;
   }
-  
 }

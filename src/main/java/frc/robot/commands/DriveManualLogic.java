@@ -5,8 +5,9 @@ import frc.robot.Constants;
 import frc.utility.OrangeMath;
 
 public class DriveManualLogic {
-  
-  public static Translation2d doDriveNormalizationScaling(double driveRawX, double driveRawY, double driveDeadband, int power) {
+
+  public static Translation2d doDriveNormalizationScaling(
+      double driveRawX, double driveRawY, double driveDeadband, int power) {
 
     final double driveRawMag = OrangeMath.pythag(driveRawX, driveRawY);
     final double driveRawTheta = Math.atan2(driveRawY, driveRawX);
@@ -37,7 +38,7 @@ public class DriveManualLogic {
     // Convert back to cartesian coordinates
     double driveX = Math.cos(driveRawTheta) * driveMag;
     double driveY = Math.sin(driveRawTheta) * driveMag;
-    
+
     // Normalize the combined drive vector
     if (driveX > 1) {
       driveY /= driveX;
@@ -48,7 +49,7 @@ public class DriveManualLogic {
     }
     if (driveY > 1) {
       driveX /= driveY;
-      driveY = 1; 
+      driveY = 1;
     } else if (driveY < -1) {
       driveX /= -driveY;
       driveY = -1;
