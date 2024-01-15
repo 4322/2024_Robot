@@ -1,6 +1,5 @@
 package frc.utility;
 
-import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import frc.robot.Constants;
@@ -56,15 +55,18 @@ public class CanBusUtil {
   public static void fastPositionSparkMax(CANSparkMax spark) {
     spark.setPeriodicFramePeriod(PeriodicFrame.kStatus0, nextShuffleboardStatusPeriodMs());
     spark.setPeriodicFramePeriod(PeriodicFrame.kStatus1, nextShuffleboardStatusPeriodMs());
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus2, nextFastStatusPeriodMs());  // abs encoder pos
+    spark.setPeriodicFramePeriod(
+        PeriodicFrame.kStatus2, nextFastStatusPeriodMs()); // abs encoder pos
   }
 
   // configure for fast absolute encoder position feedback
   public static void fastPositionSparkMaxAbs(CANSparkMax spark) {
     spark.setPeriodicFramePeriod(PeriodicFrame.kStatus0, nextShuffleboardStatusPeriodMs());
     spark.setPeriodicFramePeriod(PeriodicFrame.kStatus1, nextShuffleboardStatusPeriodMs());
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus5, nextFastStatusPeriodMs());  // abs encoder pos
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus5, nextShuffleboardStatusPeriodMs());  // abs encoder vel
+    spark.setPeriodicFramePeriod(
+        PeriodicFrame.kStatus5, nextFastStatusPeriodMs()); // abs encoder pos
+    spark.setPeriodicFramePeriod(
+        PeriodicFrame.kStatus5, nextShuffleboardStatusPeriodMs()); // abs encoder vel
   }
 
   // configure for fast velocity feedback
@@ -78,15 +80,12 @@ public class CanBusUtil {
   // when position control is in use.
   public static void dualSparkMaxPosCtrl(CANSparkMax mainMotor, boolean tuningMode) {
     // applied output for follower
-    mainMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0,
-        nextFastStatusPeriodMs());
+    mainMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, nextFastStatusPeriodMs());
     // to detect when at target position
-    mainMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2,
-        nextFastStatusPeriodMs());
+    mainMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, nextFastStatusPeriodMs());
     if (tuningMode) {
       // to graph velocity
-      mainMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1,
-          nextFastStatusPeriodMs());
+      mainMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, nextFastStatusPeriodMs());
     }
   }
 
@@ -94,15 +93,12 @@ public class CanBusUtil {
   // when velocity control is in use.
   public static void dualSparkMaxVelCtrl(CANSparkMax mainMotor, boolean tuningMode) {
     // applied output for follower
-    mainMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0,
-        nextFastStatusPeriodMs());
+    mainMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, nextFastStatusPeriodMs());
     // to detect when at target speed
-    mainMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1,
-        nextFastStatusPeriodMs());
+    mainMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, nextFastStatusPeriodMs());
     if (tuningMode) {
       // to graph position
-      mainMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2,
-          nextFastStatusPeriodMs());
+      mainMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, nextFastStatusPeriodMs());
     }
   }
 }

@@ -1,10 +1,9 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.drive.Drive;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-
-public class DriveStop extends InstantCommand{
+public class DriveStop extends InstantCommand {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
   // Used to interrupt all other drive commands and stop the drive
@@ -30,6 +29,6 @@ public class DriveStop extends InstantCommand{
 
   @Override
   public boolean runsWhenDisabled() {
-    return true;  // allow drive to be stopped before re-enabling
+    return true; // allow drive to be stopped before re-enabling
   }
 }
