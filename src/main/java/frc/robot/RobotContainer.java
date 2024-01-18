@@ -4,8 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -14,6 +18,7 @@ import frc.robot.commands.DriveManual;
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.subsystems.drive.Drive;
+import java.nio.file.Path;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -39,33 +44,20 @@ public class RobotContainer {
   private final DriveManual driveManualDefault = new DriveManual(drive, DriveManual.AutoPose.none);
   private final DriveStop driveStop = new DriveStop(drive);
 
-  private AutoChooserIO autoChooserIO;
-  private AutoChooserIOInputsAutoLogged autoChooserInputs = new AutoChooserIOInputsAutoLogged();
+  private final SendableChooser<Command> autoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    switch (Constants.currentMode) {
-        // Real robot, instantiate hardware IO implementations
-      case REAL:
-        autoChooserIO = new AutoChooserIODataEntry(drive);
-        break;
 
-        // Sim robot, instantiate physics sim IO implementations
-      case SIM:
-        break;
-
-        // Replayed robot, disable hardware IO implementations
-      case REPLAY:
-        break;
-    }
+    PathPlannerManager.init(drive);
+    autoChooser = PathPlannerManager.getAutoChooser();
+    Shuffleboard.getTab("Autos").add(autoChooser).withPosition(0, 0).withSize(5, 2);
 
     configureButtonBindings();
 
     if (Constants.driveEnabled) {
       drive.setDefaultCommand(driveManualDefault);
     }
-
-    autoChooserIO = new AutoChooserIO() {};
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -96,10 +88,6 @@ public class RobotContainer {
   }
 
   public void disabledPeriodic() {
-    // update logs
-    autoChooserIO.updateInputs(autoChooserInputs);
-    Logger.processInputs("AutoChooser", autoChooserInputs);
-
     if (disableTimer.hasElapsed(Constants.DriveConstants.disableBreakSec)) {
       if (Constants.driveEnabled) {
         drive.setCoastMode(); // robot has stopped, safe to enter coast mode
@@ -119,9 +107,6 @@ public class RobotContainer {
     driveStop.schedule(); // interrupt all drive commands
     disableTimer.reset();
     disableTimer.start();
-
-    // autos need to be reloaded after each auto test because the commands can't be reused
-    autoChooserIO.loadAutos();
   }
 
   public Command getAutonomousCommand() {
@@ -129,12 +114,8 @@ public class RobotContainer {
       return null;
     }
 
-    Logger.recordOutput("Auto", autoChooserInputs.autoCommand.getName());
-
-    return new SequentialCommandGroup(getAutoInitialize(), autoChooserInputs.autoCommand);
+    return new SequentialCommandGroup(getAutoInitialize(), autoChooser.getSelected());
   }
-
-  // AUTO COMMANDS
 
   // Command that should always start off every auto
   public Command getAutoInitialize() {

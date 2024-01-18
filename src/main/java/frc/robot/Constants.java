@@ -99,6 +99,7 @@ public final class Constants {
     // full length of drivebase divided by 2 for distance between wheels
     public static final double distWheelMetersX = OrangeMath.inchesToMeters(29.5 / 2); // 29.5 in
     public static final double distWheelMetersY = OrangeMath.inchesToMeters(29.5 / 2); // 29.5 in
+    
     //robot radius
     public static final double distWheelMetersR = Math.sqrt((distWheelMetersX * distWheelMetersX) + (distWheelMetersY * distWheelMetersY));
 
