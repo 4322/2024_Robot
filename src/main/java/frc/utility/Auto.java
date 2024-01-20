@@ -1,7 +1,7 @@
 package frc.utility;
 
-import java.util.List;
 import edu.wpi.first.wpilibj2.command.Command;
+import java.util.List;
 
 public class Auto {
   public String name;

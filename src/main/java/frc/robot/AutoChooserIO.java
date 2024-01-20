@@ -1,7 +1,7 @@
 package frc.robot;
 
-import org.littletonrobotics.junction.AutoLog;
 import edu.wpi.first.wpilibj2.command.Command;
+import org.littletonrobotics.junction.AutoLog;
 
 public interface AutoChooserIO {
   @AutoLog

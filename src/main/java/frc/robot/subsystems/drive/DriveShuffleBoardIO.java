@@ -7,7 +7,7 @@ public interface DriveShuffleBoardIO {
   public static class DriveShuffleBoardIOInputs {
     public boolean pseudoAutoRotateEnabled;
     public String inputScaling;
-    public String driveControllerType; 
+    public String driveControllerType;
     public double maxManualRotatePower;
     public double slowMovingAutoRotatePower;
     public double fastMovingAutoRotatePower;
@@ -17,7 +17,6 @@ public interface DriveShuffleBoardIO {
     public double[] voltsAtSpeedThresholds;
     public double[] feedForwardRPSThresholds;
     public double voltsToOvercomeFriction;
-    
   }
 
   public default void updateInputs(DriveShuffleBoardIOInputs inputs) {}

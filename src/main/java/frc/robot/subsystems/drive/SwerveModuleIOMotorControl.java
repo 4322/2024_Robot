@@ -1,38 +1,22 @@
 package frc.robot.subsystems.drive;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.REVLibError;
-import com.revrobotics.SparkMaxAbsoluteEncoder;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.ControlType;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.ctre.phoenix6.configs.CANcoderConfigurator;
+
 import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.configs.VoltageConfigs;
-import com.ctre.phoenix6.controls.CoastOut;
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.NeutralOut;
-import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VelocityDutyCycle;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.WheelPosition;
@@ -98,7 +82,6 @@ public class SwerveModuleIOMotorControl implements SwerveModuleIO {
         currentLimitsConfigs.SupplyCurrentLimit = DriveConstants.Drive.supplyLimit;
         currentLimitsConfigs.SupplyCurrentLimitEnable = DriveConstants.Drive.supplyEnabled;
         currentLimitsConfigs.SupplyCurrentThreshold = DriveConstants.Drive.supplyThreshold;
-        //TODO: sparkMax.enableVoltageCompensation(DriveConstants.Drive.voltageCompSaturation);
         motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
         config.apply(slot0Configs);
         config.apply(closedLoopRampsConfigs);
@@ -126,21 +109,14 @@ public class SwerveModuleIOMotorControl implements SwerveModuleIO {
   
         talonFX.setInverted(true);
       
-        TalonFXConfigurator config = talonFX.getConfigurator();
         slot0Configs.kP = DriveConstants.Rotation.kP;
         slot0Configs.kD = DriveConstants.Rotation.kD;
         closedLoopRampsConfigs.VoltageClosedLoopRampPeriod = DriveConstants.Rotation.configCLosedLoopRamp;
         closedLoopGeneralConfigs.ContinuousWrap = true;
-        //TODO: config.setSmartMotionAllowedClosedLoopError(DriveConstants.Rotation.allowableClosedloopError,0);
         voltageConfigs.PeakForwardVoltage = DriveConstants.Rotation.maxPower;
         voltageConfigs.PeakReverseVoltage = -DriveConstants.Rotation.maxPower;
         motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;// Allow robot to be moved prior to enabling
-        //TODO: sparkMax.enableVoltageCompensation(DriveConstants.Rotation.configVoltageCompSaturation); 
-        //TODO: set stator and supply limits for rotation moto
         //encoder.setPositionConversionFactor(360);  TODO: rewrite code to operate on 0-1 rotations instead of 0-360 degrees. convert encoder position duty cycle to degrees
-        CANSparkMax canSparkMax = new CANSparkMax(1, MotorType.kBrushless);
-        canSparkMax.setSmartCurrentLimit(0, 0);
-        //config.setFeedbackDevice(encoder); 
 
         canConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
         encoder.getConfigurator().apply(canConfig);
@@ -150,7 +126,7 @@ public class SwerveModuleIOMotorControl implements SwerveModuleIO {
         talonFX.getConfigurator().apply(voltageConfigs);
         talonFX.getConfigurator().apply(motorOutputConfigs);
         // need rapid position feedback for steering control
-        talon.getPosition().setUpdateFrequency(OrangeMath.msAndHzConverter(CanBusUtil.nextFastStatusPeriodMs()), 
+        talonFX.getPosition().setUpdateFrequency(OrangeMath.msAndHzConverter(CanBusUtil.nextFastStatusPeriodMs()), 
       Constants.controllerConfigTimeoutMs);
       }
 
@@ -204,7 +180,7 @@ public class SwerveModuleIOMotorControl implements SwerveModuleIO {
         // Slope between last point and second to last point used to predict corresponding 
         // Feed Forward value for requested RPS values beyond max speed threshold
         double slope = (feedForwardVolts[lastElement] - feedForwardVolts[secondToLastElement]) / 
-                        (feedForwardRPSThreshold[lastElement] - feedForwardRPSThreshold[secondToLastElement]);
+                        Math.max(Constants.DriveConstants.minimumRPSThresholdDifference,(feedForwardRPSThreshold[lastElement] - feedForwardRPSThreshold[secondToLastElement]));
 
         calculatedFeedForwardValue = slope * (desiredMotorRPS - feedForwardRPSThreshold[lastElement]) 
                                       + feedForwardVolts[lastElement];

@@ -1,10 +1,5 @@
 package frc.robot;
 
-import frc.robot.Constants.DriveConstants;
-import frc.robot.subsystems.drive.Drive;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -15,6 +10,11 @@ import com.pathplanner.lib.commands.FollowPathWithEvents;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.subsystems.drive.Drive;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 class PathPlannerManager {
 
@@ -32,16 +32,28 @@ class PathPlannerManager {
 
     eventMap = new HashMap<String, Command>();
 
-    defaultConstraints = new PathConstraints(DriveConstants.Auto.autoMaxSpeedMetersPerSecond,
-        DriveConstants.Auto.autoMaxAccelerationMetersPerSec2);
+    defaultConstraints =
+        new PathConstraints(
+            DriveConstants.Auto.autoMaxSpeedMetersPerSecond,
+            DriveConstants.Auto.autoMaxAccelerationMetersPerSec2);
 
-    builder = new SwerveAutoBuilder(drive::getPose2d, drive::resetOdometry, drive.getKinematics(),
-        new PIDConstants(DriveConstants.Trajectory.PIDXY.kP, DriveConstants.Trajectory.PIDXY.kI,
-            DriveConstants.Trajectory.PIDXY.kD),
-        new PIDConstants(DriveConstants.Trajectory.PIDR.kP, DriveConstants.Trajectory.PIDR.kI,
-            DriveConstants.Trajectory.PIDR.kD),
-        drive::setModuleStates, eventMap, true, drive);
-
+    builder =
+        new SwerveAutoBuilder(
+            drive::getPose2d,
+            drive::resetOdometry,
+            drive.getKinematics(),
+            new PIDConstants(
+                DriveConstants.Trajectory.PIDXY.kP,
+                DriveConstants.Trajectory.PIDXY.kI,
+                DriveConstants.Trajectory.PIDXY.kD),
+            new PIDConstants(
+                DriveConstants.Trajectory.PIDR.kP,
+                DriveConstants.Trajectory.PIDR.kI,
+                DriveConstants.Trajectory.PIDR.kD),
+            drive::setModuleStates,
+            eventMap,
+            true,
+            drive);
   }
 
   // OTF = On The Fly
@@ -54,24 +66,34 @@ class PathPlannerManager {
     return generateSingleCommand(pathName, reversed, defaultConstraints);
   }
 
-  public FollowPathWithEvents generateSingleCommand(String pathName, boolean reversed,
-      PathConstraints constraints) {
+  public FollowPathWithEvents generateSingleCommand(
+      String pathName, boolean reversed, PathConstraints constraints) {
     PathPlannerTrajectory trajectory = PathPlanner.loadPath(pathName, constraints);
     return generateSingleCommand(trajectory, reversed);
   }
 
-  private FollowPathWithEvents generateSingleCommand(PathPlannerTrajectory trajectory,
-      boolean reversed) {
+  private FollowPathWithEvents generateSingleCommand(
+      PathPlannerTrajectory trajectory, boolean reversed) {
 
     PPSwerveControllerCommand ppSwerveCommand =
-        new PPSwerveControllerCommand(trajectory, drive::getPose2d, drive.getKinematics(),
-            new PIDController(DriveConstants.Trajectory.PIDXY.kP,
-                DriveConstants.Trajectory.PIDXY.kI, DriveConstants.Trajectory.PIDXY.kD),
-            new PIDController(DriveConstants.Trajectory.PIDXY.kP,
-                DriveConstants.Trajectory.PIDXY.kI, DriveConstants.Trajectory.PIDXY.kD),
-            new PIDController(DriveConstants.Trajectory.PIDR.kP, DriveConstants.Trajectory.PIDR.kI,
+        new PPSwerveControllerCommand(
+            trajectory,
+            drive::getPose2d,
+            drive.getKinematics(),
+            new PIDController(
+                DriveConstants.Trajectory.PIDXY.kP,
+                DriveConstants.Trajectory.PIDXY.kI,
+                DriveConstants.Trajectory.PIDXY.kD),
+            new PIDController(
+                DriveConstants.Trajectory.PIDXY.kP,
+                DriveConstants.Trajectory.PIDXY.kI,
+                DriveConstants.Trajectory.PIDXY.kD),
+            new PIDController(
+                DriveConstants.Trajectory.PIDR.kP,
+                DriveConstants.Trajectory.PIDR.kI,
                 DriveConstants.Trajectory.PIDR.kD),
-            drive::setModuleStates, drive);
+            drive::setModuleStates,
+            drive);
 
     FollowPathWithEvents command =
         new FollowPathWithEvents(ppSwerveCommand, trajectory.getMarkers(), eventMap);
@@ -88,5 +110,4 @@ class PathPlannerManager {
   public void addEvent(String eventName, Command command) {
     eventMap.put(eventName, command);
   }
-
 }

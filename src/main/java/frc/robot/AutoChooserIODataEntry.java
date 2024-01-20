@@ -1,7 +1,5 @@
 package frc.robot;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -10,19 +8,21 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
 import frc.utility.Auto;
 import frc.utility.OrangeSendableChooser;
+import java.util.ArrayList;
+import java.util.Arrays;
 
-public class AutoChooserIODataEntry implements AutoChooserIO{
+public class AutoChooserIODataEntry implements AutoChooserIO {
   private ShuffleboardTab customizationTab;
   private SendableChooser<Integer> positionChooser;
   private ArrayList<Auto> autoArrayList = new ArrayList<Auto>();
   private OrangeSendableChooser<Command> autoChooser = new OrangeSendableChooser<Command>();
   private final PathPlannerManager ppManager;
   private int selectedPosition;
-  
+
   public AutoChooserIODataEntry(Drive drive) {
     // Set up auto routines
     ppManager = new PathPlannerManager(drive);
-    
+
     // new ShuffleBoard Tab
     customizationTab = Shuffleboard.getTab("Autos");
 
@@ -38,11 +38,17 @@ public class AutoChooserIODataEntry implements AutoChooserIO{
     positionChooser.addOption("8", 8);
     positionChooser.addOption("9", 9);
 
-    customizationTab.add("Position Chooser", positionChooser).withWidget(BuiltInWidgets.kSplitButtonChooser)
-      .withPosition(0, 0).withSize(9, 2);
+    customizationTab
+        .add("Position Chooser", positionChooser)
+        .withWidget(BuiltInWidgets.kSplitButtonChooser)
+        .withPosition(0, 0)
+        .withSize(9, 2);
 
-    customizationTab.add("Auto Chooser", autoChooser).withWidget(BuiltInWidgets.kSplitButtonChooser)
-      .withPosition(0, 2).withSize(9, 2);
+    customizationTab
+        .add("Auto Chooser", autoChooser)
+        .withWidget(BuiltInWidgets.kSplitButtonChooser)
+        .withPosition(0, 2)
+        .withSize(9, 2);
 
     loadAutos();
   }
@@ -53,10 +59,11 @@ public class AutoChooserIODataEntry implements AutoChooserIO{
     autoArrayList.clear();
     selectedPosition = 0;
 
-    autoArrayList.add(new Auto(
-    "Move Forward", 
-    ppManager.loadAuto("Move Forward", false),
-    Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9)));
+    autoArrayList.add(
+        new Auto(
+            "Move Forward",
+            ppManager.loadAuto("Move Forward", false),
+            Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9)));
   }
 
   @Override
@@ -74,7 +81,7 @@ public class AutoChooserIODataEntry implements AutoChooserIO{
         }
       }
     }
-  
+
     inputs.startingGridPosition = currentPosition;
     inputs.autoCommand = autoChooser.getSelected();
   }

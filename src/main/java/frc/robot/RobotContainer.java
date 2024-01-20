@@ -4,9 +4,6 @@
 
 package frc.robot;
 
-
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,13 +14,13 @@ import frc.robot.commands.DriveManual;
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.subsystems.drive.Drive;
+import org.littletonrobotics.junction.Logger;
 
 /**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a "declarative" paradigm, very little robot logic should
- * actually be handled in the {@link Robot} periodic methods (other than the
- * scheduler calls). Instead, the structure of the robot (including subsystems,
- * commands, and button mappings) should be declared here.
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
   private Timer disableTimer = new Timer();
@@ -37,7 +34,7 @@ public class RobotContainer {
   private JoystickButton driveButtonSeven;
   private JoystickButton driveButtonTwelve;
 
-  private final Drive drive = Drive.getInstance(); 
+  private final Drive drive = Drive.getInstance();
 
   private final DriveManual driveManualDefault = new DriveManual(drive, DriveManual.AutoPose.none);
   private final DriveStop driveStop = new DriveStop(drive);
@@ -45,21 +42,19 @@ public class RobotContainer {
   private AutoChooserIO autoChooserIO;
   private AutoChooserIOInputsAutoLogged autoChooserInputs = new AutoChooserIOInputsAutoLogged();
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.currentMode) {
-      // Real robot, instantiate hardware IO implementations
+        // Real robot, instantiate hardware IO implementations
       case REAL:
         autoChooserIO = new AutoChooserIODataEntry(drive);
         break;
 
-      // Sim robot, instantiate physics sim IO implementations
+        // Sim robot, instantiate physics sim IO implementations
       case SIM:
         break;
 
-      // Replayed robot, disable hardware IO implementations
+        // Replayed robot, disable hardware IO implementations
       case REPLAY:
         break;
     }
@@ -73,16 +68,16 @@ public class RobotContainer {
     autoChooserIO = new AutoChooserIO() {};
   }
   /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by instantiating a {@link GenericHID} or one of its subclasses
-   * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
-   * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   * Use this method to define your button->command mappings. Buttons can be created by
+   * instantiating a {@link GenericHID} or one of its subclasses ({@link
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
+   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
     if (Constants.joysticksEnabled) {
       driveStick = new Joystick(0);
       rotateStick = new Joystick(1);
-      
+
       driveButtonThree = new JoystickButton(driveStick, 3);
       driveButtonSeven = new JoystickButton(driveStick, 7);
       driveButtonTwelve = new JoystickButton(driveStick, 12);
@@ -121,12 +116,12 @@ public class RobotContainer {
   }
 
   public void disableSubsystems() {
-    driveStop.schedule();  // interrupt all drive commands
+    driveStop.schedule(); // interrupt all drive commands
     disableTimer.reset();
     disableTimer.start();
-    
+
     // autos need to be reloaded after each auto test because the commands can't be reused
-    autoChooserIO.loadAutos(); 
+    autoChooserIO.loadAutos();
   }
 
   public Command getAutonomousCommand() {
@@ -135,19 +130,14 @@ public class RobotContainer {
     }
 
     Logger.recordOutput("Auto", autoChooserInputs.autoCommand.getName());
-    
-    return new SequentialCommandGroup(
-      getAutoInitialize(),
-      autoChooserInputs.autoCommand
-    );
+
+    return new SequentialCommandGroup(getAutoInitialize(), autoChooserInputs.autoCommand);
   }
 
-  //AUTO COMMANDS
+  // AUTO COMMANDS
 
   // Command that should always start off every auto
   public Command getAutoInitialize() {
-    return new SequentialCommandGroup(
-      new ResetFieldCentric(drive, 0, true)
-    );
+    return new SequentialCommandGroup(new ResetFieldCentric(drive, 0, true));
   }
 }
