@@ -1,15 +1,16 @@
 package frc.robot.subsystems.drive;
 
-import edu.wpi.first.math.MathUtil;
+import org.littletonrobotics.junction.Logger;
+
+import frc.robot.Constants;
+import frc.robot.Constants.WheelPosition;
+import frc.utility.OrangeMath;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.MathUtil;
+
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.Constants;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.WheelPosition;
-import frc.utility.OrangeMath;
-import org.littletonrobotics.junction.Logger;
 
 public class SwerveModule {
   private SwerveModuleIO io;
@@ -19,6 +20,7 @@ public class SwerveModule {
   private double previousRate = 0;
   private double previousTime = 0;
   private double filteredAccel = 0;
+  private double optWheelMetersPerSec;
 
   public SwerveModule(WheelPosition wheelPos, SwerveModuleIO io) {
     this.io = io;
@@ -28,9 +30,8 @@ public class SwerveModule {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Drive/SwerveModule " + wheelPos.wheelNumber, inputs);
-    Logger.recordOutput(
-        "Drive/SwerveModule " + wheelPos.wheelNumber + "/Drive1RotationsPerSecAbs",
-        Math.abs(inputs.driveRotationsPerSec));
+    Logger.recordOutput("Drive/SwerveModule " + wheelPos.wheelNumber + "/Drive1MetersPerSecAbs", 
+        Math.abs(inputs.driveMetersPerSec));
   }
 
   public double getInternalRotationDegrees() {
@@ -38,20 +39,13 @@ public class SwerveModule {
   }
 
   public double getDistanceMeters() {
-    return OrangeMath.falconRotationsToMeters(
-        inputs.driveRotations,
-        OrangeMath.getCircumference(
-            OrangeMath.inchesToMeters(DriveConstants.Drive.wheelDiameterInches)),
-        DriveConstants.Drive.gearRatio);
+    return inputs.driveMeters;
   }
 
   public double getVelocityFeetPerSec() {
     // feet per second
-    return inputs.driveRotationsPerSec
-        / Constants.DriveConstants.Drive.gearRatio
-        * Math.PI
-        * Constants.DriveConstants.Drive.wheelDiameterInches
-        / 12;
+    return inputs.driveMetersPerSec / Constants.DriveConstants.Drive.gearRatio 
+        * Constants.metersToFeet;
   }
 
   public double snapshotAcceleration() {
@@ -65,20 +59,18 @@ public class SwerveModule {
     previousTime = currentTime;
 
     filteredAccel = acceleration * 0.5 + filteredAccel * 0.5; // dampens random spikes due to the
-    // fact that we are deriving this
-    // value
+                                                              // fact that we are deriving this
+                                                              // value
     return filteredAccel;
   }
 
   public SwerveModuleState getState() {
-    return new SwerveModuleState(
-        getVelocityFeetPerSec() * Constants.feetToMeters,
-        Rotation2d.fromDegrees(inputs.turnDegrees));
+    return new SwerveModuleState(getVelocityFeetPerSec() * Constants.feetToMeters, 
+      Rotation2d.fromDegrees(inputs.turnDegrees));
   }
 
   public SwerveModulePosition getPosition() {
-    return new SwerveModulePosition(
-        getDistanceMeters(), Rotation2d.fromDegrees(inputs.turnDegrees));
+    return new SwerveModulePosition(getDistanceMeters(), Rotation2d.fromDegrees(inputs.turnDegrees));
   }
 
   public void setDesiredState(SwerveModuleState desiredState) {
@@ -87,28 +79,20 @@ public class SwerveModule {
       // Optimize the reference state to avoid spinning further than 90 degrees
       SwerveModuleState state =
           SwerveModuleState.optimize(desiredState, Rotation2d.fromDegrees(inputs.turnDegrees));
-
-      double desiredRPS =
-          state.speedMetersPerSecond
-              / (DriveConstants.Drive.wheelDiameterInches * Constants.inchesToMeters * Math.PI)
-              * DriveConstants.Drive.gearRatio;
-
-      Logger.recordOutput(
-          "Drive/SwerveModule " + wheelPos.wheelNumber + "/SetCalcMetersPerSec",
+      
+      optWheelMetersPerSec = state.speedMetersPerSecond;
+          
+      Logger.recordOutput("Drive/SwerveModule " + wheelPos.wheelNumber + "/SetCalcWheelMetersPerSec", 
           desiredState.speedMetersPerSecond);
-      Logger.recordOutput(
-          "Drive/SwerveModule " + wheelPos.wheelNumber + "/SetOptMetersPerSec",
-          state.speedMetersPerSecond);
-      Logger.recordOutput("Drive/SwerveModule " + wheelPos.wheelNumber + " /SetOptRPS", desiredRPS);
-      Logger.recordOutput(
-          "Drive/SwerveModule " + wheelPos.wheelNumber + "/SetCalcDegrees",
+      Logger.recordOutput("Drive/SwerveModule " + wheelPos.wheelNumber + "/SetOptWheelMetersPerSec", 
+          optWheelMetersPerSec);
+      Logger.recordOutput("Drive/SwerveModule " + wheelPos.wheelNumber + "/SetCalcDegrees", 
           desiredState.angle.getDegrees());
-      Logger.recordOutput(
-          "Drive/SwerveModule " + wheelPos.wheelNumber + "/SetOptDegrees",
+      Logger.recordOutput("Drive/SwerveModule " + wheelPos.wheelNumber + "/SetOptDegrees", 
           state.angle.getDegrees());
 
-      io.setDriveVoltage(desiredRPS * 60);
-
+      io.setDriveVoltage(optWheelMetersPerSec);
+              
       if (!Constants.steeringTuningMode) {
         io.setTurnAngle(MathUtil.inputModulus(state.angle.getDegrees(), 0, 360));
       }
@@ -138,6 +122,9 @@ public class SwerveModule {
   public void stop() {
     if (Constants.driveEnabled) {
       if (!Constants.steeringTuningMode) {
+        optWheelMetersPerSec = 0;
+        Logger.recordOutput("Drive/SwerveModule " + wheelPos.wheelNumber + "/SetOptWheelMetersPerSec", 
+            optWheelMetersPerSec);
         io.stopMotor();
       }
     }
@@ -147,8 +134,8 @@ public class SwerveModule {
     io.updateFeedForward(FFvalue);
   }
 
-  public void updateFFVelocityThreshold(double[] FFvelocityThreshold) {
-    io.setFeedForwardSpeedThreshold(FFvelocityThreshold);
+  public void updateFFSpeedThreshold(double[] FFspeedThreshold) {
+    io.setFeedForwardSpeedThreshold(FFspeedThreshold);
   }
 
   public void updateVoltsToOvercomeFriction(double kSVolts) {
