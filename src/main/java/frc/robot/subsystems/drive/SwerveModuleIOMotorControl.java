@@ -116,8 +116,7 @@ public class SwerveModuleIOMotorControl implements SwerveModuleIO {
         voltageConfigs.PeakForwardVoltage = DriveConstants.Rotation.maxPower;
         voltageConfigs.PeakReverseVoltage = -DriveConstants.Rotation.maxPower;
         motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;// Allow robot to be moved prior to enabling
-        //encoder.setPositionConversionFactor(360);  TODO: rewrite code to operate on 0-1 rotations instead of 0-360 degrees. convert encoder position duty cycle to degrees
-
+      
         canConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
         encoder.getConfigurator().apply(canConfig);
         talonFX.getConfigurator().apply(slot0Configs);
@@ -142,8 +141,7 @@ public class SwerveModuleIOMotorControl implements SwerveModuleIO {
         inputs.turnVelocityDegPerSec = Units.rotationsToDegrees(turningMotor.getVelocity().getValue());
         inputs.turnAppliedVolts = turningMotor.getDutyCycle().getValue()/2 * turningMotor.getSupplyVoltage().getValue();
         inputs.turnCurrentAmps = turningMotor.getSupplyCurrent().getValue();
-        inputs.turnDegrees = turningMotor.getPosition().getValue();
-
+        inputs.turnDegrees = Units.rotationsToDegrees(turningMotor.getPosition().getValue());
         inputs.calculatedFF = calculatedFeedForwardValue;
     }
 
