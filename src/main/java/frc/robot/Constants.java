@@ -240,7 +240,7 @@ public final class Constants {
 
       public static final double wheelDiameterInches = 3.9;
       public static final double gearRatio = 7.80; // drive gear ratio
-      public static final double kS = 0.165;
+      public static final double kS = 0.182;
 
       // Feed Forward parameters for Drive PID
       public static final class FeedForward {
@@ -248,10 +248,10 @@ public final class Constants {
 
         static {
           voltsOverMetersPerSecAtSpeedThresholds = new double[4];
-          voltsOverMetersPerSecAtSpeedThresholds[0] = 3.2;
-          voltsOverMetersPerSecAtSpeedThresholds[1] = 3.2;
-          voltsOverMetersPerSecAtSpeedThresholds[2] = 3.1;
-          voltsOverMetersPerSecAtSpeedThresholds[3] = 3.1;
+          voltsOverMetersPerSecAtSpeedThresholds[0] = 3.3;
+          voltsOverMetersPerSecAtSpeedThresholds[1] = 3.3;
+          voltsOverMetersPerSecAtSpeedThresholds[2] = 3.3;
+          voltsOverMetersPerSecAtSpeedThresholds[3] = 3.37;
         }
 
         public static final double[] feedForwardMetersPerSecThreshold;
@@ -261,9 +261,9 @@ public final class Constants {
           feedForwardMetersPerSecThreshold = new double[4];
           // values must be in ascending order
           feedForwardMetersPerSecThreshold[0] = 0.0; // Must be zero
-          feedForwardMetersPerSecThreshold[1] = 2.0;
-          feedForwardMetersPerSecThreshold[2] = 2.5;
-          feedForwardMetersPerSecThreshold[3] = 3.33;
+          feedForwardMetersPerSecThreshold[1] = 1.7;
+          feedForwardMetersPerSecThreshold[2] = 2.6;
+          feedForwardMetersPerSecThreshold[3] = 3.18;
         }
       }
     }
