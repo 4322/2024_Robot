@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.utility.OrangeMath;
 
@@ -302,7 +304,33 @@ public final class Constants {
       }
     }
   }
+  public static final class OuttakeConstants
+  {
 
+    public static final int topOuttakeDeviceID = 0;
+    public static final int bottomOuttakeDeviceID = 0;
+    public static final double kP = 0;
+    public static final double kI = 0;
+    public static final double kD = 0;
+    public static final double kV = 0;
+    public static final double openLoopRampSec = 0;
+    public static final double closedLoopRampSec = 0;
+    public static final int gearRatioMotorToWheel = 0;
+    public static final double kS = 0;
+    public static final double voltPerRPS = 0;   //since we likely aren't going to adjust the speed, it's likely safe to not interpolate
+    public static final int pivotDeviceID = 0;
+    public static final double pivotkD = 0;
+    public static final double pivotkI = 0;
+    public static final double pivotkP = 0;
+    public static final double PivotClosedLoopSec = 0;
+    public static final double peakPivotVoltage = 0;
+    public static final NeutralModeValue pivotDefaultNeutralMode = NeutralModeValue.Coast;
+    public static final double defaultPivotPosition = 0;
+    public static final double TopOuttakePct = 0;
+    public static final double BottomOuttakePct = 0;
+    public static final double pivotToleranceRotations = 0;
+
+  }
   public enum WheelPosition {
     // construction of SwerveDriveKinematics is dependent on this enum
 
@@ -319,6 +347,8 @@ public final class Constants {
   }
 
   public static final Mode currentMode = Mode.REAL;
+
+public static final boolean outtakeEnabled = false;
 
   public static enum Mode {
     /** Running on a real robot. */
