@@ -4,7 +4,11 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.utility.CanBusUtil;
 import frc.utility.OrangeMath;
 
 /**
@@ -301,6 +305,44 @@ public final class Constants {
         public static final double kI = 0;
         public static final double kD = 0.01;
       }
+    }
+  }
+
+  public static final class IntakeConstants {
+    // TODO: update these
+    public static final int intakeMotorID = 0;
+    public static final int deployMotorID = 0;
+    public static final int deployEncoderID = 0;
+
+    public static final double deployPositionRotations = 0;
+    public static final double undeployPositionRotations = 0;
+    public static final double intakeSpeedPct = 0;
+    public static final double outtakeSpeedPct = -0; // signed
+    public static final double deployToleranceRotations = 0;
+
+    public static final class IntakeConfig {
+      public static final NeutralModeValue neutralMode = NeutralModeValue.Coast;
+      public static final double updateHz = OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
+      public static final double timeoutMs = 50;
+    }
+
+    public static final class DeployConfig {
+      public static final double kP = 0;
+      public static final double kD = 0;
+      public static final double configCLosedLoopRamp = 0;
+      public static final double maxVoltage = 16;
+      public static final NeutralModeValue neutralMode = NeutralModeValue.Brake;
+      public static final double updateHz = OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
+      public static final double timeoutMs = 50;
+    }
+
+    public static final class EncoderConfig {
+      public static final AbsoluteSensorRangeValue absSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+    }
+
+    public static final class Logging {
+      public static final String key = "Intake/";
+      public static final String hardwareOutputsKey = "Intake/Hardware/";
     }
   }
 
