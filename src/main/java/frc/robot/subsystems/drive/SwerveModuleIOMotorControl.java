@@ -88,8 +88,8 @@ public class SwerveModuleIOMotorControl implements SwerveModuleIO {
     boolean isLeftSide = (pos == WheelPosition.FRONT_LEFT) || (pos == WheelPosition.BACK_LEFT);
     sparkMax.setInverted(isLeftSide);
 
-    // need rapid velocity feedback for control logic
-    CanBusUtil.fastVelocitySparkMax(driveMotor);
+    // need rapid velocity feedback for control logic and position for odometry
+    CanBusUtil.fastVelocityPositionSparkMax(driveMotor);
   }
 
   private void configRotation(CANSparkMax sparkMax) {
