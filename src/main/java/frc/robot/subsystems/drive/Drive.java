@@ -1,29 +1,27 @@
 package frc.robot.subsystems.drive;
 
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.WheelPosition;
-import frc.utility.OrangeMath;
-import frc.utility.SnapshotTranslation2D;
-
-import java.util.ArrayList;
-
-import org.littletonrobotics.junction.Logger;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants;
 import frc.robot.Constants.ControllerTypeStrings;
 import frc.robot.Constants.DriveConstants;
-import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Constants.WheelPosition;
+import frc.utility.OrangeMath;
+import frc.utility.SnapshotTranslation2D;
+import java.util.ArrayList;
+import org.littletonrobotics.junction.Logger;
 
 public class Drive extends SubsystemBase {
 
@@ -33,7 +31,8 @@ public class Drive extends SubsystemBase {
   private GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
 
   private DriveShuffleBoardIO driveShuffleBoard;
-  private DriveShuffleBoardIOInputsAutoLogged driveShuffleBoardInputs = new DriveShuffleBoardIOInputsAutoLogged();
+  private DriveShuffleBoardIOInputsAutoLogged driveShuffleBoardInputs =
+      new DriveShuffleBoardIOInputsAutoLogged();
 
   private PIDController rotPID;
 
@@ -45,9 +44,10 @@ public class Drive extends SubsystemBase {
 
   private ArrayList<SnapshotTranslation2D> velocityHistory = new ArrayList<SnapshotTranslation2D>();
 
-  private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-      DriveConstants.frontRightWheelLocation, DriveConstants.frontLeftWheelLocation,
-      DriveConstants.backLeftWheelLocation, DriveConstants.backRightWheelLocation);
+  private final SwerveDriveKinematics kinematics =
+      new SwerveDriveKinematics(
+          DriveConstants.frontRightWheelLocation, DriveConstants.frontLeftWheelLocation,
+          DriveConstants.backLeftWheelLocation, DriveConstants.backRightWheelLocation);
 
   private final SwerveDrivePoseEstimator poseEstimator;
 
@@ -76,6 +76,7 @@ public class Drive extends SubsystemBase {
   private double lastOpenRampRate = DriveConstants.Drive.openLoopRampSec;
 
   private static Drive driveSubsystem = null;
+
   public static Drive getInstance() {
     if (driveSubsystem == null) {
       driveSubsystem = new Drive();
@@ -86,17 +87,24 @@ public class Drive extends SubsystemBase {
   private Drive() {
     runTime.start();
     switch (Constants.currentMode) {
-      // Real robot, instantiate hardware IO implementations
+        // Real robot, instantiate hardware IO implementations
       case REAL:
         if (Constants.driveEnabled) {
           swerveModules[WheelPosition.FRONT_RIGHT.wheelNumber] =
-              new SwerveModule(WheelPosition.FRONT_RIGHT, new SwerveModuleIOMotorControl(WheelPosition.FRONT_RIGHT));
+              new SwerveModule(
+                  WheelPosition.FRONT_RIGHT,
+                  new SwerveModuleIOMotorControl(WheelPosition.FRONT_RIGHT));
           swerveModules[WheelPosition.FRONT_LEFT.wheelNumber] =
-              new SwerveModule(WheelPosition.FRONT_LEFT, new SwerveModuleIOMotorControl(WheelPosition.FRONT_LEFT));
+              new SwerveModule(
+                  WheelPosition.FRONT_LEFT,
+                  new SwerveModuleIOMotorControl(WheelPosition.FRONT_LEFT));
           swerveModules[WheelPosition.BACK_RIGHT.wheelNumber] =
-              new SwerveModule(WheelPosition.BACK_RIGHT, new SwerveModuleIOMotorControl(WheelPosition.BACK_RIGHT));
+              new SwerveModule(
+                  WheelPosition.BACK_RIGHT,
+                  new SwerveModuleIOMotorControl(WheelPosition.BACK_RIGHT));
           swerveModules[WheelPosition.BACK_LEFT.wheelNumber] =
-              new SwerveModule(WheelPosition.BACK_LEFT, new SwerveModuleIOMotorControl(WheelPosition.BACK_LEFT));
+              new SwerveModule(
+                  WheelPosition.BACK_LEFT, new SwerveModuleIOMotorControl(WheelPosition.BACK_LEFT));
         }
         if (Constants.gyroEnabled) {
           gyro = new GyroIONavX();
@@ -104,11 +112,11 @@ public class Drive extends SubsystemBase {
         driveShuffleBoard = new DriveShuffleBoardIODataEntry();
         break;
 
-      // Sim robot, instantiate physics sim IO implementations
+        // Sim robot, instantiate physics sim IO implementations
       case SIM:
         break;
 
-      // Replayed robot, disable hardware IO implementations
+        // Replayed robot, disable hardware IO implementations
       case REPLAY:
         break;
     }
@@ -135,59 +143,66 @@ public class Drive extends SubsystemBase {
     if (Constants.driveEnabled) {
       rotPID = new PIDController(DriveConstants.Auto.autoRotkP, 0, DriveConstants.Auto.autoRotkD);
 
-      if (Constants.gyroEnabled) {  
+      if (Constants.gyroEnabled) {
         // wait for first gyro reading to be received
         try {
           Thread.sleep(2000);
         } catch (InterruptedException e) {
-        }  
-        poseEstimator = new SwerveDrivePoseEstimator(kinematics, getRotation2d(), getModulePostitions(), new Pose2d());
+        }
+        poseEstimator =
+            new SwerveDrivePoseEstimator(
+                kinematics, getRotation2d(), getModulePostitions(), new Pose2d());
         resetFieldCentric(0);
       }
 
-    if (Constants.debug) {
-      tab = Shuffleboard.getTab("Drivebase");
+      if (Constants.debug) {
+        tab = Shuffleboard.getTab("Drivebase");
 
-      rotErrorTab = tab.add("Rot Error", 0).withPosition(0, 0).withSize(1, 1).getEntry();
+        rotErrorTab = tab.add("Rot Error", 0).withPosition(0, 0).withSize(1, 1).getEntry();
 
-      rotSpeedTab = tab.add("Rotation Speed", 0).withPosition(0, 1).withSize(1, 1).getEntry();
+        rotSpeedTab = tab.add("Rotation Speed", 0).withPosition(0, 1).withSize(1, 1).getEntry();
 
-      rotkP = tab.add("Rotation kP", DriveConstants.Auto.autoRotkP).withPosition(1, 0)
-          .withSize(1, 1).getEntry();
+        rotkP =
+            tab.add("Rotation kP", DriveConstants.Auto.autoRotkP)
+                .withPosition(1, 0)
+                .withSize(1, 1)
+                .getEntry();
 
-      rotkD = tab.add("Rotation kD", DriveConstants.Auto.autoRotkD).withPosition(2, 0)
-          .withSize(1, 1).getEntry();
+        rotkD =
+            tab.add("Rotation kD", DriveConstants.Auto.autoRotkD)
+                .withPosition(2, 0)
+                .withSize(1, 1)
+                .getEntry();
 
-      yawTab = tab.add("Yaw", 0).withPosition(0, 3).withSize(1, 1).getEntry();
+        yawTab = tab.add("Yaw", 0).withPosition(0, 3).withSize(1, 1).getEntry();
 
-      rollTab = tab.add("Roll", 0).withPosition(1, 1).withSize(1, 1).getEntry();
+        rollTab = tab.add("Roll", 0).withPosition(1, 1).withSize(1, 1).getEntry();
 
-      pitchTab = tab.add("Pitch", 0).withPosition(2, 1).withSize(1, 1).getEntry();
+        pitchTab = tab.add("Pitch", 0).withPosition(2, 1).withSize(1, 1).getEntry();
 
-      botVelocityMag = tab.add("Bot Vel Mag", 0).withPosition(3, 0).withSize(1, 1).getEntry();
+        botVelocityMag = tab.add("Bot Vel Mag", 0).withPosition(3, 0).withSize(1, 1).getEntry();
 
-      botAccelerationMag = tab.add("Bot Acc Mag", 0).withPosition(3, 1).withSize(1, 1).getEntry();
+        botAccelerationMag = tab.add("Bot Acc Mag", 0).withPosition(3, 1).withSize(1, 1).getEntry();
 
-      botVelocityAngle = tab.add("Bot Vel Angle", 0).withPosition(4, 0).withSize(1, 1).getEntry();
+        botVelocityAngle = tab.add("Bot Vel Angle", 0).withPosition(4, 0).withSize(1, 1).getEntry();
 
-      botAccelerationAngle =
-          tab.add("Bot Acc Angle", 0).withPosition(4, 1).withSize(1, 1).getEntry();
+        botAccelerationAngle =
+            tab.add("Bot Acc Angle", 0).withPosition(4, 1).withSize(1, 1).getEntry();
 
-      angularVel = tab.add("Angular Vel", 0).withPosition(5, 0).withSize(1, 1).getEntry();
+        angularVel = tab.add("Angular Vel", 0).withPosition(5, 0).withSize(1, 1).getEntry();
 
-      driveXTab = tab.add("Drive X", 0).withPosition(0, 2).withSize(1, 1).getEntry();
+        driveXTab = tab.add("Drive X", 0).withPosition(0, 2).withSize(1, 1).getEntry();
 
-      driveYTab = tab.add("Drive Y", 0).withPosition(1, 2).withSize(1, 1).getEntry();
+        driveYTab = tab.add("Drive Y", 0).withPosition(1, 2).withSize(1, 1).getEntry();
 
-      rotateTab = tab.add("Rotate", 0).withPosition(1, 3).withSize(1, 1).getEntry();
+        rotateTab = tab.add("Rotate", 0).withPosition(1, 3).withSize(1, 1).getEntry();
 
-      odometryX = tab.add("Odometry X", 0).withPosition(3, 2).withSize(1, 1).getEntry();
+        odometryX = tab.add("Odometry X", 0).withPosition(3, 2).withSize(1, 1).getEntry();
 
-      odometryY = tab.add("Odometry Y", 0).withPosition(4, 2).withSize(1, 1).getEntry();
+        odometryY = tab.add("Odometry Y", 0).withPosition(4, 2).withSize(1, 1).getEntry();
 
-      odometryDegrees =
-          tab.add("Odometry Degrees", 0).withPosition(2, 2).withSize(1, 1).getEntry();
-
+        odometryDegrees =
+            tab.add("Odometry Degrees", 0).withPosition(2, 2).withSize(1, 1).getEntry();
       }
     }
   }
@@ -221,7 +236,7 @@ public class Drive extends SubsystemBase {
 
   public Rotation2d getRotation2d() {
     return Rotation2d.fromDegrees(gyroInputs.yawAngleDeg);
-}
+  }
 
   @Override
   public void periodic() {
@@ -241,7 +256,7 @@ public class Drive extends SubsystemBase {
       if (Constants.gyroEnabled) {
         updateOdometry();
       }
-      
+
       if (Constants.debug) {
         if (Constants.gyroEnabled) {
           yawTab.setDouble(getAngle());
@@ -266,7 +281,7 @@ public class Drive extends SubsystemBase {
             module.setOpenRampRate(newRampRate);
           }
         }
-        for (SwerveModule module: swerveModules) {
+        for (SwerveModule module : swerveModules) {
           module.updateFFSpeedThreshold(driveShuffleBoardInputs.feedForwardMetersPerSecThresholds);
           module.updateFeedForward(driveShuffleBoardInputs.voltsOverMetersPerSecAtSpeedThresholds);
           module.updateVoltsToOvercomeFriction(driveShuffleBoardInputs.voltsToOvercomeFriction);
@@ -274,7 +289,6 @@ public class Drive extends SubsystemBase {
       }
     }
   }
-
 
   // rotation isn't considered to be movement
   public boolean isRobotMoving() {
@@ -324,20 +338,21 @@ public class Drive extends SubsystemBase {
         stop();
       } else {
         Rotation2d robotAngle;
-          robotAngle = getRotation2d();
+        robotAngle = getRotation2d();
 
         // create SwerveModuleStates inversely from the kinematics
-        var swerveModuleStates = kinematics.toSwerveModuleStates(
-            ChassisSpeeds.fromFieldRelativeSpeeds(driveX, driveY, rotate, robotAngle), centerOfRotation);
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates,
-            Constants.DriveConstants.maxSpeedMetersPerSecond);
+        var swerveModuleStates =
+            kinematics.toSwerveModuleStates(
+                ChassisSpeeds.fromFieldRelativeSpeeds(driveX, driveY, rotate, robotAngle),
+                centerOfRotation);
+        SwerveDriveKinematics.desaturateWheelSpeeds(
+            swerveModuleStates, Constants.DriveConstants.maxSpeedMetersPerSecond);
         for (int i = 0; i < swerveModules.length; i++) {
           swerveModules[i].setDesiredState(swerveModuleStates[i]);
         }
       }
     }
   }
-
 
   // Rotate the robot to a specific heading while driving.
   // Must be invoked periodically to reach the desired heading.
@@ -373,7 +388,7 @@ public class Drive extends SubsystemBase {
       }
 
       if (Math.abs(headingChangeDeg) <= toleranceDeg) {
-        rotPIDSpeed = 0;  // don't wiggle
+        rotPIDSpeed = 0; // don't wiggle
       } else if (Math.abs(rotPIDSpeed) < adjMinAutoRotatePower) {
         rotPIDSpeed = Math.copySign(adjMinAutoRotatePower, rotPIDSpeed);
       } else if (rotPIDSpeed > adjMaxAutoRotatePower) {
@@ -440,7 +455,7 @@ public class Drive extends SubsystemBase {
   }
 
   public Pose2d getPose2d() {
-    return poseEstimator.getEstimatedPosition(); 
+    return poseEstimator.getEstimatedPosition();
   }
 
   public void setModuleStates(SwerveModuleState[] states) {
@@ -458,10 +473,11 @@ public class Drive extends SubsystemBase {
     if (Constants.driveEnabled) {
       // wheel locations must be in the same order as the WheelPosition enum values
       return new SwerveModulePosition[] {
-          swerveModules[WheelPosition.FRONT_RIGHT.wheelNumber].getPosition(),
-          swerveModules[WheelPosition.FRONT_LEFT.wheelNumber].getPosition(),
-          swerveModules[WheelPosition.BACK_LEFT.wheelNumber].getPosition(),
-          swerveModules[WheelPosition.BACK_RIGHT.wheelNumber].getPosition()};
+        swerveModules[WheelPosition.FRONT_RIGHT.wheelNumber].getPosition(),
+        swerveModules[WheelPosition.FRONT_LEFT.wheelNumber].getPosition(),
+        swerveModules[WheelPosition.BACK_LEFT.wheelNumber].getPosition(),
+        swerveModules[WheelPosition.BACK_RIGHT.wheelNumber].getPosition()
+      };
     } else {
       return null;
     }
@@ -510,7 +526,7 @@ public class Drive extends SubsystemBase {
       }
     }
 
-    //ignore disabled controllers
+    // ignore disabled controllers
     switch (controller) {
       case ControllerTypeStrings.none:
         break;
@@ -541,10 +557,16 @@ public class Drive extends SubsystemBase {
     // sum wheel velocity and acceleration vectors
     for (int i = 0; i < swerveModules.length; i++) {
       double wheelAngleDegrees = currentAngle[i];
-      velocityXY = velocityXY.plus(new Translation2d(swerveModules[i].getVelocityFeetPerSec(),
-          Rotation2d.fromDegrees(wheelAngleDegrees)));
-      accelerationXY = accelerationXY.plus(new Translation2d(swerveModules[i].snapshotAcceleration(),
-          Rotation2d.fromDegrees(wheelAngleDegrees)));
+      velocityXY =
+          velocityXY.plus(
+              new Translation2d(
+                  swerveModules[i].getVelocityFeetPerSec(),
+                  Rotation2d.fromDegrees(wheelAngleDegrees)));
+      accelerationXY =
+          accelerationXY.plus(
+              new Translation2d(
+                  swerveModules[i].snapshotAcceleration(),
+                  Rotation2d.fromDegrees(wheelAngleDegrees)));
     }
     latestVelocity = velocityXY.getNorm() / 4;
     latestAcceleration = accelerationXY.getNorm() / 4;
@@ -554,9 +576,9 @@ public class Drive extends SubsystemBase {
     Logger.recordOutput("Drive/BotAccFtPerSec2", latestAcceleration);
     Logger.recordOutput("Drive/BotAccDegrees", accelerationXY.getAngle().getDegrees());
     Logger.recordOutput("Drive/Odometry", getPose2d());
- 
-    velocityHistory
-        .removeIf(n -> (n.getTime() < clock - DriveConstants.Tip.velocityHistorySeconds));
+
+    velocityHistory.removeIf(
+        n -> (n.getTime() < clock - DriveConstants.Tip.velocityHistorySeconds));
     velocityHistory.add(new SnapshotTranslation2D(velocityXY, clock));
 
     if (Constants.debug) {
