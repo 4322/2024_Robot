@@ -17,7 +17,7 @@ import frc.utility.OrangeMath;
  */
 public final class Constants {
 
-  public static enum RobotName {
+  public static enum RobotType {
     // Drivebase for testing
     NEMO, 
     
@@ -25,7 +25,7 @@ public final class Constants {
     CRUSH
   }
 
-  public static final RobotName currentName = RobotName.NEMO;
+  public static final RobotType currentRobot = RobotType.NEMO;
 
   public static final boolean debug = true;
 
@@ -91,7 +91,7 @@ public final class Constants {
   public static final int controllerConfigTimeoutMs = 50;
 
   public static final class DriveConstants {
-
+    
     public static final int frontRightDriveID = 18;
     public static final int frontRightRotationID = 15;
     public static final int rearRightDriveID = 19;
@@ -100,6 +100,7 @@ public final class Constants {
     public static final int frontLeftRotationID = 21;
     public static final int rearLeftDriveID = 16;
     public static final int rearLeftRotationID = 20;
+    
 
     // full length of drivebase divided by 2 for distance between wheels
     public static final double distWheelMetersX = OrangeMath.inchesToMeters(29.5 / 2); // 29.5 in

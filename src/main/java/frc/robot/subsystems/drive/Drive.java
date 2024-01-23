@@ -90,7 +90,7 @@ public class Drive extends SubsystemBase {
         // Real robot, instantiate hardware IO implementations
       case REAL:
         if (Constants.driveEnabled) {
-          switch (Constants.currentName) {
+          switch (Constants.currentRobot) {
             case CRUSH:
               swerveModules[WheelPosition.FRONT_RIGHT.wheelNumber] =
                   new SwerveModule(
