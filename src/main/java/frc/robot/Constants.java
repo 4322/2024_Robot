@@ -16,6 +16,17 @@ import frc.utility.OrangeMath;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  public static enum RobotName {
+    // Drivebase for testing
+    NEMO, 
+    
+    // 2024 Competition Robot 
+    CRUSH
+  }
+
+  public static final RobotName currentName = RobotName.NEMO;
+
   public static final boolean debug = true;
 
   public static final boolean driveEnabled = true;
@@ -67,7 +78,6 @@ public final class Constants {
 
   public static final DriveDegradedMode driveDegradedMode = DriveDegradedMode.sideMotorsOnly;
 
-  public static final int falconEncoderUnits = 2048;
   public static final double inchesToMeters = 0.0254;
   public static final double feetToMeters = inchesToMeters * 12;
   public static final double metersToFeet = 3.28084;
@@ -81,6 +91,7 @@ public final class Constants {
   public static final int controllerConfigTimeoutMs = 50;
 
   public static final class DriveConstants {
+
     public static final int frontRightDriveID = 18;
     public static final int frontRightRotationID = 15;
     public static final int rearRightDriveID = 19;
@@ -122,31 +133,8 @@ public final class Constants {
     public static final double drivePolarDeadband = 0.06;
     public static final double twistDeadband = 0.08;
 
-    // Values for auto balance
-    public static final double autoBalanceFlatPower = 0.27;
-    public static final double autoBalanceRampPower = 0.2;
-    public static final double autoBalanceAdjustmentPower = 0.055;
-    public static final double chargeStationTiltedMinDeg = 10.0;
-    public static final double chargeStationDroppingDeg = 1.5;
-    public static final double rampImpulseSec = 0.9; // time for gyro to stabilize
-    public static final double droppingSec = 0.35;
-    public static final double levelingSec = 0.3;
-    public static final double chargeStationBalancedMaxDeg = 2.0;
-    public static final double autoBalanceFlatTimeoutSec = 2.5;
-    public static final double autoBalanceTimeoutSec = 15.0;
-    public static final double clawTimedOuttake = 1.1;
-
-    public static final double autoDriveOverChargeFlatMaxDeg = 3.0;
-    public static final double autoDriveOverChargeFlatSec = 0.5;
-    public static final double autoDriveOverChargeTimeoutSec = 6.0;
-
     public static final double spinoutCenterPower = 1.0;
     public static final double spinoutCornerPower = 0.75;
-
-    public static final double autoChargePower = 0.5;
-
-    public static final double doubleSubstationLoadDistanceInches = 32.5;
-    public static final double doubleSubstationMinAprilTagInches = 42;
 
     public static final class Manual {
 

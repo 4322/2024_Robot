@@ -90,21 +90,44 @@ public class Drive extends SubsystemBase {
         // Real robot, instantiate hardware IO implementations
       case REAL:
         if (Constants.driveEnabled) {
-          swerveModules[WheelPosition.FRONT_RIGHT.wheelNumber] =
-              new SwerveModule(
+          switch (Constants.currentName) {
+            case CRUSH:
+              swerveModules[WheelPosition.FRONT_RIGHT.wheelNumber] =
+                  new SwerveModule(
+                    WheelPosition.FRONT_RIGHT,
+                      new SwerveModuleIOTalonFX(WheelPosition.FRONT_RIGHT));
+                swerveModules[WheelPosition.FRONT_LEFT.wheelNumber] =
+                    new SwerveModule(
+                      WheelPosition.FRONT_LEFT,
+                        new SwerveModuleIOTalonFX(WheelPosition.FRONT_LEFT));
+                swerveModules[WheelPosition.BACK_RIGHT.wheelNumber] =
+                    new SwerveModule(
+                      WheelPosition.BACK_RIGHT,
+                        new SwerveModuleIOTalonFX(WheelPosition.BACK_RIGHT));
+                swerveModules[WheelPosition.BACK_LEFT.wheelNumber] =
+                    new SwerveModule(
+                      WheelPosition.BACK_LEFT, 
+                        new SwerveModuleIOTalonFX(WheelPosition.BACK_LEFT));
+                break;
+            case NEMO:
+              swerveModules[WheelPosition.FRONT_RIGHT.wheelNumber] =
+                new SwerveModule(
                   WheelPosition.FRONT_RIGHT,
-                  new SwerveModuleIOMotorControl(WheelPosition.FRONT_RIGHT));
-          swerveModules[WheelPosition.FRONT_LEFT.wheelNumber] =
-              new SwerveModule(
-                  WheelPosition.FRONT_LEFT,
-                  new SwerveModuleIOMotorControl(WheelPosition.FRONT_LEFT));
-          swerveModules[WheelPosition.BACK_RIGHT.wheelNumber] =
-              new SwerveModule(
-                  WheelPosition.BACK_RIGHT,
-                  new SwerveModuleIOMotorControl(WheelPosition.BACK_RIGHT));
-          swerveModules[WheelPosition.BACK_LEFT.wheelNumber] =
-              new SwerveModule(
-                  WheelPosition.BACK_LEFT, new SwerveModuleIOMotorControl(WheelPosition.BACK_LEFT));
+                    new SwerveModuleIOSparkMax(WheelPosition.FRONT_RIGHT));
+              swerveModules[WheelPosition.FRONT_LEFT.wheelNumber] =
+                  new SwerveModule(
+                      WheelPosition.FRONT_LEFT,
+                      new SwerveModuleIOSparkMax(WheelPosition.FRONT_LEFT));
+              swerveModules[WheelPosition.BACK_RIGHT.wheelNumber] =
+                  new SwerveModule(
+                      WheelPosition.BACK_RIGHT,
+                      new SwerveModuleIOSparkMax(WheelPosition.BACK_RIGHT));
+              swerveModules[WheelPosition.BACK_LEFT.wheelNumber] =
+                  new SwerveModule(
+                    WheelPosition.BACK_LEFT, 
+                      new SwerveModuleIOSparkMax(WheelPosition.BACK_LEFT));
+              break;
+          }
         }
         if (Constants.gyroEnabled) {
           gyro = new GyroIONavX();

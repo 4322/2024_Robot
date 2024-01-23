@@ -14,7 +14,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.WheelPosition;
 import frc.utility.CanBusUtil;
 
-public class SwerveModuleIOMotorControl implements SwerveModuleIO {
+public class SwerveModuleIOSparkMax implements SwerveModuleIO {
   private CANSparkMax driveMotor;
 
   private CANSparkMax turningMotor;
@@ -29,7 +29,7 @@ public class SwerveModuleIOMotorControl implements SwerveModuleIO {
   private double calcFeedForwardVoltsOverMetersPerSec;
   private double desiredVolts;
 
-  public SwerveModuleIOMotorControl(WheelPosition wheelPos) {
+  public SwerveModuleIOSparkMax(WheelPosition wheelPos) {
     switch (wheelPos) {
       case FRONT_RIGHT:
         driveMotor = new CANSparkMax(DriveConstants.frontRightDriveID, MotorType.kBrushless);
