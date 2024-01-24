@@ -12,19 +12,23 @@ import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.WheelPosition;
+import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
+import frc.robot.subsystems.drive.RobotChooser.RobotChooserInterface;
 import frc.utility.CanBusUtil;
 
 public class SwerveModuleIOSparkMax implements SwerveModuleIO {
+  private RobotChooserInterface robotSpecificConstants = RobotChooser.getInstance().getConstants();
+  
   private CANSparkMax driveMotor;
 
   private CANSparkMax turningMotor;
   private SparkAbsoluteEncoder encoder;
 
   private double[] feedForwardMetersPerSecThreshold =
-      DriveConstants.Drive.FeedForward.feedForwardMetersPerSecThreshold.clone();
+      robotSpecificConstants.getDriveffSpeedMetersPerSecThresholds().clone();
   private double[] feedForwardVoltsOverMetersPerSec =
-      DriveConstants.Drive.FeedForward.voltsOverMetersPerSecAtSpeedThresholds.clone();
-  private double kSVolts = DriveConstants.Drive.kS;
+      robotSpecificConstants.getDriveffVoltsOverMetersPerSec().clone();
+  private double kSVolts = robotSpecificConstants.getDrivekSVolts();
 
   private double calcFeedForwardVoltsOverMetersPerSec;
   private double desiredVolts;
@@ -32,20 +36,20 @@ public class SwerveModuleIOSparkMax implements SwerveModuleIO {
   public SwerveModuleIOSparkMax(WheelPosition wheelPos) {
     switch (wheelPos) {
       case FRONT_RIGHT:
-        driveMotor = new CANSparkMax(DriveConstants.frontRightDriveID, MotorType.kBrushless);
-        turningMotor = new CANSparkMax(DriveConstants.frontRightRotationID, MotorType.kBrushless);
+        driveMotor = new CANSparkMax(robotSpecificConstants.getFrontRightDriveID(), MotorType.kBrushless);
+        turningMotor = new CANSparkMax(robotSpecificConstants.getFrontRightRotationID(), MotorType.kBrushless);
         break;
       case FRONT_LEFT:
-        driveMotor = new CANSparkMax(DriveConstants.frontLeftDriveID, MotorType.kBrushless);
-        turningMotor = new CANSparkMax(DriveConstants.frontLeftRotationID, MotorType.kBrushless);
+        driveMotor = new CANSparkMax(robotSpecificConstants.getFrontLeftDriveID(), MotorType.kBrushless);
+        turningMotor = new CANSparkMax(robotSpecificConstants.getFrontLeftRotationID(), MotorType.kBrushless);
         break;
       case BACK_RIGHT:
-        driveMotor = new CANSparkMax(DriveConstants.rearRightDriveID, MotorType.kBrushless);
-        turningMotor = new CANSparkMax(DriveConstants.rearRightRotationID, MotorType.kBrushless);
+        driveMotor = new CANSparkMax(robotSpecificConstants.getBackRightDriveID(), MotorType.kBrushless);
+        turningMotor = new CANSparkMax(robotSpecificConstants.getBackRightRotationID(), MotorType.kBrushless);
         break;
       case BACK_LEFT:
-        driveMotor = new CANSparkMax(DriveConstants.rearLeftDriveID, MotorType.kBrushless);
-        turningMotor = new CANSparkMax(DriveConstants.rearLeftRotationID, MotorType.kBrushless);
+        driveMotor = new CANSparkMax(robotSpecificConstants.getBackLeftDriveID(), MotorType.kBrushless);
+        turningMotor = new CANSparkMax(robotSpecificConstants.getBackLeftRotationID(), MotorType.kBrushless);
         break;
     }
 
@@ -73,7 +77,7 @@ public class SwerveModuleIOSparkMax implements SwerveModuleIO {
             Math.PI
                 * Constants.DriveConstants.Drive.wheelDiameterInches
                 * Constants.inchesToMeters
-                / Constants.DriveConstants.Drive.gearRatio); // motor rotations to wheel meters
+                / robotSpecificConstants.getGearRatio()); // motor rotations to wheel meters
     sparkMax
         .getEncoder()
         .setVelocityConversionFactor(
@@ -81,7 +85,7 @@ public class SwerveModuleIOSparkMax implements SwerveModuleIO {
                 * Constants.DriveConstants.Drive.wheelDiameterInches
                 * Constants.inchesToMeters
                 / 60
-                / Constants.DriveConstants.Drive.gearRatio); // motor RPM to wheel m/s
+                / robotSpecificConstants.getGearRatio()); // motor RPM to wheel m/s
 
     // Invert the left side modules so we can zero all modules with the bevel gears facing outward.
     // Without this code, all bevel gears would need to face right when the modules are zeroed.
@@ -99,8 +103,8 @@ public class SwerveModuleIOSparkMax implements SwerveModuleIO {
     turningMotor.setInverted(true);
 
     SparkPIDController config = sparkMax.getPIDController();
-    config.setP(DriveConstants.Rotation.kP, 0);
-    config.setD(DriveConstants.Rotation.kD, 0);
+    config.setP(robotSpecificConstants.getRotationkP(), 0);
+    config.setD(robotSpecificConstants.getRotationkD(), 0);
     sparkMax.setClosedLoopRampRate(DriveConstants.Rotation.configCLosedLoopRamp);
     config.setSmartMotionAllowedClosedLoopError(
         DriveConstants.Rotation.allowableClosedloopError, 0);

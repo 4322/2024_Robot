@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
+import frc.robot.subsystems.drive.RobotChooser.RobotChooserInterface;
 import frc.utility.OrangeMath;
 
 /**
@@ -16,6 +18,7 @@ import frc.utility.OrangeMath;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  private static RobotChooserInterface robotSpecificConstants = RobotChooser.getInstance().getConstants();
 
   public static enum RobotType {
     // Drivebase for testing
@@ -92,41 +95,17 @@ public final class Constants {
 
   public static final class DriveConstants {
     
-    public static final int frontRightDriveID = 18;
-    public static final int frontRightRotationID = 15;
-    public static final int rearRightDriveID = 19;
-    public static final int rearRightRotationID = 22;
-    public static final int frontLeftDriveID = 17;
-    public static final int frontLeftRotationID = 21;
-    public static final int rearLeftDriveID = 16;
-    public static final int rearLeftRotationID = 20;
-    
-
-    // full length of drivebase divided by 2 for distance between wheels
-    public static final double distWheelMetersX = OrangeMath.inchesToMeters(29.5 / 2); // 29.5 in
-    public static final double distWheelMetersY = OrangeMath.inchesToMeters(29.5 / 2); // 29.5 in
-
     // wheel location constants
     public static final Translation2d frontLeftWheelLocation =
-        new Translation2d(distWheelMetersX, distWheelMetersY);
+        new Translation2d(robotSpecificConstants.getDistWheelMetersX(), robotSpecificConstants.getDistWheelMetersY());
     public static final Translation2d frontRightWheelLocation =
-        new Translation2d(distWheelMetersX, -distWheelMetersY);
+        new Translation2d(robotSpecificConstants.getDistWheelMetersX(), -robotSpecificConstants.getDistWheelMetersY());
     public static final Translation2d backLeftWheelLocation =
-        new Translation2d(-distWheelMetersX, distWheelMetersY);
+        new Translation2d(-robotSpecificConstants.getDistWheelMetersX(), robotSpecificConstants.getDistWheelMetersY());
     public static final Translation2d backRightWheelLocation =
-        new Translation2d(-distWheelMetersX, -distWheelMetersY);
+        new Translation2d(-robotSpecificConstants.getDistWheelMetersX(), -robotSpecificConstants.getDistWheelMetersY());
 
     public static final double disableBreakSec = 2.0;
-
-    // top speed at full motor output is 91 rot/sec with voltage comp at 11.5 volts
-    // however, setting the max speed to 91 only allows us to reach 86 due to insufficent kV
-    public static final double maxSpeedMetersPerSecond =
-        OrangeMath.falconRotationsToMeters(
-            91,
-            OrangeMath.inchesToMeters(OrangeMath.getCircumference(Drive.wheelDiameterInches)),
-            Drive.gearRatio);
-
-    public static final double maxRotationSpeedRadSecond = 12.2718; // physical limit of the bot
 
     public static final double stoppedVelocityThresholdFtPerSec = 0.5;
     public static final double movingVelocityThresholdFtPerSec = 1.5;
@@ -160,7 +139,7 @@ public final class Constants {
 
       // Values for autonomous path finding
       public static final double autoMaxSpeedMetersPerSecond =
-          0.75 * DriveConstants.maxSpeedMetersPerSecond;
+          0.75 * robotSpecificConstants.getMaxSpeedMetersPerSec();
 
       // acceleration off the line is 109 rotations per sec^2
       // acceleration in the mid-range is 46.8 rotations per sec^2
@@ -169,10 +148,8 @@ public final class Constants {
               * OrangeMath.falconRotationsToMeters(
                   73,
                   OrangeMath.inchesToMeters(OrangeMath.getCircumference(Drive.wheelDiameterInches)),
-                  Drive.gearRatio);
+                  robotSpecificConstants.getGearRatio());
 
-      public static final double autoRotkP = 0.008;
-      public static final double autoRotkD = 0.0004;
       public static final double minAutoRotateStoppedPower = 0.03;
       public static final double minAutoRotateMovingPower = 0.01;
       public static final double rotateStoppedToleranceDegrees = 0.5;
@@ -196,18 +173,14 @@ public final class Constants {
     }
 
     public static final class Rotation {
-      // For tuning, graph Duty Cycle Position in the REV Hardware Client
-      public static final double kP = 0.03;
-      public static final double kD = 0.0;
 
       public static final double configCLosedLoopRamp = 0.08;
       public static final double maxPower = 0.5; // reduce gear wear and overshoot
 
       public static final double configVoltageCompSaturation = 11.5;
-      public static final boolean enableVoltageCompensation = true;
 
       public static final int freeLimit = 40;
-      public static final int stallLimit = 5; // Change
+      public static final int stallLimit = 5; // TODO
 
       public static final double allowableClosedloopError = 0.35; // degrees
     }
@@ -228,48 +201,6 @@ public final class Constants {
       public static final int secondaryCurrentLimit = 100;
 
       public static final double wheelDiameterInches = 3.9;
-      public static final double gearRatio = 7.80; // drive gear ratio
-      public static final double kS = 0.182;
-
-      // Feed Forward parameters for Drive PID
-      public static final class FeedForward {
-        public static final double[] voltsOverMetersPerSecAtSpeedThresholds;
-
-        static {
-          voltsOverMetersPerSecAtSpeedThresholds = new double[4];
-          voltsOverMetersPerSecAtSpeedThresholds[0] = 3.3;
-          voltsOverMetersPerSecAtSpeedThresholds[1] = 3.3;
-          voltsOverMetersPerSecAtSpeedThresholds[2] = 3.3;
-          voltsOverMetersPerSecAtSpeedThresholds[3] = 3.37;
-        }
-
-        public static final double[] feedForwardMetersPerSecThreshold;
-
-        static {
-          // define speed at which each voltage value will be used
-          feedForwardMetersPerSecThreshold = new double[4];
-          // values must be in ascending order
-          feedForwardMetersPerSecThreshold[0] = 0.0; // Must be zero
-          feedForwardMetersPerSecThreshold[1] = 1.7;
-          feedForwardMetersPerSecThreshold[2] = 2.6;
-          feedForwardMetersPerSecThreshold[3] = 3.18;
-        }
-      }
-    }
-
-    public static final class Trajectory {
-
-      public static final class PIDXY {
-        public static final double kP = 0.1;
-        public static final double kI = 0;
-        public static final double kD = 0;
-      }
-
-      public static final class PIDR {
-        public static final double kP = 2.0;
-        public static final double kI = 0;
-        public static final double kD = 0.01;
-      }
     }
   }
 

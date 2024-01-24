@@ -18,12 +18,15 @@ import frc.robot.Constants;
 import frc.robot.Constants.ControllerTypeStrings;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.WheelPosition;
+import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
+import frc.robot.subsystems.drive.RobotChooser.RobotChooserInterface;
 import frc.utility.OrangeMath;
 import frc.utility.SnapshotTranslation2D;
 import java.util.ArrayList;
 import org.littletonrobotics.junction.Logger;
 
 public class Drive extends SubsystemBase {
+  private RobotChooserInterface robotSpecificConstants = RobotChooser.getInstance().getConstants();
 
   private SwerveModule[] swerveModules = new SwerveModule[4];
 
@@ -164,7 +167,8 @@ public class Drive extends SubsystemBase {
     }
 
     if (Constants.driveEnabled) {
-      rotPID = new PIDController(DriveConstants.Auto.autoRotkP, 0, DriveConstants.Auto.autoRotkD);
+      rotPID = new PIDController(robotSpecificConstants.getAutoRotatekP(), 
+          0, robotSpecificConstants.getAutoRotatekD());
 
       if (Constants.gyroEnabled) {
         // wait for first gyro reading to be received
@@ -186,13 +190,13 @@ public class Drive extends SubsystemBase {
         rotSpeedTab = tab.add("Rotation Speed", 0).withPosition(0, 1).withSize(1, 1).getEntry();
 
         rotkP =
-            tab.add("Rotation kP", DriveConstants.Auto.autoRotkP)
+            tab.add("Rotation kP", robotSpecificConstants.getAutoRotatekP())
                 .withPosition(1, 0)
                 .withSize(1, 1)
                 .getEntry();
 
         rotkD =
-            tab.add("Rotation kD", DriveConstants.Auto.autoRotkD)
+            tab.add("Rotation kD", robotSpecificConstants.getAutoRotatekD())
                 .withPosition(2, 0)
                 .withSize(1, 1)
                 .getEntry();
@@ -352,9 +356,9 @@ public class Drive extends SubsystemBase {
         rotateTab.setDouble(rotate);
       }
       // convert to proper units
-      rotate = rotate * DriveConstants.maxRotationSpeedRadSecond;
-      driveX = driveX * DriveConstants.maxSpeedMetersPerSecond;
-      driveY = driveY * DriveConstants.maxSpeedMetersPerSecond;
+      rotate = rotate * robotSpecificConstants.getMaxRotationSpeedRadPerSec();
+      driveX = driveX * robotSpecificConstants.getMaxSpeedMetersPerSec();
+      driveY = driveY * robotSpecificConstants.getMaxSpeedMetersPerSec();
 
       // ready to drive!
       if ((driveX == 0) && (driveY == 0) && (rotate == 0)) {
@@ -369,7 +373,7 @@ public class Drive extends SubsystemBase {
                 ChassisSpeeds.fromFieldRelativeSpeeds(driveX, driveY, rotate, robotAngle),
                 centerOfRotation);
         SwerveDriveKinematics.desaturateWheelSpeeds(
-            swerveModuleStates, Constants.DriveConstants.maxSpeedMetersPerSecond);
+            swerveModuleStates, robotSpecificConstants.getMaxSpeedMetersPerSec());
         for (int i = 0; i < swerveModules.length; i++) {
           swerveModules[i].setDesiredState(swerveModuleStates[i]);
         }
@@ -383,8 +387,8 @@ public class Drive extends SubsystemBase {
     if (Constants.driveEnabled) {
 
       if (Constants.debug) {
-        rotPID.setP(rotkP.getDouble(DriveConstants.Auto.autoRotkP));
-        rotPID.setD(rotkD.getDouble(DriveConstants.Auto.autoRotkD));
+        rotPID.setP(rotkP.getDouble(robotSpecificConstants.getAutoRotatekP()));
+        rotPID.setD(rotkD.getDouble(robotSpecificConstants.getAutoRotatekD()));
       }
 
       // Don't use absolute heading for PID controller to avoid discontinuity at +/- 180 degrees
@@ -483,7 +487,7 @@ public class Drive extends SubsystemBase {
 
   public void setModuleStates(SwerveModuleState[] states) {
     if (Constants.driveEnabled) {
-      SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.maxSpeedMetersPerSecond);
+      SwerveDriveKinematics.desaturateWheelSpeeds(states, robotSpecificConstants.getMaxSpeedMetersPerSec());
       int i = 0;
       for (SwerveModuleState s : states) {
         swerveModules[i].setDesiredState(s);
