@@ -23,7 +23,7 @@ import frc.robot.Constants.WheelPosition;
 import frc.utility.CanBusUtil;
 import frc.utility.OrangeMath;
 
-public class SwerveModuleIOMotorControl implements SwerveModuleIO {
+public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     private TalonFX driveMotor;
 
     private TalonFX turningMotor;
@@ -35,7 +35,7 @@ public class SwerveModuleIOMotorControl implements SwerveModuleIO {
 
     private double calculatedFeedForwardValue;
 
-    public SwerveModuleIOMotorControl(WheelPosition wheelPos) {
+    public SwerveModuleIOTalonFX(WheelPosition wheelPos) {
         switch(wheelPos) {
             case FRONT_RIGHT:
                 driveMotor = new TalonFX(DriveConstants.frontRightDriveID);

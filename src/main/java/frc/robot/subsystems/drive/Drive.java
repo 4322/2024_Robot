@@ -92,18 +92,18 @@ public class Drive extends SubsystemBase {
           swerveModules[WheelPosition.FRONT_RIGHT.wheelNumber] =
               new SwerveModule(
                   WheelPosition.FRONT_RIGHT,
-                  new SwerveModuleIOMotorControl(WheelPosition.FRONT_RIGHT));
+                  new SwerveModuleIOTalonFX(WheelPosition.FRONT_RIGHT));
           swerveModules[WheelPosition.FRONT_LEFT.wheelNumber] =
               new SwerveModule(
                   WheelPosition.FRONT_LEFT,
-                  new SwerveModuleIOMotorControl(WheelPosition.FRONT_LEFT));
+                  new SwerveModuleIOTalonFX(WheelPosition.FRONT_LEFT));
           swerveModules[WheelPosition.BACK_RIGHT.wheelNumber] =
               new SwerveModule(
                   WheelPosition.BACK_RIGHT,
-                  new SwerveModuleIOMotorControl(WheelPosition.BACK_RIGHT));
+                  new SwerveModuleIOTalonFX(WheelPosition.BACK_RIGHT));
           swerveModules[WheelPosition.BACK_LEFT.wheelNumber] =
               new SwerveModule(
-                  WheelPosition.BACK_LEFT, new SwerveModuleIOMotorControl(WheelPosition.BACK_LEFT));
+                  WheelPosition.BACK_LEFT, new SwerveModuleIOTalonFX(WheelPosition.BACK_LEFT));
         }
         if (Constants.gyroEnabled) {
           gyro = new GyroIONavX();
