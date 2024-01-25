@@ -1,16 +1,21 @@
 package frc.robot.subsystems.drive;
 
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.Constants;
 import frc.robot.Constants.ControllerTypeStrings;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.InputScalingStrings;
+import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
+import frc.robot.subsystems.drive.RobotChooser.RobotChooserInterface;
 
 public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
+  private RobotChooserInterface robotSpecificConstants = RobotChooser.getInstance().getConstants();
   private ShuffleboardTab customizationTab;
   private GenericEntry closedRampRate;
   private GenericEntry openRampRate;
@@ -18,12 +23,17 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
   private GenericEntry slowMovingAutoRotateEntry;
   private GenericEntry fastMovingAutoRotateEntry;
   private GenericEntry fastMovingFtPerSecEntry;
-  private GenericEntry pseudoAutoRotateCheckbox;
-  private GenericEntry voltsAtSpeedThresholdsEntry;
-  private GenericEntry feedForwardRPSThresholdEntry;
+  private GenericEntry psuedoAutoRotateCheckbox;
+  private ShuffleboardLayout voltsAtSpeedThresholdsLayout;
+  private ShuffleboardLayout feedForwardMetersPerSecThresholdLayout;
   private GenericEntry voltsToOvercomeFrictionEntry;
   private SendableChooser<String> driveInputScaling;
   private SendableChooser<String> driveControlType;
+  private GenericEntry[] feedForwardArray =
+      new GenericEntry
+          [robotSpecificConstants.getDriveffVoltsOverMetersPerSec().length];
+  private GenericEntry[] speedMetersPerSecArray =
+      new GenericEntry[robotSpecificConstants.getDriveffSpeedMetersPerSecThresholds().length];
 
   public DriveShuffleBoardIODataEntry() {
 
@@ -32,9 +42,9 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
       customizationTab = Shuffleboard.getTab("Drivebase Customization");
 
       // widgets for customizationTab
-      pseudoAutoRotateCheckbox =
+      psuedoAutoRotateCheckbox =
           customizationTab
-              .add("Pseudo Auto Rotate", Constants.pseudoAutoRotateEnabled)
+              .add("Psuedo Auto Rotate", Constants.psuedoAutoRotateEnabled)
               .withWidget(BuiltInWidgets.kToggleButton)
               .withPosition(0, 0)
               .withSize(2, 1)
@@ -111,36 +121,53 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
               .withSize(1, 1)
               .getEntry();
 
-      voltsAtSpeedThresholdsEntry =
-          customizationTab
-              .add(
-                  "Volts at Speed Thresholds",
-                  DriveConstants.Drive.FeedForward.voltsAtSpeedThresholds)
-              .withPosition(0, 3)
-              .withSize(2, 2)
-              .getEntry();
-
-      feedForwardRPSThresholdEntry =
-          customizationTab
-              .add("FF Threshold RPS", DriveConstants.Drive.FeedForward.feedForwardRPSThreshold)
-              .withPosition(2, 3)
-              .withSize(2, 2)
-              .getEntry();
-
       voltsToOvercomeFrictionEntry =
           customizationTab
-              .add("Volts Required to Overcome Friction", DriveConstants.Drive.kS)
-              .withPosition(4, 3)
+              .add("Volts Required to Overcome Friction", robotSpecificConstants.getDrivekSVolts())
+              .withPosition(6, 2)
               .withSize(2, 2)
               .getEntry();
+
+      // Enables manipulation of arrays in Shuffleboard GUI and displays nicely
+      voltsAtSpeedThresholdsLayout =
+          customizationTab
+              .getLayout("Volts over m per s at Speed Thresholds", BuiltInLayouts.kList)
+              .withPosition(8, 1)
+              .withSize(2, 3);
+      for (int i = 0;
+          i < robotSpecificConstants.getDriveffVoltsOverMetersPerSec().length;
+          i++) {
+        feedForwardArray[i] =
+            voltsAtSpeedThresholdsLayout
+                .add(
+                    "Volts over m per s " + i,
+                    robotSpecificConstants.getDriveffVoltsOverMetersPerSec()[i])
+                .getEntry();
+      }
+
+      feedForwardMetersPerSecThresholdLayout =
+          customizationTab
+              .getLayout("FF Threshold m per s", BuiltInLayouts.kList)
+              .withPosition(10, 1)
+              .withSize(2, 3);
+      for (int i = 0;
+          i < robotSpecificConstants.getDriveffSpeedMetersPerSecThresholds().length;
+          i++) {
+        speedMetersPerSecArray[i] =
+            feedForwardMetersPerSecThresholdLayout
+                .add(
+                    "Speed m per s " + i,
+                    robotSpecificConstants.getDriveffSpeedMetersPerSecThresholds()[i])
+                .getEntry();
+      }
     }
   }
 
   @Override
   public void updateInputs(DriveShuffleBoardIOInputs inputs) {
     if (Constants.debug) {
-      inputs.pseudoAutoRotateEnabled =
-          pseudoAutoRotateCheckbox.getBoolean(Constants.pseudoAutoRotateEnabled);
+      inputs.psuedoAutoRotateEnabled =
+          psuedoAutoRotateCheckbox.getBoolean(Constants.psuedoAutoRotateEnabled);
       inputs.inputScaling = driveInputScaling.getSelected();
       inputs.driveControllerType = driveControlType.getSelected();
       inputs.maxManualRotatePower =
@@ -154,17 +181,25 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
       inputs.accelerationRampRate =
           closedRampRate.getDouble(DriveConstants.Drive.closedLoopRampSec);
       inputs.stoppedRampRate = openRampRate.getDouble(DriveConstants.Drive.openLoopRampSec);
-      inputs.voltsAtSpeedThresholds =
-          voltsAtSpeedThresholdsEntry.getDoubleArray(
-              DriveConstants.Drive.FeedForward.voltsAtSpeedThresholds);
-      inputs.feedForwardRPSThresholds =
-          feedForwardRPSThresholdEntry.getDoubleArray(
-              DriveConstants.Drive.FeedForward.feedForwardRPSThreshold);
+      for (int i = 0;
+          i < robotSpecificConstants.getDriveffVoltsOverMetersPerSec().length;
+          i++) {
+        inputs.voltsOverMetersPerSecAtSpeedThresholds[i] =
+            feedForwardArray[i].getDouble(
+                robotSpecificConstants.getDriveffVoltsOverMetersPerSec()[i]);
+      }
+      for (int i = 0;
+          i < robotSpecificConstants.getDriveffSpeedMetersPerSecThresholds().length;
+          i++) {
+        inputs.feedForwardMetersPerSecThresholds[i] =
+            speedMetersPerSecArray[i].getDouble(
+                robotSpecificConstants.getDriveffSpeedMetersPerSecThresholds()[i]);
+      }
       inputs.voltsToOvercomeFriction =
-          voltsToOvercomeFrictionEntry.getDouble(DriveConstants.Drive.kS);
+          voltsToOvercomeFrictionEntry.getDouble(robotSpecificConstants.getDrivekSVolts());
     } else {
       // if debug not enabled, don't want values to be 0
-      inputs.pseudoAutoRotateEnabled = Constants.pseudoAutoRotateEnabled;
+      inputs.psuedoAutoRotateEnabled = Constants.psuedoAutoRotateEnabled;
       inputs.inputScaling = Constants.driveInputScaling;
       inputs.driveControllerType = Constants.controllerType;
       inputs.maxManualRotatePower = Constants.DriveConstants.Manual.maxManualRotation;
@@ -173,9 +208,11 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
       inputs.fastMovingFtPerSec = Constants.DriveConstants.Auto.fastMovingFtPerSec;
       inputs.accelerationRampRate = DriveConstants.Drive.closedLoopRampSec;
       inputs.stoppedRampRate = DriveConstants.Drive.openLoopRampSec;
-      inputs.voltsAtSpeedThresholds = DriveConstants.Drive.FeedForward.voltsAtSpeedThresholds;
-      inputs.feedForwardRPSThresholds = DriveConstants.Drive.FeedForward.feedForwardRPSThreshold;
-      inputs.voltsToOvercomeFriction = DriveConstants.Drive.kS;
+      inputs.voltsOverMetersPerSecAtSpeedThresholds =
+          robotSpecificConstants.getDriveffVoltsOverMetersPerSec();
+      inputs.feedForwardMetersPerSecThresholds =
+          robotSpecificConstants.getDriveffSpeedMetersPerSecThresholds();
+      inputs.voltsToOvercomeFriction = robotSpecificConstants.getDrivekSVolts();
     }
   }
 }

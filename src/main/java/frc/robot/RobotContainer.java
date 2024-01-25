@@ -47,7 +47,6 @@ public class RobotContainer {
     switch (Constants.currentMode) {
         // Real robot, instantiate hardware IO implementations
       case REAL:
-        autoChooserIO = new AutoChooserIODataEntry(drive);
         break;
 
         // Sim robot, instantiate physics sim IO implementations
@@ -64,8 +63,6 @@ public class RobotContainer {
     if (Constants.driveEnabled) {
       drive.setDefaultCommand(driveManualDefault);
     }
-
-    autoChooserIO = new AutoChooserIO() {};
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -97,8 +94,6 @@ public class RobotContainer {
 
   public void disabledPeriodic() {
     // update logs
-    autoChooserIO.updateInputs(autoChooserInputs);
-    Logger.processInputs("AutoChooser", autoChooserInputs);
 
     if (disableTimer.hasElapsed(Constants.DriveConstants.disableBreakSec)) {
       if (Constants.driveEnabled) {
@@ -119,6 +114,7 @@ public class RobotContainer {
     driveStop.schedule(); // interrupt all drive commands
     disableTimer.reset();
     disableTimer.start();
+
 
     // autos need to be reloaded after each auto test because the commands can't be reused
     autoChooserIO.loadAutos();
