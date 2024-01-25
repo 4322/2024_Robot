@@ -6,8 +6,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.WheelPosition;
-import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -19,7 +19,6 @@ public class SwerveModule {
   private double previousRate = 0;
   private double previousTime = 0;
   private double filteredAccel = 0;
-  private double optWheelMetersPerSec;
 
   public SwerveModule(WheelPosition wheelPos, SwerveModuleIO io) {
     this.io = io;
@@ -30,8 +29,8 @@ public class SwerveModule {
     io.updateInputs(inputs);
     Logger.processInputs("Drive/SwerveModule " + wheelPos.wheelNumber, inputs);
     Logger.recordOutput(
-        "Drive/SwerveModule " + wheelPos.wheelNumber + "/Drive1MetersPerSecAbs",
-        Math.abs(inputs.driveMetersPerSec));
+        "Drive/SwerveModule " + wheelPos.wheelNumber + "/Drive1RotationsPerSecAbs",
+        Math.abs(inputs.driveRotationsPerSec));
   }
 
   public double getInternalRotationDegrees() {
@@ -39,14 +38,20 @@ public class SwerveModule {
   }
 
   public double getDistanceMeters() {
-    return inputs.driveMeters;
+    return OrangeMath.falconRotationsToMeters(
+        inputs.driveRotations,
+        OrangeMath.getCircumference(
+            OrangeMath.inchesToMeters(DriveConstants.Drive.wheelDiameterInches)),
+        DriveConstants.Drive.gearRatio);
   }
 
   public double getVelocityFeetPerSec() {
     // feet per second
-    return inputs.driveMetersPerSec
-        / RobotChooser.getInstance().getConstants().getGearRatio()
-        * Constants.metersToFeet;
+    return inputs.driveRotationsPerSec
+        / Constants.DriveConstants.Drive.gearRatio
+        * Math.PI
+        * Constants.DriveConstants.Drive.wheelDiameterInches
+        / 12;
   }
 
   public double snapshotAcceleration() {
@@ -83,14 +88,18 @@ public class SwerveModule {
       SwerveModuleState state =
           SwerveModuleState.optimize(desiredState, Rotation2d.fromDegrees(inputs.turnDegrees));
 
-      optWheelMetersPerSec = state.speedMetersPerSecond;
+      double desiredRPS =
+          state.speedMetersPerSecond
+              / (DriveConstants.Drive.wheelDiameterInches * Constants.inchesToMeters * Math.PI)
+              * DriveConstants.Drive.gearRatio;
 
       Logger.recordOutput(
-          "Drive/SwerveModule " + wheelPos.wheelNumber + "/SetCalcWheelMetersPerSec",
+          "Drive/SwerveModule " + wheelPos.wheelNumber + "/SetCalcMetersPerSec",
           desiredState.speedMetersPerSecond);
       Logger.recordOutput(
-          "Drive/SwerveModule " + wheelPos.wheelNumber + "/SetOptWheelMetersPerSec",
-          optWheelMetersPerSec);
+          "Drive/SwerveModule " + wheelPos.wheelNumber + "/SetOptMetersPerSec",
+          state.speedMetersPerSecond);
+      Logger.recordOutput("Drive/SwerveModule " + wheelPos.wheelNumber + " /SetOptRPS", desiredRPS);
       Logger.recordOutput(
           "Drive/SwerveModule " + wheelPos.wheelNumber + "/SetCalcDegrees",
           desiredState.angle.getDegrees());
@@ -98,7 +107,7 @@ public class SwerveModule {
           "Drive/SwerveModule " + wheelPos.wheelNumber + "/SetOptDegrees",
           state.angle.getDegrees());
 
-      io.setDriveVoltage(optWheelMetersPerSec);
+      io.setDriveVoltage(desiredRPS * 60);
 
       if (!Constants.steeringTuningMode) {
         io.setTurnAngle(MathUtil.inputModulus(state.angle.getDegrees(), 0, 360));
@@ -129,10 +138,6 @@ public class SwerveModule {
   public void stop() {
     if (Constants.driveEnabled) {
       if (!Constants.steeringTuningMode) {
-        optWheelMetersPerSec = 0;
-        Logger.recordOutput(
-            "Drive/SwerveModule " + wheelPos.wheelNumber + "/SetOptWheelMetersPerSec",
-            optWheelMetersPerSec);
         io.stopMotor();
       }
     }
@@ -142,8 +147,8 @@ public class SwerveModule {
     io.updateFeedForward(FFvalue);
   }
 
-  public void updateFFSpeedThreshold(double[] FFspeedThreshold) {
-    io.setFeedForwardSpeedThreshold(FFspeedThreshold);
+  public void updateFFVelocityThreshold(double[] FFvelocityThreshold) {
+    io.setFeedForwardSpeedThreshold(FFvelocityThreshold);
   }
 
   public void updateVoltsToOvercomeFriction(double kSVolts) {
