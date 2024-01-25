@@ -18,9 +18,6 @@ import frc.utility.OrangeMath;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  private static RobotChooserInterface robotSpecificConstants =
-      RobotChooser.getInstance().getConstants();
-
   public static enum RobotType {
     // Drivebase for testing
     NEMO,
@@ -29,7 +26,11 @@ public final class Constants {
     CRUSH
   }
 
-  public static final RobotType currentRobot = RobotType.CRUSH;
+  public static final RobotType currentRobot = RobotType.NEMO;
+
+  // Don't move above currentRobot. Fire. Devastation. The Great Reckoning.
+  private static RobotChooserInterface robotSpecificConstants =
+      RobotChooser.getInstance().getConstants();
 
   public static final boolean debug = true;
 
