@@ -6,6 +6,7 @@ public interface IntakeInterface {
   public void outtake();
   public void deploy();
   public void undeploy();
+  public boolean isAtPosition();
   public void setBrakeMode();
   public void setCoastMode();
   public void stopIntake();
