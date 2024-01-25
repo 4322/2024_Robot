@@ -618,13 +618,14 @@ public class Drive extends SubsystemBase {
     }
     latestVelocity = velocityXY.getNorm() / 4;
     latestAcceleration = accelerationXY.getNorm() / 4;
-    //class
+    // class
     latestVelocityXY = velocityXY.div(4);
-    latestChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-      latestVelocityXY.getX(), 
-      latestVelocityXY.getY(), 
-      getAngularVelocity(), 
-      latestVelocityXY.getAngle());
+    latestChassisSpeeds =
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            latestVelocityXY.getX(),
+            latestVelocityXY.getY(),
+            getAngularVelocity(),
+            latestVelocityXY.getAngle());
 
     Logger.recordOutput("Drive/BotVelFtPerSec", latestVelocity);
     Logger.recordOutput("Drive/BotVelDegrees", velocityXY.getAngle().getDegrees());
