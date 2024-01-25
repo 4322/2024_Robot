@@ -314,12 +314,6 @@ public final class Constants {
     public static final int deployMotorID = 0;
     public static final int deployEncoderID = 0;
 
-    public static final double deployPositionRotations = 0;
-    public static final double undeployPositionRotations = 0;
-    public static final double intakeSpeedPct = 0;
-    public static final double outtakeSpeedPct = -0; // signed
-    public static final double deployToleranceRotations = 0;
-
     public static final class IntakeConfig {
       public static final NeutralModeValue neutralMode = NeutralModeValue.Coast;
       public static final double updateHz = OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
@@ -334,6 +328,24 @@ public final class Constants {
       public static final NeutralModeValue neutralMode = NeutralModeValue.Brake;
       public static final double updateHz = OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
+    }
+
+    public static final class Intake {
+      public static final double intakeSpeedPct = 0;
+      public static final double outtakeSpeedPct = -0; // signed
+    }
+
+    public static final class Deploy {
+      public static final double deployPositionRotations = 0;
+      public static final double undeployPositionRotations = 0;
+      public static final double toleranceRotations = 0;
+      public static final double maxVelRotationsPerSec = 0;
+      public static final boolean enableFOC = true;
+      public static final double FF = 0;
+      public static final int positionVoltageSlot = 0; // TODO: check if this can be 0 if PID is also 0
+      public static final boolean overrideBrakeDuringNeutral = false; // we want to brake if not moving
+      public static final boolean limitForwardMotion = true;
+      public static final boolean limitReverseMotion = true;
     }
 
     public static final class EncoderConfig {

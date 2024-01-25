@@ -53,42 +53,42 @@ public class Intake extends SubsystemBase implements IntakeInterface {
 
   public void deploy() {
     if (Constants.intakeEnabled && initialized) {
-      io.setDeployTarget(IntakeConstants.deployPositionRotations);
-      deployTarget = IntakeConstants.deployPositionRotations;
+      io.setDeployTarget(IntakeConstants.Deploy.deployPositionRotations);
+      deployTarget = IntakeConstants.Deploy.deployPositionRotations;
       Logger.recordOutput(IntakeConstants.Logging.key + "DeployTargetRotations",
-          IntakeConstants.deployPositionRotations);
+          IntakeConstants.Deploy.deployPositionRotations);
       Logger.recordOutput(IntakeConstants.Logging.key + "DeployStopped", false);
     }
   }
 
   public void undeploy() {
     if (Constants.intakeEnabled && initialized) {
-      io.setDeployTarget(IntakeConstants.undeployPositionRotations);
-      deployTarget = IntakeConstants.undeployPositionRotations;
+      io.setDeployTarget(IntakeConstants.Deploy.undeployPositionRotations);
+      deployTarget = IntakeConstants.Deploy.undeployPositionRotations;
       Logger.recordOutput(IntakeConstants.Logging.key + "DeployTargetRotations",
-          IntakeConstants.undeployPositionRotations);
+          IntakeConstants.Deploy.undeployPositionRotations);
       Logger.recordOutput(IntakeConstants.Logging.key + "DeployStopped", false);
     }
   }
 
   public void intake() {
     if (Constants.intakeEnabled && initialized) {
-      io.setIntake(IntakeConstants.intakeSpeedPct);
-      Logger.recordOutput(IntakeConstants.Logging.key + "IntakeTargetSpeedPct", IntakeConstants.intakeSpeedPct);
+      io.setIntake(IntakeConstants.Intake.intakeSpeedPct);
+      Logger.recordOutput(IntakeConstants.Logging.key + "IntakeTargetSpeedPct", IntakeConstants.Intake.intakeSpeedPct);
       Logger.recordOutput(IntakeConstants.Logging.key + "IntakeStopped", false);
     }
   }
 
   public void outtake() {
     if (Constants.intakeEnabled && initialized) {
-      io.setIntake(IntakeConstants.outtakeSpeedPct);
-      Logger.recordOutput(IntakeConstants.Logging.key + "IntakeTargetSpeedPct", IntakeConstants.outtakeSpeedPct);
+      io.setIntake(IntakeConstants.Intake.outtakeSpeedPct);
+      Logger.recordOutput(IntakeConstants.Logging.key + "IntakeTargetSpeedPct", IntakeConstants.Intake.outtakeSpeedPct);
       Logger.recordOutput(IntakeConstants.Logging.key + "IntakeStopped", false);
     }
   }
 
   public boolean isAtPosition() {
-    return OrangeMath.equalToEpsilon(inputs.deployRotations, deployTarget, IntakeConstants.deployToleranceRotations);
+    return OrangeMath.equalToEpsilon(inputs.deployRotations, deployTarget, IntakeConstants.Deploy.toleranceRotations);
   }
 
   public void setBrakeMode() {

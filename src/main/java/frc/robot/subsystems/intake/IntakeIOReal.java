@@ -110,7 +110,10 @@ public class IntakeIOReal implements IntakeIO {
 
   @Override
   public void setDeployTarget(double rotations) {
-    deploy.setControl(new PositionVoltage(rotations));
+    deploy.setControl(new PositionVoltage(rotations, IntakeConstants.Deploy.maxVelRotationsPerSec,
+        IntakeConstants.Deploy.enableFOC, IntakeConstants.Deploy.FF, IntakeConstants.Deploy.positionVoltageSlot,
+        IntakeConstants.Deploy.overrideBrakeDuringNeutral, IntakeConstants.Deploy.limitForwardMotion,
+        IntakeConstants.Deploy.limitReverseMotion));
   }
 
   @Override
