@@ -1,7 +1,7 @@
 package frc.utility;
 
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import frc.robot.Constants;
 
 public class CanBusUtil {
@@ -74,6 +74,13 @@ public class CanBusUtil {
     spark.setPeriodicFramePeriod(PeriodicFrame.kStatus0, nextShuffleboardStatusPeriodMs());
     spark.setPeriodicFramePeriod(PeriodicFrame.kStatus1, nextFastStatusPeriodMs());
     spark.setPeriodicFramePeriod(PeriodicFrame.kStatus2, nextShuffleboardStatusPeriodMs());
+  }
+
+  // configure for fast position & velocity feedback needed for drive odometry
+  public static void fastVelocityPositionSparkMax(CANSparkMax spark) {
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus0, nextShuffleboardStatusPeriodMs());
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus1, nextFastStatusPeriodMs());
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus2, nextFastStatusPeriodMs());
   }
 
   // Increase frame rates for a SPARK MAX that is being followed after initialization
