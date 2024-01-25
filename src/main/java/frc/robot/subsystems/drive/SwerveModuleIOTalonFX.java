@@ -1,6 +1,6 @@
 package frc.robot.subsystems.drive;
 
-
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -15,7 +15,6 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
@@ -26,137 +25,148 @@ import frc.utility.CanBusUtil;
 import frc.utility.OrangeMath;
 
 public class SwerveModuleIOTalonFX implements SwerveModuleIO {
-    private RobotChooserInterface robotSpecificConstants = RobotChooser.getInstance().getConstants();
-    private TalonFX driveMotor;
+  private RobotChooserInterface robotSpecificConstants = RobotChooser.getInstance().getConstants();
+  private TalonFX driveMotor;
 
-    private TalonFX turningMotor;
-    private CANcoder encoder;
-    
-    private double[] feedForwardMetersPerSecThreshold =
+  private TalonFX turningMotor;
+  private CANcoder encoder;
+
+  private double[] feedForwardMetersPerSecThreshold =
       robotSpecificConstants.getDriveffSpeedMetersPerSecThresholds().clone();
-    private double[] feedForwardVoltsOverMetersPerSec =
+  private double[] feedForwardVoltsOverMetersPerSec =
       robotSpecificConstants.getDriveffVoltsOverMetersPerSec().clone();
-    private double kSVolts = robotSpecificConstants.getDrivekSVolts();
+  private double kSVolts = robotSpecificConstants.getDrivekSVolts();
 
-    private double calcFeedForwardVoltsOverMetersPerSec;
-    private double desiredVolts;
+  private double calcFeedForwardVoltsOverMetersPerSec;
+  private double desiredVolts;
 
-    public SwerveModuleIOTalonFX(WheelPosition wheelPos) {
-        switch(wheelPos) {
-            case FRONT_RIGHT:
-                driveMotor = new TalonFX(robotSpecificConstants.getFrontRightDriveID());
-                turningMotor = new TalonFX(robotSpecificConstants.getFrontRightRotationID());
-                encoder = new CANcoder(DriveConstants.Drive.frontRightCANID);
-                break;
-            case FRONT_LEFT:
-                driveMotor = new TalonFX(robotSpecificConstants.getFrontLeftDriveID());
-                turningMotor = new TalonFX(robotSpecificConstants.getFrontLeftRotationID());
-                encoder = new CANcoder(DriveConstants.Drive.frontLeftCANID);
-                break;
-            case BACK_RIGHT:
-                driveMotor = new TalonFX(robotSpecificConstants.getBackRightDriveID());
-                turningMotor = new TalonFX(robotSpecificConstants.getBackRightRotationID());
-                encoder = new CANcoder(DriveConstants.Drive.rearRightCANID);
-                break;
-            case BACK_LEFT: 
-                driveMotor = new TalonFX(robotSpecificConstants.getBackLeftDriveID());
-                turningMotor = new TalonFX(robotSpecificConstants.getBackLeftRotationID());
-                encoder = new CANcoder(DriveConstants.Drive.rearLeftCANID);
-                break;
-        }
-        
-        configDrive(driveMotor, wheelPos);
-
-        configRotation(turningMotor);
+  public SwerveModuleIOTalonFX(WheelPosition wheelPos) {
+    switch (wheelPos) {
+      case FRONT_RIGHT:
+        driveMotor = new TalonFX(robotSpecificConstants.getFrontRightDriveID());
+        turningMotor = new TalonFX(robotSpecificConstants.getFrontRightRotationID());
+        encoder = new CANcoder(DriveConstants.Drive.frontRightCANID);
+        break;
+      case FRONT_LEFT:
+        driveMotor = new TalonFX(robotSpecificConstants.getFrontLeftDriveID());
+        turningMotor = new TalonFX(robotSpecificConstants.getFrontLeftRotationID());
+        encoder = new CANcoder(DriveConstants.Drive.frontLeftCANID);
+        break;
+      case BACK_RIGHT:
+        driveMotor = new TalonFX(robotSpecificConstants.getBackRightDriveID());
+        turningMotor = new TalonFX(robotSpecificConstants.getBackRightRotationID());
+        encoder = new CANcoder(DriveConstants.Drive.rearRightCANID);
+        break;
+      case BACK_LEFT:
+        driveMotor = new TalonFX(robotSpecificConstants.getBackLeftDriveID());
+        turningMotor = new TalonFX(robotSpecificConstants.getBackLeftRotationID());
+        encoder = new CANcoder(DriveConstants.Drive.rearLeftCANID);
+        break;
     }
 
-    private void configDrive(TalonFX talonFX, WheelPosition pos) {
-        talonFX.getConfigurator().apply(new TalonFXConfiguration());
-        TalonFXConfigurator config = talonFX.getConfigurator();
-        Slot0Configs slot0Configs = new Slot0Configs();
-        ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
-        OpenLoopRampsConfigs openLoopRampsConfigs = new OpenLoopRampsConfigs();
-        CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
-        MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-        closedLoopRampsConfigs.VoltageClosedLoopRampPeriod = DriveConstants.Drive.closedLoopRampSec;
-        openLoopRampsConfigs.VoltageOpenLoopRampPeriod = DriveConstants.Drive.openLoopRampSec;
-        currentLimitsConfigs.StatorCurrentLimit = DriveConstants.Drive.statorLimit;
-        currentLimitsConfigs.SupplyCurrentLimit = DriveConstants.Drive.supplyLimit;
-        currentLimitsConfigs.SupplyCurrentLimitEnable = DriveConstants.Drive.supplyEnabled;
-        currentLimitsConfigs.SupplyCurrentThreshold = DriveConstants.Drive.supplyThreshold;
-        motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
-        config.apply(slot0Configs);
-        config.apply(closedLoopRampsConfigs);
-        config.apply(openLoopRampsConfigs);
-        config.apply(currentLimitsConfigs);
-        config.apply(motorOutputConfigs);
-        // Invert the left side modules so we can zero all modules with the bevel gears facing outward.
-        // Without this code, all bevel gears would need to face right when the modules are zeroed.
-        boolean isLeftSide = (pos == WheelPosition.FRONT_LEFT) || (pos == WheelPosition.BACK_LEFT);
-        talonFX.setInverted(isLeftSide);
+    configDrive(driveMotor, wheelPos);
 
-        // need rapid velocity feedback for control logic
-        talonFX.getVelocity().setUpdateFrequency(OrangeMath.msAndHzConverter(CanBusUtil.nextFastStatusPeriodMs()), Constants.controllerConfigTimeoutMs);
-      }
+    configRotation(turningMotor);
+  }
 
-      private void configRotation(TalonFX talonFX) {
-        talonFX.getConfigurator().apply(new TalonFXConfiguration());
+  private void configDrive(TalonFX talonFX, WheelPosition pos) {
+    talonFX.getConfigurator().apply(new TalonFXConfiguration());
+    TalonFXConfigurator config = talonFX.getConfigurator();
+    Slot0Configs slot0Configs = new Slot0Configs();
+    ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
+    OpenLoopRampsConfigs openLoopRampsConfigs = new OpenLoopRampsConfigs();
+    CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
+    MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
+    closedLoopRampsConfigs.VoltageClosedLoopRampPeriod = DriveConstants.Drive.closedLoopRampSec;
+    openLoopRampsConfigs.VoltageOpenLoopRampPeriod = DriveConstants.Drive.openLoopRampSec;
+    currentLimitsConfigs.StatorCurrentLimit = DriveConstants.Drive.statorLimit;
+    currentLimitsConfigs.SupplyCurrentLimit = DriveConstants.Drive.supplyLimit;
+    currentLimitsConfigs.SupplyCurrentLimitEnable = DriveConstants.Drive.supplyEnabled;
+    currentLimitsConfigs.SupplyCurrentThreshold = DriveConstants.Drive.supplyThreshold;
+    motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
+    config.apply(slot0Configs);
+    config.apply(closedLoopRampsConfigs);
+    config.apply(openLoopRampsConfigs);
+    config.apply(currentLimitsConfigs);
+    config.apply(motorOutputConfigs);
+    // Invert the left side modules so we can zero all modules with the bevel gears facing outward.
+    // Without this code, all bevel gears would need to face right when the modules are zeroed.
+    boolean isLeftSide = (pos == WheelPosition.FRONT_LEFT) || (pos == WheelPosition.BACK_LEFT);
+    talonFX.setInverted(isLeftSide);
 
-        Slot0Configs slot0Configs = new Slot0Configs();
-        ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
-        ClosedLoopGeneralConfigs closedLoopGeneralConfigs = new ClosedLoopGeneralConfigs();
-        VoltageConfigs voltageConfigs = new VoltageConfigs();
-        MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-        CANcoderConfiguration canConfig = new CANcoderConfiguration();
-  
-        talonFX.setInverted(true);
-      
-        slot0Configs.kP = robotSpecificConstants.getRotationkP();
-        slot0Configs.kD = robotSpecificConstants.getRotationkD();
-        closedLoopRampsConfigs.VoltageClosedLoopRampPeriod = DriveConstants.Rotation.configCLosedLoopRamp;
-        closedLoopGeneralConfigs.ContinuousWrap = true;
-        voltageConfigs.PeakForwardVoltage = DriveConstants.Rotation.maxPower;
-        voltageConfigs.PeakReverseVoltage = -DriveConstants.Rotation.maxPower;
-        motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;// Allow robot to be moved prior to enabling
-      
-        canConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
-        encoder.getConfigurator().apply(canConfig);
-        talonFX.getConfigurator().apply(slot0Configs);
-        talonFX.getConfigurator().apply(closedLoopRampsConfigs);
-        talonFX.getConfigurator().apply(closedLoopGeneralConfigs);
-        talonFX.getConfigurator().apply(voltageConfigs);
-        talonFX.getConfigurator().apply(motorOutputConfigs);
-        // need rapid position feedback for steering control
-        talonFX.getPosition().setUpdateFrequency(OrangeMath.msAndHzConverter(CanBusUtil.nextFastStatusPeriodMs()), 
-      Constants.controllerConfigTimeoutMs);
-      }
+    // need rapid velocity feedback for control logic
+    talonFX
+        .getVelocity()
+        .setUpdateFrequency(
+            OrangeMath.msAndHzConverter(CanBusUtil.nextFastStatusPeriodMs()),
+            Constants.controllerConfigTimeoutMs);
+  }
 
-      // Below are the implementations of the methods in SwerveModuleIO.java
-      @Override
-      public void updateInputs(SwerveModuleIOInputs inputs) {
-        //drive inputs
-        inputs.driveMeters = driveMotor.getPosition().getValue();
-        inputs.driveMetersPerSec = driveMotor.getVelocity().getValue()/60;
-        inputs.driveAppliedVolts = driveMotor.getDutyCycle().getValue()/2 * driveMotor.getSupplyVoltage().getValue();
-        inputs.driveCurrentAmps = driveMotor.getSupplyCurrent().getValue();
-        //turn inputs
-        inputs.turnVelocityDegPerSec = Units.rotationsToDegrees(turningMotor.getVelocity().getValue());
-        inputs.turnAppliedVolts = turningMotor.getDutyCycle().getValue()/2 * turningMotor.getSupplyVoltage().getValue();
-        inputs.turnCurrentAmps = turningMotor.getSupplyCurrent().getValue();
-        inputs.turnDegrees = Units.rotationsToDegrees(turningMotor.getPosition().getValue());
-        
-        inputs.calculatedFF = calcFeedForwardVoltsOverMetersPerSec;
-        inputs.calculatedVolts = desiredVolts;
-    }
+  private void configRotation(TalonFX talonFX) {
+    talonFX.getConfigurator().apply(new TalonFXConfiguration());
 
-    // PID methods for turn motor
-    @Override
-    public void setTurnAngle(double desiredAngle) {
-           PositionVoltage positionVoltage = new PositionVoltage(desiredAngle);
-      turningMotor.setControl(positionVoltage);
-    }
+    Slot0Configs slot0Configs = new Slot0Configs();
+    ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
+    ClosedLoopGeneralConfigs closedLoopGeneralConfigs = new ClosedLoopGeneralConfigs();
+    VoltageConfigs voltageConfigs = new VoltageConfigs();
+    MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
+    CANcoderConfiguration canConfig = new CANcoderConfiguration();
 
-// set drive motor voltage based on desired wheel m/s
+    talonFX.setInverted(true);
+
+    slot0Configs.kP = robotSpecificConstants.getRotationkP();
+    slot0Configs.kD = robotSpecificConstants.getRotationkD();
+    closedLoopRampsConfigs.VoltageClosedLoopRampPeriod =
+        DriveConstants.Rotation.configCLosedLoopRamp;
+    closedLoopGeneralConfigs.ContinuousWrap = true;
+    voltageConfigs.PeakForwardVoltage = DriveConstants.Rotation.maxPower;
+    voltageConfigs.PeakReverseVoltage = -DriveConstants.Rotation.maxPower;
+    motorOutputConfigs.NeutralMode =
+        NeutralModeValue.Coast; // Allow robot to be moved prior to enabling
+
+    canConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+    encoder.getConfigurator().apply(canConfig);
+    talonFX.getConfigurator().apply(slot0Configs);
+    talonFX.getConfigurator().apply(closedLoopRampsConfigs);
+    talonFX.getConfigurator().apply(closedLoopGeneralConfigs);
+    talonFX.getConfigurator().apply(voltageConfigs);
+    talonFX.getConfigurator().apply(motorOutputConfigs);
+    // need rapid position feedback for steering control
+    talonFX
+        .getPosition()
+        .setUpdateFrequency(
+            OrangeMath.msAndHzConverter(CanBusUtil.nextFastStatusPeriodMs()),
+            Constants.controllerConfigTimeoutMs);
+  }
+
+  // Below are the implementations of the methods in SwerveModuleIO.java
+  @Override
+  public void updateInputs(SwerveModuleIOInputs inputs) {
+    // drive inputs
+    inputs.driveMeters = driveMotor.getPosition().getValue();
+    inputs.driveMetersPerSec = driveMotor.getVelocity().getValue() / 60;
+    inputs.driveAppliedVolts =
+        driveMotor.getDutyCycle().getValue() / 2 * driveMotor.getSupplyVoltage().getValue();
+    inputs.driveCurrentAmps = driveMotor.getSupplyCurrent().getValue();
+    // turn inputs
+    inputs.turnVelocityDegPerSec = Units.rotationsToDegrees(turningMotor.getVelocity().getValue());
+    inputs.turnAppliedVolts =
+        turningMotor.getDutyCycle().getValue() / 2 * turningMotor.getSupplyVoltage().getValue();
+    inputs.turnCurrentAmps = turningMotor.getSupplyCurrent().getValue();
+    inputs.turnDegrees = Units.rotationsToDegrees(turningMotor.getPosition().getValue());
+
+    inputs.calculatedFF = calcFeedForwardVoltsOverMetersPerSec;
+    inputs.calculatedVolts = desiredVolts;
+  }
+
+  // PID methods for turn motor
+  @Override
+  public void setTurnAngle(double desiredAngle) {
+    PositionVoltage positionVoltage = new PositionVoltage(desiredAngle);
+    turningMotor.setControl(positionVoltage);
+  }
+
+  // set drive motor voltage based on desired wheel m/s
   @Override
   public void setDriveVoltage(double desiredWheelMetersPerSec) {
     double desiredWheelMetersPerSecAbs = Math.abs(desiredWheelMetersPerSec);
@@ -222,61 +232,60 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
 
     // send requested voltage to SparkMAX
     driveMotor.setVoltage(desiredVolts);
-    }
+  }
 
-    @Override
-    public void setFeedForwardSpeedThreshold(double[] newFeedForwardRPSThreshold) {
-      for (int i = 0; i < feedForwardMetersPerSecThreshold.length; i++) {
-        feedForwardMetersPerSecThreshold[i] = newFeedForwardRPSThreshold[i];
-      }
+  @Override
+  public void setFeedForwardSpeedThreshold(double[] newFeedForwardRPSThreshold) {
+    for (int i = 0; i < feedForwardMetersPerSecThreshold.length; i++) {
+      feedForwardMetersPerSecThreshold[i] = newFeedForwardRPSThreshold[i];
     }
-    
-    @Override
-    public void updateFeedForward(double[] newFeedForwardVolts) {
-      for (int i = 0; i < feedForwardVoltsOverMetersPerSec.length; i++) {
-        feedForwardVoltsOverMetersPerSec[i] = newFeedForwardVolts[i];
-      }
-    }
+  }
 
-    @Override
-    public void updateVoltsToOvercomeFriction(double newkSVolts) {
-      kSVolts = newkSVolts;
+  @Override
+  public void updateFeedForward(double[] newFeedForwardVolts) {
+    for (int i = 0; i < feedForwardVoltsOverMetersPerSec.length; i++) {
+      feedForwardVoltsOverMetersPerSec[i] = newFeedForwardVolts[i];
     }
+  }
 
-    @Override
-    public void setBrakeMode() {
-      MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-      motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
-      driveMotor.getConfigurator().refresh(motorOutputConfigs);
-      turningMotor.getConfigurator().refresh(motorOutputConfigs);
-    }
+  @Override
+  public void updateVoltsToOvercomeFriction(double newkSVolts) {
+    kSVolts = newkSVolts;
+  }
 
-    @Override
-    public void setCoastMode() {
-      MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-      motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
-      driveMotor.getConfigurator().refresh(motorOutputConfigs);
-      turningMotor.getConfigurator().refresh(motorOutputConfigs);
-    }
+  @Override
+  public void setBrakeMode() {
+    MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
+    motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
+    driveMotor.getConfigurator().refresh(motorOutputConfigs);
+    turningMotor.getConfigurator().refresh(motorOutputConfigs);
+  }
 
-    @Override
-    public void setClosedRampRate(double period) {
-      ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
-      closedLoopRampsConfigs.VoltageClosedLoopRampPeriod = period;
-      driveMotor.getConfigurator().refresh(closedLoopRampsConfigs);
-    }
+  @Override
+  public void setCoastMode() {
+    MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
+    motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
+    driveMotor.getConfigurator().refresh(motorOutputConfigs);
+    turningMotor.getConfigurator().refresh(motorOutputConfigs);
+  }
 
-    @Override
-    public void setOpenRampRate(double period) {
-      OpenLoopRampsConfigs openLoopRampsConfigs = new OpenLoopRampsConfigs();
-      openLoopRampsConfigs.VoltageOpenLoopRampPeriod = period;
-      driveMotor.getConfigurator().refresh(openLoopRampsConfigs);
-    }
+  @Override
+  public void setClosedRampRate(double period) {
+    ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
+    closedLoopRampsConfigs.VoltageClosedLoopRampPeriod = period;
+    driveMotor.getConfigurator().refresh(closedLoopRampsConfigs);
+  }
 
-    @Override
-    public void stopMotor() {
-        driveMotor.stopMotor();
-        turningMotor.stopMotor();
-    }
-    
+  @Override
+  public void setOpenRampRate(double period) {
+    OpenLoopRampsConfigs openLoopRampsConfigs = new OpenLoopRampsConfigs();
+    openLoopRampsConfigs.VoltageOpenLoopRampPeriod = period;
+    driveMotor.getConfigurator().refresh(openLoopRampsConfigs);
+  }
+
+  @Override
+  public void stopMotor() {
+    driveMotor.stopMotor();
+    turningMotor.stopMotor();
+  }
 }

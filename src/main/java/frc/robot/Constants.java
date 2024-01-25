@@ -18,13 +18,14 @@ import frc.utility.OrangeMath;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  private static RobotChooserInterface robotSpecificConstants = RobotChooser.getInstance().getConstants();
+  private static RobotChooserInterface robotSpecificConstants =
+      RobotChooser.getInstance().getConstants();
 
   public static enum RobotType {
     // Drivebase for testing
-    NEMO, 
-    
-    // 2024 Competition Robot 
+    NEMO,
+
+    // 2024 Competition Robot
     CRUSH
   }
 
@@ -94,16 +95,32 @@ public final class Constants {
   public static final int controllerConfigTimeoutMs = 50;
 
   public static final class DriveConstants {
-    
+
+    // robot radius
+    public static final double distWheelMetersR =
+        Math.sqrt(
+            (robotSpecificConstants.getDistWheelMetersX()
+                    * robotSpecificConstants.getDistWheelMetersX())
+                + (robotSpecificConstants.getDistWheelMetersY()
+                    * robotSpecificConstants.getDistWheelMetersY()));
+
     // wheel location constants
     public static final Translation2d frontLeftWheelLocation =
-        new Translation2d(robotSpecificConstants.getDistWheelMetersX(), robotSpecificConstants.getDistWheelMetersY());
+        new Translation2d(
+            robotSpecificConstants.getDistWheelMetersX(),
+            robotSpecificConstants.getDistWheelMetersY());
     public static final Translation2d frontRightWheelLocation =
-        new Translation2d(robotSpecificConstants.getDistWheelMetersX(), -robotSpecificConstants.getDistWheelMetersY());
+        new Translation2d(
+            robotSpecificConstants.getDistWheelMetersX(),
+            -robotSpecificConstants.getDistWheelMetersY());
     public static final Translation2d backLeftWheelLocation =
-        new Translation2d(-robotSpecificConstants.getDistWheelMetersX(), robotSpecificConstants.getDistWheelMetersY());
+        new Translation2d(
+            -robotSpecificConstants.getDistWheelMetersX(),
+            robotSpecificConstants.getDistWheelMetersY());
     public static final Translation2d backRightWheelLocation =
-        new Translation2d(-robotSpecificConstants.getDistWheelMetersX(), -robotSpecificConstants.getDistWheelMetersY());
+        new Translation2d(
+            -robotSpecificConstants.getDistWheelMetersX(),
+            -robotSpecificConstants.getDistWheelMetersY());
 
     public static final double disableBreakSec = 2.0;
 

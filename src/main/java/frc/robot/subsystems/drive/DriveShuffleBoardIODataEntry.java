@@ -30,8 +30,7 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
   private SendableChooser<String> driveInputScaling;
   private SendableChooser<String> driveControlType;
   private GenericEntry[] feedForwardArray =
-      new GenericEntry
-          [robotSpecificConstants.getDriveffVoltsOverMetersPerSec().length];
+      new GenericEntry[robotSpecificConstants.getDriveffVoltsOverMetersPerSec().length];
   private GenericEntry[] speedMetersPerSecArray =
       new GenericEntry[robotSpecificConstants.getDriveffSpeedMetersPerSecThresholds().length];
 
@@ -134,9 +133,7 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
               .getLayout("Volts over m per s at Speed Thresholds", BuiltInLayouts.kList)
               .withPosition(8, 1)
               .withSize(2, 3);
-      for (int i = 0;
-          i < robotSpecificConstants.getDriveffVoltsOverMetersPerSec().length;
-          i++) {
+      for (int i = 0; i < robotSpecificConstants.getDriveffVoltsOverMetersPerSec().length; i++) {
         feedForwardArray[i] =
             voltsAtSpeedThresholdsLayout
                 .add(
@@ -181,9 +178,7 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
       inputs.accelerationRampRate =
           closedRampRate.getDouble(DriveConstants.Drive.closedLoopRampSec);
       inputs.stoppedRampRate = openRampRate.getDouble(DriveConstants.Drive.openLoopRampSec);
-      for (int i = 0;
-          i < robotSpecificConstants.getDriveffVoltsOverMetersPerSec().length;
-          i++) {
+      for (int i = 0; i < robotSpecificConstants.getDriveffVoltsOverMetersPerSec().length; i++) {
         inputs.voltsOverMetersPerSecAtSpeedThresholds[i] =
             feedForwardArray[i].getDouble(
                 robotSpecificConstants.getDriveffVoltsOverMetersPerSec()[i]);

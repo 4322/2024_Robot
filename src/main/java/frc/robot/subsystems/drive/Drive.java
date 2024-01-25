@@ -81,6 +81,7 @@ public class Drive extends SubsystemBase {
   private double lastOpenRampRate = DriveConstants.Drive.openLoopRampSec;
 
   private static Drive driveSubsystem = null;
+
   public static Drive getInstance() {
     if (driveSubsystem == null) {
       driveSubsystem = new Drive();
@@ -91,33 +92,32 @@ public class Drive extends SubsystemBase {
   private Drive() {
     runTime.start();
     switch (Constants.currentMode) {
-      // Real robot, instantiate hardware IO implementations
+        // Real robot, instantiate hardware IO implementations
       case REAL:
         if (Constants.driveEnabled) {
           switch (Constants.currentRobot) {
             case CRUSH:
               swerveModules[WheelPosition.FRONT_RIGHT.wheelNumber] =
                   new SwerveModule(
-                    WheelPosition.FRONT_RIGHT,
+                      WheelPosition.FRONT_RIGHT,
                       new SwerveModuleIOTalonFX(WheelPosition.FRONT_RIGHT));
-                swerveModules[WheelPosition.FRONT_LEFT.wheelNumber] =
-                    new SwerveModule(
+              swerveModules[WheelPosition.FRONT_LEFT.wheelNumber] =
+                  new SwerveModule(
                       WheelPosition.FRONT_LEFT,
-                        new SwerveModuleIOTalonFX(WheelPosition.FRONT_LEFT));
-                swerveModules[WheelPosition.BACK_RIGHT.wheelNumber] =
-                    new SwerveModule(
+                      new SwerveModuleIOTalonFX(WheelPosition.FRONT_LEFT));
+              swerveModules[WheelPosition.BACK_RIGHT.wheelNumber] =
+                  new SwerveModule(
                       WheelPosition.BACK_RIGHT,
-                        new SwerveModuleIOTalonFX(WheelPosition.BACK_RIGHT));
-                swerveModules[WheelPosition.BACK_LEFT.wheelNumber] =
-                    new SwerveModule(
-                      WheelPosition.BACK_LEFT, 
-                        new SwerveModuleIOTalonFX(WheelPosition.BACK_LEFT));
-                break;
+                      new SwerveModuleIOTalonFX(WheelPosition.BACK_RIGHT));
+              swerveModules[WheelPosition.BACK_LEFT.wheelNumber] =
+                  new SwerveModule(
+                      WheelPosition.BACK_LEFT, new SwerveModuleIOTalonFX(WheelPosition.BACK_LEFT));
+              break;
             case NEMO:
               swerveModules[WheelPosition.FRONT_RIGHT.wheelNumber] =
-                new SwerveModule(
-                  WheelPosition.FRONT_RIGHT,
-                    new SwerveModuleIOSparkMax(WheelPosition.FRONT_RIGHT));
+                  new SwerveModule(
+                      WheelPosition.FRONT_RIGHT,
+                      new SwerveModuleIOSparkMax(WheelPosition.FRONT_RIGHT));
               swerveModules[WheelPosition.FRONT_LEFT.wheelNumber] =
                   new SwerveModule(
                       WheelPosition.FRONT_LEFT,
@@ -128,8 +128,7 @@ public class Drive extends SubsystemBase {
                       new SwerveModuleIOSparkMax(WheelPosition.BACK_RIGHT));
               swerveModules[WheelPosition.BACK_LEFT.wheelNumber] =
                   new SwerveModule(
-                    WheelPosition.BACK_LEFT, 
-                      new SwerveModuleIOSparkMax(WheelPosition.BACK_LEFT));
+                      WheelPosition.BACK_LEFT, new SwerveModuleIOSparkMax(WheelPosition.BACK_LEFT));
               break;
           }
         }
@@ -168,8 +167,11 @@ public class Drive extends SubsystemBase {
     }
 
     if (Constants.driveEnabled) {
-      rotPID = new PIDController(robotSpecificConstants.getAutoRotatekP(), 
-          0, robotSpecificConstants.getAutoRotatekD());
+      rotPID =
+          new PIDController(
+              robotSpecificConstants.getAutoRotatekP(),
+              0,
+              robotSpecificConstants.getAutoRotatekD());
 
       if (Constants.gyroEnabled) {
         // wait for first gyro reading to be received
@@ -488,7 +490,8 @@ public class Drive extends SubsystemBase {
 
   public void setModuleStates(SwerveModuleState[] states) {
     if (Constants.driveEnabled) {
-      SwerveDriveKinematics.desaturateWheelSpeeds(states, robotSpecificConstants.getMaxSpeedMetersPerSec());
+      SwerveDriveKinematics.desaturateWheelSpeeds(
+          states, robotSpecificConstants.getMaxSpeedMetersPerSec());
       int i = 0;
       for (SwerveModuleState s : states) {
         swerveModules[i].setDesiredState(s);
@@ -497,13 +500,15 @@ public class Drive extends SubsystemBase {
     }
   }
 
-  public ChassisSpeeds getChassisSpeeds() {return latestChassisSpeeds; }
-  
+  public ChassisSpeeds getChassisSpeeds() {
+    return latestChassisSpeeds;
+  }
+
   public void setModuleStatesFromChassisSpeeds(ChassisSpeeds speeds) {
     if (Constants.driveEnabled) {
-      var swerveModuleStates =
-          kinematics.toSwerveModuleStates(speeds, new Translation2d());
-      SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, robotSpecificConstants.getMaxSpeedMetersPerSec());
+      var swerveModuleStates = kinematics.toSwerveModuleStates(speeds, new Translation2d());
+      SwerveDriveKinematics.desaturateWheelSpeeds(
+          swerveModuleStates, robotSpecificConstants.getMaxSpeedMetersPerSec());
       int i = 0;
       for (SwerveModuleState s : swerveModuleStates) {
         swerveModules[i].setDesiredState(s);
@@ -613,6 +618,13 @@ public class Drive extends SubsystemBase {
     }
     latestVelocity = velocityXY.getNorm() / 4;
     latestAcceleration = accelerationXY.getNorm() / 4;
+    //class
+    latestVelocityXY = velocityXY.div(4);
+    latestChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+      latestVelocityXY.getX(), 
+      latestVelocityXY.getY(), 
+      getAngularVelocity(), 
+      latestVelocityXY.getAngle());
 
     Logger.recordOutput("Drive/BotVelFtPerSec", latestVelocity);
     Logger.recordOutput("Drive/BotVelDegrees", velocityXY.getAngle().getDegrees());

@@ -6,26 +6,43 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.DriveConstants.Trajectory.PIDR;
-import frc.robot.Constants.DriveConstants.Trajectory.PIDXY;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
+import frc.robot.subsystems.drive.RobotChooser.RobotChooserInterface;
 
 class PathPlannerManager {
+  private static RobotChooserInterface robotSpecificConstants =
+      RobotChooser.getInstance().getConstants();
 
   public static void init(Drive driveSubsystem) {
     if (!AutoBuilder.isConfigured()) {
-      HolonomicPathFollowerConfig holonomicConfig = new HolonomicPathFollowerConfig(
-          new PIDConstants(PIDXY.kP, PIDXY.kI, PIDXY.kD, PIDXY.iZ),
-          new PIDConstants(PIDR.kP, PIDR.kI, PIDR.kD, PIDR.iZ), DriveConstants.Auto.autoMaxSpeedMetersPerSecond,
-          DriveConstants.distWheelMetersR, new ReplanningConfig());
+      HolonomicPathFollowerConfig holonomicConfig =
+          new HolonomicPathFollowerConfig(
+              new PIDConstants(
+                  robotSpecificConstants.getAutoTrajectoryRotkP(),
+                  robotSpecificConstants.getAutoTrajectoryRotkI(),
+                  robotSpecificConstants.getAutoTrajectoryRotkD(),
+                  robotSpecificConstants.getAutoTrajectoryRotkiZ()),
+              new PIDConstants(
+                  robotSpecificConstants.getAutoTrajectoryRotkP(),
+                  robotSpecificConstants.getAutoTrajectoryRotkI(),
+                  robotSpecificConstants.getAutoTrajectoryRotkD(),
+                  robotSpecificConstants.getAutoTrajectoryRotkiZ()),
+              DriveConstants.Auto.autoMaxSpeedMetersPerSecond,
+              DriveConstants.distWheelMetersR,
+              new ReplanningConfig());
 
-      AutoBuilder.configureHolonomic(driveSubsystem::getPose2d, driveSubsystem::resetOdometry,
-          driveSubsystem::getChassisSpeeds, driveSubsystem::setModuleStatesFromChassisSpeeds, holonomicConfig,
-          Robot::isRed, driveSubsystem);
+      AutoBuilder.configureHolonomic(
+          driveSubsystem::getPose2d,
+          driveSubsystem::resetOdometry,
+          driveSubsystem::getChassisSpeeds,
+          driveSubsystem::setModuleStatesFromChassisSpeeds,
+          holonomicConfig,
+          Robot::isRed,
+          driveSubsystem);
     }
   }
 
