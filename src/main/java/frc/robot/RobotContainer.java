@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.CommandUtil;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
@@ -111,7 +113,8 @@ public class RobotContainer {
       return null;
     }
 
-    return new SequentialCommandGroup(getAutoInitialize(), autoChooser.getSelected());
+    return new SequentialCommandGroup(
+        getAutoInitialize(), CommandUtil.wrappedEventCommand(autoChooser.getSelected()));
   }
 
   // Command that should always start off every auto
