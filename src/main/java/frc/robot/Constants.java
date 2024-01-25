@@ -157,12 +157,12 @@ public final class Constants {
 
       // Values for autonomous path finding
       public static final double autoMaxSpeedMetersPerSecond =
-          0.75 * robotSpecificConstants.getMaxSpeedMetersPerSec();
+          0.5 * robotSpecificConstants.getMaxSpeedMetersPerSec();
 
       // acceleration off the line is 109 rotations per sec^2
       // acceleration in the mid-range is 46.8 rotations per sec^2
       public static final double autoMaxAccelerationMetersPerSec2 =
-          0.75
+          0.5
               * OrangeMath.falconRotationsToMeters(
                   73,
                   OrangeMath.inchesToMeters(OrangeMath.getCircumference(Drive.wheelDiameterInches)),
