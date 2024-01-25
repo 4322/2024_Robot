@@ -43,6 +43,8 @@ public class Drive extends SubsystemBase {
 
   private double latestVelocity;
   private double latestAcceleration;
+  private Translation2d latestVelocityXY;
+  private ChassisSpeeds latestChassisSpeeds;
   private double pitchOffset;
 
   private ArrayList<SnapshotTranslation2D> velocityHistory = new ArrayList<SnapshotTranslation2D>();
@@ -177,7 +179,7 @@ public class Drive extends SubsystemBase {
         }
         poseEstimator =
             new SwerveDrivePoseEstimator(
-                kinematics, getRotation2d(), getModulePostitions(), new Pose2d());
+                kinematics, getRotation2d(), getModulePositions(), new Pose2d());
         resetFieldCentric(0);
       }
 
@@ -440,7 +442,7 @@ public class Drive extends SubsystemBase {
 
   public void updateOdometry() {
     if (Constants.gyroEnabled) {
-      poseEstimator.update(getRotation2d(), getModulePostitions());
+      poseEstimator.update(getRotation2d(), getModulePositions());
     }
   }
 
@@ -452,7 +454,7 @@ public class Drive extends SubsystemBase {
 
   public void resetOdometry(Pose2d pose) {
     if (Constants.gyroEnabled) {
-      poseEstimator.resetPosition(getRotation2d(), getModulePostitions(), pose);
+      poseEstimator.resetPosition(getRotation2d(), getModulePositions(), pose);
     }
   }
 
@@ -495,7 +497,22 @@ public class Drive extends SubsystemBase {
     }
   }
 
-  public SwerveModulePosition[] getModulePostitions() {
+  public ChassisSpeeds getChassisSpeeds() {return latestChassisSpeeds; }
+  
+  public void setModuleStatesFromChassisSpeeds(ChassisSpeeds speeds) {
+    if (Constants.driveEnabled) {
+      var swerveModuleStates =
+          kinematics.toSwerveModuleStates(speeds, new Translation2d());
+      SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, robotSpecificConstants.getMaxSpeedMetersPerSec());
+      int i = 0;
+      for (SwerveModuleState s : swerveModuleStates) {
+        swerveModules[i].setDesiredState(s);
+        i++;
+      }
+    }
+  }
+
+  public SwerveModulePosition[] getModulePositions() {
     if (Constants.driveEnabled) {
       // wheel locations must be in the same order as the WheelPosition enum values
       return new SwerveModulePosition[] {
