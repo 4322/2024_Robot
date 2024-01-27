@@ -1,8 +1,6 @@
 package frc.robot.subsystems.drive;
 
-import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
-
 import org.littletonrobotics.junction.AutoLog;
 
 public interface DriveShuffleBoardIO {
@@ -14,13 +12,18 @@ public interface DriveShuffleBoardIO {
     public double maxManualRotatePower;
     public double slowMovingAutoRotatePower;
     public double fastMovingAutoRotatePower;
-    public double fastMovingFtPerSec;
+    public double fastMovingMetersPerSec;
     public double accelerationRampRate;
     public double stoppedRampRate;
     public double[] voltsOverMetersPerSecAtSpeedThresholds =
-        new double[RobotChooser.getInstance().getConstants().getDriveffVoltsOverMetersPerSec().length];
+        new double
+            [RobotChooser.getInstance().getConstants().getDriveffVoltsOverMetersPerSec().length];
     public double[] feedForwardMetersPerSecThresholds =
-        new double[RobotChooser.getInstance().getConstants().getDriveffSpeedMetersPerSecThresholds().length];
+        new double
+            [RobotChooser.getInstance()
+                .getConstants()
+                .getDriveffSpeedMetersPerSecThresholds()
+                .length];
     public double voltsToOvercomeFriction;
   }
 

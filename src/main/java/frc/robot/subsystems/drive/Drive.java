@@ -96,26 +96,25 @@ public class Drive extends SubsystemBase {
             case CRUSH:
               swerveModules[WheelPosition.FRONT_RIGHT.wheelNumber] =
                   new SwerveModule(
-                    WheelPosition.FRONT_RIGHT,
+                      WheelPosition.FRONT_RIGHT,
                       new SwerveModuleIOTalonFX(WheelPosition.FRONT_RIGHT));
-                swerveModules[WheelPosition.FRONT_LEFT.wheelNumber] =
-                    new SwerveModule(
+              swerveModules[WheelPosition.FRONT_LEFT.wheelNumber] =
+                  new SwerveModule(
                       WheelPosition.FRONT_LEFT,
-                        new SwerveModuleIOTalonFX(WheelPosition.FRONT_LEFT));
-                swerveModules[WheelPosition.BACK_RIGHT.wheelNumber] =
-                    new SwerveModule(
+                      new SwerveModuleIOTalonFX(WheelPosition.FRONT_LEFT));
+              swerveModules[WheelPosition.BACK_RIGHT.wheelNumber] =
+                  new SwerveModule(
                       WheelPosition.BACK_RIGHT,
-                        new SwerveModuleIOTalonFX(WheelPosition.BACK_RIGHT));
-                swerveModules[WheelPosition.BACK_LEFT.wheelNumber] =
-                    new SwerveModule(
-                      WheelPosition.BACK_LEFT, 
-                        new SwerveModuleIOTalonFX(WheelPosition.BACK_LEFT));
-                break;
+                      new SwerveModuleIOTalonFX(WheelPosition.BACK_RIGHT));
+              swerveModules[WheelPosition.BACK_LEFT.wheelNumber] =
+                  new SwerveModule(
+                      WheelPosition.BACK_LEFT, new SwerveModuleIOTalonFX(WheelPosition.BACK_LEFT));
+              break;
             case NEMO:
               swerveModules[WheelPosition.FRONT_RIGHT.wheelNumber] =
-                new SwerveModule(
-                  WheelPosition.FRONT_RIGHT,
-                    new SwerveModuleIOSparkMax(WheelPosition.FRONT_RIGHT));
+                  new SwerveModule(
+                      WheelPosition.FRONT_RIGHT,
+                      new SwerveModuleIOSparkMax(WheelPosition.FRONT_RIGHT));
               swerveModules[WheelPosition.FRONT_LEFT.wheelNumber] =
                   new SwerveModule(
                       WheelPosition.FRONT_LEFT,
@@ -126,8 +125,7 @@ public class Drive extends SubsystemBase {
                       new SwerveModuleIOSparkMax(WheelPosition.BACK_RIGHT));
               swerveModules[WheelPosition.BACK_LEFT.wheelNumber] =
                   new SwerveModule(
-                    WheelPosition.BACK_LEFT, 
-                      new SwerveModuleIOSparkMax(WheelPosition.BACK_LEFT));
+                      WheelPosition.BACK_LEFT, new SwerveModuleIOSparkMax(WheelPosition.BACK_LEFT));
               break;
           }
         }
@@ -166,8 +164,11 @@ public class Drive extends SubsystemBase {
     }
 
     if (Constants.driveEnabled) {
-      rotPID = new PIDController(robotSpecificConstants.getAutoRotatekP(), 
-          0, robotSpecificConstants.getAutoRotatekD());
+      rotPID =
+          new PIDController(
+              robotSpecificConstants.getAutoRotatekP(),
+              0,
+              robotSpecificConstants.getAutoRotatekD());
 
       if (Constants.gyroEnabled) {
         // wait for first gyro reading to be received
@@ -319,7 +320,7 @@ public class Drive extends SubsystemBase {
   // rotation isn't considered to be movement
   public boolean isRobotMoving() {
     if (Constants.driveEnabled) {
-      return latestVelocity >= DriveConstants.stoppedVelocityThresholdFtPerSec;
+      return latestVelocity >= DriveConstants.stoppedVelocityThresholdMetersPerSec;
     } else {
       return false;
     }
@@ -327,7 +328,7 @@ public class Drive extends SubsystemBase {
 
   public boolean isRobotMovingFast() {
     if (Constants.driveEnabled) {
-      return latestVelocity >= DriveConstants.movingVelocityThresholdFtPerSec;
+      return latestVelocity >= DriveConstants.movingVelocityThresholdMetersPerSec;
     } else {
       return false;
     }
@@ -398,7 +399,7 @@ public class Drive extends SubsystemBase {
       double toleranceDeg;
 
       // reduce rotation power when driving fast to not lose forward momentum
-      if (latestVelocity >= driveShuffleBoardInputs.fastMovingFtPerSec) {
+      if (latestVelocity >= driveShuffleBoardInputs.fastMovingMetersPerSec) {
         adjMaxAutoRotatePower = driveShuffleBoardInputs.fastMovingAutoRotatePower;
       } else {
         adjMaxAutoRotatePower = driveShuffleBoardInputs.slowMovingAutoRotatePower;
@@ -486,7 +487,8 @@ public class Drive extends SubsystemBase {
 
   public void setModuleStates(SwerveModuleState[] states) {
     if (Constants.driveEnabled) {
-      SwerveDriveKinematics.desaturateWheelSpeeds(states, robotSpecificConstants.getMaxSpeedMetersPerSec());
+      SwerveDriveKinematics.desaturateWheelSpeeds(
+          states, robotSpecificConstants.getMaxSpeedMetersPerSec());
       int i = 0;
       for (SwerveModuleState s : states) {
         swerveModules[i].setDesiredState(s);
@@ -586,7 +588,7 @@ public class Drive extends SubsystemBase {
       velocityXY =
           velocityXY.plus(
               new Translation2d(
-                  swerveModules[i].getVelocityFeetPerSec(),
+                  swerveModules[i].getVelocityMetersPerSec(),
                   Rotation2d.fromDegrees(wheelAngleDegrees)));
       accelerationXY =
           accelerationXY.plus(
@@ -597,11 +599,13 @@ public class Drive extends SubsystemBase {
     latestVelocity = velocityXY.getNorm() / 4;
     latestAcceleration = accelerationXY.getNorm() / 4;
 
-    Logger.recordOutput("Drive/BotVelFtPerSec", latestVelocity);
+    Logger.recordOutput("Drive/BotVelMetersPerSec", latestVelocity);
     Logger.recordOutput("Drive/BotVelDegrees", velocityXY.getAngle().getDegrees());
-    Logger.recordOutput("Drive/BotAccFtPerSec2", latestAcceleration);
+    Logger.recordOutput("Drive/BotAccMetersPerSec2", latestAcceleration);
     Logger.recordOutput("Drive/BotAccDegrees", accelerationXY.getAngle().getDegrees());
     Logger.recordOutput("Drive/Odometry", getPose2d());
+    Logger.recordOutput(
+        "Drive/BotRotationVelRadPerSec", gyroInputs.yawVelocityDegPerSec * Math.PI / 180.0);
 
     velocityHistory.removeIf(
         n -> (n.getTime() < clock - DriveConstants.Tip.velocityHistorySeconds));

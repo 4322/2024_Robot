@@ -18,17 +18,19 @@ import frc.utility.OrangeMath;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  private static RobotChooserInterface robotSpecificConstants = RobotChooser.getInstance().getConstants();
-
   public static enum RobotType {
     // Drivebase for testing
-    NEMO, 
-    
-    // 2024 Competition Robot 
+    NEMO,
+
+    // 2024 Competition Robot
     CRUSH
   }
 
   public static final RobotType currentRobot = RobotType.CRUSH;
+
+  // Must be below currentRobot to initialize properly
+  private static RobotChooserInterface robotSpecificConstants =
+      RobotChooser.getInstance().getConstants();
 
   public static final boolean debug = true;
 
@@ -83,7 +85,6 @@ public final class Constants {
 
   public static final double inchesToMeters = 0.0254;
   public static final double feetToMeters = inchesToMeters * 12;
-  public static final double metersToFeet = 3.28084;
   public static final int fastStatusPeriodBaseMs = 13;
   public static final int shuffleboardStatusPeriodBaseMs = 75;
   public static final int slowStatusPeriodBaseMs = 180;
@@ -94,21 +95,29 @@ public final class Constants {
   public static final int controllerConfigTimeoutMs = 50;
 
   public static final class DriveConstants {
-    
+
     // wheel location constants
     public static final Translation2d frontLeftWheelLocation =
-        new Translation2d(robotSpecificConstants.getDistWheelMetersX(), robotSpecificConstants.getDistWheelMetersY());
+        new Translation2d(
+            robotSpecificConstants.getDistWheelMetersX(),
+            robotSpecificConstants.getDistWheelMetersY());
     public static final Translation2d frontRightWheelLocation =
-        new Translation2d(robotSpecificConstants.getDistWheelMetersX(), -robotSpecificConstants.getDistWheelMetersY());
+        new Translation2d(
+            robotSpecificConstants.getDistWheelMetersX(),
+            -robotSpecificConstants.getDistWheelMetersY());
     public static final Translation2d backLeftWheelLocation =
-        new Translation2d(-robotSpecificConstants.getDistWheelMetersX(), robotSpecificConstants.getDistWheelMetersY());
+        new Translation2d(
+            -robotSpecificConstants.getDistWheelMetersX(),
+            robotSpecificConstants.getDistWheelMetersY());
     public static final Translation2d backRightWheelLocation =
-        new Translation2d(-robotSpecificConstants.getDistWheelMetersX(), -robotSpecificConstants.getDistWheelMetersY());
+        new Translation2d(
+            -robotSpecificConstants.getDistWheelMetersX(),
+            -robotSpecificConstants.getDistWheelMetersY());
 
     public static final double disableBreakSec = 2.0;
 
-    public static final double stoppedVelocityThresholdFtPerSec = 0.5;
-    public static final double movingVelocityThresholdFtPerSec = 1.5;
+    public static final double stoppedVelocityThresholdMetersPerSec = 0.1524;
+    public static final double movingVelocityThresholdMetersPerSec = 0.4572;
 
     public static final double drivePolarDeadband = 0.06;
     public static final double twistDeadband = 0.08;
@@ -156,15 +165,15 @@ public final class Constants {
       public static final double rotateMovingToleranceDegrees = 1.5;
       public static final double slowMovingAutoRotate = 0.5;
       public static final double fastMovingAutoRotate = 0.32;
-      public static final double fastMovingFtPerSec = 3;
+      public static final double fastMovingMetersPerSec = 0.9144;
     }
 
     public static final class Tip {
 
-      public static final double highVelocityFtPerSec = 6.0;
-      public static final double lowVelocityFtPerSec = 3.0;
-      public static final double highAccFtPerSec2 = 8.0;
-      public static final double lowAccFtPerSec2 = 4.0;
+      public static final double highVelocityMetersPerSec = 1.8288;
+      public static final double lowVelocityMetersPerSec = 0.9144;
+      public static final double highAccMetersPerSec2 = 2.4384;
+      public static final double lowAccMetersPerSec2 = 1.2192;
       public static final double velAccDiffMaxDeg = 30;
       public static final double highPowerOff = 0.4;
       public static final double lowPowerOff = 0.19;

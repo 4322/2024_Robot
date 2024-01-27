@@ -22,7 +22,7 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
   private GenericEntry maxManualRotationEntry;
   private GenericEntry slowMovingAutoRotateEntry;
   private GenericEntry fastMovingAutoRotateEntry;
-  private GenericEntry fastMovingFtPerSecEntry;
+  private GenericEntry fastMovingMetersPerSecEntry;
   private GenericEntry psuedoAutoRotateCheckbox;
   private ShuffleboardLayout voltsAtSpeedThresholdsLayout;
   private ShuffleboardLayout feedForwardMetersPerSecThresholdLayout;
@@ -30,8 +30,7 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
   private SendableChooser<String> driveInputScaling;
   private SendableChooser<String> driveControlType;
   private GenericEntry[] feedForwardArray =
-      new GenericEntry
-          [robotSpecificConstants.getDriveffVoltsOverMetersPerSec().length];
+      new GenericEntry[robotSpecificConstants.getDriveffVoltsOverMetersPerSec().length];
   private GenericEntry[] speedMetersPerSecArray =
       new GenericEntry[robotSpecificConstants.getDriveffSpeedMetersPerSecThresholds().length];
 
@@ -100,9 +99,11 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
               .withSize(2, 1)
               .getEntry();
 
-      fastMovingFtPerSecEntry =
+      fastMovingMetersPerSecEntry =
           customizationTab
-              .add("Fast Moving Ft Per Sec", Constants.DriveConstants.Auto.fastMovingFtPerSec)
+              .add(
+                  "Fast Moving Meters Per Sec",
+                  Constants.DriveConstants.Auto.fastMovingMetersPerSec)
               .withPosition(6, 1)
               .withSize(2, 1)
               .getEntry();
@@ -134,9 +135,7 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
               .getLayout("Volts over m per s at Speed Thresholds", BuiltInLayouts.kList)
               .withPosition(8, 1)
               .withSize(2, 3);
-      for (int i = 0;
-          i < robotSpecificConstants.getDriveffVoltsOverMetersPerSec().length;
-          i++) {
+      for (int i = 0; i < robotSpecificConstants.getDriveffVoltsOverMetersPerSec().length; i++) {
         feedForwardArray[i] =
             voltsAtSpeedThresholdsLayout
                 .add(
@@ -176,14 +175,13 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
           slowMovingAutoRotateEntry.getDouble(Constants.DriveConstants.Auto.slowMovingAutoRotate);
       inputs.fastMovingAutoRotatePower =
           fastMovingAutoRotateEntry.getDouble(Constants.DriveConstants.Auto.fastMovingAutoRotate);
-      inputs.fastMovingFtPerSec =
-          fastMovingFtPerSecEntry.getDouble(Constants.DriveConstants.Auto.fastMovingFtPerSec);
+      inputs.fastMovingMetersPerSec =
+          fastMovingMetersPerSecEntry.getDouble(
+              Constants.DriveConstants.Auto.fastMovingMetersPerSec);
       inputs.accelerationRampRate =
           closedRampRate.getDouble(DriveConstants.Drive.closedLoopRampSec);
       inputs.stoppedRampRate = openRampRate.getDouble(DriveConstants.Drive.openLoopRampSec);
-      for (int i = 0;
-          i < robotSpecificConstants.getDriveffVoltsOverMetersPerSec().length;
-          i++) {
+      for (int i = 0; i < robotSpecificConstants.getDriveffVoltsOverMetersPerSec().length; i++) {
         inputs.voltsOverMetersPerSecAtSpeedThresholds[i] =
             feedForwardArray[i].getDouble(
                 robotSpecificConstants.getDriveffVoltsOverMetersPerSec()[i]);
@@ -205,7 +203,7 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
       inputs.maxManualRotatePower = Constants.DriveConstants.Manual.maxManualRotation;
       inputs.slowMovingAutoRotatePower = Constants.DriveConstants.Auto.slowMovingAutoRotate;
       inputs.fastMovingAutoRotatePower = Constants.DriveConstants.Auto.fastMovingAutoRotate;
-      inputs.fastMovingFtPerSec = Constants.DriveConstants.Auto.fastMovingFtPerSec;
+      inputs.fastMovingMetersPerSec = Constants.DriveConstants.Auto.fastMovingMetersPerSec;
       inputs.accelerationRampRate = DriveConstants.Drive.closedLoopRampSec;
       inputs.stoppedRampRate = DriveConstants.Drive.openLoopRampSec;
       inputs.voltsOverMetersPerSecAtSpeedThresholds =
