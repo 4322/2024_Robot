@@ -39,9 +39,6 @@ public class RobotContainer {
   private final DriveManual driveManualDefault = new DriveManual(drive, DriveManual.AutoPose.none);
   private final DriveStop driveStop = new DriveStop(drive);
 
-  private AutoChooserIO autoChooserIO;
-  private AutoChooserIOInputsAutoLogged autoChooserInputs = new AutoChooserIOInputsAutoLogged();
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.currentMode) {
@@ -114,20 +111,13 @@ public class RobotContainer {
     driveStop.schedule(); // interrupt all drive commands
     disableTimer.reset();
     disableTimer.start();
-
-
-    // autos need to be reloaded after each auto test because the commands can't be reused
-    autoChooserIO.loadAutos();
   }
 
   public Command getAutonomousCommand() {
     if (Constants.Demo.inDemoMode) {
       return null;
     }
-
-    Logger.recordOutput("Auto", autoChooserInputs.autoCommand.getName());
-
-    return new SequentialCommandGroup(getAutoInitialize(), autoChooserInputs.autoCommand);
+    return null;
   }
 
   // AUTO COMMANDS
