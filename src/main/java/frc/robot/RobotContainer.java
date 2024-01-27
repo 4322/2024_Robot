@@ -4,15 +4,22 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.DriveManual;
+import frc.robot.commands.DriveManual.DriveManual;
+import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.ResetFieldCentric;
+import frc.robot.commands.SetRobotPose;
 import frc.robot.subsystems.drive.Drive;
 
 /**
@@ -35,7 +42,7 @@ public class RobotContainer {
 
   private final Drive drive = Drive.getInstance();
 
-  private final DriveManual driveManualDefault = new DriveManual(drive, DriveManual.AutoPose.none);
+  private final DriveManual driveManual = new DriveManual(drive);
   private final DriveStop driveStop = new DriveStop(drive);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -57,7 +64,7 @@ public class RobotContainer {
     configureButtonBindings();
 
     if (Constants.driveEnabled) {
-      drive.setDefaultCommand(driveManualDefault);
+      drive.setDefaultCommand(driveManual);
     }
   }
   /**
@@ -75,15 +82,27 @@ public class RobotContainer {
       driveButtonSeven = new JoystickButton(driveStick, 7);
       driveButtonTwelve = new JoystickButton(driveStick, 12);
 
-      driveButtonThree.onTrue(new DriveManual(drive, DriveManual.AutoPose.usePresetAuto));
       driveButtonSeven.onTrue(new ResetFieldCentric(drive, 0, true));
       driveButtonTwelve.onTrue(driveStop);
     }
 
     if (Constants.xboxEnabled) {
       xbox = new CommandXboxController(2);
+      xbox.b()
+          .onTrue(
+              Commands.runOnce(
+                  () -> {
+                    driveManual.updateStateMachine(DriveManualTrigger.JOYSTICK_IN);
+                  }));
       xbox.povUp().onTrue(new ResetFieldCentric(drive, 0, true));
-      xbox.rightBumper().onTrue(new DriveManual(drive, DriveManual.AutoPose.usePresetAuto));
+      // Reset the odometry for testing speaker-centric driving. This assumes robot is on the
+      // very left on the front of the speaker, facing down-field (forward).
+      xbox.start()
+          .onTrue(
+              new SetRobotPose(
+                  drive,
+                  new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()),
+                  true));
       xbox.povDown().onTrue(driveStop);
     }
   }

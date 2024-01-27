@@ -26,7 +26,7 @@ public final class Constants {
     CRUSH
   }
 
-  public static final RobotType currentRobot = RobotType.CRUSH;
+  public static final RobotType currentRobot = RobotType.NEMO;
 
   // Must be below currentRobot to initialize properly
   private static RobotChooserInterface robotSpecificConstants =
@@ -226,7 +226,7 @@ public final class Constants {
   }
 
   public static final class Field {
-    public static final double SpeakerXPosM = 0; 
+    public static final double SpeakerXPosM = 0;
     public static final double SpeakerYPosMeters = 5.546;
   }
 
