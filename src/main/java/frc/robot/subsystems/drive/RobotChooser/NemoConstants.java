@@ -53,7 +53,7 @@ public class NemoConstants implements RobotChooserInterface {
   }
 
   public double getMaxRotationSpeedRadPerSec() {
-    return 12.2718; // physical limit of the bot
+    return 7.854; // physical limit of the bot
   }
 
   public double getAutoRotatekP() {
