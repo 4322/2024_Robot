@@ -15,7 +15,6 @@ import frc.robot.Constants.WheelPosition;
 import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
 import frc.robot.subsystems.drive.RobotChooser.RobotChooserInterface;
 import frc.utility.CanBusUtil;
-import org.littletonrobotics.junction.Logger;
 
 public class SwerveModuleIOSparkMax implements SwerveModuleIO {
   private RobotChooserInterface robotSpecificConstants = RobotChooser.getInstance().getConstants();

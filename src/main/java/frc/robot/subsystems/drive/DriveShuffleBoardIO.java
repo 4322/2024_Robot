@@ -12,7 +12,7 @@ public interface DriveShuffleBoardIO {
     public double maxManualRotatePower;
     public double slowMovingAutoRotatePower;
     public double fastMovingAutoRotatePower;
-    public double fastMovingFtPerSec;
+    public double fastMovingMetersPerSec;
     public double accelerationRampRate;
     public double stoppedRampRate;
     public double[] voltsOverMetersPerSecAtSpeedThresholds =

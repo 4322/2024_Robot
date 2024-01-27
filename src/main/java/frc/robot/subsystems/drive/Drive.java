@@ -321,7 +321,7 @@ public class Drive extends SubsystemBase {
   // rotation isn't considered to be movement
   public boolean isRobotMoving() {
     if (Constants.driveEnabled) {
-      return latestVelocity >= DriveConstants.stoppedVelocityThresholdFtPerSec;
+      return latestVelocity >= DriveConstants.stoppedVelocityThresholdMetersPerSec;
     } else {
       return false;
     }
@@ -329,7 +329,7 @@ public class Drive extends SubsystemBase {
 
   public boolean isRobotMovingFast() {
     if (Constants.driveEnabled) {
-      return latestVelocity >= DriveConstants.movingVelocityThresholdFtPerSec;
+      return latestVelocity >= DriveConstants.movingVelocityThresholdMetersPerSec;
     } else {
       return false;
     }
@@ -400,7 +400,7 @@ public class Drive extends SubsystemBase {
       double toleranceDeg;
 
       // reduce rotation power when driving fast to not lose forward momentum
-      if (latestVelocity >= driveShuffleBoardInputs.fastMovingFtPerSec) {
+      if (latestVelocity >= driveShuffleBoardInputs.fastMovingMetersPerSec) {
         adjMaxAutoRotatePower = driveShuffleBoardInputs.fastMovingAutoRotatePower;
       } else {
         adjMaxAutoRotatePower = driveShuffleBoardInputs.slowMovingAutoRotatePower;
@@ -589,7 +589,7 @@ public class Drive extends SubsystemBase {
       velocityXY =
           velocityXY.plus(
               new Translation2d(
-                  swerveModules[i].getVelocityFeetPerSec(),
+                  swerveModules[i].getVelocityMetersPerSec(),
                   Rotation2d.fromDegrees(wheelAngleDegrees)));
       accelerationXY =
           accelerationXY.plus(
@@ -600,9 +600,9 @@ public class Drive extends SubsystemBase {
     latestVelocity = velocityXY.getNorm() / 4;
     latestAcceleration = accelerationXY.getNorm() / 4;
 
-    Logger.recordOutput("Drive/BotVelFtPerSec", latestVelocity);
+    Logger.recordOutput("Drive/BotVelMetersPerSec", latestVelocity);
     Logger.recordOutput("Drive/BotVelDegrees", velocityXY.getAngle().getDegrees());
-    Logger.recordOutput("Drive/BotAccFtPerSec2", latestAcceleration);
+    Logger.recordOutput("Drive/BotAccMetersPerSec2", latestAcceleration);
     Logger.recordOutput("Drive/BotAccDegrees", accelerationXY.getAngle().getDegrees());
     Logger.recordOutput("Drive/Odometry", getPose2d());
 

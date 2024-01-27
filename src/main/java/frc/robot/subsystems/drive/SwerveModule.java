@@ -42,16 +42,15 @@ public class SwerveModule {
     return inputs.driveMeters;
   }
 
-  public double getVelocityFeetPerSec() {
+  public double getVelocityMetersPerSec() {
     // feet per second
     return inputs.driveMetersPerSec
-        / RobotChooser.getInstance().getConstants().getGearRatio()
-        * Constants.metersToFeet;
+        / RobotChooser.getInstance().getConstants().getGearRatio();
   }
 
   public double snapshotAcceleration() {
 
-    double currentRate = this.getVelocityFeetPerSec();
+    double currentRate = this.getVelocityMetersPerSec();
     double currentTime = Timer.getFPGATimestamp();
 
     double acceleration = (currentRate - previousRate) / (currentTime - previousTime);
@@ -67,7 +66,7 @@ public class SwerveModule {
 
   public SwerveModuleState getState() {
     return new SwerveModuleState(
-        getVelocityFeetPerSec() * Constants.feetToMeters,
+        getVelocityMetersPerSec() * Constants.feetToMeters,
         Rotation2d.fromDegrees(inputs.turnDegrees));
   }
 
