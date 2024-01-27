@@ -7,7 +7,7 @@ public class GyroIOPigeon implements GyroIO {
   private Pigeon2 gyro;
 
   public GyroIOPigeon() {
-    gyro = new Pigeon2(0, null);
+    gyro = new Pigeon2(0, "rio");
   }
 
   @Override
