@@ -15,10 +15,11 @@ import frc.robot.Constants.WheelPosition;
 import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
 import frc.robot.subsystems.drive.RobotChooser.RobotChooserInterface;
 import frc.utility.CanBusUtil;
+import org.littletonrobotics.junction.Logger;
 
 public class SwerveModuleIOSparkMax implements SwerveModuleIO {
   private RobotChooserInterface robotSpecificConstants = RobotChooser.getInstance().getConstants();
-  
+
   private CANSparkMax driveMotor;
 
   private CANSparkMax turningMotor;
@@ -36,20 +37,28 @@ public class SwerveModuleIOSparkMax implements SwerveModuleIO {
   public SwerveModuleIOSparkMax(WheelPosition wheelPos) {
     switch (wheelPos) {
       case FRONT_RIGHT:
-        driveMotor = new CANSparkMax(robotSpecificConstants.getFrontRightDriveID(), MotorType.kBrushless);
-        turningMotor = new CANSparkMax(robotSpecificConstants.getFrontRightRotationID(), MotorType.kBrushless);
+        driveMotor =
+            new CANSparkMax(robotSpecificConstants.getFrontRightDriveID(), MotorType.kBrushless);
+        turningMotor =
+            new CANSparkMax(robotSpecificConstants.getFrontRightRotationID(), MotorType.kBrushless);
         break;
       case FRONT_LEFT:
-        driveMotor = new CANSparkMax(robotSpecificConstants.getFrontLeftDriveID(), MotorType.kBrushless);
-        turningMotor = new CANSparkMax(robotSpecificConstants.getFrontLeftRotationID(), MotorType.kBrushless);
+        driveMotor =
+            new CANSparkMax(robotSpecificConstants.getFrontLeftDriveID(), MotorType.kBrushless);
+        turningMotor =
+            new CANSparkMax(robotSpecificConstants.getFrontLeftRotationID(), MotorType.kBrushless);
         break;
       case BACK_RIGHT:
-        driveMotor = new CANSparkMax(robotSpecificConstants.getBackRightDriveID(), MotorType.kBrushless);
-        turningMotor = new CANSparkMax(robotSpecificConstants.getBackRightRotationID(), MotorType.kBrushless);
+        driveMotor =
+            new CANSparkMax(robotSpecificConstants.getBackRightDriveID(), MotorType.kBrushless);
+        turningMotor =
+            new CANSparkMax(robotSpecificConstants.getBackRightRotationID(), MotorType.kBrushless);
         break;
       case BACK_LEFT:
-        driveMotor = new CANSparkMax(robotSpecificConstants.getBackLeftDriveID(), MotorType.kBrushless);
-        turningMotor = new CANSparkMax(robotSpecificConstants.getBackLeftRotationID(), MotorType.kBrushless);
+        driveMotor =
+            new CANSparkMax(robotSpecificConstants.getBackLeftDriveID(), MotorType.kBrushless);
+        turningMotor =
+            new CANSparkMax(robotSpecificConstants.getBackLeftRotationID(), MotorType.kBrushless);
         break;
     }
 

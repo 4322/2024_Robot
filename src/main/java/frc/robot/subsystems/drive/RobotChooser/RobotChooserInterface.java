@@ -1,42 +1,56 @@
 package frc.robot.subsystems.drive.RobotChooser;
 
 public interface RobotChooserInterface {
-    
-    public int getFrontLeftDriveID();
-    public int getFrontRightDriveID();
-    public int getBackRightDriveID();
-    public int getBackLeftDriveID();
 
-    public int getFrontLeftRotationID();
-    public int getFrontRightRotationID();
-    public int getBackRightRotationID();
-    public int getBackLeftRotationID();
+  public int getFrontLeftDriveID();
 
-    public double getDistWheelMetersX();
-    public double getDistWheelMetersY();
+  public int getFrontRightDriveID();
 
-    public double getMaxSpeedMetersPerSec();
-    public double getMaxRotationSpeedRadPerSec();
+  public int getBackRightDriveID();
 
-    public double getAutoRotatekP();
-    public double getAutoRotatekD();
+  public int getBackLeftDriveID();
 
-    public double getRotationkP();
-    public double getRotationkD();
+  public int getFrontLeftRotationID();
 
-    public double getGearRatio();
+  public int getFrontRightRotationID();
 
-    public double getDrivekSVolts();
+  public int getBackRightRotationID();
 
-    public double[] getDriveffSpeedMetersPerSecThresholds();
-    public double[] getDriveffVoltsOverMetersPerSec();
+  public int getBackLeftRotationID();
 
-    public double getAutoTrajectoryXYkP();
-    public double getAutoTrajectoryXYkI();
-    public double getAutoTrajectoryXYkD();
+  public double getDistWheelMetersX();
 
-    public double getAutoTrajectoryRotkP();
-    public double getAutoTrajectoryRotkI();
-    public double getAutoTrajectoryRotkD();
+  public double getDistWheelMetersY();
 
+  public double getMaxSpeedMetersPerSec();
+
+  public double getMaxRotationSpeedRadPerSec();
+
+  public double getAutoRotatekP();
+
+  public double getAutoRotatekD();
+
+  public double getRotationkP();
+
+  public double getRotationkD();
+
+  public double getGearRatio();
+
+  public double getDrivekSVolts();
+
+  public double[] getDriveffSpeedMetersPerSecThresholds();
+
+  public double[] getDriveffVoltsOverMetersPerSec();
+
+  public double getAutoTrajectoryXYkP();
+
+  public double getAutoTrajectoryXYkI();
+
+  public double getAutoTrajectoryXYkD();
+
+  public double getAutoTrajectoryRotkP();
+
+  public double getAutoTrajectoryRotkI();
+
+  public double getAutoTrajectoryRotkD();
 }

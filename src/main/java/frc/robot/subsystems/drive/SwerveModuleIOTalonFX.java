@@ -4,6 +4,5 @@ import frc.robot.Constants.WheelPosition;
 
 public class SwerveModuleIOTalonFX implements SwerveModuleIO {
 
-    public SwerveModuleIOTalonFX(WheelPosition wheelPos) {}
-    
+  public SwerveModuleIOTalonFX(WheelPosition wheelPos) {}
 }
