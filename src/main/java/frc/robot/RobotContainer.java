@@ -14,7 +14,6 @@ import frc.robot.commands.DriveManual;
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.subsystems.drive.Drive;
-import org.littletonrobotics.junction.Logger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -38,9 +37,6 @@ public class RobotContainer {
 
   private final DriveManual driveManualDefault = new DriveManual(drive, DriveManual.AutoPose.none);
   private final DriveStop driveStop = new DriveStop(drive);
-
-  private AutoChooserIO autoChooserIO;
-  private AutoChooserIOInputsAutoLogged autoChooserInputs = new AutoChooserIOInputsAutoLogged();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -114,10 +110,6 @@ public class RobotContainer {
     driveStop.schedule(); // interrupt all drive commands
     disableTimer.reset();
     disableTimer.start();
-
-
-    // autos need to be reloaded after each auto test because the commands can't be reused
-    autoChooserIO.loadAutos();
   }
 
   public Command getAutonomousCommand() {
@@ -125,9 +117,7 @@ public class RobotContainer {
       return null;
     }
 
-    Logger.recordOutput("Auto", autoChooserInputs.autoCommand.getName());
-
-    return new SequentialCommandGroup(getAutoInitialize(), autoChooserInputs.autoCommand);
+    return null;
   }
 
   // AUTO COMMANDS
