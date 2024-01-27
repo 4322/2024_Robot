@@ -16,6 +16,5 @@ public interface GyroIO {
   }
 
   public default void updateInputs(GyroIOInputs inputs) {}
-
-  public default void setAngleAdjustment(double adjustment) {}
+  public default void reset() {}
 }

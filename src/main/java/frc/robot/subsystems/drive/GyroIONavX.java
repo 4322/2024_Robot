@@ -28,7 +28,7 @@ public class GyroIONavX implements GyroIO {
   }
 
   @Override
-  public void setAngleAdjustment(double adjustment) {
-    gyro.setAngleAdjustment(adjustment);
+  public void reset() {
+    gyro.reset();
   }
 }
