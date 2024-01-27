@@ -24,8 +24,8 @@ public class ResetFieldCentric extends InstantCommand {
   @Override
   public void initialize() {
     if (DriverStation.isDisabled() || runWhenEnabled) {
-      driveSubsystem.resetFieldCentric(offset);
-      String report = "Reset Field Centric for " + offset + " degrees";
+      driveSubsystem.resetFieldCentric();
+      String report = "Reset Field Centric";
       DriverStation.reportWarning(report, false);
     }
   }
