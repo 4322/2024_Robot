@@ -103,7 +103,7 @@ public class NemoConstants implements RobotChooserInterface {
   }
 
   public double getAutoTrajectoryXYkP() {
-    return 0.0;
+    return 0.1;
   }
 
   public double getAutoTrajectoryXYkI() {
@@ -119,7 +119,7 @@ public class NemoConstants implements RobotChooserInterface {
   }
 
   public double getAutoTrajectoryRotkP() {
-    return 0.0;
+    return 2.0;
   }
 
   public double getAutoTrajectoryRotkI() {
@@ -127,7 +127,7 @@ public class NemoConstants implements RobotChooserInterface {
   }
 
   public double getAutoTrajectoryRotkD() {
-    return 0.0;
+    return 0.01;
   }
 
   public double getAutoTrajectoryRotkiZ() {

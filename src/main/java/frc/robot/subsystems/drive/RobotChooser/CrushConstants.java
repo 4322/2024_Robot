@@ -3,20 +3,23 @@ package frc.robot.subsystems.drive.RobotChooser;
 import frc.robot.Constants;
 import frc.utility.OrangeMath;
 
-public class CrushConstants implements RobotChooserInterface{
-    // drive IDs
-    public int getFrontLeftDriveID() {
-        return 17;
-    }
-    public int getFrontRightDriveID() {
-        return 18;
-    }
-    public int getBackRightDriveID() {
-        return 19;
-    }
-    public int getBackLeftDriveID() {
-        return 16;
-    }
+public class CrushConstants implements RobotChooserInterface {
+  // drive IDs
+  public int getFrontLeftDriveID() {
+    return 17;
+  }
+
+  public int getFrontRightDriveID() {
+    return 18;
+  }
+
+  public int getBackRightDriveID() {
+    return 19;
+  }
+
+  public int getBackLeftDriveID() {
+    return 16;
+  }
 
   // rotation IDs
   public int getFrontLeftRotationID() {
