@@ -1,6 +1,5 @@
 package frc.robot.subsystems.drive.RobotChooser;
 
-import frc.robot.Constants;
 import frc.utility.OrangeMath;
 
 public class NemoConstants implements RobotChooserInterface {
@@ -50,11 +49,7 @@ public class NemoConstants implements RobotChooserInterface {
   // top speed at full motor output is 91 rot/sec with voltage comp at 11.5 volts
   // however, setting the max speed to 91 only allows us to reach 86 due to insufficent kV
   public double getMaxSpeedMetersPerSec() { // TODO
-    return OrangeMath.falconRotationsToMeters(
-        91,
-        OrangeMath.inchesToMeters(
-            OrangeMath.getCircumference(Constants.DriveConstants.Drive.wheelDiameterInches)),
-        getGearRatio());
+    return 3.695;
   }
 
   public double getMaxRotationSpeedRadPerSec() {

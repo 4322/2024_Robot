@@ -601,11 +601,12 @@ public class Drive extends SubsystemBase {
     latestAcceleration = accelerationXY.getNorm() / 4;
 
     Logger.recordOutput("Drive/BotVelMetersPerSec", latestVelocity);
-    Logger.recordOutput("Drive/BotVelRadians", velocityXY.getAngle().getRadians());
     Logger.recordOutput("Drive/BotVelDegrees", velocityXY.getAngle().getDegrees());
     Logger.recordOutput("Drive/BotAccMetersPerSec2", latestAcceleration);
     Logger.recordOutput("Drive/BotAccDegrees", accelerationXY.getAngle().getDegrees());
     Logger.recordOutput("Drive/Odometry", getPose2d());
+    Logger.recordOutput(
+        "Drive/BotRotationVelRadPerSec", gyroInputs.yawVelocityDegPerSec * Math.PI / 180.0);
 
     velocityHistory.removeIf(
         n -> (n.getTime() < clock - DriveConstants.Tip.velocityHistorySeconds));

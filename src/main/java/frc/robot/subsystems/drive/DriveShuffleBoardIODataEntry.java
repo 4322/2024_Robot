@@ -101,7 +101,9 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
 
       fastMovingMetersPerSecEntry =
           customizationTab
-              .add("Fast Moving Meters Per Sec", Constants.DriveConstants.Auto.fastMovingMetersPerSec)
+              .add(
+                  "Fast Moving Meters Per Sec",
+                  Constants.DriveConstants.Auto.fastMovingMetersPerSec)
               .withPosition(6, 1)
               .withSize(2, 1)
               .getEntry();
@@ -174,7 +176,8 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
       inputs.fastMovingAutoRotatePower =
           fastMovingAutoRotateEntry.getDouble(Constants.DriveConstants.Auto.fastMovingAutoRotate);
       inputs.fastMovingMetersPerSec =
-          fastMovingMetersPerSecEntry.getDouble(Constants.DriveConstants.Auto.fastMovingMetersPerSec);
+          fastMovingMetersPerSecEntry.getDouble(
+              Constants.DriveConstants.Auto.fastMovingMetersPerSec);
       inputs.accelerationRampRate =
           closedRampRate.getDouble(DriveConstants.Drive.closedLoopRampSec);
       inputs.stoppedRampRate = openRampRate.getDouble(DriveConstants.Drive.openLoopRampSec);

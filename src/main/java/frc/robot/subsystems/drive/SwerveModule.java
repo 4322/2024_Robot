@@ -7,7 +7,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.Constants.WheelPosition;
-import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -43,9 +42,7 @@ public class SwerveModule {
   }
 
   public double getVelocityMetersPerSec() {
-    // feet per second
-    return inputs.driveMetersPerSec
-        / RobotChooser.getInstance().getConstants().getGearRatio();
+    return inputs.driveMetersPerSec;
   }
 
   public double snapshotAcceleration() {
