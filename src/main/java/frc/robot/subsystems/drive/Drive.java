@@ -79,6 +79,7 @@ public class Drive extends SubsystemBase {
   private double lastOpenRampRate = DriveConstants.Drive.openLoopRampSec;
 
   private static Drive driveSubsystem = null;
+
   public static Drive getInstance() {
     if (driveSubsystem == null) {
       driveSubsystem = new Drive();
@@ -89,7 +90,7 @@ public class Drive extends SubsystemBase {
   private Drive() {
     runTime.start();
     switch (Constants.currentMode) {
-      // Real robot, instantiate hardware IO implementations
+        // Real robot, instantiate hardware IO implementations
       case REAL:
         if (Constants.driveEnabled) {
           switch (Constants.currentRobot) {
