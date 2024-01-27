@@ -31,7 +31,7 @@ class PathPlannerManager {
                   robotSpecificConstants.getAutoTrajectoryRotkI(),
                   robotSpecificConstants.getAutoTrajectoryRotkD(),
                   robotSpecificConstants.getAutoTrajectoryRotkiZ()),
-              DriveConstants.Auto.autoMaxSpeedMetersPerSecond,
+              DriveConstants.Auto.autoMaxModuleSpeedMetersPerSecond,
               DriveConstants.distWheelMetersR,
               new ReplanningConfig());
 

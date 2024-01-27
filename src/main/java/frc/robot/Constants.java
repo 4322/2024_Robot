@@ -155,8 +155,8 @@ public final class Constants {
     public static final class Auto {
 
       // Values for autonomous path finding
-      public static final double autoMaxSpeedMetersPerSecond =
-          0.5 * robotSpecificConstants.getMaxSpeedMetersPerSec();
+      public static final double autoMaxModuleSpeedMetersPerSecond =
+          robotSpecificConstants.getMaxSpeedMetersPerSec();
 
       // acceleration off the line is 109 rotations per sec^2
       // acceleration in the mid-range is 46.8 rotations per sec^2
