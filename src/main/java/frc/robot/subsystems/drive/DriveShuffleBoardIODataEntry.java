@@ -22,7 +22,7 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
   private GenericEntry maxManualRotationEntry;
   private GenericEntry slowMovingAutoRotateEntry;
   private GenericEntry fastMovingAutoRotateEntry;
-  private GenericEntry fastMovingFtPerSecEntry;
+  private GenericEntry fastMovingMetersPerSecEntry;
   private GenericEntry psuedoAutoRotateCheckbox;
   private ShuffleboardLayout voltsAtSpeedThresholdsLayout;
   private ShuffleboardLayout feedForwardMetersPerSecThresholdLayout;
@@ -99,9 +99,11 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
               .withSize(2, 1)
               .getEntry();
 
-      fastMovingFtPerSecEntry =
+      fastMovingMetersPerSecEntry =
           customizationTab
-              .add("Fast Moving Ft Per Sec", Constants.DriveConstants.Auto.fastMovingFtPerSec)
+              .add(
+                  "Fast Moving Meters Per Sec",
+                  Constants.DriveConstants.Auto.fastMovingMetersPerSec)
               .withPosition(6, 1)
               .withSize(2, 1)
               .getEntry();
@@ -173,8 +175,9 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
           slowMovingAutoRotateEntry.getDouble(Constants.DriveConstants.Auto.slowMovingAutoRotate);
       inputs.fastMovingAutoRotatePower =
           fastMovingAutoRotateEntry.getDouble(Constants.DriveConstants.Auto.fastMovingAutoRotate);
-      inputs.fastMovingFtPerSec =
-          fastMovingFtPerSecEntry.getDouble(Constants.DriveConstants.Auto.fastMovingFtPerSec);
+      inputs.fastMovingMetersPerSec =
+          fastMovingMetersPerSecEntry.getDouble(
+              Constants.DriveConstants.Auto.fastMovingMetersPerSec);
       inputs.accelerationRampRate =
           closedRampRate.getDouble(DriveConstants.Drive.closedLoopRampSec);
       inputs.stoppedRampRate = openRampRate.getDouble(DriveConstants.Drive.openLoopRampSec);
@@ -200,7 +203,7 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
       inputs.maxManualRotatePower = Constants.DriveConstants.Manual.maxManualRotation;
       inputs.slowMovingAutoRotatePower = Constants.DriveConstants.Auto.slowMovingAutoRotate;
       inputs.fastMovingAutoRotatePower = Constants.DriveConstants.Auto.fastMovingAutoRotate;
-      inputs.fastMovingFtPerSec = Constants.DriveConstants.Auto.fastMovingFtPerSec;
+      inputs.fastMovingMetersPerSec = Constants.DriveConstants.Auto.fastMovingMetersPerSec;
       inputs.accelerationRampRate = DriveConstants.Drive.closedLoopRampSec;
       inputs.stoppedRampRate = DriveConstants.Drive.openLoopRampSec;
       inputs.voltsOverMetersPerSecAtSpeedThresholds =

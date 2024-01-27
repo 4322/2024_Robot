@@ -5,7 +5,7 @@ import frc.robot.Constants;
 public class RobotChooser {
 
   private static RobotChooser chooser;
-  RobotChooserInterface robotConstants;
+  private RobotChooserInterface robotConstants;
 
   public static RobotChooser getInstance() {
     if (chooser == null) {

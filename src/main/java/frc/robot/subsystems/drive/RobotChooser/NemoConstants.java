@@ -1,6 +1,5 @@
 package frc.robot.subsystems.drive.RobotChooser;
 
-import frc.robot.Constants;
 import frc.utility.OrangeMath;
 
 public class NemoConstants implements RobotChooserInterface {
@@ -50,11 +49,7 @@ public class NemoConstants implements RobotChooserInterface {
   // top speed at full motor output is 91 rot/sec with voltage comp at 11.5 volts
   // however, setting the max speed to 91 only allows us to reach 86 due to insufficent kV
   public double getMaxSpeedMetersPerSec() { // TODO
-    return OrangeMath.falconRotationsToMeters(
-        91,
-        OrangeMath.inchesToMeters(
-            OrangeMath.getCircumference(Constants.DriveConstants.Drive.wheelDiameterInches)),
-        getGearRatio());
+    return 3.695;
   }
 
   public double getMaxRotationSpeedRadPerSec() {
@@ -88,15 +83,6 @@ public class NemoConstants implements RobotChooserInterface {
 
   // Feed Forward parameters for Drive PID
   public double[] getDriveffSpeedMetersPerSecThresholds() {
-    double[] voltsOverMetersPerSecAtSpeedThresholds = new double[4];
-    voltsOverMetersPerSecAtSpeedThresholds[0] = 3.3;
-    voltsOverMetersPerSecAtSpeedThresholds[1] = 3.3;
-    voltsOverMetersPerSecAtSpeedThresholds[2] = 3.3;
-    voltsOverMetersPerSecAtSpeedThresholds[3] = 3.37;
-    return voltsOverMetersPerSecAtSpeedThresholds;
-  }
-
-  public double[] getDriveffVoltsOverMetersPerSec() {
     // define speed at which each voltage value will be used
     double[] feedForwardMetersPerSecThreshold = new double[4];
     // values must be in ascending order
@@ -105,6 +91,15 @@ public class NemoConstants implements RobotChooserInterface {
     feedForwardMetersPerSecThreshold[2] = 2.6;
     feedForwardMetersPerSecThreshold[3] = 3.18;
     return feedForwardMetersPerSecThreshold;
+  }
+
+  public double[] getDriveffVoltsOverMetersPerSec() {
+    double[] voltsOverMetersPerSecAtSpeedThresholds = new double[4];
+    voltsOverMetersPerSecAtSpeedThresholds[0] = 3.3;
+    voltsOverMetersPerSecAtSpeedThresholds[1] = 3.3;
+    voltsOverMetersPerSecAtSpeedThresholds[2] = 3.3;
+    voltsOverMetersPerSecAtSpeedThresholds[3] = 3.37;
+    return voltsOverMetersPerSecAtSpeedThresholds;
   }
 
   public double getAutoTrajectoryXYkP() {
