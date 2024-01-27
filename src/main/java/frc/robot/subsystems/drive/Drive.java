@@ -601,6 +601,7 @@ public class Drive extends SubsystemBase {
     latestAcceleration = accelerationXY.getNorm() / 4;
 
     Logger.recordOutput("Drive/BotVelMetersPerSec", latestVelocity);
+    Logger.recordOutput("Drive/BotVelRadians", velocityXY.getAngle().getRadians());
     Logger.recordOutput("Drive/BotVelDegrees", velocityXY.getAngle().getDegrees());
     Logger.recordOutput("Drive/BotAccMetersPerSec2", latestAcceleration);
     Logger.recordOutput("Drive/BotAccDegrees", accelerationXY.getAngle().getDegrees());
