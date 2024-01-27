@@ -3,23 +3,20 @@ package frc.robot.subsystems.drive.RobotChooser;
 import frc.robot.Constants;
 import frc.utility.OrangeMath;
 
-public class CrushConstants implements RobotChooserInterface {
-  // drive IDs
-  public int getFrontLeftDriveID() {
-    return 17;
-  }
-
-  public int getFrontRightDriveID() {
-    return 18;
-  }
-
-  public int getBackRightDriveID() {
-    return 19;
-  }
-
-  public int getBackLeftDriveID() {
-    return 16;
-  }
+public class CrushConstants implements RobotChooserInterface{
+    // drive IDs
+    public int getFrontLeftDriveID() {
+        return 17;
+    }
+    public int getFrontRightDriveID() {
+        return 18;
+    }
+    public int getBackRightDriveID() {
+        return 19;
+    }
+    public int getBackLeftDriveID() {
+        return 16;
+    }
 
   // rotation IDs
   public int getFrontLeftRotationID() {
@@ -88,15 +85,6 @@ public class CrushConstants implements RobotChooserInterface {
 
   // Feed Forward parameters for Drive PID
   public double[] getDriveffSpeedMetersPerSecThresholds() {
-    double[] voltsOverMetersPerSecAtSpeedThresholds = new double[4];
-    voltsOverMetersPerSecAtSpeedThresholds[0] = 3.3;
-    voltsOverMetersPerSecAtSpeedThresholds[1] = 3.3;
-    voltsOverMetersPerSecAtSpeedThresholds[2] = 3.3;
-    voltsOverMetersPerSecAtSpeedThresholds[3] = 3.37;
-    return voltsOverMetersPerSecAtSpeedThresholds;
-  }
-
-  public double[] getDriveffVoltsOverMetersPerSec() {
     // define speed at which each voltage value will be used
     double[] feedForwardMetersPerSecThreshold = new double[4];
     // values must be in ascending order
@@ -105,6 +93,15 @@ public class CrushConstants implements RobotChooserInterface {
     feedForwardMetersPerSecThreshold[2] = 2.6;
     feedForwardMetersPerSecThreshold[3] = 3.18;
     return feedForwardMetersPerSecThreshold;
+  }
+
+  public double[] getDriveffVoltsOverMetersPerSec() {
+    double[] voltsOverMetersPerSecAtSpeedThresholds = new double[4];
+    voltsOverMetersPerSecAtSpeedThresholds[0] = 3.3;
+    voltsOverMetersPerSecAtSpeedThresholds[1] = 3.3;
+    voltsOverMetersPerSecAtSpeedThresholds[2] = 3.3;
+    voltsOverMetersPerSecAtSpeedThresholds[3] = 3.37;
+    return voltsOverMetersPerSecAtSpeedThresholds;
   }
 
   public double getAutoTrajectoryXYkP() {
