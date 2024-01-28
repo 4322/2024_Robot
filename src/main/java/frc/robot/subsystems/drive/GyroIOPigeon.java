@@ -18,7 +18,7 @@ public class GyroIOPigeon implements GyroIO {
         gyro.getPitch().getValueAsDouble(); // rotation around y axis (WPI axis convenetion)
     inputs.yawPositionDeg =
         -gyro.getYaw().getValueAsDouble(); // rotation around z axis (WPI axis convenetion)
-    
+
     // log raw accelerometer values
     inputs.accelX = gyro.getAccelerationX().getValueAsDouble();
     inputs.accelY = gyro.getAccelerationY().getValueAsDouble();
@@ -27,6 +27,13 @@ public class GyroIOPigeon implements GyroIO {
     // yaw values used in Drive.java
     inputs.yawAngleDeg = -gyro.getAngle(); // continuous value of yaw position
     inputs.yawVelocityDegPerSec = -gyro.getRate();
+
+    if (gyro.getYaw().hasUpdated()) {
+      inputs.connected = true;
+    } else {
+      inputs.connected = false;
+      inputs.yawAngleDeg = 0; // set to robotCentric if gyro disconnects
+    }
   }
 
   @Override
