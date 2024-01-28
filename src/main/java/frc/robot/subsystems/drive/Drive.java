@@ -131,7 +131,14 @@ public class Drive extends SubsystemBase {
           }
         }
         if (Constants.gyroEnabled) {
-          gyro = new GyroIONavX();
+          switch (Constants.currentRobot) {
+            case CRUSH:
+              gyro = new GyroIOPigeon();
+              break;
+            case NEMO:
+              gyro = new GyroIOPigeon(); // change to GyroIONavX when change on Nemo
+              break;
+          }
         }
         driveShuffleBoard = new DriveShuffleBoardIODataEntry();
         break;
@@ -180,7 +187,7 @@ public class Drive extends SubsystemBase {
         poseEstimator =
             new SwerveDrivePoseEstimator(
                 kinematics, getRotation2d(), getModulePostitions(), new Pose2d());
-        resetFieldCentric(0);
+        resetFieldCentric();
       }
 
       if (Constants.debug) {
@@ -237,7 +244,7 @@ public class Drive extends SubsystemBase {
 
   // get the yaw angle
   public double getAngle() {
-    if (gyro != null && gyroInputs.connected && !gyroInputs.calibrating && Constants.gyroEnabled) {
+    if (gyro != null && gyroInputs.connected && Constants.gyroEnabled) {
       return OrangeMath.boundDegrees(gyroInputs.yawAngleDeg);
     } else {
       return 0;
@@ -246,7 +253,7 @@ public class Drive extends SubsystemBase {
 
   // Get pitch in degrees. Positive angle is the front of the robot raised.
   public double getPitch() {
-    if (gyro != null && gyroInputs.connected && !gyroInputs.calibrating && Constants.gyroEnabled) {
+    if (gyro != null && gyroInputs.connected && Constants.gyroEnabled) {
       return gyroInputs.pitchPositionDeg - pitchOffset;
     } else {
       return 0;
@@ -255,7 +262,7 @@ public class Drive extends SubsystemBase {
 
   // get the change of robot heading in degrees per sec
   public double getAngularVelocity() {
-    if (gyro != null && gyroInputs.connected && !gyroInputs.calibrating && Constants.gyroEnabled) {
+    if (gyro != null && gyroInputs.connected && Constants.gyroEnabled) {
       return gyroInputs.yawVelocityDegPerSec;
     } else {
       return 0;
@@ -335,10 +342,9 @@ public class Drive extends SubsystemBase {
     }
   }
 
-  public void resetFieldCentric(double offset) {
+  public void resetFieldCentric() {
     if (Constants.driveEnabled && Constants.gyroEnabled && gyro != null) {
-      gyro.setAngleAdjustment(gyroInputs.angleAdjustment + gyroInputs.yawAngleDeg + offset);
-      pitchOffset = gyroInputs.pitchPositionDeg;
+      gyro.reset();
     }
   }
 

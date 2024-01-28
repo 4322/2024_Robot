@@ -76,13 +76,13 @@ public class RobotContainer {
       driveButtonTwelve = new JoystickButton(driveStick, 12);
 
       driveButtonThree.onTrue(new DriveManual(drive, DriveManual.AutoPose.usePresetAuto));
-      driveButtonSeven.onTrue(new ResetFieldCentric(drive, 0, true));
+      driveButtonSeven.onTrue(new ResetFieldCentric(drive, true));
       driveButtonTwelve.onTrue(driveStop);
     }
 
     if (Constants.xboxEnabled) {
       xbox = new CommandXboxController(2);
-      xbox.povUp().onTrue(new ResetFieldCentric(drive, 0, true));
+      xbox.povUp().onTrue(new ResetFieldCentric(drive, true));
       xbox.rightBumper().onTrue(new DriveManual(drive, DriveManual.AutoPose.usePresetAuto));
       xbox.povDown().onTrue(driveStop);
     }
@@ -110,8 +110,6 @@ public class RobotContainer {
     driveStop.schedule(); // interrupt all drive commands
     disableTimer.reset();
     disableTimer.start();
-
-    // autos need to be reloaded after each auto test because the commands can't be reused
   }
 
   public Command getAutonomousCommand() {
@@ -121,8 +119,10 @@ public class RobotContainer {
     return null;
   }
 
+  // AUTO COMMANDS
+
   // Command that should always start off every auto
   public Command getAutoInitialize() {
-    return new SequentialCommandGroup(new ResetFieldCentric(drive, 0, true));
+    return new SequentialCommandGroup(new ResetFieldCentric(drive, true));
   }
 }

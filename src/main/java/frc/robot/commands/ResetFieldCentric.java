@@ -8,12 +8,10 @@ public class ResetFieldCentric extends InstantCommand {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Drive driveSubsystem;
 
-  private final double offset;
   private final boolean runWhenEnabled;
 
-  public ResetFieldCentric(Drive driveSubsystem, double offset, boolean runWhenEnabled) {
+  public ResetFieldCentric(Drive driveSubsystem, boolean runWhenEnabled) {
     this.driveSubsystem = driveSubsystem;
-    this.offset = offset;
     this.runWhenEnabled = runWhenEnabled;
     // Interrupt the active DriveManual command so we don't auto-rotate
     // back to the old heading lock that is no longer valid after the reset.
@@ -24,8 +22,8 @@ public class ResetFieldCentric extends InstantCommand {
   @Override
   public void initialize() {
     if (DriverStation.isDisabled() || runWhenEnabled) {
-      driveSubsystem.resetFieldCentric(offset);
-      String report = "Reset Field Centric for " + offset + " degrees";
+      driveSubsystem.resetFieldCentric();
+      String report = "Reset Field Centric";
       DriverStation.reportWarning(report, false);
     }
   }

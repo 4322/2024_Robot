@@ -212,6 +212,18 @@ public final class Constants {
       public static final int secondaryCurrentLimit = 100;
 
       public static final double wheelDiameterInches = 3.9;
+
+      public static final int frontLeftCANID = 0;
+      public static final int rearLeftCANID = 0;
+      public static final int frontRightCANID = 0;
+      public static final int rearRightCANID = 0;
+
+      // when supply threshold is exceeded for the time, drop the current to the limit
+      public static final double statorLimit = 60;
+      public static final boolean supplyEnabled = true;
+      public static final double supplyLimit = 40;
+      public static final double supplyThreshold = 60;
+      public static final double supplyTime = 2.0;
     }
   }
 

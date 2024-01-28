@@ -10,6 +10,9 @@ public interface GyroIO {
     public double rollPositionDeg = 0.0;
     public double pitchPositionDeg = 0.0;
     public double yawPositionDeg = 0.0;
+    public double accelX = 0.0;
+    public double accelY = 0.0;
+    public double accelZ = 0.0;
     public double yawVelocityDegPerSec = 0.0;
     public double yawAngleDeg = 0.0;
     public double angleAdjustment = 0.0;
@@ -17,5 +20,5 @@ public interface GyroIO {
 
   public default void updateInputs(GyroIOInputs inputs) {}
 
-  public default void setAngleAdjustment(double adjustment) {}
+  public default void reset() {}
 }
