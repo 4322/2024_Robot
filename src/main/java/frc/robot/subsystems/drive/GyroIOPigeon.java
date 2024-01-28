@@ -1,12 +1,15 @@
 package frc.robot.subsystems.drive;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import edu.wpi.first.wpilibj.Timer;
 
 public class GyroIOPigeon implements GyroIO {
   private Pigeon2 gyro;
+  Timer disconnectTimer = new Timer();
 
   public GyroIOPigeon() {
     gyro = new Pigeon2(0, "rio");
+    disconnectTimer.start();
   }
 
   @Override
@@ -28,11 +31,18 @@ public class GyroIOPigeon implements GyroIO {
     inputs.yawAngleDeg = -gyro.getAngle(); // continuous value of yaw position
     inputs.yawVelocityDegPerSec = -gyro.getRate();
 
-    if (gyro.getYaw().hasUpdated()) {
-      inputs.connected = true;
+    if (!gyro.getYaw().hasUpdated()) {
+      disconnectTimer.start(); // won't restart if already running
+      if (disconnectTimer.hasElapsed(0.5)) {
+        inputs.connected = false;
+        inputs.yawAngleDeg = 0; // set to robotCentric if gyro disconnects
+        disconnectTimer.stop();
+        disconnectTimer.reset();
+      }
     } else {
-      inputs.connected = false;
-      inputs.yawAngleDeg = 0; // set to robotCentric if gyro disconnects
+      inputs.connected = true;
+      disconnectTimer.stop();
+      disconnectTimer.reset();
     }
   }
 

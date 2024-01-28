@@ -23,8 +23,6 @@ public class GyroIONavX implements GyroIO {
     // yaw values used in Drive.java
     inputs.yawAngleDeg = -gyro.getAngle(); // continuous value of yaw position
     inputs.yawVelocityDegPerSec = -gyro.getRate();
-
-    inputs.angleAdjustment = gyro.getAngleAdjustment();
   }
 
   @Override
