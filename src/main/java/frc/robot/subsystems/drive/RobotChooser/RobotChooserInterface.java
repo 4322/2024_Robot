@@ -53,4 +53,8 @@ public interface RobotChooserInterface {
   public double getAutoTrajectoryRotkI();
 
   public double getAutoTrajectoryRotkD();
+
+  public double getMinAutoRotateStoppedPower();
+
+  public double getminAutoRotateMovingPower();
 }

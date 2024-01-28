@@ -66,11 +66,11 @@ public class NemoConstants implements RobotChooserInterface {
 
   // For tuning, graph Duty Cycle Position in the REV Hardware Client
   public double getRotationkP() {
-    return 0.03;
+    return 0.009;
   }
 
   public double getRotationkD() {
-    return 0.0;
+    return 0.0002;
   }
 
   public double getGearRatio() {
@@ -124,5 +124,15 @@ public class NemoConstants implements RobotChooserInterface {
 
   public double getAutoTrajectoryRotkD() {
     return 0.01;
+  }
+
+  @Override
+  public double getMinAutoRotateStoppedPower() {
+    return 0.003;
+  }
+
+  @Override
+  public double getminAutoRotateMovingPower() {
+    return 0.003;
   }
 }

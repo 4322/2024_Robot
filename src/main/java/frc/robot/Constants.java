@@ -159,8 +159,10 @@ public final class Constants {
                   OrangeMath.inchesToMeters(OrangeMath.getCircumference(Drive.wheelDiameterInches)),
                   robotSpecificConstants.getGearRatio());
 
-      public static final double minAutoRotateStoppedPower = 0.03;
-      public static final double minAutoRotateMovingPower = 0.01;
+      public static final double minAutoRotateStoppedPower =
+          robotSpecificConstants.getMinAutoRotateStoppedPower();
+      public static final double minAutoRotateMovingPower =
+          robotSpecificConstants.getminAutoRotateMovingPower();
       public static final double rotateStoppedToleranceDegrees = 0.5;
       public static final double rotateMovingToleranceDegrees = 1.5;
       public static final double slowMovingAutoRotate = 0.5;
