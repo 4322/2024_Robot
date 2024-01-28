@@ -187,7 +187,7 @@ public class Drive extends SubsystemBase {
         poseEstimator =
             new SwerveDrivePoseEstimator(
                 kinematics, getRotation2d(), getModulePostitions(), new Pose2d());
-        resetFieldCentric();
+        resetFieldCentric(0);
       }
 
       if (Constants.debug) {
@@ -342,7 +342,7 @@ public class Drive extends SubsystemBase {
     }
   }
 
-  public void resetFieldCentric() {
+  public void resetFieldCentric(double offset) {
     if (Constants.driveEnabled && Constants.gyroEnabled && gyro != null) {
       gyro.reset();
     }
