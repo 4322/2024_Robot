@@ -1,7 +1,6 @@
 package frc.robot.subsystems.drive;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
-import frc.robot.subsystems.drive.GyroIO.GyroIOInputs;
 
 public class GyroIOPigeon implements GyroIO {
   private Pigeon2 gyro;
@@ -12,13 +11,18 @@ public class GyroIOPigeon implements GyroIO {
 
   @Override
   public void updateInputs(GyroIOInputs inputs) {
-    // log raw values which are bounded from -180 to 180
+    // log raw rotation values which are bounded from -180 to 180
     inputs.rollPositionDeg =
         gyro.getRoll().getValueAsDouble(); // rotation around x axis (WPI axis convenetion)
     inputs.pitchPositionDeg =
         gyro.getPitch().getValueAsDouble(); // rotation around y axis (WPI axis convenetion)
     inputs.yawPositionDeg =
         -gyro.getYaw().getValueAsDouble(); // rotation around z axis (WPI axis convenetion)
+    
+    // log raw accelerometer values
+    inputs.accelX = gyro.getAccelerationX().getValueAsDouble();
+    inputs.accelY = gyro.getAccelerationY().getValueAsDouble();
+    inputs.accelZ = gyro.getAccelerationZ().getValueAsDouble();
 
     // yaw values used in Drive.java
     inputs.yawAngleDeg = -gyro.getAngle(); // continuous value of yaw position
