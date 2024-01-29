@@ -2,11 +2,11 @@ package frc.robot.subsystems.drive;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.wpilibj.Timer;
+import org.littletonrobotics.junction.Logger;
 
 public class GyroIOPigeon implements GyroIO {
   private Pigeon2 gyro;
   Timer disconnectTimer = new Timer();
-  private boolean isDisconnected = false;
 
   public GyroIOPigeon() {
     gyro = new Pigeon2(0, "rio");
@@ -32,6 +32,7 @@ public class GyroIOPigeon implements GyroIO {
     inputs.yawAngleDeg = -gyro.getAngle(); // continuous value of yaw position
     inputs.yawVelocityDegPerSec = -gyro.getRate();
 
+    Logger.recordOutput("Drive/Gyro/Connected Check", gyro.getYaw().hasUpdated());
     if (!gyro.getYaw().hasUpdated()) {
       disconnectTimer.start(); // won't restart if already running
       if (disconnectTimer.hasElapsed(0.5)) {
