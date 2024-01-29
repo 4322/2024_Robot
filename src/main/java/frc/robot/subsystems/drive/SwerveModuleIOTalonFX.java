@@ -193,9 +193,9 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
       double slope =
           (feedForwardVoltsOverMetersPerSec[lastElement]
                   - feedForwardVoltsOverMetersPerSec[secondToLastElement])
-              / (feedForwardMetersPerSecThreshold[lastElement]
+              / (Math.max(feedForwardMetersPerSecThreshold[lastElement]
                   - feedForwardMetersPerSecThreshold[
-                      secondToLastElement]); // TODO: fix potential divide by 0
+                      secondToLastElement],0.2)); // TODO: fix potential divide by 0
 
       calcFeedForwardVoltsOverMetersPerSec =
           slope * (desiredWheelMetersPerSecAbs - feedForwardMetersPerSecThreshold[lastElement])
@@ -210,9 +210,9 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
       // Calculated weight based on distance between lower bound value and desired wheel speed value
       double weight =
           (desiredWheelMetersPerSecAbs - feedForwardMetersPerSecThreshold[upperBound])
-              / (feedForwardMetersPerSecThreshold[lowerBound]
+              / Math.min(-0.2,(feedForwardMetersPerSecThreshold[lowerBound]
                   - feedForwardMetersPerSecThreshold[
-                      upperBound]); // TODO: fix potential divide by 0
+                      upperBound])); // TODO: fix potential divide by 0
 
       calcFeedForwardVoltsOverMetersPerSec =
           (weight * feedForwardVoltsOverMetersPerSec[lowerBound])
