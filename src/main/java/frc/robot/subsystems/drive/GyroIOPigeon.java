@@ -10,7 +10,6 @@ public class GyroIOPigeon implements GyroIO {
 
   public GyroIOPigeon() {
     gyro = new Pigeon2(0, "rio");
-    disconnectTimer.start();
   }
 
   @Override
