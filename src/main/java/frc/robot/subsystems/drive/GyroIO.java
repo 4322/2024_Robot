@@ -14,7 +14,7 @@ public interface GyroIO {
     public double accelY = 0.0; // Pigeon only
     public double accelZ = 0.0; // Pigeon only
     public double yawVelocityDegPerSec = 0.0;
-    public double yawAngleDeg = 100.0;
+    public double yawAngleDeg = 0.0;
   }
 
   public default void updateInputs(GyroIOInputs inputs) {}

@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Timer;
 public class GyroIOPigeon implements GyroIO {
   private Pigeon2 gyro;
   Timer disconnectTimer = new Timer();
+  private boolean isDisconnected = false;
 
   public GyroIOPigeon() {
     gyro = new Pigeon2(0, "rio");
@@ -35,14 +36,19 @@ public class GyroIOPigeon implements GyroIO {
       disconnectTimer.start(); // won't restart if already running
       if (disconnectTimer.hasElapsed(0.5)) {
         inputs.connected = false;
-        inputs.yawAngleDeg = 0; // set to robotCentric if gyro disconnects
         disconnectTimer.stop();
         disconnectTimer.reset();
       }
     } else {
       inputs.connected = true;
-      disconnectTimer.stop();
-      disconnectTimer.reset();
+      if (disconnectTimer.get() != 0) {
+        disconnectTimer.stop();
+        disconnectTimer.reset();
+      }
+    }
+
+    if (!inputs.connected) {
+      inputs.yawAngleDeg = 0.0; // set to robotCentric if gyro disconnects
     }
   }
 
