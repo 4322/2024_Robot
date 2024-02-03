@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
@@ -287,11 +286,7 @@ public final class Constants {
           false; // we want to brake if not moving
       public static final boolean limitForwardMotion = true;
       public static final boolean limitReverseMotion = true;
-    }
-
-    public static final class EncoderConfig {
-      public static final AbsoluteSensorRangeValue absSensorRange =
-          AbsoluteSensorRangeValue.Unsigned_0To1;
+      public static final double encoderGearReduction = 0.0; // TODO: should be a large number
     }
 
     public static final class Logging {

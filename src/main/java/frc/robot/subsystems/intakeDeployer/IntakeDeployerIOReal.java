@@ -1,29 +1,28 @@
 package frc.robot.subsystems.intakeDeployer;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.reduxrobotics.sensors.canandcoder.Canandcoder;
+
 import frc.robot.Constants.IntakeDeployerConstants;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
 public class IntakeDeployerIOReal implements IntakeDeployerIO {
   private final TalonFX deploy;
-  private final CANcoder deployEncoder;
+  private final Canandcoder deployEncoder;
 
   public IntakeDeployerIOReal() {
     deploy = new TalonFX(IntakeDeployerConstants.deployMotorID);
-    deployEncoder = new CANcoder(IntakeDeployerConstants.deployEncoderID);
+    deployEncoder = new Canandcoder(IntakeDeployerConstants.deployEncoderID);
 
     configDeploy();
-    configEncoder();
   }
 
   private void configDeploy() {
@@ -55,13 +54,6 @@ public class IntakeDeployerIOReal implements IntakeDeployerIO {
             IntakeDeployerConstants.DeployConfig.timeoutMs);
   }
 
-  private void configEncoder() {
-    CANcoderConfiguration canConfig = new CANcoderConfiguration();
-    canConfig.MagnetSensor.AbsoluteSensorRange =
-        IntakeDeployerConstants.EncoderConfig.absSensorRange;
-    deployEncoder.getConfigurator().apply(canConfig);
-  }
-
   @Override
   public void updateInputs(IntakeDeployerIOInputs inputs) {
     inputs.deployRotations = deploy.getPosition().getValue();
@@ -72,16 +64,16 @@ public class IntakeDeployerIOReal implements IntakeDeployerIO {
     inputs.deployTempC = deploy.getDeviceTemp().getValue();
     inputs.deployIsAlive = deploy.isAlive();
 
-    inputs.deployEncoderRotations = deployEncoder.getPosition().getValue();
-    inputs.deployEncoderRotationsPerSec = deployEncoder.getVelocity().getValue() / 60;
+    inputs.deployEncoderRotations = deployEncoder.getPosition();
+    inputs.deployEncoderRotationsPerSec = deployEncoder.getVelocity();
 
     inputs.deployAppliedControl = deploy.getAppliedControl().toString();
   }
 
   @Override
   public boolean initMotorPos() {
-    deploy.setPosition(deployEncoder.getAbsolutePosition().getValue());
-    return OrangeMath.equalToTwoDecimal(deployEncoder.getVelocity().getValue(), 0);
+    deploy.setPosition(deployEncoder.getAbsPosition() * IntakeDeployerConstants.Deploy.encoderGearReduction);
+    return OrangeMath.equalToTwoDecimal(deployEncoder.getVelocity(), 0);
   }
 
   @Override
