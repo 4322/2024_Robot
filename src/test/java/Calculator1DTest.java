@@ -1,23 +1,23 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.ArrayList;
-
-import org.junit.jupiter.api.*;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.utility.interpolation.Calculator1D;
+import java.util.ArrayList;
+import org.junit.jupiter.api.*;
 
 public class Calculator1DTest {
   FiringSolutionManager manager;
 
   @BeforeEach
   public void setup() {
+    ObjectMapper objectMapper = new ObjectMapper();
     ArrayList<FiringSolution> solutions = new ArrayList<>();
     solutions.add(new FiringSolution(5, 0, 10, 10));
     solutions.add(new FiringSolution(10, 0, 30, 30));
     solutions.add(new FiringSolution(30, 0, 50, 50));
-    manager = new FiringSolutionManager(solutions, new Calculator1D<>());
+    manager = new FiringSolutionManager(solutions, new Calculator1D<>(), objectMapper);
   }
 
   @AfterEach
