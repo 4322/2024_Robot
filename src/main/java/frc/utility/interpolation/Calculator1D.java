@@ -16,7 +16,8 @@ public class Calculator1D<S extends GenericFiringSolution> implements GenericCal
       } else {
         return 1;
       }
-    };
+    }
+    ;
   }
 
   private ArrayList<S> solutions;
@@ -51,8 +52,8 @@ public class Calculator1D<S extends GenericFiringSolution> implements GenericCal
     return toReturn;
   }
 
-  public ArrayList<Double> calculate(double currentMag, double currentDeg,
-      ArrayList<S> foundSolutions) {
+  public ArrayList<Double> calculate(
+      double currentMag, double currentDeg, ArrayList<S> foundSolutions) {
 
     if (foundSolutions.size() == 1) {
       return foundSolutions.get(0).toComponentList();
@@ -63,8 +64,9 @@ public class Calculator1D<S extends GenericFiringSolution> implements GenericCal
     ArrayList<Double> calculatedComponentList = new ArrayList<>();
     // linear interpolation calculation referenced from
     // https://github.com/Team3309/FRC2020/blob/master/src/main/java/frc/robot/util/FiringSolutionManager.java
-    double x = (currentMag - foundSolutions.get(0).getShotMag())
-        / (foundSolutions.get(1).getShotMag() - foundSolutions.get(0).getShotMag());
+    double x =
+        (currentMag - foundSolutions.get(0).getShotMag())
+            / (foundSolutions.get(1).getShotMag() - foundSolutions.get(0).getShotMag());
     for (int i = 0; i < s1ComponentList.size(); i++) {
       calculatedComponentList.add(s2ComponentList.get(i) * x + s1ComponentList.get(i) * (1 - x));
     }

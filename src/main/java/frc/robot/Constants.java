@@ -5,12 +5,11 @@
 package frc.robot;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
-import frc.robot.subsystems.drive.RobotChooser.RobotChooserInterface;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
+import frc.robot.subsystems.drive.RobotChooser.RobotChooserInterface;
 import frc.utility.OrangeMath;
 
 /**
@@ -231,8 +230,7 @@ public final class Constants {
     }
   }
 
-  public static final class OuttakeConstants
-  {
+  public static final class OuttakeConstants {
     public static final int topOuttakeDeviceID = 0;
     public static final int bottomOuttakeDeviceID = 0;
 
@@ -245,7 +243,8 @@ public final class Constants {
     public static final double closedLoopRampSec = 0;
     public static final int gearRatioMotorToWheel = 0;
     public static final double kS = 0;
-    public static final double voltPerRPS = 0;   //since we likely aren't going to adjust the speed, it's likely safe to not interpolate
+    public static final double voltPerRPS =
+        0; // since we likely aren't going to adjust the speed, it's likely safe to not interpolate
     public static final int pivotDeviceID = 0;
 
     public static final double pivotkD = 0;
@@ -270,7 +269,9 @@ public final class Constants {
     public static double ySpeakerPosM;
 
     static {
-      if (DriverStation.getAlliance().get().equals(Alliance.Blue)) { // Account for origin remaining same between blue and red
+      if (DriverStation.getAlliance()
+          .get()
+          .equals(Alliance.Blue)) { // Account for origin remaining same between blue and red
         xSpeakerPosM = 0;
         ySpeakerPosM = 5.546;
       } else {
@@ -297,7 +298,7 @@ public final class Constants {
 
   public static final Mode currentMode = Mode.REAL;
 
-public static final boolean outtakeEnabled = true;
+  public static final boolean outtakeEnabled = true;
 
   public static enum Mode {
     /** Running on a real robot. */
