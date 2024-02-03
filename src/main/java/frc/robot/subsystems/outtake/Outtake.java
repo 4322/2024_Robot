@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.outtake;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.OuttakeConstants;
+import frc.robot.subsystems.OuttakeIOInputsAutoLogged;
 import frc.utility.OrangeMath;
 
 public class Outtake extends SubsystemBase {
