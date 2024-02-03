@@ -9,6 +9,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
 import frc.robot.subsystems.drive.RobotChooser.RobotChooserInterface;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.utility.OrangeMath;
 
 /**
@@ -28,7 +30,7 @@ public final class Constants {
     CRUSH
   }
 
-  public static final RobotType currentRobot = RobotType.CRUSH;
+  public static final RobotType currentRobot = RobotType.NEMO;
 
   // Must be below currentRobot to initialize properly
   private static RobotChooserInterface robotSpecificConstants =
@@ -161,8 +163,10 @@ public final class Constants {
                   OrangeMath.inchesToMeters(OrangeMath.getCircumference(Drive.wheelDiameterInches)),
                   robotSpecificConstants.getGearRatio());
 
-      public static final double minAutoRotateStoppedPower = 0.03;
-      public static final double minAutoRotateMovingPower = 0.01;
+      public static final double minAutoRotateStoppedPower =
+          robotSpecificConstants.getMinAutoRotateStoppedPower();
+      public static final double minAutoRotateMovingPower =
+          robotSpecificConstants.getminAutoRotateMovingPower();
       public static final double rotateStoppedToleranceDegrees = 0.5;
       public static final double rotateMovingToleranceDegrees = 1.5;
       public static final double slowMovingAutoRotate = 0.5;
@@ -226,39 +230,22 @@ public final class Constants {
       public static final double supplyTime = 2.0;
     }
   }
-  public static final class OuttakeConstants
-  {
-    public static final int topOuttakeDeviceID = 0;
-    public static final int bottomOuttakeDeviceID = 0;
 
-    public static final double kP = 0;
-    public static final double kI = 0;
-    public static final double kD = 0;
-    public static final double kF = 0;
+  public static final class FieldConstants {
+    public static double xSpeakerPosM;
+    public static double ySpeakerPosM;
 
-    public static final double openLoopRampSec = 0;
-    public static final double closedLoopRampSec = 0;
-    public static final int gearRatioMotorToWheel = 0;
-    public static final double kS = 0;
-    public static final double voltPerRPS = 0;   //since we likely aren't going to adjust the speed, it's likely safe to not interpolate
-    public static final int pivotDeviceID = 0;
-
-    public static final double pivotkD = 0;
-    public static final double pivotkI = 0;
-    public static final double pivotkP = 0;
-
-    public static final double pivotClosedLoopSec = 0;
-    public static final double peakPivotVoltage = 0;
-    public static final NeutralModeValue pivotDefaultNeutralMode = NeutralModeValue.Coast;
-    public static final double defaultPivotPosition = 0;
-
-    public static final double topOuttakeRPM = 0;
-    public static final double bottomOuttakeRPM = 0;
-    public static final double outtakeToleranceRPM = 0;
-    public static final double pivotToleranceRotations = 0;
-
-    public static final double maxRPM = 0;
+    static {
+      if (DriverStation.getAlliance().get().equals(Alliance.Blue)) { // Account for origin remaining same between blue and red
+        xSpeakerPosM = 0;
+        ySpeakerPosM = 5.546;
+      } else {
+        xSpeakerPosM = 16.591;
+        ySpeakerPosM = 5.546;
+      }
+    }
   }
+
   public enum WheelPosition {
     // construction of SwerveDriveKinematics is dependent on this enum
 
