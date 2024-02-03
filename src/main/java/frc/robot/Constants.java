@@ -7,6 +7,8 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
 import frc.robot.subsystems.drive.RobotChooser.RobotChooserInterface;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.utility.OrangeMath;
 
 /**
@@ -224,6 +226,21 @@ public final class Constants {
       public static final double supplyLimit = 40;
       public static final double supplyThreshold = 60;
       public static final double supplyTime = 2.0;
+    }
+  }
+
+  public static final class FieldConstants {
+    public static double xSpeakerPosM;
+    public static double ySpeakerPosM;
+
+    static {
+      if (DriverStation.getAlliance().get().equals(Alliance.Blue)) { // Account for origin remaining same between blue and red
+        xSpeakerPosM = 0;
+        ySpeakerPosM = 5.546;
+      } else {
+        xSpeakerPosM = 16.591;
+        ySpeakerPosM = 5.546;
+      }
     }
   }
 
