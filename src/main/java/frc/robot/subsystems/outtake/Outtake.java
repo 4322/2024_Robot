@@ -2,20 +2,16 @@ package frc.robot.subsystems.outtake;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.OuttakeConstants;
-import frc.robot.subsystems.OuttakeIOInputsAutoLogged;
 import frc.utility.OrangeMath;
 
 public class Outtake extends SubsystemBase {
     private OuttakeIO io;
     private OuttakeIOInputsAutoLogged inputs = new OuttakeIOInputsAutoLogged();
-    private Timer existenceTimer;
-    private double pivotTarget;
     private double targetRPM;
-    boolean initialized;
+    
 
     public Outtake() {
         switch (Constants.currentMode) {
@@ -33,17 +29,10 @@ public class Outtake extends SubsystemBase {
             io = new OuttakeIO() {
             };
         }
-
-        existenceTimer = new Timer();
-        existenceTimer.start();
     }
 
     public void periodic() {
-        // initialize motor internal encoder position until the intake isn't moving
-        if (Constants.outtakeEnabled && !initialized && !existenceTimer.hasElapsed(5)) {
-            initialized = io.initPivot();
-        }
-        if (Constants.outtakeEnabled && initialized) {
+        if (Constants.outtakeEnabled) {
             io.updateInputs(inputs);
             Logger.processInputs("Outtake", inputs);
             Logger.recordOutput("Outtake/TopRotationsPerSecAbs", Math.abs(inputs.topRotationsPerSec));
@@ -51,27 +40,8 @@ public class Outtake extends SubsystemBase {
         }
     }
 
-    public void pivot(double rotations) {
-        if (Constants.outtakeEnabled && initialized) {
-            io.setPivotTarget(rotations);
-            pivotTarget = rotations;
-            Logger.recordOutput("Outtake/PivotTargetRotations", rotations);
-            Logger.recordOutput("Outtake/PivotStopped", false);
-        }
-    }
-
-    public void resetPivot() {
-        if (Constants.outtakeEnabled && initialized) {
-            io.setPivotTarget(Constants.OuttakeConstants.defaultPivotPosition);
-            pivotTarget = Constants.OuttakeConstants.defaultPivotPosition;
-            Logger.recordOutput("Outtake/PivotTargetRotations",
-                    Constants.OuttakeConstants.defaultPivotPosition);
-            Logger.recordOutput("Outtake/PivotStopped", false);
-        }
-    }
-
     public void outtake(double targetRPM) {
-        if (Constants.outtakeEnabled && initialized) {
+        if (Constants.outtakeEnabled) {
             this.targetRPM = targetRPM;
             io.setOuttakeRPM(Constants.OuttakeConstants.topOuttakeRPM, Constants.OuttakeConstants.bottomOuttakeRPM);
             Logger.recordOutput("Outtake/TopOuttakeTargetSpeedRPM", Constants.OuttakeConstants.topOuttakeRPM);
@@ -81,7 +51,7 @@ public class Outtake extends SubsystemBase {
     }
 
     public void stopOuttake() {
-        if (Constants.outtakeEnabled && initialized) {
+        if (Constants.outtakeEnabled) {
             io.stopOuttake();
             Logger.recordOutput("Outtake/TopOuttakeTargetSpeedRPM", 0);
             Logger.recordOutput("Outtake/BottomOuttakeTargetSpeedRPM", 0);
@@ -89,30 +59,18 @@ public class Outtake extends SubsystemBase {
         }
     }
 
-    public void stopPivot() {
-        if (Constants.outtakeEnabled && initialized) {
-            io.stopPivot();
-            Logger.recordOutput("Outtake/PivotStopped", true);
-        }
-    }
-
     public void setCoastMode() {
-        if (Constants.outtakeEnabled && initialized) {
+        if (Constants.outtakeEnabled) {
             io.setCoastMode();
             Logger.recordOutput("Outtake/NeutralMode", "Coast");
         }
     }
 
     public void setBrakeMode() {
-        if (Constants.outtakeEnabled && initialized) {
+        if (Constants.outtakeEnabled) {
             io.setBrakeMode();
             Logger.recordOutput("Outtake/NeutralMode", "Brake");
         }
-    }
-
-    public boolean isAtPosition() {
-        return OrangeMath.equalToEpsilon(inputs.pivotRotations, pivotTarget,
-                OuttakeConstants.pivotToleranceRotations);
     }
 
     public boolean isFlyWheelUpToSpeed() {
