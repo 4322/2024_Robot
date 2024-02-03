@@ -61,12 +61,12 @@ public class Intake extends SubsystemBase implements IntakeInterface {
     }
   }
 
-  public void undeploy() {
+  public void retract() {
     if (Constants.intakeEnabled && initialized) {
-      io.setDeployTarget(IntakeConstants.Deploy.undeployPositionRotations);
-      deployTarget = IntakeConstants.Deploy.undeployPositionRotations;
+      io.setDeployTarget(IntakeConstants.Deploy.retractPositionRotations);
+      deployTarget = IntakeConstants.Deploy.retractPositionRotations;
       Logger.recordOutput(IntakeConstants.Logging.key + "DeployTargetRotations",
-          IntakeConstants.Deploy.undeployPositionRotations);
+          IntakeConstants.Deploy.retractPositionRotations);
       Logger.recordOutput(IntakeConstants.Logging.key + "DeployStopped", false);
     }
   }

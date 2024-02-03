@@ -337,7 +337,7 @@ public final class Constants {
 
     public static final class Deploy {
       public static final double deployPositionRotations = 0;
-      public static final double undeployPositionRotations = 0;
+      public static final double retractPositionRotations = 0;
       public static final double toleranceRotations = 0;
       public static final double maxVelRotationsPerSec = 0;
       public static final boolean enableFOC = true;
