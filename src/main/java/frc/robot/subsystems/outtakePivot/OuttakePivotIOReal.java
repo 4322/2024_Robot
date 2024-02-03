@@ -50,7 +50,6 @@ public class OuttakePivotIOReal implements OuttakePivotIO {
         pivotEncoder.getConfigurator().apply(canCoderConfig);
     }
 
-
     @Override
     public void updateInputs(OuttakePivotIOInputs inputs) {
         inputs.pivotRotations = pivotMotor.getPosition().getValue();
@@ -92,5 +91,4 @@ public class OuttakePivotIOReal implements OuttakePivotIO {
     public void stopPivot() {
         pivotMotor.stopMotor();
     }
-    
 }
