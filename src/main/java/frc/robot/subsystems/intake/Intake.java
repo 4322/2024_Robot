@@ -1,10 +1,9 @@
 package frc.robot.subsystems.intake;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
+import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase implements IntakeInterface {
 
@@ -26,8 +25,7 @@ public class Intake extends SubsystemBase implements IntakeInterface {
     }
 
     if (io == null) {
-      io = new IntakeIO() {
-      };
+      io = new IntakeIO() {};
     }
   }
 
@@ -42,7 +40,9 @@ public class Intake extends SubsystemBase implements IntakeInterface {
   public void intake() {
     if (Constants.intakeEnabled && initialized) {
       io.setIntake(IntakeConstants.Intake.intakeSpeedPct);
-      Logger.recordOutput(IntakeConstants.Logging.key + "IntakeTargetSpeedPct", IntakeConstants.Intake.intakeSpeedPct);
+      Logger.recordOutput(
+          IntakeConstants.Logging.key + "IntakeTargetSpeedPct",
+          IntakeConstants.Intake.intakeSpeedPct);
       Logger.recordOutput(IntakeConstants.Logging.key + "IntakeStopped", false);
     }
   }
@@ -50,7 +50,9 @@ public class Intake extends SubsystemBase implements IntakeInterface {
   public void outtake() {
     if (Constants.intakeEnabled && initialized) {
       io.setIntake(IntakeConstants.Intake.outtakeSpeedPct);
-      Logger.recordOutput(IntakeConstants.Logging.key + "IntakeTargetSpeedPct", IntakeConstants.Intake.outtakeSpeedPct);
+      Logger.recordOutput(
+          IntakeConstants.Logging.key + "IntakeTargetSpeedPct",
+          IntakeConstants.Intake.outtakeSpeedPct);
       Logger.recordOutput(IntakeConstants.Logging.key + "IntakeStopped", false);
     }
   }

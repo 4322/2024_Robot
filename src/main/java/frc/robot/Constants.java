@@ -6,11 +6,10 @@ package frc.robot;
 
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.utility.CanBusUtil;
 import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
 import frc.robot.subsystems.drive.RobotChooser.RobotChooserInterface;
+import frc.utility.CanBusUtil;
 import frc.utility.OrangeMath;
 
 /**
@@ -234,7 +233,7 @@ public final class Constants {
   }
 
   public static final class Field {
-    public static final double SpeakerXPosM = 0; 
+    public static final double SpeakerXPosM = 0;
     public static final double SpeakerYPosMeters = 5.546;
   }
 
@@ -244,7 +243,8 @@ public final class Constants {
 
     public static final class IntakeConfig {
       public static final NeutralModeValue neutralMode = NeutralModeValue.Coast;
-      public static final double updateHz = OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
+      public static final double updateHz =
+          OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
     }
 
@@ -269,7 +269,8 @@ public final class Constants {
       public static final double configCLosedLoopRamp = 0;
       public static final double maxVoltage = 16;
       public static final NeutralModeValue neutralMode = NeutralModeValue.Brake;
-      public static final double updateHz = OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
+      public static final double updateHz =
+          OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
     }
 
@@ -280,14 +281,17 @@ public final class Constants {
       public static final double maxVelRotationsPerSec = 0;
       public static final boolean enableFOC = true;
       public static final double FF = 0;
-      public static final int positionVoltageSlot = 0; // TODO: check if this can be 0 if PID is also 0
-      public static final boolean overrideBrakeDuringNeutral = false; // we want to brake if not moving
+      public static final int positionVoltageSlot =
+          0; // TODO: check if this can be 0 if PID is also 0
+      public static final boolean overrideBrakeDuringNeutral =
+          false; // we want to brake if not moving
       public static final boolean limitForwardMotion = true;
       public static final boolean limitReverseMotion = true;
     }
 
     public static final class EncoderConfig {
-      public static final AbsoluteSensorRangeValue absSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+      public static final AbsoluteSensorRangeValue absSensorRange =
+          AbsoluteSensorRangeValue.Unsigned_0To1;
     }
 
     public static final class Logging {
