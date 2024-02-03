@@ -65,7 +65,13 @@ public class OuttakePivotIOReal implements OuttakePivotIO {
 
   @Override
   public void setPivotTarget(double rotations) {
-    pivotMotor.setControl(new PositionVoltage(rotations));
+    pivotMotor.setControl(new PositionVoltage(rotations, 
+    OuttakeConstants.maxVelRotationsPerSec,
+    OuttakeConstants.enableFOC, 
+    OuttakeConstants.pivotkFF, 
+    OuttakeConstants.positionVoltageSlot, 
+    OuttakeConstants.overrideBrakeDuringNeutral, 
+    OuttakeConstants.limitForwardMotion, OuttakeConstants.limitReverseMotion));
   }
 
   @Override

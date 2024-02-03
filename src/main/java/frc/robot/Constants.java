@@ -242,7 +242,7 @@ public final class Constants {
     public static final double openLoopRampSec = 0;
     public static final double closedLoopRampSec = 0;
     public static final int gearRatioMotorToWheel = 0;
-    public static final double gearReductionEncoderToMotor = (29 / 28) * 125;
+    public static final double gearReductionEncoderToMotor = (29.0 / 28.0) * 125.0;
     public static final double kS = 0;
     public static final double voltPerRPS =
         0; // since we likely aren't going to adjust the speed, it's likely safe to not interpolate
@@ -252,6 +252,15 @@ public final class Constants {
     public static final double pivotkD = 0;
     public static final double pivotkI = 0;
     public static final double pivotkP = 0;
+    public static final double pivotkFF = 0;
+
+    // TODO: all parameters for position control PID
+    public static final double maxVelRotationsPerSec = 0.0;
+    public static final boolean enableFOC = true;
+    public static final int positionVoltageSlot = 0;
+    public static final boolean overrideBrakeDuringNeutral = false;
+    public static final boolean limitForwardMotion = true;
+    public static final boolean limitReverseMotion = true;
 
     public static final double pivotClosedLoopSec = 0;
     public static final double peakPivotVoltage = 0;
