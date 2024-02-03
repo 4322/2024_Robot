@@ -15,24 +15,25 @@ public class PositionVector {
   private double yDistToTarget;
 
   // 218.353069 in
-  public Translation2d getVectorToSpeaker(double x, double y) { // Position of robot relative to origin ()
-    distance = Math.sqrt(((x - FieldConstants.xSpeakerPosM) * (x - FieldConstants.xSpeakerPosM)) + 
-                         ((y - FieldConstants.ySpeakerPosM) * (y - FieldConstants.ySpeakerPosM)));
+  public Translation2d getVectorToSpeaker(
+      double x, double y) { // Position of robot relative to origin ()
+    distance =
+        Math.sqrt(
+            ((x - FieldConstants.xSpeakerPosM) * (x - FieldConstants.xSpeakerPosM))
+                + ((y - FieldConstants.ySpeakerPosM) * (y - FieldConstants.ySpeakerPosM)));
 
     xDistToTarget = Math.abs(x - FieldConstants.xSpeakerPosM);
     yDistToTarget = Math.abs(y - FieldConstants.ySpeakerPosM);
 
     angleRadians = Math.atan2(yDistToTarget, xDistToTarget);
 
-    
-
     if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
       angleRadians = -angleRadians; // Flip by pi radian if red
-                                    // Assumes that 0 is alwyas facing away from speaker
+      // Assumes that 0 is alwyas facing away from speaker
     }
 
-    angle = new Rotation2d(angleRadians); // angle in radians 
-    vector = new Translation2d(distance, angle); 
+    angle = new Rotation2d(angleRadians); // angle in radians
+    vector = new Translation2d(distance, angle);
     return vector;
   }
 }
