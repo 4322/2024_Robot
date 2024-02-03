@@ -20,42 +20,48 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.WheelPosition;
+import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
+import frc.robot.subsystems.drive.RobotChooser.RobotChooserInterface;
 import frc.utility.CanBusUtil;
 import frc.utility.OrangeMath;
 
-public class SwerveModuleIOMotorControl implements SwerveModuleIO {
+public class SwerveModuleIOTalonFX implements SwerveModuleIO {
+    private RobotChooserInterface robotSpecificConstants = RobotChooser.getInstance().getConstants();
     private TalonFX driveMotor;
 
     private TalonFX turningMotor;
     private CANcoder encoder;
     
-    private double[] feedForwardRPSThreshold = DriveConstants.Drive.FeedForward.feedForwardRPSThreshold.clone();
-    private double[] feedForwardVolts = DriveConstants.Drive.FeedForward.voltsAtSpeedThresholds.clone();
-    private double kSVolts = DriveConstants.Drive.kS;
+    private double[] feedForwardMetersPerSecThreshold =
+      robotSpecificConstants.getDriveffSpeedMetersPerSecThresholds().clone();
+    private double[] feedForwardVoltsOverMetersPerSec =
+      robotSpecificConstants.getDriveffVoltsOverMetersPerSec().clone();
+    private double kSVolts = robotSpecificConstants.getDrivekSVolts();
 
-    private double calculatedFeedForwardValue;
+    private double calcFeedForwardVoltsOverMetersPerSec;
+    private double desiredVolts;
 
-    public SwerveModuleIOMotorControl(WheelPosition wheelPos) {
+    public SwerveModuleIOTalonFX(WheelPosition wheelPos) {
         switch(wheelPos) {
             case FRONT_RIGHT:
-                driveMotor = new TalonFX(DriveConstants.frontRightDriveID);
-                turningMotor = new TalonFX(DriveConstants.frontRightRotationID);
-                encoder = new CANcoder(DriveConstants.frontRightCANID);
+                driveMotor = new TalonFX(robotSpecificConstants.getFrontRightDriveID());
+                turningMotor = new TalonFX(robotSpecificConstants.getFrontRightRotationID());
+                encoder = new CANcoder(DriveConstants.Drive.frontRightCANID);
                 break;
             case FRONT_LEFT:
-                driveMotor = new TalonFX(DriveConstants.frontLeftDriveID);
-                turningMotor = new TalonFX(DriveConstants.frontLeftRotationID);
-                encoder = new CANcoder(DriveConstants.frontLeftCANID);
+                driveMotor = new TalonFX(robotSpecificConstants.getFrontLeftDriveID());
+                turningMotor = new TalonFX(robotSpecificConstants.getFrontLeftRotationID());
+                encoder = new CANcoder(DriveConstants.Drive.frontLeftCANID);
                 break;
             case BACK_RIGHT:
-                driveMotor = new TalonFX(DriveConstants.rearRightDriveID);
-                turningMotor = new TalonFX(DriveConstants.rearRightRotationID);
-                encoder = new CANcoder(DriveConstants.rearRightCANID);
+                driveMotor = new TalonFX(robotSpecificConstants.getBackRightDriveID());
+                turningMotor = new TalonFX(robotSpecificConstants.getBackRightRotationID());
+                encoder = new CANcoder(DriveConstants.Drive.rearRightCANID);
                 break;
             case BACK_LEFT: 
-                driveMotor = new TalonFX(DriveConstants.rearLeftDriveID);
-                turningMotor = new TalonFX(DriveConstants.rearLeftRotationID);
-                encoder = new CANcoder(DriveConstants.rearLeftCANID);
+                driveMotor = new TalonFX(robotSpecificConstants.getBackLeftDriveID());
+                turningMotor = new TalonFX(robotSpecificConstants.getBackLeftRotationID());
+                encoder = new CANcoder(DriveConstants.Drive.rearLeftCANID);
                 break;
         }
         
@@ -72,10 +78,6 @@ public class SwerveModuleIOMotorControl implements SwerveModuleIO {
         OpenLoopRampsConfigs openLoopRampsConfigs = new OpenLoopRampsConfigs();
         CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
         MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-        slot0Configs.kP = DriveConstants.Drive.kP;
-        slot0Configs.kI = DriveConstants.Drive.kI;
-        slot0Configs.kD = DriveConstants.Drive.kD;
-        slot0Configs.kV = DriveConstants.Drive.kF;
         closedLoopRampsConfigs.VoltageClosedLoopRampPeriod = DriveConstants.Drive.closedLoopRampSec;
         openLoopRampsConfigs.VoltageOpenLoopRampPeriod = DriveConstants.Drive.openLoopRampSec;
         currentLimitsConfigs.StatorCurrentLimit = DriveConstants.Drive.statorLimit;
@@ -109,8 +111,8 @@ public class SwerveModuleIOMotorControl implements SwerveModuleIO {
   
         talonFX.setInverted(true);
       
-        slot0Configs.kP = DriveConstants.Rotation.kP;
-        slot0Configs.kD = DriveConstants.Rotation.kD;
+        slot0Configs.kP = robotSpecificConstants.getRotationkP();
+        slot0Configs.kD = robotSpecificConstants.getRotationkD();
         closedLoopRampsConfigs.VoltageClosedLoopRampPeriod = DriveConstants.Rotation.configCLosedLoopRamp;
         closedLoopGeneralConfigs.ContinuousWrap = true;
         voltageConfigs.PeakForwardVoltage = DriveConstants.Rotation.maxPower;
@@ -133,8 +135,8 @@ public class SwerveModuleIOMotorControl implements SwerveModuleIO {
       @Override
       public void updateInputs(SwerveModuleIOInputs inputs) {
         //drive inputs
-        inputs.driveRotations = driveMotor.getPosition().getValue();
-        inputs.driveRotationsPerSec = driveMotor.getVelocity().getValue()/60;
+        inputs.driveMeters = driveMotor.getPosition().getValue();
+        inputs.driveMetersPerSec = driveMotor.getVelocity().getValue()/60;
         inputs.driveAppliedVolts = driveMotor.getDutyCycle().getValue()/2 * driveMotor.getSupplyVoltage().getValue();
         inputs.driveCurrentAmps = driveMotor.getSupplyCurrent().getValue();
         //turn inputs
@@ -142,7 +144,9 @@ public class SwerveModuleIOMotorControl implements SwerveModuleIO {
         inputs.turnAppliedVolts = turningMotor.getDutyCycle().getValue()/2 * turningMotor.getSupplyVoltage().getValue();
         inputs.turnCurrentAmps = turningMotor.getSupplyCurrent().getValue();
         inputs.turnDegrees = Units.rotationsToDegrees(turningMotor.getPosition().getValue());
-        inputs.calculatedFF = calculatedFeedForwardValue;
+        
+        inputs.calculatedFF = calcFeedForwardVoltsOverMetersPerSec;
+        inputs.calculatedVolts = desiredVolts;
     }
 
     // PID methods for turn motor
@@ -152,82 +156,85 @@ public class SwerveModuleIOMotorControl implements SwerveModuleIO {
       turningMotor.setControl(positionVoltage);
     }
 
-    // PID method for drive motor
-    @Override
-    public void setDriveVoltage(double desiredMotorRPM) {
-      // convert RPM to RPS
-      double desiredMotorRPS = Math.abs(desiredMotorRPM / 60);
-      int i;
-      
-      // If motor RPS less than element 1 of FF speed threshold, i defaults to 0
-      // due to for loop iterating i at the end.
-      // Greater than or equals to not used in order to protect against erroneous shuffleboard input
-      // where element 0 of FF velocity threshold is changed from 0.
-      for (i = feedForwardRPSThreshold.length - 1; i > 0; i--) { 
-        if (desiredMotorRPS >= feedForwardRPSThreshold[i]) {
-          break;
-        }
+// set drive motor voltage based on desired wheel m/s
+  @Override
+  public void setDriveVoltage(double desiredWheelMetersPerSec) {
+    double desiredWheelMetersPerSecAbs = Math.abs(desiredWheelMetersPerSec);
+    int i;
+
+    // If wheel m/s less than element 1 of FF speed threshold, i defaults to 0
+    // due to for loop iterating i at the end.
+    // Greater than or equals to not used in order to protect against erroneous shuffleboard input
+    // where element 0 of FF velocity threshold is changed from 0.
+    for (i = feedForwardMetersPerSecThreshold.length - 1; i > 0; i--) {
+      if (desiredWheelMetersPerSecAbs >= feedForwardMetersPerSecThreshold[i]) {
+        break;
       }
+    }
 
-      // Linear extrapolation to account for edge case where requested speed 
-      // is greater than max threshold speed.
-      // Feed Forward calculated by determining linear equation between last two points.
-      if (i == feedForwardRPSThreshold.length - 1) {
-        int lastElement = i;
-        int secondToLastElement = i - 1;
-        // Slope between last point and second to last point used to predict corresponding 
-        // Feed Forward value for requested RPS values beyond max speed threshold
-        double slope = (feedForwardVolts[lastElement] - feedForwardVolts[secondToLastElement]) / 
-                        Math.max(Constants.DriveConstants.minimumRPSThresholdDifference,(feedForwardRPSThreshold[lastElement] - feedForwardRPSThreshold[secondToLastElement]));
+    // Linear extrapolation to account for edge case where requested wheel speed
+    // is greater than max threshold speed.
+    // Feed Forward calculated by determining linear equation between last two points.
+    if (i == feedForwardMetersPerSecThreshold.length - 1) {
+      int lastElement = i;
+      int secondToLastElement = i - 1;
+      // Slope between last point and second to last point used to predict corresponding
+      // Feed Forward value for requested m/s values beyond max speed threshold
+      double slope =
+          (feedForwardVoltsOverMetersPerSec[lastElement]
+                  - feedForwardVoltsOverMetersPerSec[secondToLastElement])
+              / (feedForwardMetersPerSecThreshold[lastElement]
+                  - feedForwardMetersPerSecThreshold[
+                      secondToLastElement]); // TODO: fix potential divide by 0
 
-        calculatedFeedForwardValue = slope * (desiredMotorRPS - feedForwardRPSThreshold[lastElement]) 
-                                      + feedForwardVolts[lastElement];
-      }
-      // Linear interpolation to calculate a more precise Feed Forward value for 
-      // points between established thresholds.
-      // Calculated through weighted average.
-      else {
-        int upperBound = i + 1;
-        int lowerBound = i;
-        // Calculated weight based on distance between lower bound value and desired speed value
-        double weight = (desiredMotorRPS - feedForwardRPSThreshold[upperBound]) /
-                    (feedForwardRPSThreshold[lowerBound] - feedForwardRPSThreshold[upperBound]);
-        
-        calculatedFeedForwardValue = (weight * feedForwardVolts[lowerBound]) + 
-                                      ((1 - weight) * feedForwardVolts[upperBound]);
-      }
+      calcFeedForwardVoltsOverMetersPerSec =
+          slope * (desiredWheelMetersPerSecAbs - feedForwardMetersPerSecThreshold[lastElement])
+              + feedForwardVoltsOverMetersPerSec[lastElement];
+    }
+    // Linear interpolation to calculate a more precise Feed Forward value for
+    // points between established thresholds.
+    // Calculated through weighted average.
+    else {
+      int upperBound = i + 1;
+      int lowerBound = i;
+      // Calculated weight based on distance between lower bound value and desired wheel speed value
+      double weight =
+          (desiredWheelMetersPerSecAbs - feedForwardMetersPerSecThreshold[upperBound])
+              / (feedForwardMetersPerSecThreshold[lowerBound]
+                  - feedForwardMetersPerSecThreshold[
+                      upperBound]); // TODO: fix potential divide by 0
 
-      // make sure wheel RPS shuffleboard inputs are in ascending order
-      if (calculatedFeedForwardValue < 0) {
-        calculatedFeedForwardValue = 0;
-        kSVolts = 0;
-      }
+      calcFeedForwardVoltsOverMetersPerSec =
+          (weight * feedForwardVoltsOverMetersPerSec[lowerBound])
+              + ((1 - weight) * feedForwardVoltsOverMetersPerSec[upperBound]);
+    }
 
-      // need to reverse Feed Forward value sign if speed is negative
-      calculatedFeedForwardValue = calculatedFeedForwardValue * Math.signum(desiredMotorRPM);
+    // make sure wheel m/s shuffleboard inputs are in ascending order
+    if (calcFeedForwardVoltsOverMetersPerSec < 0) {
+      calcFeedForwardVoltsOverMetersPerSec = 0;
+      kSVolts = 0;
+    }
 
-      // convert speed to volts while accounting for volts required to overcome static friction
-      double desiredVolts = (kSVolts * Math.signum(desiredMotorRPM)) + (calculatedFeedForwardValue * desiredMotorRPS);
-      
-      // send requested voltage to SparkMAX
-      
-      driveMotor.setVoltage(desiredVolts);
-      /**if (error != REVLibError.kOk) {
-        DriverStation.reportError("Drive motor " + driveMotor.getDeviceId() + " error " + error.name() + " while sending requested voltage", false);
-      }**/
+    // convert speed to volts while accounting for volts required to overcome static friction
+    desiredVolts =
+        Math.signum(desiredWheelMetersPerSec)
+            * (kSVolts + (calcFeedForwardVoltsOverMetersPerSec * desiredWheelMetersPerSecAbs));
+
+    // send requested voltage to SparkMAX
+    driveMotor.setVoltage(desiredVolts);
     }
 
     @Override
     public void setFeedForwardSpeedThreshold(double[] newFeedForwardRPSThreshold) {
-      for (int i = 0; i < feedForwardRPSThreshold.length; i++) {
-        feedForwardRPSThreshold[i] = newFeedForwardRPSThreshold[i];
+      for (int i = 0; i < feedForwardMetersPerSecThreshold.length; i++) {
+        feedForwardMetersPerSecThreshold[i] = newFeedForwardRPSThreshold[i];
       }
     }
     
     @Override
     public void updateFeedForward(double[] newFeedForwardVolts) {
-      for (int i = 0; i < feedForwardVolts.length; i++) {
-          feedForwardVolts[i] = newFeedForwardVolts[i];
+      for (int i = 0; i < feedForwardVoltsOverMetersPerSec.length; i++) {
+        feedForwardVoltsOverMetersPerSec[i] = newFeedForwardVolts[i];
       }
     }
 

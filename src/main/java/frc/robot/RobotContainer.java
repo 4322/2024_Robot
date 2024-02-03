@@ -14,7 +14,6 @@ import frc.robot.commands.DriveManual;
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.subsystems.drive.Drive;
-import org.littletonrobotics.junction.Logger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -90,6 +89,8 @@ public class RobotContainer {
   }
 
   public void disabledPeriodic() {
+    // update logs
+
     if (disableTimer.hasElapsed(Constants.DriveConstants.disableBreakSec)) {
       if (Constants.driveEnabled) {
         drive.setCoastMode(); // robot has stopped, safe to enter coast mode
@@ -115,7 +116,8 @@ public class RobotContainer {
     if (Constants.Demo.inDemoMode) {
       return null;
     }
-    return new SequentialCommandGroup(getAutoInitialize(), null);
+
+    return null;
   }
 
   // AUTO COMMANDS
