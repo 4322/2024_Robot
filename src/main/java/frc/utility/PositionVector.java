@@ -37,7 +37,8 @@ public class PositionVector {
     
 
     if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
-      angleRadians = -(angleRadians - Math.PI) + Math.PI; // Flip by 1 radian if red
+      angleRadians = -angleRadians; // Flip by pi radian if red
+                                    // Assumes that 0 is alwyas facing away from speaker
     }
 
     angle = new Rotation2d(angleRadians); // angle in radians 
