@@ -14,7 +14,6 @@ import frc.robot.commands.DriveManual;
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.subsystems.drive.Drive;
-import org.littletonrobotics.junction.Logger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -77,19 +76,21 @@ public class RobotContainer {
       driveButtonTwelve = new JoystickButton(driveStick, 12);
 
       driveButtonThree.onTrue(new DriveManual(drive, DriveManual.AutoPose.usePresetAuto));
-      driveButtonSeven.onTrue(new ResetFieldCentric(drive, 0, true));
+      driveButtonSeven.onTrue(new ResetFieldCentric(drive, true));
       driveButtonTwelve.onTrue(driveStop);
     }
 
     if (Constants.xboxEnabled) {
       xbox = new CommandXboxController(2);
-      xbox.povUp().onTrue(new ResetFieldCentric(drive, 0, true));
+      xbox.povUp().onTrue(new ResetFieldCentric(drive, true));
       xbox.rightBumper().onTrue(new DriveManual(drive, DriveManual.AutoPose.usePresetAuto));
       xbox.povDown().onTrue(driveStop);
     }
   }
 
   public void disabledPeriodic() {
+    // update logs
+
     if (disableTimer.hasElapsed(Constants.DriveConstants.disableBreakSec)) {
       if (Constants.driveEnabled) {
         drive.setCoastMode(); // robot has stopped, safe to enter coast mode
@@ -122,6 +123,6 @@ public class RobotContainer {
 
   // Command that should always start off every auto
   public Command getAutoInitialize() {
-    return new SequentialCommandGroup(new ResetFieldCentric(drive, 0, true));
+    return new SequentialCommandGroup(new ResetFieldCentric(drive, true));
   }
 }

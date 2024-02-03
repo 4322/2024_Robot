@@ -1,7 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriveConstants.Manual;
@@ -11,7 +11,7 @@ import frc.robot.subsystems.drive.Drive;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
-public class DriveManual extends CommandBase {
+public class DriveManual extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   /**
    * Creates a new Drive_Manual.
@@ -138,7 +138,7 @@ public class DriveManual extends CommandBase {
         driveDeadband = Manual.joystickDriveDeadband;
         rotateLeftDeadband = Manual.joystickRotateLeftDeadband;
         rotateRightDeadband = Manual.joystickRotateRightDeadband;
-        Logger.getInstance().recordOutput("UnknownControllerType", false);
+        Logger.recordOutput("UnknownControllerType", false);
         break;
 
       case Constants.ControllerTypeStrings.xboxLeftDrive:
@@ -149,7 +149,7 @@ public class DriveManual extends CommandBase {
         driveDeadband = Manual.xboxDriveDeadband;
         rotateLeftDeadband = Manual.xboxRotateDeadband;
         rotateRightDeadband = Manual.xboxRotateDeadband;
-        Logger.getInstance().recordOutput("UnknownControllerType", false);
+        Logger.recordOutput("UnknownControllerType", false);
         break;
 
       case Constants.ControllerTypeStrings.xboxRightDrive:
@@ -160,11 +160,11 @@ public class DriveManual extends CommandBase {
         driveDeadband = Manual.xboxDriveDeadband;
         rotateLeftDeadband = Manual.xboxRotateDeadband;
         rotateRightDeadband = Manual.xboxRotateDeadband;
-        Logger.getInstance().recordOutput("UnknownControllerType", false);
+        Logger.recordOutput("UnknownControllerType", false);
         break;
 
       default:
-        Logger.getInstance().recordOutput("UnknownControllerType", true);
+        Logger.recordOutput("UnknownControllerType", true);
         return;
     }
 
