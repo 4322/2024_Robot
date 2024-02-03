@@ -3,6 +3,7 @@ package frc.robot.shooting;
 import java.io.File;
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import frc.utility.interpolation.GenericCalculator;
@@ -21,10 +22,10 @@ public class FiringSolutionManager implements GenericFiringSolutionManager<Firin
     calculator.init(solutions);
   }
 
-  public void addSolution(FiringSolution solution) {
+  public void addSolution(FiringSolution solution) throws JsonMappingException {
     solutions.add(solution);
     calculator.whenAdded();
-    objectMapper.writeValue("target/firingSolutions", solution);
+    objectMapper.updateValue("/media/sda1/FiringSolutions.JSON", solution);
   }
 
   public FiringSolution calcSolution(double currentMag, double currentDeg) {
