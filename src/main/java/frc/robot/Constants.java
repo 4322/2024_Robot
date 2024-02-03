@@ -40,6 +40,7 @@ public final class Constants {
 
   public static final boolean driveEnabled = true;
   public static final boolean intakeEnabled = true;
+  public static final boolean intakeDeployerEnabled = true;
   public static final boolean gyroEnabled = true;
   public static final boolean joysticksEnabled = true;
   public static final boolean xboxEnabled = true;
@@ -240,14 +241,27 @@ public final class Constants {
   public static final class IntakeConstants {
     // TODO: update these
     public static final int intakeMotorID = 0;
-    public static final int deployMotorID = 0;
-    public static final int deployEncoderID = 0;
 
     public static final class IntakeConfig {
       public static final NeutralModeValue neutralMode = NeutralModeValue.Coast;
       public static final double updateHz = OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
     }
+
+    public static final class Intake {
+      public static final double intakeSpeedPct = 0;
+      public static final double outtakeSpeedPct = -0; // signed
+    }
+
+    public static final class Logging {
+      public static final String key = "Intake/";
+      public static final String hardwareOutputsKey = "Intake/Hardware/";
+    }
+  }
+
+  public static final class IntakeDeployerConstants {
+    public static final int deployMotorID = 0;
+    public static final int deployEncoderID = 0;
 
     public static final class DeployConfig {
       public static final double kP = 0;
@@ -257,11 +271,6 @@ public final class Constants {
       public static final NeutralModeValue neutralMode = NeutralModeValue.Brake;
       public static final double updateHz = OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
-    }
-
-    public static final class Intake {
-      public static final double intakeSpeedPct = 0;
-      public static final double outtakeSpeedPct = -0; // signed
     }
 
     public static final class Deploy {
@@ -282,8 +291,8 @@ public final class Constants {
     }
 
     public static final class Logging {
-      public static final String key = "Intake/";
-      public static final String hardwareOutputsKey = "Intake/Hardware/";
+      public static final String key = "IntakeDeployer/";
+      public static final String hardwareOutputsKey = "IntakeDeployer/Hardware/";
     }
   }
 
