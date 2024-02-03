@@ -1,8 +1,7 @@
 package frc.robot.commands.CenterLine;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.CenterLine.statemachine.CLSM;
+import frc.robot.commands.CenterLine.stateMachine.CLSM;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.notetracker.NoteTrackerInterface;
 

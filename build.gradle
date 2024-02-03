@@ -96,7 +96,7 @@ dependencies {
 
     implementation 'gov.nist.math:jama:1.0.3'
 
-    implementation group: 'com.github.oxo42', name: 'stateless4j', version: '2.5.0'
+    implementation group: 'com.github.stateless4j', name: 'stateless4j', version: '2.6.0'
 
     def akitJson = new groovy.json.JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
     annotationProcessor "org.littletonrobotics.akit.junction:junction-autolog:$akitJson.version"
