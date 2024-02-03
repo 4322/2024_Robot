@@ -39,15 +39,11 @@ public class RobotContainer {
   private final DriveManual driveManualDefault = new DriveManual(drive, DriveManual.AutoPose.none);
   private final DriveStop driveStop = new DriveStop(drive);
 
-  private AutoChooserIO autoChooserIO;
-  private AutoChooserIOInputsAutoLogged autoChooserInputs = new AutoChooserIOInputsAutoLogged();
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.currentMode) {
         // Real robot, instantiate hardware IO implementations
       case REAL:
-        autoChooserIO = new AutoChooserIODataEntry(drive);
         break;
 
         // Sim robot, instantiate physics sim IO implementations
@@ -64,8 +60,6 @@ public class RobotContainer {
     if (Constants.driveEnabled) {
       drive.setDefaultCommand(driveManualDefault);
     }
-
-    autoChooserIO = new AutoChooserIO() {};
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -96,10 +90,6 @@ public class RobotContainer {
   }
 
   public void disabledPeriodic() {
-    // update logs
-    autoChooserIO.updateInputs(autoChooserInputs);
-    Logger.processInputs("AutoChooser", autoChooserInputs);
-
     if (disableTimer.hasElapsed(Constants.DriveConstants.disableBreakSec)) {
       if (Constants.driveEnabled) {
         drive.setCoastMode(); // robot has stopped, safe to enter coast mode
@@ -119,19 +109,13 @@ public class RobotContainer {
     driveStop.schedule(); // interrupt all drive commands
     disableTimer.reset();
     disableTimer.start();
-
-    // autos need to be reloaded after each auto test because the commands can't be reused
-    autoChooserIO.loadAutos();
   }
 
   public Command getAutonomousCommand() {
     if (Constants.Demo.inDemoMode) {
       return null;
     }
-
-    Logger.recordOutput("Auto", autoChooserInputs.autoCommand.getName());
-
-    return new SequentialCommandGroup(getAutoInitialize(), autoChooserInputs.autoCommand);
+    return new SequentialCommandGroup(getAutoInitialize(), null);
   }
 
   // AUTO COMMANDS
