@@ -7,7 +7,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriveConstants.Manual;
 import frc.robot.Constants.InputScalingStrings;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveInterface;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -23,7 +23,7 @@ public class DriveManual extends Command {
   private static boolean loadAutoPoseActive;
   private static boolean loadAutoAlignPending;
   private static boolean armAtLoadSingle;
-  private final Drive drive;
+  private final DriveInterface drive;
   private final AutoPose autoPose;
   private Double targetHeadingDeg;
   private boolean done;
@@ -67,7 +67,7 @@ public class DriveManual extends Command {
     loadAutoAlignPending = false;
   }
 
-  public DriveManual(Drive drivesubsystem, AutoPose autoPose) {
+  public DriveManual(DriveInterface drivesubsystem, AutoPose autoPose) {
     drive = drivesubsystem;
     this.autoPose = autoPose;
 

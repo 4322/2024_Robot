@@ -8,13 +8,15 @@ import frc.robot.Constants.IntakeDeployerConstants;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
-public class IntakeDeployer extends SubsystemBase implements IntakeDeployerIO {
+public class IntakeDeployer extends SubsystemBase
+    implements IntakeDeployerIO, IntakeDeployerInterface {
 
   private IntakeDeployerIO io;
   private IntakeDeployerIOInputsAutoLogged inputs = new IntakeDeployerIOInputsAutoLogged();
   private Timer existenceTimer;
   private boolean initialized;
   private double deployTarget = 99999; // set to very high value in case target not yet set
+  private boolean isDeployed;
 
   public IntakeDeployer() {
     switch (Constants.currentMode) {
@@ -54,6 +56,7 @@ public class IntakeDeployer extends SubsystemBase implements IntakeDeployerIO {
     if (Constants.intakeEnabled && initialized) {
       io.setDeployTarget(IntakeDeployerConstants.Deploy.deployPositionRotations);
       deployTarget = IntakeDeployerConstants.Deploy.deployPositionRotations;
+      isDeployed = true;
       Logger.recordOutput(
           IntakeDeployerConstants.Logging.key + "DeployTargetRotations",
           IntakeDeployerConstants.Deploy.deployPositionRotations);
@@ -65,6 +68,7 @@ public class IntakeDeployer extends SubsystemBase implements IntakeDeployerIO {
     if (Constants.intakeEnabled && initialized) {
       io.setDeployTarget(IntakeDeployerConstants.Deploy.retractPositionRotations);
       deployTarget = IntakeDeployerConstants.Deploy.retractPositionRotations;
+      isDeployed = false;
       Logger.recordOutput(
           IntakeDeployerConstants.Logging.key + "DeployTargetRotations",
           IntakeDeployerConstants.Deploy.retractPositionRotations);
@@ -96,5 +100,13 @@ public class IntakeDeployer extends SubsystemBase implements IntakeDeployerIO {
       io.stopDeploy();
       Logger.recordOutput(IntakeDeployerConstants.Logging.key + "DeployStopped", true);
     }
+  }
+
+  public boolean isDeployed() {
+    return isDeployed;
+  }
+
+  public boolean isInitialized() {
+    return initialized;
   }
 }

@@ -89,4 +89,8 @@ public class OuttakePivot extends SubsystemBase {
     return OrangeMath.equalToEpsilon(
         inputs.pivotRotations, pivotTarget, OuttakeConstants.pivotToleranceRotations);
   }
+
+  public boolean isInitialized() {
+    return initialized;
+  }
 }

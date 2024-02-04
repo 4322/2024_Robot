@@ -1,16 +1,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveInterface;
 
 public class DriveStop extends InstantCommand {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
   // Used to interrupt all other drive commands and stop the drive
 
-  private final Drive drive;
+  private final DriveInterface drive;
 
-  public DriveStop(Drive drivesubsystem) {
+  public DriveStop(DriveInterface drivesubsystem) {
     drive = drivesubsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.

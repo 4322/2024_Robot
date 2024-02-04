@@ -26,7 +26,7 @@ import frc.utility.SnapshotTranslation2D;
 import java.util.ArrayList;
 import org.littletonrobotics.junction.Logger;
 
-public class Drive extends SubsystemBase {
+public class Drive extends SubsystemBase implements DriveInterface {
   private RobotChooserInterface robotSpecificConstants = RobotChooser.getInstance().getConstants();
 
   private SwerveModule[] swerveModules = new SwerveModule[4];
@@ -79,16 +79,7 @@ public class Drive extends SubsystemBase {
   private double lastClosedRampRate = DriveConstants.Drive.closedLoopRampSec;
   private double lastOpenRampRate = DriveConstants.Drive.openLoopRampSec;
 
-  private static Drive driveSubsystem = null;
-
-  public static Drive getInstance() {
-    if (driveSubsystem == null) {
-      driveSubsystem = new Drive();
-    }
-    return driveSubsystem;
-  }
-
-  private Drive() {
+  public Drive() {
     runTime.start();
     switch (Constants.currentMode) {
         // Real robot, instantiate hardware IO implementations

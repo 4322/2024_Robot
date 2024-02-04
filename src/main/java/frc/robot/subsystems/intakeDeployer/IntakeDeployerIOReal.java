@@ -9,7 +9,6 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandcoder.Canandcoder;
-
 import frc.robot.Constants.IntakeDeployerConstants;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
@@ -72,7 +71,8 @@ public class IntakeDeployerIOReal implements IntakeDeployerIO {
 
   @Override
   public boolean initMotorPos() {
-    deploy.setPosition(deployEncoder.getAbsPosition() * IntakeDeployerConstants.Deploy.encoderGearReduction);
+    deploy.setPosition(
+        deployEncoder.getAbsPosition() * IntakeDeployerConstants.Deploy.encoderGearReduction);
     return OrangeMath.equalToTwoDecimal(deployEncoder.getVelocity(), 0);
   }
 

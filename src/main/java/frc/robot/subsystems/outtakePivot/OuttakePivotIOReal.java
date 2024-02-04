@@ -8,7 +8,6 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandcoder.Canandcoder;
-
 import frc.robot.Constants;
 import frc.robot.Constants.OuttakeConstants;
 import frc.utility.OrangeMath;
@@ -59,19 +58,23 @@ public class OuttakePivotIOReal implements OuttakePivotIO {
 
   @Override
   public boolean initPivot() {
-    pivotMotor.setPosition(pivotEncoder.getAbsPosition() * OuttakeConstants.gearReductionEncoderToMotor);
+    pivotMotor.setPosition(
+        pivotEncoder.getAbsPosition() * OuttakeConstants.gearReductionEncoderToMotor);
     return OrangeMath.equalToTwoDecimal(pivotEncoder.getVelocity(), 0);
   }
 
   @Override
   public void setPivotTarget(double rotations) {
-    pivotMotor.setControl(new PositionVoltage(rotations, 
-    OuttakeConstants.maxVelRotationsPerSec,
-    OuttakeConstants.enableFOC, 
-    OuttakeConstants.pivotkFF, 
-    OuttakeConstants.positionVoltageSlot, 
-    OuttakeConstants.overrideBrakeDuringNeutral, 
-    OuttakeConstants.limitForwardMotion, OuttakeConstants.limitReverseMotion));
+    pivotMotor.setControl(
+        new PositionVoltage(
+            rotations,
+            OuttakeConstants.maxVelRotationsPerSec,
+            OuttakeConstants.enableFOC,
+            OuttakeConstants.pivotkFF,
+            OuttakeConstants.positionVoltageSlot,
+            OuttakeConstants.overrideBrakeDuringNeutral,
+            OuttakeConstants.limitForwardMotion,
+            OuttakeConstants.limitReverseMotion));
   }
 
   @Override
