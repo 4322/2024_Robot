@@ -24,7 +24,7 @@ public class CLSM {
   }
 
   public enum CLSMTrigger {
-    Start,
+    Initialize,
     HaveNote,
     NoNote,
     FinishedShooting,
@@ -119,7 +119,7 @@ public class CLSM {
         config
             .configure(CLSMState.UpperShoot)
             .permitIf(
-                CLSMTrigger.Start,
+                CLSMTrigger.Initialize,
                 CLSMState.Note1,
                 () -> noteStatus.note1Available,
                 () -> setTravelState(TravelState.USToN1))
