@@ -5,10 +5,10 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
-import frc.robot.subsystems.drive.RobotChooser.RobotChooserInterface;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
+import frc.robot.subsystems.drive.RobotChooser.RobotChooserInterface;
 import frc.utility.OrangeMath;
 
 /**
@@ -234,7 +234,9 @@ public final class Constants {
     public static double ySpeakerPosM;
 
     static {
-      if (DriverStation.getAlliance().get().equals(Alliance.Blue)) { // Account for origin remaining same between blue and red
+      if (DriverStation.getAlliance()
+          .get()
+          .equals(Alliance.Blue)) { // Account for origin remaining same between blue and red
         xSpeakerPosM = 0;
         ySpeakerPosM = 5.546;
       } else {
