@@ -7,8 +7,8 @@ import frc.robot.commands.CenterLine.environmentTracker.NoteStatus;
 import frc.robot.commands.CenterLine.stateMachine.CLSM;
 import frc.robot.commands.CenterLine.stateMachine.CLSM.CLSMState;
 import frc.robot.commands.CenterLine.stateMachine.CLSM.CLSMTrigger;
+import frc.robot.subsystems.RobotCoordinatorInterface;
 import frc.robot.subsystems.drive.DriveInterface;
-import frc.robot.subsystems.drive.RobotCoordinatorInterface;
 
 public class ScoreCenterLine extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
@@ -51,10 +51,14 @@ public class ScoreCenterLine extends Command {
   public void execute() {
     if (travelCommand.isFinished()) {
       tracker.update(machine.getState());
-      if (coordinator.hasNote()) {
-        machine.fire(CLSMTrigger.HaveNote, tracker.getNoteStatus());
+      if (isFiringState(machine.getState())) {
+        machine.fire(CLSMTrigger.FinishedShooting, tracker.getNoteStatus());
       } else {
-        machine.fire(CLSMTrigger.NoNote, tracker.getNoteStatus());
+        if (coordinator.hasNote()) {
+          machine.fire(CLSMTrigger.HaveNote, tracker.getNoteStatus());
+        } else {
+          machine.fire(CLSMTrigger.NoNote, tracker.getNoteStatus());
+        }
       }
       if (machine.getState() == CLSMState.Done) {
         isFinished = true;
@@ -62,6 +66,17 @@ public class ScoreCenterLine extends Command {
         travelCommand = CommandBuilder.buildCommand(machine.getTravelState());
         travelCommand.schedule();
       }
+    }
+  }
+
+  private boolean isFiringState(CLSMState state) {
+    switch (state) {
+      case UpperShoot:
+      case MiddleShoot:
+      case BottomShoot:
+        return true;
+      default:
+        return false;
     }
   }
 

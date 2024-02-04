@@ -27,8 +27,7 @@ public class CLSM {
     Initialize,
     HaveNote,
     NoNote,
-    FinishedShooting,
-    FinishedDriving
+    FinishedShooting
   }
 
   public enum TravelState {

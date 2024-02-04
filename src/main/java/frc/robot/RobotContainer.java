@@ -10,9 +10,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.CenterLine.ScoreCenterLine;
+import frc.robot.commands.CenterLine.ScoreCenterLine.ScoringStrategy;
 import frc.robot.commands.DriveManual;
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.ResetFieldCentric;
+import frc.robot.subsystems.RobotCoordinatorReturnTrue;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveInterface;
 
@@ -117,7 +120,7 @@ public class RobotContainer {
     if (Constants.Demo.inDemoMode) {
       return null;
     }
-    return new SequentialCommandGroup(getAutoInitialize(), null);
+    return new ScoreCenterLine(drive, new RobotCoordinatorReturnTrue(), ScoringStrategy.OneToFive);
   }
 
   // AUTO COMMANDS
