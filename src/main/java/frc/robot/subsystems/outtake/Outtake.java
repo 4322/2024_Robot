@@ -28,7 +28,9 @@ public class Outtake extends SubsystemBase {
     }
   }
 
-  public double getTargetRPM(){ return targetRPM; }
+  public double getTargetRPM() {
+    return targetRPM;
+  }
 
   public void periodic() {
     if (Constants.outtakeEnabled) {

@@ -34,7 +34,9 @@ public class OuttakePivot extends SubsystemBase {
     existenceTimer.start();
   }
 
-  public double getTarget() {return pivotTarget; }
+  public double getTarget() {
+    return pivotTarget;
+  }
 
   public void periodic() {
     // initialize motor internal encoder position until the intake isn't moving
