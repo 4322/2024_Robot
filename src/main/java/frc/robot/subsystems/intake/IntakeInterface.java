@@ -1,6 +1,8 @@
 package frc.robot.subsystems.intake;
 
-public interface IntakeInterface {
+import edu.wpi.first.wpilibj2.command.Subsystem;
+
+public interface IntakeInterface extends Subsystem {
   public void intake();
 
   public void outtake();

@@ -1,6 +1,8 @@
 package frc.robot.subsystems.intakeDeployer;
 
-public interface IntakeDeployerInterface {
+import edu.wpi.first.wpilibj2.command.Subsystem;
+
+public interface IntakeDeployerInterface extends Subsystem {
   public void deploy();
 
   public void retract();
