@@ -3,7 +3,6 @@ package frc.robot.subsystems.drive;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.wpilibj.Timer;
 
-
 public class GyroIOPigeon implements GyroIO {
   private Pigeon2 gyro;
   Timer disconnectTimer = new Timer();

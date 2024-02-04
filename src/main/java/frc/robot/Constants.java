@@ -228,7 +228,7 @@ public final class Constants {
   }
 
   public static final class Field {
-    public static final double SpeakerXPosM = 0; 
+    public static final double SpeakerXPosM = 0;
     public static final double SpeakerYPosMeters = 5.546;
   }
 
