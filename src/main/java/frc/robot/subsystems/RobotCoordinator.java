@@ -1,7 +1,7 @@
-package frc.robot.subsystems.drive;
+package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.NoteTrackerInterface;
+import frc.robot.subsystems.NoteTracker.NoteTrackerInterface;
 import frc.robot.subsystems.intake.IntakeInterface;
 import frc.robot.subsystems.intakeDeployer.IntakeDeployerInterface;
 import frc.robot.subsystems.outtake.OuttakeInterface;
