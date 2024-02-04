@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
 import frc.robot.subsystems.drive.RobotChooser.RobotChooserInterface;
 import frc.utility.CanBusUtil;
@@ -233,12 +235,59 @@ public final class Constants {
     }
   }
 
+  public static final class OuttakeConstants {
+    public static final int topOuttakeDeviceID = 0;
+    public static final int bottomOuttakeDeviceID = 0;
+
+    public static final double kP = 0;
+    public static final double kI = 0;
+    public static final double kD = 0;
+    public static final double kF = 0;
+
+    public static final double openLoopRampSec = 0;
+    public static final double closedLoopRampSec = 0;
+    public static final int gearRatioMotorToWheel = 0;
+    public static final double gearReductionEncoderToMotor = (29.0 / 28.0) * 125.0;
+    public static final double kS = 0;
+    public static final double voltPerRPS =
+        0; // since we likely aren't going to adjust the speed, it's likely safe to not interpolate
+    public static final int pivotDeviceID = 0; // TODO
+    public static final int pivotEncoderID = 0; // TODO
+
+    public static final double pivotkD = 0;
+    public static final double pivotkI = 0;
+    public static final double pivotkP = 0;
+    public static final double pivotkFF = 0;
+
+    // TODO: all parameters for position control PID
+    public static final double maxVelRotationsPerSec = 0.0;
+    public static final boolean enableFOC = true;
+    public static final int positionVoltageSlot = 0;
+    public static final boolean overrideBrakeDuringNeutral = false;
+    public static final boolean limitForwardMotion = true;
+    public static final boolean limitReverseMotion = true;
+
+    public static final double pivotClosedLoopSec = 0;
+    public static final double peakPivotVoltage = 0;
+    public static final NeutralModeValue pivotDefaultNeutralMode = NeutralModeValue.Coast;
+    public static final double defaultPivotPosition = 0;
+
+    public static final double topOuttakeRPM = 0;
+    public static final double bottomOuttakeRPM = 0;
+    public static final double outtakeToleranceRPM = 0;
+    public static final double pivotToleranceRotations = 0;
+
+    public static final double maxRPM = 0;
+  }
+
   public static final class FieldConstants {
     public static double xSpeakerPosM;
     public static double ySpeakerPosM;
 
     static {
-      if (DriverStation.getAlliance().get().equals(Alliance.Blue)) { // Account for origin remaining same between blue and red
+      if (DriverStation.getAlliance()
+          .get()
+          .equals(Alliance.Blue)) { // Account for origin remaining same between blue and red
         xSpeakerPosM = 0;
         ySpeakerPosM = 5.546;
       } else {
@@ -323,6 +372,8 @@ public final class Constants {
   }
 
   public static final Mode currentMode = Mode.REAL;
+
+  public static final boolean outtakeEnabled = true;
 
   public static enum Mode {
     /** Running on a real robot. */
