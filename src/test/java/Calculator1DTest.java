@@ -103,4 +103,16 @@ public class Calculator1DTest {
     assertEquals(calcSolution2.getFlywheelSpeed(), 30);
     assertEquals(calcSolution2.getShotAngle(), 30);
   }
+
+  @Test
+  public void testAddSolution_LoadSolutions() {
+    FiringSolution calcSolution1 = manager.calcSolution(-5, 0);
+    assertEquals(calcSolution1.getShotMag(), -5);
+    assertEquals(calcSolution1.getShotDeg(), 0);
+    assertEquals(calcSolution1.getFlywheelSpeed(), 10);
+    assertEquals(calcSolution1.getShotAngle(), 10);
+
+    manager.addSolution(new FiringSolution(-1, 0, 30, 30));
+    manager.loadSolutions();
+  }
 }

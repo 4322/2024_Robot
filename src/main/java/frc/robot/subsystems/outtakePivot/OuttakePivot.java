@@ -34,6 +34,8 @@ public class OuttakePivot extends SubsystemBase {
     existenceTimer.start();
   }
 
+  public double getTarget() {return pivotTarget; }
+
   public void periodic() {
     // initialize motor internal encoder position until the intake isn't moving
     if (Constants.outtakeEnabled && !initialized && !existenceTimer.hasElapsed(5)) {
@@ -88,5 +90,9 @@ public class OuttakePivot extends SubsystemBase {
   public boolean isAtPosition() {
     return OrangeMath.equalToEpsilon(
         inputs.pivotRotations, pivotTarget, OuttakeConstants.pivotToleranceRotations);
+  }
+
+  public boolean isInitialized() {
+    return initialized;
   }
 }

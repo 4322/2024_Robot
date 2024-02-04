@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
 import frc.robot.subsystems.drive.RobotChooser.RobotChooserInterface;
+import frc.utility.CanBusUtil;
 import frc.utility.OrangeMath;
 
 /**
@@ -38,6 +39,8 @@ public final class Constants {
   public static final boolean debug = true;
 
   public static final boolean driveEnabled = true;
+  public static final boolean intakeEnabled = true;
+  public static final boolean intakeDeployerEnabled = true;
   public static final boolean gyroEnabled = true;
   public static final boolean joysticksEnabled = true;
   public static final boolean xboxEnabled = true;
@@ -242,6 +245,7 @@ public final class Constants {
     public static final double openLoopRampSec = 0;
     public static final double closedLoopRampSec = 0;
     public static final int gearRatioMotorToWheel = 0;
+    public static final double gearReductionEncoderToMotor = (29.0 / 28.0) * 125.0;
     public static final double kS = 0;
     public static final double voltPerRPS =
         0; // since we likely aren't going to adjust the speed, it's likely safe to not interpolate
@@ -250,6 +254,15 @@ public final class Constants {
     public static final double pivotkD = 0;
     public static final double pivotkI = 0;
     public static final double pivotkP = 0;
+    public static final double pivotkFF = 0;
+
+    // TODO: all parameters for position control PID
+    public static final double maxVelRotationsPerSec = 0.0;
+    public static final boolean enableFOC = true;
+    public static final int positionVoltageSlot = 0;
+    public static final boolean overrideBrakeDuringNeutral = false;
+    public static final boolean limitForwardMotion = true;
+    public static final boolean limitReverseMotion = true;
 
     public static final double pivotClosedLoopSec = 0;
     public static final double peakPivotVoltage = 0;
@@ -278,6 +291,65 @@ public final class Constants {
         xSpeakerPosM = 16.591;
         ySpeakerPosM = 5.546;
       }
+    }
+  }
+
+  public static final class IntakeConstants {
+    // TODO: update these
+    public static final int intakeMotorID = 0;
+
+    public static final class IntakeConfig {
+      public static final NeutralModeValue neutralMode = NeutralModeValue.Coast;
+      public static final double updateHz =
+          OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
+      public static final double timeoutMs = 50;
+    }
+
+    public static final class Intake {
+      public static final double intakeSpeedPct = 0;
+      public static final double outtakeSpeedPct = -0; // signed
+    }
+
+    public static final class Logging {
+      public static final String key = "Intake/";
+      public static final String hardwareOutputsKey = "Intake/Hardware/";
+    }
+  }
+
+  public static final class IntakeDeployerConstants {
+    public static final int deployMotorID = 0;
+    public static final int deployEncoderID = 0;
+
+    public static final class DeployConfig {
+      public static final double kP = 0;
+      public static final double kD = 0;
+      public static final double configCLosedLoopRamp = 0;
+      public static final double maxVoltage = 16;
+      public static final NeutralModeValue neutralMode = NeutralModeValue.Brake;
+      public static final double updateHz =
+          OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
+      public static final double timeoutMs = 50;
+    }
+
+    public static final class Deploy {
+      public static final double deployPositionRotations = 0;
+      public static final double retractPositionRotations = 0;
+      public static final double toleranceRotations = 0;
+      public static final double maxVelRotationsPerSec = 0;
+      public static final boolean enableFOC = true;
+      public static final double FF = 0;
+      public static final int positionVoltageSlot =
+          0; // TODO: check if this can be 0 if PID is also 0
+      public static final boolean overrideBrakeDuringNeutral =
+          false; // we want to brake if not moving
+      public static final boolean limitForwardMotion = true;
+      public static final boolean limitReverseMotion = true;
+      public static final double encoderGearReduction = 0.0; // TODO: should be a large number
+    }
+
+    public static final class Logging {
+      public static final String key = "IntakeDeployer/";
+      public static final String hardwareOutputsKey = "IntakeDeployer/Hardware/";
     }
   }
 
