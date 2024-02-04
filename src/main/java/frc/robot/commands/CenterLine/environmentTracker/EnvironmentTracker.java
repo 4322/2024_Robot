@@ -38,6 +38,7 @@ public class EnvironmentTracker {
   }
 
   public NoteStatus getNoteStatus() {
-    return new NoteStatus(note1Available, note2Available, note3Available, note4Available, note5Available);
+    return new NoteStatus(
+        note1Available, note2Available, note3Available, note4Available, note5Available);
   }
 }

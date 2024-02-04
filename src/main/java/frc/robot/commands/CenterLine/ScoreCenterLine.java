@@ -5,26 +5,33 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.CenterLine.environmentTracker.EnvironmentTracker;
 import frc.robot.commands.CenterLine.environmentTracker.NoteStatus;
 import frc.robot.commands.CenterLine.stateMachine.CLSM;
+import frc.robot.commands.CenterLine.stateMachine.CLSM.CLSMState;
 import frc.robot.commands.CenterLine.stateMachine.CLSM.CLSMTrigger;
-import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveInterface;
+import frc.robot.subsystems.drive.RobotCoordinatorInterface;
 
 public class ScoreCenterLine extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  private final DriveInterface drive;
 
-  private final Drive drive;
   private final CLSM machine;
   private final EnvironmentTracker tracker;
+  private final RobotCoordinatorInterface coordinator;
 
   private Command travelCommand;
-
+  private boolean isFinished = false;
 
   public enum ScoringStrategy {
     OneToFive,
     DoNothing,
   }
 
-  public ScoreCenterLine(Drive drivesubsystem, ScoringStrategy strategy) {
+  public ScoreCenterLine(
+      DriveInterface drivesubsystem,
+      RobotCoordinatorInterface coordinator,
+      ScoringStrategy strategy) {
     drive = drivesubsystem;
+    this.coordinator = coordinator;
     machine = new CLSM(strategy);
     tracker = new EnvironmentTracker(new NoteStatus(true, true, true, true, true));
 
@@ -37,14 +44,24 @@ public class ScoreCenterLine extends Command {
   @Override
   public void initialize() {
     machine.fire(CLSMTrigger.Initialize, new NoteStatus(true, true, true, true, true));
-    travelCommand.execute(); // "Finish" command
+    travelCommand.schedule(); // "Finish" command
   }
 
   @Override
   public void execute() {
     if (travelCommand.isFinished()) {
-      tracker.update(machine.getState());    
-      
+      tracker.update(machine.getState());
+      if (coordinator.hasNote()) {
+        machine.fire(CLSMTrigger.HaveNote, tracker.getNoteStatus());
+      } else {
+        machine.fire(CLSMTrigger.NoNote, tracker.getNoteStatus());
+      }
+      if (machine.getState() == CLSMState.Done) {
+        isFinished = true;
+      } else {
+        travelCommand = CommandBuilder.buildCommand(machine.getTravelState());
+        travelCommand.schedule();
+      }
     }
   }
 
@@ -53,6 +70,6 @@ public class ScoreCenterLine extends Command {
 
   @Override
   public boolean isFinished() {
-    return false;
+    return isFinished;
   }
 }
