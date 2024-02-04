@@ -116,7 +116,7 @@ public class RobotContainer {
     if (Constants.Demo.inDemoMode) {
       return null;
     }
-    return null;
+    return new SequentialCommandGroup(getAutoInitialize(), null);
   }
 
   // AUTO COMMANDS
