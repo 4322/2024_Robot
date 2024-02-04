@@ -13,7 +13,7 @@ public class ScoreCenterLine extends Command {
   private final NoteTrackerInterface noteTracker;
 
   public enum ScoringStrategy {
-    TopThree,
+    OneToFive,
     DoNothing,
   }
 
