@@ -1,4 +1,4 @@
-package frc.robot.commands.CenterLine.stateMachine;
+package frc.robot.commands.CenterLine.statemachine;
 
 import com.github.oxo42.stateless4j.StateMachine;
 import com.github.oxo42.stateless4j.StateMachineConfig;

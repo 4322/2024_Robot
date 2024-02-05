@@ -4,9 +4,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.CenterLine.environmentTracker.EnvironmentTracker;
 import frc.robot.commands.CenterLine.environmentTracker.NoteStatus;
-import frc.robot.commands.CenterLine.stateMachine.CLSM;
-import frc.robot.commands.CenterLine.stateMachine.CLSM.CLSMState;
-import frc.robot.commands.CenterLine.stateMachine.CLSM.CLSMTrigger;
+import frc.robot.commands.CenterLine.statemachine.CLSM;
+import frc.robot.commands.CenterLine.statemachine.CLSM.CLSMState;
+import frc.robot.commands.CenterLine.statemachine.CLSM.CLSMTrigger;
 import frc.robot.subsystems.RobotCoordinatorInterface;
 import frc.robot.subsystems.drive.DriveInterface;
 

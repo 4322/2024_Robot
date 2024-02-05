@@ -2,7 +2,7 @@ package frc.robot.commands.CenterLine;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.commands.CenterLine.stateMachine.CLSM.TravelState;
+import frc.robot.commands.CenterLine.statemachine.CLSM.TravelState;
 import org.littletonrobotics.junction.Logger;
 
 public class CommandBuilder {
