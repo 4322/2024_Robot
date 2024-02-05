@@ -7,6 +7,7 @@ import frc.robot.commands.CenterLine.environmentTracker.NoteStatus;
 import frc.robot.commands.CenterLine.statemachine.CLSM;
 import frc.robot.commands.CenterLine.statemachine.CLSM.CLSMState;
 import frc.robot.commands.CenterLine.statemachine.CLSM.CLSMTrigger;
+import frc.robot.commands.CenterLine.statemachine.CLSM.TravelState;
 import frc.robot.subsystems.RobotCoordinatorInterface;
 import frc.robot.subsystems.drive.DriveInterface;
 
@@ -51,8 +52,8 @@ public class ScoreCenterLine extends Command {
   public void execute() {
     if (travelCommand.isFinished()) {
       tracker.update(machine.getState());
-      if (isFiringState(machine.getState())) {
-        machine.fire(CLSMTrigger.FinishedShooting, tracker.getNoteStatus());
+      if (isNotNoteState(machine.getState())) {
+        machine.fire(CLSMTrigger.Finished, tracker.getNoteStatus());
       } else {
         if (coordinator.hasNote()) {
           machine.fire(CLSMTrigger.HaveNote, tracker.getNoteStatus());
@@ -69,15 +70,28 @@ public class ScoreCenterLine extends Command {
     }
   }
 
-  private boolean isFiringState(CLSMState state) {
+  private boolean isNotNoteState(CLSMState state) {
     switch (state) {
-      case UpperShoot:
+      case TopShoot:
       case MiddleShoot:
       case BottomShoot:
+      case EndPos:
         return true;
       default:
         return false;
     }
+  }
+
+  public CLSMState getState() {
+    return machine.getState();
+  }
+
+  public TravelState getTravelState() {
+    return machine.getTravelState();
+  }
+
+  public NoteStatus getNoteStatus() {
+    return tracker.getNoteStatus();
   }
 
   @Override

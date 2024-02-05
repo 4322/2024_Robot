@@ -19,4 +19,30 @@ public class NoteStatus {
     this.note4Available = note4Available;
     this.note5Available = note5Available;
   }
+
+  @Override
+  public String toString() {
+    String str = "";
+    str += (note1Available) ? "1" : "0";
+    str += (note2Available) ? "1" : "0";
+    str += (note3Available) ? "1" : "0";
+    str += (note4Available) ? "1" : "0";
+    str += (note5Available) ? "1" : "0";
+    return str;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    boolean result = false;
+    if (obj instanceof NoteStatus) {
+      NoteStatus other = (NoteStatus) obj;
+      result =
+          (note1Available == other.note1Available
+              && note2Available == other.note2Available
+              && note3Available == other.note3Available
+              && note4Available == other.note4Available
+              && note5Available == other.note5Available);
+    }
+    return result;
+  }
 }

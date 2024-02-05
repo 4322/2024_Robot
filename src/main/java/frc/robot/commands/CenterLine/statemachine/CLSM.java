@@ -12,7 +12,7 @@ public class CLSM {
   private NoteStatus noteStatus;
 
   public enum CLSMState {
-    UpperShoot,
+    TopShoot,
     MiddleShoot,
     BottomShoot,
     Note1,
@@ -20,6 +20,7 @@ public class CLSM {
     Note3,
     Note4,
     Note5,
+    EndPos,
     Done
   }
 
@@ -27,7 +28,7 @@ public class CLSM {
     Initialize,
     HaveNote,
     NoNote,
-    FinishedShooting
+    Finished
   }
 
   public enum TravelState {
@@ -51,6 +52,7 @@ public class CLSM {
     N4ToMS,
     N4ToBS,
     N5ToBS,
+    N5ToEndPos,
     USToN1,
     USToN2,
     USToN3,
@@ -58,6 +60,7 @@ public class CLSM {
     MSToN4,
     BSToN4,
     BSToN5,
+    BSToEndPos,
     Done
   }
 
@@ -70,7 +73,7 @@ public class CLSM {
   private CLSMState getInitialState(ScoringStrategy strategy) {
     switch (strategy) {
       case OneToFive:
-        return CLSMState.UpperShoot;
+        return CLSMState.TopShoot;
       default: // default to DoNothing
         return CLSMState.Done;
     }
@@ -83,69 +86,77 @@ public class CLSM {
         config
             .configure(CLSMState.Note1)
             .permit(
-                CLSMTrigger.HaveNote,
-                CLSMState.UpperShoot,
-                () -> setTravelState(TravelState.N1ToUS))
+                CLSMTrigger.HaveNote, CLSMState.TopShoot, () -> setTravelState(TravelState.N1ToUS))
             .permit(CLSMTrigger.NoNote, CLSMState.Note2, () -> setTravelState(TravelState.N1ToN2));
         config
             .configure(CLSMState.Note2)
             .permit(
-                CLSMTrigger.HaveNote,
-                CLSMState.UpperShoot,
-                () -> setTravelState(TravelState.N2ToUS))
+                CLSMTrigger.HaveNote, CLSMState.TopShoot, () -> setTravelState(TravelState.N2ToUS))
             .permit(CLSMTrigger.NoNote, CLSMState.Note3, () -> setTravelState(TravelState.N2ToN3));
         config
             .configure(CLSMState.Note3)
             .permit(
                 CLSMTrigger.HaveNote,
-                CLSMState.UpperShoot,
+                CLSMState.MiddleShoot,
                 () -> setTravelState(TravelState.N3ToMS))
             .permit(CLSMTrigger.NoNote, CLSMState.Note4, () -> setTravelState(TravelState.N3ToN4));
         config
             .configure(CLSMState.Note4)
             .permit(
                 CLSMTrigger.HaveNote,
-                CLSMState.UpperShoot,
+                CLSMState.BottomShoot,
                 () -> setTravelState(TravelState.N4ToBS))
             .permit(CLSMTrigger.NoNote, CLSMState.Note5, () -> setTravelState(TravelState.N4ToN5));
         config
             .configure(CLSMState.Note5)
             .permit(
                 CLSMTrigger.HaveNote,
-                CLSMState.UpperShoot,
+                CLSMState.BottomShoot,
                 () -> setTravelState(TravelState.N5ToBS))
-            .permit(CLSMTrigger.NoNote, CLSMState.Done, () -> setTravelState(TravelState.Done));
+            .permit(
+                CLSMTrigger.NoNote, CLSMState.EndPos, () -> setTravelState(TravelState.N5ToEndPos));
         config
-            .configure(CLSMState.UpperShoot)
+            .configure(CLSMState.TopShoot)
             .permitIf(
                 CLSMTrigger.Initialize,
                 CLSMState.Note1,
                 () -> noteStatus.note1Available,
                 () -> setTravelState(TravelState.USToN1))
             .permitIf(
-                CLSMTrigger.FinishedShooting,
+                CLSMTrigger.Finished,
                 CLSMState.Note2,
-                () -> noteStatus.note2Available,
+                () -> (noteStatus.note2Available && !noteStatus.note1Available),
                 () -> setTravelState(TravelState.USToN2))
             .permitIf(
-                CLSMTrigger.FinishedShooting,
+                CLSMTrigger.Finished,
                 CLSMState.Note3,
-                () -> noteStatus.note3Available,
+                () ->
+                    (noteStatus.note3Available
+                        && !noteStatus.note2Available
+                        && !noteStatus.note1Available),
                 () -> setTravelState(TravelState.USToN3));
         config
             .configure(CLSMState.MiddleShoot)
             .permitIf(
-                CLSMTrigger.FinishedShooting,
+                CLSMTrigger.Finished,
                 CLSMState.Note4,
                 () -> noteStatus.note4Available,
                 () -> setTravelState(TravelState.MSToN4));
         config
             .configure(CLSMState.BottomShoot)
             .permitIf(
-                CLSMTrigger.FinishedShooting,
+                CLSMTrigger.Finished,
                 CLSMState.Note5,
                 () -> noteStatus.note5Available,
-                () -> setTravelState(TravelState.BSToN5));
+                () -> setTravelState(TravelState.BSToN5))
+            .permitIf(
+                CLSMTrigger.Finished,
+                CLSMState.EndPos,
+                () -> !noteStatus.note5Available,
+                () -> setTravelState(TravelState.BSToEndPos));
+        config
+            .configure(CLSMState.EndPos)
+            .permit(CLSMTrigger.Finished, CLSMState.Done, () -> setTravelState(TravelState.Done));
         break;
       default: // empty config
         break;

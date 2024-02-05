@@ -30,8 +30,10 @@ public class EnvironmentTracker {
         break;
       case Note4:
         note4Available = false;
+        break;
       case Note5:
         note5Available = false;
+        break;
       default:
         return;
     }

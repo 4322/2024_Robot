@@ -15,7 +15,7 @@ import frc.robot.commands.CenterLine.ScoreCenterLine.ScoringStrategy;
 import frc.robot.commands.DriveManual;
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.ResetFieldCentric;
-import frc.robot.subsystems.RobotCoordinatorReturnTrue;
+import frc.robot.subsystems.TestRobotCoordinator;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveInterface;
 
@@ -120,7 +120,10 @@ public class RobotContainer {
     if (Constants.Demo.inDemoMode) {
       return null;
     }
-    return new ScoreCenterLine(drive, new RobotCoordinatorReturnTrue(), ScoringStrategy.OneToFive);
+    return new ScoreCenterLine(
+        drive,
+        new TestRobotCoordinator(true, true, true, true, true, true),
+        ScoringStrategy.OneToFive);
   }
 
   // AUTO COMMANDS
