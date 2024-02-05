@@ -3,9 +3,9 @@ package CLSM;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import frc.robot.commands.CenterLine.ScoreCenterLine.ScoringStrategy;
-import frc.robot.commands.CenterLine.stateMachine.CLSM;
-import frc.robot.commands.CenterLine.stateMachine.CLSM.CLSMState;
-import frc.robot.commands.CenterLine.stateMachine.CLSM.TravelState;
+import frc.robot.commands.CenterLine.statemachine.CLSM;
+import frc.robot.commands.CenterLine.statemachine.CLSM.CLSMState;
+import frc.robot.commands.CenterLine.statemachine.CLSM.TravelState;
 import org.junit.jupiter.api.*;
 
 public class OneToFiveTest {
