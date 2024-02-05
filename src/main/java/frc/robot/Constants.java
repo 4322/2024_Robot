@@ -356,6 +356,7 @@ public final class Constants {
 
   public static final class LED {
     public static final int totalLEDs = 0; // TODO: find umber of INDIVIDUAL LEDs mounted on robot
+    public static final int CANdleID = 3;
   }
 
   public enum WheelPosition {
