@@ -2,12 +2,10 @@ package frc.robot.subsystems.LED;
 
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
-
-import frc.robot.Constants;
-
 import com.ctre.phoenix.led.CANdleConfiguration;
 import com.ctre.phoenix.led.RainbowAnimation;
 import com.ctre.phoenix.led.StrobeAnimation;
+import frc.robot.Constants;
 
 public class LedIOReal implements LedIO {
   public CANdle candle;

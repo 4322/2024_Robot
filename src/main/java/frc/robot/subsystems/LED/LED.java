@@ -29,7 +29,6 @@ public class LED extends SubsystemBase {
     LEDState(int priority, double time) {
       priorityNum = priority;
       timeSec = time;
-
     }
   }
 
@@ -98,10 +97,17 @@ public class LED extends SubsystemBase {
     // accounts for time-based LED states
     if (currentState.priorityNum != 1 && stateTimer.hasElapsed(currentState.timeSec)) {
       queuedStates.remove(currentState);
+      // set to default 1st priority state so it can either be overriden or maintained when checked
+      for (LEDState state : queuedStates) {
+        if (state.priorityNum == 1) {
+          currentState = state;
+        }
+      }
     }
   }
 
   private LEDState prioritizeSingleState() {
+    // only check if there is new state in queue
     if (!queuedStates.equals(prevQueuedStates)) {
       prevQueuedStates.clear();
       prevQueuedStates.addAll(queuedStates);
