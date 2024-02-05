@@ -1,6 +1,6 @@
 package frc.robot.commands.CenterLine.environmentTracker;
 
-import frc.robot.commands.CenterLine.stateMachine.CLSM.CLSMState;
+import frc.robot.commands.CenterLine.statemachine.CLSM.CLSMState;
 
 public class EnvironmentTracker {
   private boolean note1Available;
