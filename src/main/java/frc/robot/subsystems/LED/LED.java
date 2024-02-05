@@ -33,8 +33,7 @@ public class LED extends SubsystemBase {
     }
   }
 
-  public LED(RobotCoordinatorInterface robotInterface) {
-    this.robotCoordinator = robotInterface;
+  public LED() {
     switch (Constants.currentMode) {
       case REAL:
         io = new LedIOReal();

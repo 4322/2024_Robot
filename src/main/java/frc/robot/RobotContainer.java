@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DriveManual;
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.ResetFieldCentric;
+import frc.robot.subsystems.LED.LED;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveInterface;
 
@@ -35,6 +36,7 @@ public class RobotContainer {
   private JoystickButton driveButtonTwelve;
 
   private final DriveInterface drive = new Drive();
+  public final LED led = new LED();
 
   private final DriveManual driveManualDefault = new DriveManual(drive, DriveManual.AutoPose.none);
   private final DriveStop driveStop = new DriveStop(drive);
@@ -105,6 +107,7 @@ public class RobotContainer {
     drive.setBrakeMode();
     disableTimer.stop();
     disableTimer.reset();
+    led.periodic();
   }
 
   public void disableSubsystems() {
