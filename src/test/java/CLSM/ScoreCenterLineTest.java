@@ -65,8 +65,42 @@ public class ScoreCenterLineTest {
     testCommand(command, stateList, travelStateList);
   }
 
+  @Test
+  public void testOneToFive_NoneCollected() {
+    ScoreCenterLine command =
+        new ScoreCenterLine(
+            new TestDrive(),
+            new TestRobotCoordinator(true, true, true, true, false, false),
+            ScoringStrategy.OneToFive);
+
+    CLSMState[] stateList = {
+      CLSMState.TopShoot,
+      CLSMState.Note1,
+      CLSMState.Note2,
+      CLSMState.Note3,
+      CLSMState.Note4,
+      CLSMState.Note5,
+      CLSMState.EndPos,
+      CLSMState.Done
+    };
+
+    TravelState[] travelStateList = {
+      TravelState.None,
+      TravelState.USToN1,
+      TravelState.N1ToN2,
+      TravelState.N2ToN3,
+      TravelState.N3ToN4,
+      TravelState.N4ToN5,
+      TravelState.N5ToEndPos,
+      TravelState.Done
+    };
+
+    testCommand(command, stateList, travelStateList);
+  }
+
   public void testCommand(
       ScoreCenterLine command, CLSMState[] stateList, TravelState[] travelStateList) {
+    assertEquals(stateList.length, travelStateList.length);
     for (int i = 0; i < stateList.length; i++) {
       System.out.println(command.getState().toString());
       System.out.println(command.getTravelState().toString());
