@@ -55,10 +55,8 @@ public class OuttakeIOReal implements OuttakeIO {
 
   @Override
   public void setOuttakeRPM(double desiredTopVelocityRPM, double desiredBottomVelocityRPM) {
-    double desiredTopVelocityPct = desiredTopVelocityRPM / OuttakeConstants.maxRPM;
-    double desiredBottomVelocityPct = desiredBottomVelocityRPM / OuttakeConstants.maxRPM;
-    topOuttakeMotor.set(desiredTopVelocityPct);
-    bottomOuttakeMotor.set(desiredBottomVelocityPct);
+    topOuttakeMotor.set(desiredTopVelocityRPM / OuttakeConstants.maxRPM);
+    bottomOuttakeMotor.set(desiredBottomVelocityRPM / OuttakeConstants.maxRPM);
   }
 
   @Override

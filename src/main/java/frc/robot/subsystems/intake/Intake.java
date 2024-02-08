@@ -39,20 +39,20 @@ public class Intake extends SubsystemBase implements IntakeInterface {
 
   public void intake() {
     if (Constants.intakeEnabled && initialized) {
-      io.setIntake(IntakeConstants.Intake.intakeSpeedRPS);
+      io.setIntakeRPM(IntakeConstants.Intake.intakeSpeedRPM);
       Logger.recordOutput(
           IntakeConstants.Logging.key + "IntakeTargetSpeedPct",
-          IntakeConstants.Intake.intakeSpeedRPS);
+          IntakeConstants.Intake.intakeSpeedRPM);
       Logger.recordOutput(IntakeConstants.Logging.key + "IntakeStopped", false);
     }
   }
 
   public void outtake() {
     if (Constants.intakeEnabled && initialized) {
-      io.setIntake(IntakeConstants.Intake.outtakeSpeedRPS);
+      io.setIntakeRPM(IntakeConstants.Intake.outtakeSpeedRPM);
       Logger.recordOutput(
           IntakeConstants.Logging.key + "IntakeTargetSpeedPct",
-          IntakeConstants.Intake.outtakeSpeedRPS);
+          IntakeConstants.Intake.outtakeSpeedRPM);
       Logger.recordOutput(IntakeConstants.Logging.key + "IntakeStopped", false);
     }
   }

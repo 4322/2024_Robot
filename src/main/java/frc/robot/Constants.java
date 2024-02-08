@@ -289,9 +289,9 @@ public final class Constants {
     }
 
     public static final class Intake {
-      public static final double intakeSpeedRPS = 0;
-      public static final double outtakeSpeedRPS = -0; // signed
-      public static final double maxIntakeRPS = 0.0;
+      public static final double intakeSpeedRPM = 0;
+      public static final double outtakeSpeedRPM = -0; // signed
+      public static final double maxIntakeRPM = 0.0;
     }
 
     public static final class Logging {
