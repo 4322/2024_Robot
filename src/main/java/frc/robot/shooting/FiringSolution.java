@@ -20,7 +20,7 @@ public class FiringSolution extends GenericFiringSolution {
     this.shotMag = shotMag;
     this.shotDeg = shotDeg;
     this.flywheelSpeed = componentList.get(0);
-    this.shotAngle = componentList.get(0);
+    this.shotAngle = componentList.get(1);
   }
 
   protected FiringSolution(double shotMag, double shotDeg) {
