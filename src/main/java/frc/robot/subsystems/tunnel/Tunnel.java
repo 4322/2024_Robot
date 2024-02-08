@@ -5,7 +5,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.TunnelConstants;
 import org.littletonrobotics.junction.Logger;
 
-public class Tunnel extends SubsystemBase implements TunnelIO {
+public class Tunnel extends SubsystemBase implements TunnelInterface {
   private TunnelIO io;
   private TunnelIOInputsAutoLogged inputs = new TunnelIOInputsAutoLogged();
   private boolean initialized;
@@ -59,7 +59,7 @@ public class Tunnel extends SubsystemBase implements TunnelIO {
     }
   }
 
-  public void stopIntake() {
+  public void stopTunnel() {
     if (Constants.tunnelEnabled && initialized) {
       io.stopTunnel();
       Logger.recordOutput(TunnelConstants.Logging.key + "TunnelTargetSpeedPct", 0);

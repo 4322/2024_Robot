@@ -13,7 +13,11 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DriveManual;
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.ResetFieldCentric;
+import frc.robot.commands.TunnelFeed;
+import frc.robot.commands.TunnelStop;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.tunnel.Tunnel;
+import frc.robot.subsystems.tunnel.TunnelInterface;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -34,9 +38,13 @@ public class RobotContainer {
   private JoystickButton driveButtonTwelve;
 
   private final Drive drive = Drive.getInstance();
+  private final TunnelInterface tunnel = new Tunnel();
 
   private final DriveManual driveManualDefault = new DriveManual(drive, DriveManual.AutoPose.none);
   private final DriveStop driveStop = new DriveStop(drive);
+
+  private final TunnelFeed tunnelFeedDefault = new TunnelFeed(tunnel);
+  private final TunnelStop tunnelStop = new TunnelStop(tunnel);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -58,6 +66,10 @@ public class RobotContainer {
 
     if (Constants.driveEnabled) {
       drive.setDefaultCommand(driveManualDefault);
+    }
+
+    if (Constants.tunnelEnabled) {
+      tunnel.setDefaultCommand(tunnelFeedDefault);
     }
   }
   /**
@@ -102,12 +114,14 @@ public class RobotContainer {
 
   public void enableSubsystems() {
     drive.setBrakeMode();
+    tunnel.setBrakeMode();
     disableTimer.stop();
     disableTimer.reset();
   }
 
   public void disableSubsystems() {
     driveStop.schedule(); // interrupt all drive commands
+    
     disableTimer.reset();
     disableTimer.start();
   }

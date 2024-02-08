@@ -1,16 +1,16 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.tunnel.TunnelInterface;
 
-public class TunnelFeed extends Command {
+public class TunnelStop extends InstantCommand {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
   // Used to interrupt all other drive commands and stop the drive
 
   private final TunnelInterface tunnel;
 
-  public TunnelFeed(TunnelInterface tunnelSubsystem) {
+  public TunnelStop(TunnelInterface tunnelSubsystem) {
     tunnel = tunnelSubsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -20,10 +20,15 @@ public class TunnelFeed extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    tunnel.feed();
+    tunnel.stopTunnel();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}
+
+  @Override
+  public boolean runsWhenDisabled() {
+    return true; // allow tunnel to be stopped before re-enabling
+  }
 }
