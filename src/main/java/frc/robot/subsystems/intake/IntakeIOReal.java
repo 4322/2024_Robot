@@ -44,8 +44,8 @@ public class IntakeIOReal implements IntakeIO {
   }
 
   @Override
-  public void setIntake(double pct) {
-    intake.set(pct);
+  public void setIntake(double rps) {
+    intake.set(rps / IntakeConstants.Intake.maxIntakeRPS);
   }
 
   @Override
