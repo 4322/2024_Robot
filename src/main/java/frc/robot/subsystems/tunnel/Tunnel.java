@@ -36,7 +36,7 @@ public class Tunnel extends SubsystemBase implements TunnelIO {
     }
   }
 
-  public void turn() {
+  public void feed() { // run the tunnel in the direction of the outtake
     if (Constants.tunnelEnabled && initialized) {
       io.setTunnel(TunnelConstants.turnSpeedPct);
       Logger.recordOutput(
