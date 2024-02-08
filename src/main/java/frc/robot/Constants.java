@@ -4,11 +4,13 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
 import frc.robot.subsystems.drive.RobotChooser.RobotChooserInterface;
+import frc.utility.CanBusUtil;
 import frc.utility.OrangeMath;
 
 /**
@@ -38,6 +40,7 @@ public final class Constants {
 
   public static final boolean driveEnabled = true;
   public static final boolean gyroEnabled = true;
+  public static final boolean tunnelEnabled = true;
   public static final boolean joysticksEnabled = true;
   public static final boolean xboxEnabled = true;
 
@@ -226,6 +229,24 @@ public final class Constants {
       public static final double supplyLimit = 40;
       public static final double supplyThreshold = 60;
       public static final double supplyTime = 2.0;
+    }
+  }
+
+  public static final class TunnelConstants {
+    public static final int tunnelMotorID = 0;
+
+    public static final double turnSpeedPct = 0.0;
+    public static final double maxTunnelRPS = 0.0;
+
+    public static final class TunnelConfig {
+      public static final NeutralModeValue neutralMode = NeutralModeValue.Coast;
+      public static final double updateHz =
+          OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
+    }
+
+    public static final class Logging {
+      public static final String key = "Tunnel/";
+      public static final String hardwareOutputsKey = "Tunnel/Hardware/";
     }
   }
 
