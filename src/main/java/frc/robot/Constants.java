@@ -47,7 +47,7 @@ public final class Constants {
 
   public static final boolean spinoutCenterEnabled = true; // center rotate burst of power
   public static final boolean spinoutCornerEnabled = true;
-  public static final boolean psuedoAutoRotateEnabled = false;
+  public static final boolean psuedoAutoRotateEnabled = true;
   public static final String driveInputScaling = InputScalingStrings.quadratic;
   public static final String controllerType = ControllerTypeStrings.xboxLeftDrive;
 
