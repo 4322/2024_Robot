@@ -65,7 +65,6 @@ public class DriveManual extends Command {
             PositionVector.getVectorToSpeaker(drivePose2D.getX(), drivePose2D.getY());
         Logger.recordOutput("SpeakerCentricHeading", speakerVec.getAngle().getDegrees());
         drive.driveAutoRotate(driveX, driveY, speakerVec.getAngle().getDegrees());
-        pseudoAutoRotateAngle = null;
         break;
     }
   }
@@ -182,11 +181,13 @@ public class DriveManual extends Command {
     }
     rotatePower = rotatePower * drive.getMaxManualRotationEntry();
 
-    if (rotatePower == 0 && pseudoAutoRotateAngle == null 
+    if (stateMachine.getState() != DriveManualState.DEFAULT
+        || rotatePower != 0) {
+      pseudoAutoRotateAngle = null;
+    } else if (rotatePower == 0
+        && pseudoAutoRotateAngle == null
         && Math.abs(drive.getAngularVelocity()) < Manual.inhibitPseudoAutoRotateAngularVelocity) {
       pseudoAutoRotateAngle = drive.getAngle();
-    } else if (rotatePower != 0) {
-      pseudoAutoRotateAngle = null;
     }
   }
 
