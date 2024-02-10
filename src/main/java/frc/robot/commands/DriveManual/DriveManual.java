@@ -29,7 +29,7 @@ public class DriveManual extends Command {
   private double driveY = 0;
   private double rotatePower = 0;
 
-  private Double psuedoAutoRotateAngle;
+  private Double pseudoAutoRotateAngle;
 
   public DriveManual(DriveInterface drivesubsystem) {
     drive = drivesubsystem;
@@ -51,20 +51,13 @@ public class DriveManual extends Command {
 
     switch (stateMachine.getState()) {
       case DEFAULT:
-        if (rotatePower == 0 && psuedoAutoRotateAngle == null) {
-          psuedoAutoRotateAngle = drive.getAngle();
-        } else if (rotatePower != 0) {
-          psuedoAutoRotateAngle = null;
-        }
-
         if (drive.isPseudoAutoRotateEnabled()
             && Math.abs(drive.getAngularVelocity()) < Manual.inhibitPseudoAutoRotateAngularVelocity
-            && psuedoAutoRotateAngle != null) {
-          drive.driveAutoRotate(driveX, driveY, psuedoAutoRotateAngle);
+            && pseudoAutoRotateAngle != null) {
+          drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
         } else {
           drive.drive(driveX, driveY, rotatePower);
         }
-
         break;
       case SPEAKER_CENTRIC:
         Pose2d drivePose2D = drive.getPose2d();
@@ -72,6 +65,7 @@ public class DriveManual extends Command {
             PositionVector.getVectorToSpeaker(drivePose2D.getX(), drivePose2D.getY());
         Logger.recordOutput("SpeakerCentricHeading", speakerVec.getAngle().getDegrees());
         drive.driveAutoRotate(driveX, driveY, speakerVec.getAngle().getDegrees());
+        pseudoAutoRotateAngle = null;
         break;
     }
   }
@@ -187,11 +181,21 @@ public class DriveManual extends Command {
       rotatePower = (rotateRaw + rotateRightDeadband) / (1 - rotateRightDeadband);
     }
     rotatePower = rotatePower * drive.getMaxManualRotationEntry();
+
+    if (rotatePower == 0 && pseudoAutoRotateAngle == null) {
+      pseudoAutoRotateAngle = drive.getAngle();
+    } else if (rotatePower != 0) {
+      pseudoAutoRotateAngle = null;
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    if (interrupted) {
+      pseudoAutoRotateAngle = null;
+    }
+  }
 
   // Returns true when the command should end.
   @Override
