@@ -4,8 +4,11 @@
 
 package frc.robot;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -14,12 +17,16 @@ import frc.robot.commands.DriveManual;
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
+import frc.robot.shooting.FiringSolution;
+import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveInterface;
+import frc.robot.subsystems.outtake.Outtake;
 import frc.robot.subsystems.outtake.OuttakeInterface;
-import frc.robot.subsystems.outtake.OuttakeTest;
+import frc.robot.subsystems.outtakePivot.OuttakePivot;
 import frc.robot.subsystems.outtakePivot.OuttakePivotInterface;
-import frc.robot.subsystems.outtakePivot.OuttakePivotTest;
+import frc.utility.interpolation.Calculator1D;
+import java.util.ArrayList;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -40,13 +47,19 @@ public class RobotContainer {
   private JoystickButton driveButtonTwelve;
 
   private final DriveInterface drive = new Drive();
-  private final OuttakeInterface outtake = new OuttakeTest();
-  private final OuttakePivotInterface pivot = new OuttakePivotTest();
+  private final OuttakeInterface outtake = new Outtake();
+  private final OuttakePivotInterface outtakePivot = new OuttakePivot();
+
+  private ObjectMapper objectMapper = new ObjectMapper();
+  private ArrayList<FiringSolution> solutions = new ArrayList<>();
+  private FiringSolutionManager firingSolutionManager =
+      new FiringSolutionManager(solutions, new Calculator1D<>(), objectMapper);
+  private final WriteFiringSolutionAtCurrentPos writeFiringSolution =
+      new WriteFiringSolutionAtCurrentPos(
+          outtake, drive, outtakePivot, firingSolutionManager);
 
   private final DriveManual driveManualDefault = new DriveManual(drive, DriveManual.AutoPose.none);
   private final DriveStop driveStop = new DriveStop(drive);
-  private final WriteFiringSolutionAtCurrentPos testJSONWriting =
-      new WriteFiringSolutionAtCurrentPos(outtake, drive, pivot);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -95,7 +108,9 @@ public class RobotContainer {
       xbox.povUp().onTrue(new ResetFieldCentric(drive, true));
       xbox.rightBumper().onTrue(new DriveManual(drive, DriveManual.AutoPose.usePresetAuto));
       xbox.povDown().onTrue(driveStop);
-      xbox.a().onTrue(testJSONWriting);
+      if (Constants.debug) {
+        xbox.a().onTrue(writeFiringSolution);
+      }
     }
   }
 

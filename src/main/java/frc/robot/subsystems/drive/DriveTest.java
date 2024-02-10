@@ -82,7 +82,7 @@ public class DriveTest implements DriveInterface {
   }
 
   public Pose2d getPose2d() {
-    return new Pose2d();
+    return new Pose2d(new Translation2d(4, 4), new Rotation2d(Math.PI / 4));
   }
 
   public void setModuleStates() {

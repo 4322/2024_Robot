@@ -6,7 +6,7 @@ import frc.robot.Constants.OuttakeConstants;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
-public class Outtake extends SubsystemBase {
+public class Outtake extends SubsystemBase implements OuttakeInterface {
   private OuttakeIO io;
   private OuttakeIOInputsAutoLogged inputs = new OuttakeIOInputsAutoLogged();
   private double targetRPM;

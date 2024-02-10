@@ -30,6 +30,6 @@ public class OuttakePivotTest implements OuttakePivotInterface {
   }
 
   public double getTarget() {
-    return 0.0;
+    return 36.0;
   }
 }

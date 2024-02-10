@@ -22,6 +22,6 @@ public class OuttakeTest implements OuttakeInterface {
   }
 
   public double getTargetRPM() {
-    return 0.0;
+    return 2000.0;
   }
 }

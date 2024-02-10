@@ -11,9 +11,9 @@ import frc.utility.PositionVector;
 
 public class WriteFiringSolutionAtCurrentPos extends InstantCommand {
 
+  private FiringSolutionManager firingSolutionManager;
   private OuttakeInterface outtake;
   private DriveInterface drive;
-  private FiringSolutionManager firingSolutionManager;
   private OuttakePivotInterface outtakePivot;
   double shotAngle;
   double shotMag;
@@ -21,10 +21,12 @@ public class WriteFiringSolutionAtCurrentPos extends InstantCommand {
   public WriteFiringSolutionAtCurrentPos(
       OuttakeInterface outtakeSubsystem,
       DriveInterface drivesubsystem,
-      OuttakePivotInterface pivot) {
+      OuttakePivotInterface pivot,
+      FiringSolutionManager solutionManager) {
     outtake = outtakeSubsystem;
     drive = drivesubsystem;
     outtakePivot = pivot;
+    firingSolutionManager = solutionManager;
   }
 
   @Override
@@ -39,7 +41,6 @@ public class WriteFiringSolutionAtCurrentPos extends InstantCommand {
                 + rawTranslation.getY() * rawTranslation.getY());
     FiringSolution solution =
         new FiringSolution(shotMag, shotAngle, outtake.getTargetRPM(), outtakePivot.getTarget());
-    firingSolutionManager.addSolution(solution);
     firingSolutionManager.writeSolution(solution);
   }
 

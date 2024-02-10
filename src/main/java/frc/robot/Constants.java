@@ -42,7 +42,7 @@ public final class Constants {
   public static final boolean intakeEnabled = true;
   public static final boolean intakeDeployerEnabled = true;
   public static final boolean gyroEnabled = true;
-  public static final boolean joysticksEnabled = true;
+  public static final boolean joysticksEnabled = false;
   public static final boolean xboxEnabled = true;
 
   public static final boolean spinoutCenterEnabled = true; // center rotate burst of power
