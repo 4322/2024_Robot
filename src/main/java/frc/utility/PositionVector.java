@@ -7,16 +7,16 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.FieldConstants;
 
 public class PositionVector {
-  private double distance;
-  private double angleRadians;
-  private Rotation2d angle;
-  private Translation2d vector;
-  private double xDistToTarget;
-  private double yDistToTarget;
 
   // 218.353069 in
-  public Translation2d getVectorToSpeaker(
+  public static Translation2d getVectorToSpeaker(
       double x, double y) { // Position of robot relative to origin ()
+    double distance;
+    double angleRadians;
+    Rotation2d angle;
+    Translation2d vector;
+    double xDistToTarget;
+    double yDistToTarget;
     distance =
         Math.sqrt(
             ((x - FieldConstants.xSpeakerPosM) * (x - FieldConstants.xSpeakerPosM))

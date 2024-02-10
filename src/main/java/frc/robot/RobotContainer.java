@@ -13,8 +13,13 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DriveManual;
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.ResetFieldCentric;
+import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveInterface;
+import frc.robot.subsystems.outtake.OuttakeInterface;
+import frc.robot.subsystems.outtake.OuttakeTest;
+import frc.robot.subsystems.outtakePivot.OuttakePivotInterface;
+import frc.robot.subsystems.outtakePivot.OuttakePivotTest;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -35,9 +40,13 @@ public class RobotContainer {
   private JoystickButton driveButtonTwelve;
 
   private final DriveInterface drive = new Drive();
+  private final OuttakeInterface outtake = new OuttakeTest();
+  private final OuttakePivotInterface pivot = new OuttakePivotTest();
 
   private final DriveManual driveManualDefault = new DriveManual(drive, DriveManual.AutoPose.none);
   private final DriveStop driveStop = new DriveStop(drive);
+  private final WriteFiringSolutionAtCurrentPos testJSONWriting =
+      new WriteFiringSolutionAtCurrentPos(outtake, drive, pivot);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -86,6 +95,7 @@ public class RobotContainer {
       xbox.povUp().onTrue(new ResetFieldCentric(drive, true));
       xbox.rightBumper().onTrue(new DriveManual(drive, DriveManual.AutoPose.usePresetAuto));
       xbox.povDown().onTrue(driveStop);
+      xbox.a().onTrue(testJSONWriting);
     }
   }
 
