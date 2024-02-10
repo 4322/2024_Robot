@@ -1,6 +1,6 @@
 package frc.robot.subsystems.drive;
 
-import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
+import frc.robot.RobotChooser.RobotChooser;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface DriveShuffleBoardIO {
