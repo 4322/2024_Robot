@@ -2,8 +2,10 @@ package frc.robot.commands.DriveManual;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriveConstants.Manual;
 import frc.robot.Constants.InputScalingStrings;
 import frc.robot.RobotContainer;
@@ -29,7 +31,27 @@ public class DriveManual extends Command {
   private double driveY = 0;
   private double rotatePower = 0;
 
+  private double driveRawX;
+  private double driveRawY;
+  private double rotateRaw;
+  private double driveAngle;
+  private double driveAbsAngularVel;
+
   private Double pseudoAutoRotateAngle;
+
+  private Timer spinoutActivationTimer = new Timer();
+  private Timer spinoutActivationTimer2 = new Timer();
+  private LockedWheel lockedWheelState;
+  private double initialSpinoutAngle;
+
+  public enum LockedWheel {
+    none,
+    center,
+    frontLeft,
+    backLeft,
+    backRight,
+    frontRight;
+  }
 
   public DriveManual(DriveInterface drivesubsystem) {
     drive = drivesubsystem;
@@ -43,6 +65,12 @@ public class DriveManual extends Command {
   @Override
   public void initialize() {
     drive.resetRotatePID();
+
+    spinoutActivationTimer.stop();
+    spinoutActivationTimer2.stop();
+    spinoutActivationTimer.reset();
+    spinoutActivationTimer2.reset();
+    lockedWheelState = LockedWheel.none;
   }
 
   @Override
@@ -51,9 +79,9 @@ public class DriveManual extends Command {
 
     switch (stateMachine.getState()) {
       case DEFAULT:
-        if (drive.isPseudoAutoRotateEnabled()
-            && Math.abs(drive.getAngularVelocity()) < Manual.inhibitPseudoAutoRotateAngularVelocity
-            && pseudoAutoRotateAngle != null) {
+        if (rotatePower != 0) {
+          doSpinout();
+        } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
           drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
         } else {
           drive.drive(driveX, driveY, rotatePower);
@@ -74,13 +102,12 @@ public class DriveManual extends Command {
   }
 
   private void updateDriveValues() {
-    final double driveRawX;
-    final double driveRawY;
-    final double rotateRaw;
-
     final double driveDeadband;
     final double rotateLeftDeadband;
     final double rotateRightDeadband;
+
+    driveAngle = drive.getAngle();
+    driveAbsAngularVel = Math.abs(drive.getAngularVelocity());
 
     // switch between joysticks and xbox which can reconfigure drive stick location
     switch (drive.getControlType()) {
@@ -185,8 +212,111 @@ public class DriveManual extends Command {
       pseudoAutoRotateAngle = null;
     } else if (rotatePower == 0
         && pseudoAutoRotateAngle == null
-        && Math.abs(drive.getAngularVelocity()) < Manual.inhibitPseudoAutoRotateAngularVelocity) {
+        && driveAbsAngularVel < Manual.inhibitPseudoAutoRotateAngularVelocity) {
       pseudoAutoRotateAngle = drive.getAngle();
+    }
+  }
+
+  private void doSpinout() {
+    if (Math.abs(rotateRaw) >= Manual.spinoutRotateDeadBand) {
+      if (driveAbsAngularVel < Manual.spinoutMinAngularVelocity) {
+        spinoutActivationTimer.start();
+      } else {
+        spinoutActivationTimer.stop();
+        spinoutActivationTimer.reset();
+      }
+      if (driveAbsAngularVel < Manual.spinoutMinAngularVelocity2) {
+        spinoutActivationTimer2.start();
+      } else {
+        spinoutActivationTimer2.stop();
+        spinoutActivationTimer2.reset();
+      }
+    } else {
+      // if rotation stick falls under second deadband, reset rotation back to normal
+      lockedWheelState = LockedWheel.none;
+      spinoutActivationTimer.stop();
+      spinoutActivationTimer2.stop();
+      spinoutActivationTimer.reset();
+      spinoutActivationTimer2.reset();
+    }
+
+    // detect if not rotating and if rotate stick past second deadband for certain
+    // amount of time
+    // (first deadband is rotateToleranceDegrees/xboxRotateDeadband)
+    // (second deadband is past first deadband in rotation) (close to max rotation)
+    if ((lockedWheelState == LockedWheel.none)
+        && (spinoutActivationTimer.hasElapsed(Manual.spinoutActivationSec)
+            || spinoutActivationTimer2.hasElapsed(Manual.spinout2ActivationSec))) {
+
+      // from this, figure out which swerve module to lock onto to rotate off of (use
+      // drive
+      // stick direction and robotAngle)
+      // How to use drive stick: module closest to direction of drivestick.
+      // use gyro to find orientation
+      // algorithm to determine quadrant: driveStickAngle - robotAngle
+      // if drivestick angle 0 < x < 90 , in quadrant 1 (front left module)
+      // if drivestick angle 90 < x < 180 , in quadrant 2 (back left module)
+      // if drivestick angle -180 < x < -90 , in quadrant 3 (back right module)
+      // if drivestick angle -90 < x < 0 , in quadrant 4 (front right module)
+
+      // SPECIAL CASE: if driveStickAngle - robotAngle is exactly 0, 90, 180, -180,
+      // then use the
+      // rotate angle to determine wheel:
+      // 0: if CW, quadrant 1 (front left); if CCW, quadrant 4 (front right)
+      // 90: if CW, quadrant 2 (back left); if CCW, quadrant 1 (front left)
+      // 180/-180: if CW, quadrant 3 (back right); if CCW, quadrant 2 (back left)
+      // -90: if CW, quadrant 4 (front right); if CCW, quadrant 3 (back right)
+
+      // drivestick angle - robot angle
+      double robotCentricDriveTheta =
+          OrangeMath.boundDegrees(Math.toDegrees(Math.atan2(driveY, driveX)) - driveAngle);
+      initialSpinoutAngle = driveAngle;
+
+      if (Constants.spinoutCenterEnabled && (driveX == 0) && (driveY == 0)) {
+        lockedWheelState = LockedWheel.center;
+      } else if (Constants.spinoutCornerEnabled) {
+        if ((robotCentricDriveTheta > 0) && (robotCentricDriveTheta < 90)) {
+          lockedWheelState = LockedWheel.frontLeft;
+        } else if ((robotCentricDriveTheta > 90) && (robotCentricDriveTheta < 180)) {
+          lockedWheelState = LockedWheel.backLeft;
+        } else if ((robotCentricDriveTheta > -180) && (robotCentricDriveTheta < -90)) {
+          lockedWheelState = LockedWheel.backRight;
+        } else if ((robotCentricDriveTheta > -90) && (robotCentricDriveTheta < 0)) {
+          lockedWheelState = LockedWheel.frontRight;
+        }
+      }
+
+      // if robot rotates 90 degrees, reset rotation back to normal
+    } else if ((Math.abs(initialSpinoutAngle - driveAngle) >= 90)
+        && (lockedWheelState != LockedWheel.none)) {
+      lockedWheelState = LockedWheel.none;
+      spinoutActivationTimer.stop();
+      spinoutActivationTimer2.stop();
+      spinoutActivationTimer.reset();
+      spinoutActivationTimer2.reset();
+    }
+    // use state machine for rotating each wheel in each direction (8 cases)
+    // each module rotating CW and CCW
+    double spinCornerPower = Math.copySign(DriveConstants.spinoutCornerPower, rotatePower);
+    switch (lockedWheelState) {
+      case none:
+        drive.drive(driveX, driveY, rotatePower);
+        break;
+      case center:
+        drive.drive(driveX, driveY, Math.copySign(DriveConstants.spinoutCenterPower, rotatePower));
+        break;
+      case frontLeft:
+        drive.drive(driveX, driveY, spinCornerPower, DriveConstants.frontLeftWheelLocation);
+        break;
+      case backLeft:
+        drive.drive(driveX, driveY, spinCornerPower, DriveConstants.backLeftWheelLocation);
+        break;
+      case backRight:
+        drive.drive(driveX, driveY, spinCornerPower, DriveConstants.backRightWheelLocation);
+        break;
+      case frontRight:
+        drive.drive(driveX, driveY, spinCornerPower, DriveConstants.frontRightWheelLocation);
+        break;
     }
   }
 
