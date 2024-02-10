@@ -29,7 +29,7 @@ public class DriveManual extends Command {
   private double driveY = 0;
   private double rotatePower = 0;
 
-  private double lastAngle;
+  private Double psuedoAutoRotateAngle;
 
   public DriveManual(DriveInterface drivesubsystem) {
     drive = drivesubsystem;
@@ -43,7 +43,6 @@ public class DriveManual extends Command {
   @Override
   public void initialize() {
     drive.resetRotatePID();
-    lastAngle = drive.getAngle();
   }
 
   @Override
@@ -52,13 +51,20 @@ public class DriveManual extends Command {
 
     switch (stateMachine.getState()) {
       case DEFAULT:
+        if (rotatePower == 0 && psuedoAutoRotateAngle == null) {
+          psuedoAutoRotateAngle = drive.getAngle();
+        } else if (rotatePower != 0) {
+          psuedoAutoRotateAngle = null;
+        }
+
         if (drive.isPseudoAutoRotateEnabled()
-            && Math.abs(drive.getAngularVelocity())
-                < Manual.inhibitPseudoAutoRotateAngularVelocity) {
-          drive.driveAutoRotate(driveX, driveY, lastAngle);
+            && Math.abs(drive.getAngularVelocity()) < Manual.inhibitPseudoAutoRotateAngularVelocity
+            && psuedoAutoRotateAngle != null) {
+          drive.driveAutoRotate(driveX, driveY, psuedoAutoRotateAngle);
         } else {
           drive.drive(driveX, driveY, rotatePower);
         }
+
         break;
       case SPEAKER_CENTRIC:
         Pose2d drivePose2D = drive.getPose2d();
@@ -68,8 +74,6 @@ public class DriveManual extends Command {
         drive.driveAutoRotate(driveX, driveY, speakerVec.getAngle().getDegrees());
         break;
     }
-
-    lastAngle = drive.getAngle();
   }
 
   public void updateStateMachine(DriveManualTrigger trigger) {
