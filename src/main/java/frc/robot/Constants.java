@@ -42,6 +42,7 @@ public final class Constants {
   public static final boolean intakeEnabled = true;
   public static final boolean intakeDeployerEnabled = true;
   public static final boolean gyroEnabled = true;
+  public static final boolean tunnelEnabled = true;
   public static final boolean joysticksEnabled = false;
   public static final boolean xboxEnabled = true;
 
@@ -334,6 +335,24 @@ public final class Constants {
     public static final class Logging {
       public static final String key = "IntakeDeployer/";
       public static final String hardwareOutputsKey = "IntakeDeployer/Hardware/";
+    }
+  }
+
+  public static final class TunnelConstants {
+    public static final int tunnelMotorID = 0;
+
+    public static final double turnSpeedPct = 0.0;
+    public static final double maxTunnelRPS = 0.0;
+
+    public static final class TunnelConfig {
+      public static final NeutralModeValue neutralMode = NeutralModeValue.Coast;
+      public static final double updateHz =
+          OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
+    }
+
+    public static final class Logging {
+      public static final String key = "Tunnel/";
+      public static final String hardwareOutputsKey = "Tunnel/Hardware/";
     }
   }
 
