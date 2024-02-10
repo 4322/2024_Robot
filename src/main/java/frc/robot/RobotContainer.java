@@ -92,7 +92,7 @@ public class RobotContainer {
 
     if (Constants.xboxEnabled) {
       xbox = new CommandXboxController(2);
-      xbox.b()
+      xbox.x()
           .onTrue(
               Commands.runOnce(
                   () -> {
