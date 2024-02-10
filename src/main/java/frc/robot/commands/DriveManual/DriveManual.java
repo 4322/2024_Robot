@@ -182,7 +182,8 @@ public class DriveManual extends Command {
     }
     rotatePower = rotatePower * drive.getMaxManualRotationEntry();
 
-    if (rotatePower == 0 && pseudoAutoRotateAngle == null) {
+    if (rotatePower == 0 && pseudoAutoRotateAngle == null 
+        && Math.abs(drive.getAngularVelocity()) < Manual.inhibitPseudoAutoRotateAngularVelocity) {
       pseudoAutoRotateAngle = drive.getAngle();
     } else if (rotatePower != 0) {
       pseudoAutoRotateAngle = null;
