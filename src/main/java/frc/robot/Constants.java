@@ -278,23 +278,6 @@ public final class Constants {
     public static final double maxRPM = 0;
   }
 
-  public static final class FieldConstants {
-    public static double xSpeakerPosM;
-    public static double ySpeakerPosM;
-
-    static {
-      if (DriverStation.getAlliance()
-          .get()
-          .equals(Alliance.Blue)) { // Account for origin remaining same between blue and red
-        xSpeakerPosM = 0;
-        ySpeakerPosM = 5.546;
-      } else {
-        xSpeakerPosM = 16.591;
-        ySpeakerPosM = 5.546;
-      }
-    }
-  }
-
   public static final class IntakeConstants {
     // TODO: update these
     public static final int intakeMotorID = 0;
@@ -354,9 +337,21 @@ public final class Constants {
     }
   }
 
-  public static final class Field {
-    public static final double SpeakerXPosM = 0;
-    public static final double SpeakerYPosMeters = 5.546;
+  public static final class FieldConstants {
+    public static double xSpeakerPosM;
+    public static double ySpeakerPosM;
+
+    static {
+      if (DriverStation.getAlliance()
+          .get()
+          .equals(Alliance.Blue)) { // Account for origin remaining same between blue and red
+        xSpeakerPosM = 0;
+        ySpeakerPosM = 5.546;
+      } else {
+        xSpeakerPosM = 16.591;
+        ySpeakerPosM = 5.546;
+      }
+    }
   }
 
   public enum WheelPosition {
