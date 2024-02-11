@@ -79,8 +79,11 @@ public class RobotCoordinator extends SubsystemBase {
     }
 
     public static boolean hasPassedIntake() {
-      // Used for auto because check is faster
-      return inputs.intakeBeamBreak || inputs.tunnelBeamBreak;
+      return !inputs.intakeBeamBreak && inputs.tunnelBeamBreak;
+    }
+
+    public static boolean isPassingIntake() {
+      return inputs.intakeBeamBreak;
     }
   }
 }
