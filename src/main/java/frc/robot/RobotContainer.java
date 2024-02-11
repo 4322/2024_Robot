@@ -125,9 +125,6 @@ public class RobotContainer {
                   new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()),
                   true));
       xbox.povDown().onTrue(driveStop);
-      if (Constants.debug) {
-        xbox.a().onTrue(writeFiringSolution);
-      }
     }
   }
 
