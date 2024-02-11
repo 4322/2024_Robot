@@ -5,7 +5,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriveConstants.Manual;
-import frc.robot.Constants.InputScalingStrings;
+import frc.robot.Constants.DriveInputScalingStrings;
+import frc.robot.Constants.RotateInputScalingStrings;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.drive.Drive;
 import frc.utility.OrangeMath;
@@ -206,13 +207,13 @@ public class DriveManual extends Command {
         driveMag = Math.round(driveMag * 4.0) / 4.0;
       }
 
-      switch (drive.getInputScaling()) {
-        case InputScalingStrings.linear:
+      switch (drive.getDriveInputScaling()) {
+        case DriveInputScalingStrings.linear:
           break;
-        case InputScalingStrings.quadratic:
+        case DriveInputScalingStrings.quadratic:
           driveMag = driveMag * driveMag;
           break;
-        case InputScalingStrings.cubic:
+        case DriveInputScalingStrings.cubic:
           driveMag = driveMag * driveMag * driveMag;
           break;
       }
@@ -232,6 +233,16 @@ public class DriveManual extends Command {
       rotatePower = (rotateRaw - rotateLeftDeadband) / (1 - rotateLeftDeadband);
     } else if (rotateRaw < -rotateRightDeadband) {
       rotatePower = (rotateRaw + rotateRightDeadband) / (1 - rotateRightDeadband);
+    }
+
+    switch (drive.getRotateInputScaling()) {
+      case RotateInputScalingStrings.linear:
+        break;
+      case RotateInputScalingStrings.squareRoot:
+        rotatePower = Math.signum(rotatePower) * Math.sqrt(Math.abs(rotatePower));
+        break;
+      case RotateInputScalingStrings.quadratic:
+        rotatePower = Math.signum(rotatePower) * (rotatePower * rotatePower);
     }
     rotatePower = rotatePower * drive.getMaxManualRotationEntry();
 
