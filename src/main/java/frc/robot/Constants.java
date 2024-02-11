@@ -250,6 +250,11 @@ public final class Constants {
     }
   }
 
+  public static final class NoteCheckerConstants{
+      public static final int intakeDistanceSensorPort = robotSpecificConstants.getIntakePWMPort();
+      public static final int tunnelDistanceSensorPort = robotSpecificConstants.getTunnelPWMPort();
+  }
+
   public static final class FieldConstants {
     public static double xSpeakerPosM;
     public static double ySpeakerPosM;

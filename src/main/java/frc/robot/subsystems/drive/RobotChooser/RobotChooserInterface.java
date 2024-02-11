@@ -57,4 +57,8 @@ public interface RobotChooserInterface {
   public double getMinAutoRotateStoppedPower();
 
   public double getminAutoRotateMovingPower();
+
+  public int getIntakePWMPort();
+  
+  public int getTunnelPWMPort();
 }

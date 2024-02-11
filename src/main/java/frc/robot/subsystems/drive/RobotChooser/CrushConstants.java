@@ -140,4 +140,14 @@ public class CrushConstants implements RobotChooserInterface {
   public double getminAutoRotateMovingPower() {
     return 0.003;
   }
+
+  @Override
+  public int getIntakePWMPort() {
+    return 0;
+  }
+
+  @Override
+  public int getTunnelPWMPort() {
+    return 1; 
+  }
 }
