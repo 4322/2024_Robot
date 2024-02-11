@@ -243,6 +243,12 @@ public class DriveManual extends Command {
         break;
       case RotateInputScalingStrings.quadratic:
         rotatePower = Math.signum(rotatePower) * (rotatePower * rotatePower);
+        break;
+      case RotateInputScalingStrings.power:
+        rotatePower =
+            Math.signum(rotatePower)
+                * Math.pow(Math.abs(rotatePower), drive.getRotationPowerScaling());
+        break;
     }
     rotatePower = rotatePower * drive.getMaxManualRotationEntry();
 

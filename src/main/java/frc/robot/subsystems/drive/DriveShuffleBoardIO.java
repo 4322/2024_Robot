@@ -9,6 +9,7 @@ public interface DriveShuffleBoardIO {
     public boolean psuedoAutoRotateEnabled;
     public String driveInputScaling;
     public String rotateInputScaling;
+    public double rotateInputPowerScaling;
     public String driveControllerType;
     public double maxManualRotatePower;
     public double slowMovingAutoRotatePower;

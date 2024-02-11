@@ -566,6 +566,15 @@ public class Drive extends SubsystemBase {
     return Constants.rotateInputScaling;
   }
 
+  public double getRotationPowerScaling() {
+    if (Constants.driveEnabled) {
+      if (Constants.debug) {
+        return driveShuffleBoardInputs.rotateInputPowerScaling;
+      }
+    }
+    return Constants.rotateInputPowerScaling;
+  }
+
   public String getControlType() {
     String controller = Constants.controllerType;
     if (Constants.driveEnabled) {

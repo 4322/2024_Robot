@@ -46,6 +46,7 @@ public final class Constants {
   public static final boolean psuedoAutoRotateEnabled = false;
   public static final String driveInputScaling = DriveInputScalingStrings.quadratic;
   public static final String rotateInputScaling = RotateInputScalingStrings.linear;
+  public static final double rotateInputPowerScaling = 1.0;
   public static final String controllerType = ControllerTypeStrings.xboxLeftDrive;
 
   public static final class DriveInputScalingStrings {
@@ -58,6 +59,7 @@ public final class Constants {
     public static final String linear = "Linear";
     public static final String squareRoot = "Square Root";
     public static final String quadratic = "Quadratic";
+    public static final String power = "Power";
   }
 
   public static final class ControllerTypeStrings {

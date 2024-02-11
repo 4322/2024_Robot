@@ -30,6 +30,7 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
   private GenericEntry voltsToOvercomeFrictionEntry;
   private SendableChooser<String> driveInputScaling;
   private SendableChooser<String> rotateInputScaling;
+  private GenericEntry rotateInputPowerScaling;
   private SendableChooser<String> driveControlType;
   private GenericEntry[] feedForwardArray =
       new GenericEntry[robotSpecificConstants.getDriveffVoltsOverMetersPerSec().length];
@@ -70,12 +71,21 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
           RotateInputScalingStrings.squareRoot, RotateInputScalingStrings.squareRoot);
       rotateInputScaling.addOption(
           RotateInputScalingStrings.quadratic, RotateInputScalingStrings.quadratic);
+      rotateInputScaling.addOption(
+          RotateInputScalingStrings.power, RotateInputScalingStrings.power);
 
       customizationTab
           .add("Rotate Input Scaling", rotateInputScaling)
           .withWidget(BuiltInWidgets.kSplitButtonChooser)
           .withPosition(2, 2)
           .withSize(3, 1);
+
+      rotateInputPowerScaling =
+          customizationTab
+              .add("Power Rotation Scaling", 1)
+              .withPosition(5, 2)
+              .withSize(1, 1)
+              .getEntry();
 
       driveControlType = new SendableChooser<String>();
       driveControlType.addOption(ControllerTypeStrings.joysticks, ControllerTypeStrings.joysticks);
@@ -186,6 +196,7 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
       inputs.driveInputScaling = driveInputScaling.getSelected();
       inputs.driveControllerType = driveControlType.getSelected();
       inputs.rotateInputScaling = rotateInputScaling.getSelected();
+      inputs.rotateInputPowerScaling = rotateInputPowerScaling.getDouble(1);
       inputs.maxManualRotatePower =
           maxManualRotationEntry.getDouble(Constants.DriveConstants.Manual.maxManualRotation);
       inputs.slowMovingAutoRotatePower =
