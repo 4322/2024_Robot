@@ -1,6 +1,0 @@
-Offline installation
-Download the current offline zip and extract its contents to either 
-C:\Users\Public\wpilib\2024 on Windows or ~/wpilib/2024 on Linux/MacOS
-
-In your robot project in WPILib VSCode, press Ctrl+Shift+P and select 
-WPILib: Manage Vendor Libraries. Select Install new libraries (offline) and then select ReduxLib
