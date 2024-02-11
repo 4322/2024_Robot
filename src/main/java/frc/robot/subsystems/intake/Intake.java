@@ -5,13 +5,22 @@ import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import org.littletonrobotics.junction.Logger;
 
-public class Intake extends SubsystemBase implements IntakeInterface {
+public class Intake extends SubsystemBase {
 
   private IntakeIO io;
   private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
   private boolean initialized;
 
-  public Intake() {
+  private static Intake intake;
+
+  public static Intake getInstance() {
+    if (intake == null) {
+      intake = new Intake();
+    }
+    return intake;
+  }
+
+  private Intake() {
     switch (Constants.currentMode) {
       case REAL:
         if (Constants.intakeEnabled) {

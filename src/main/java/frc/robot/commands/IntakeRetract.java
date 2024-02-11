@@ -1,13 +1,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.intakeDeployer.IntakeDeployerInterface;
+import frc.robot.subsystems.intakeDeployer.IntakeDeployer;
 
 public class IntakeRetract extends InstantCommand {
-  private final IntakeDeployerInterface intakeDeployer;
+  private final IntakeDeployer intakeDeployer;
 
-  public IntakeRetract(IntakeDeployerInterface deployerSubsystem) {
-    intakeDeployer = deployerSubsystem;
+  public IntakeRetract() {
+    intakeDeployer = IntakeDeployer.getInstance();
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intakeDeployer);

@@ -5,8 +5,8 @@ import frc.robot.subsystems.outtakePivot.OuttakePivot;
 
 public class OuttakeResetPivot extends Command{
     private final OuttakePivot outtakePivot;
-    public OuttakeResetPivot(OuttakePivot outtakePivotSubsystem){
-        outtakePivot = outtakePivotSubsystem;
+    public OuttakeResetPivot() {
+        outtakePivot = OuttakePivot.getInstance();
         addRequirements(outtakePivot);
     }
     @Override

@@ -7,9 +7,9 @@ public class PivotToAngle extends Command {
  
   OuttakePivot outtakePivot;
   double angle;
-  public PivotToAngle(OuttakePivot outtakePivotSubsystem, double angle)
+  public PivotToAngle(double angle)
   {
-    outtakePivot = outtakePivotSubsystem;
+    outtakePivot = OuttakePivot.getInstance();
     addRequirements(outtakePivot);
     this.angle = angle;
   }

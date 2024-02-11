@@ -6,9 +6,9 @@ import frc.robot.subsystems.outtake.Outtake;
 public class OuttakeOut extends Command {
     Outtake outtake;
     double outtakeRPM;
-    public OuttakeOut(Outtake outtakeSubsystem, double targetOuttakeRPM)
+    public OuttakeOut(double targetOuttakeRPM)
     {
-        outtake = outtakeSubsystem;
+        outtake = Outtake.getInstance();
         outtakeRPM = targetOuttakeRPM;
         addRequirements(outtake);
     }

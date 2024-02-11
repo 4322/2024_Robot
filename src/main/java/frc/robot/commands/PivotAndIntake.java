@@ -1,21 +1,21 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.RobotCoordinatorInterface;
-import frc.robot.subsystems.intake.IntakeInterface;
-import frc.robot.subsystems.intakeDeployer.IntakeDeployerInterface;
+import frc.robot.subsystems.RobotCoordinator;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intakeDeployer.IntakeDeployer;
 
 public class PivotAndIntake extends Command {
-  private final IntakeInterface intake;
-  private final IntakeDeployerInterface intakeDeployer;
-  private final RobotCoordinatorInterface coordinator;
+  private final Intake intake;
+  private final IntakeDeployer intakeDeployer;
+  private final RobotCoordinator coordinator;
 
   private boolean deployed;
 
-  public PivotAndIntake(IntakeInterface intakeSubsystem, IntakeDeployerInterface intakeDeployerSubsystem, RobotCoordinatorInterface coordinator) {
-    intake = intakeSubsystem;
-    intakeDeployer = intakeDeployerSubsystem;
-    this.coordinator = coordinator;
+  public PivotAndIntake() {
+    intake = Intake.getInstance();
+    intakeDeployer = IntakeDeployer.getInstance();
+    coordinator = RobotCoordinator.getInstance();
 
     deployed = false;
 

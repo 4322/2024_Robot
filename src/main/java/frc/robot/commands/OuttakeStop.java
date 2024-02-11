@@ -6,9 +6,9 @@ import frc.robot.subsystems.outtake.Outtake;
 //unsure if this will be necessary
 public class OuttakeStop extends Command{
     Outtake outtake;
-    OuttakeStop(Outtake outtakeSubsystem)
+    OuttakeStop()
     {
-        outtake = outtakeSubsystem;
+        outtake = Outtake.getInstance();
         addRequirements(outtake);
     }
     @Override

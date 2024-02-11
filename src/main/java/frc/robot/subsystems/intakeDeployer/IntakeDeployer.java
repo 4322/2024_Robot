@@ -8,8 +8,7 @@ import frc.robot.Constants.IntakeDeployerConstants;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
-public class IntakeDeployer extends SubsystemBase
-    implements IntakeDeployerIO, IntakeDeployerInterface {
+public class IntakeDeployer extends SubsystemBase {
 
   private IntakeDeployerIO io;
   private IntakeDeployerIOInputsAutoLogged inputs = new IntakeDeployerIOInputsAutoLogged();
@@ -18,7 +17,16 @@ public class IntakeDeployer extends SubsystemBase
   private double deployTarget = 99999; // set to very high value in case target not yet set
   private boolean isDeployed;
 
-  public IntakeDeployer() {
+  private static IntakeDeployer intakeDeployer;
+
+  public static IntakeDeployer getInstance() {
+    if (intakeDeployer == null) {
+      intakeDeployer = new IntakeDeployer();
+    }
+    return intakeDeployer;
+  }
+  
+  private IntakeDeployer() {
     switch (Constants.currentMode) {
       case REAL:
         if (Constants.intakeDeployerEnabled) {
@@ -65,7 +73,7 @@ public class IntakeDeployer extends SubsystemBase
   }
 
   public void retract() {
-    if (Constants.intakeEnabled && initialized) {
+    if (Constants.intakeDeployerEnabled && initialized) {
       io.setDeployTarget(IntakeDeployerConstants.Deploy.retractPositionRotations);
       deployTarget = IntakeDeployerConstants.Deploy.retractPositionRotations;
       isDeployed = false;

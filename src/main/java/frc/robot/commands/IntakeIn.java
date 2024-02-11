@@ -1,13 +1,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.intake.IntakeInterface;
+import frc.robot.subsystems.intake.Intake;
 
 public class IntakeIn extends InstantCommand {
-  private final IntakeInterface intake;
+  private final Intake intake;
 
-  public IntakeIn(IntakeInterface intakeSubsystem) {
-    intake = intakeSubsystem;
+  public IntakeIn() {
+    intake = Intake.getInstance();
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
