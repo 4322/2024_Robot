@@ -16,7 +16,7 @@ public interface TunnelIO {
 
   public default void updateInputs(TunnelIOInputs inputs) {}
 
-  public default void setTunnel(double rps) {}
+  public default void setTunnelTarget(double rotations) {}
 
   public default void setBrakeMode() {}
 

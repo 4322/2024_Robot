@@ -343,13 +343,31 @@ public final class Constants {
   public static final class TunnelConstants {
     public static final int tunnelMotorID = 0;
 
-    public static final double turnSpeedPct = 0.0;
-    public static final double maxTunnelRPS = 0.0;
-
     public static final class TunnelConfig {
       public static final NeutralModeValue neutralMode = NeutralModeValue.Coast;
+      public static final double kP = 0.0;
+      public static final double kD = 0.0;
+      public static final double configClosedLoopRamp = 0.0;
+      public static final double maxVoltage = 0.0;
       public static final double updateHz =
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
+      public static final double timeoutMs = 50;
+    }
+
+    public static final class Feed {
+      public static final double feedPositionRotations = 0;
+      public static final double toleranceRotations = 0;
+      
+      public static final double maxVelRotationsPerSec = 0;
+      public static final boolean enableFOC = true;
+      public static final double FF = 0;
+      public static final int positionVoltageSlot =
+          0; // TODO: check if this can be 0 if PID is also 0
+      public static final boolean overrideBrakeDuringNeutral =
+          false; // we want to brake if not moving
+      public static final boolean limitForwardMotion = true;
+      public static final boolean limitReverseMotion = true;
+      public static final double encoderGearReduction = 0.0; // TODO: should be a large number
     }
 
     public static final class Logging {

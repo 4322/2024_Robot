@@ -30,7 +30,7 @@ public class TunnelFeed extends Command {
   public void execute() {
     if (coordinator.hasNote() && !coordinator.noteInFiringPosition()) {
       // PID here
-      tunnel.feed(); // give PID result
+      tunnel.feedToShootingPos(); // give PID result
     }
   }
 

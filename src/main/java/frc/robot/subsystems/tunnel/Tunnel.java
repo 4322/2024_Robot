@@ -3,6 +3,7 @@ package frc.robot.subsystems.tunnel;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.TunnelConstants;
+import frc.utility.OrangeMath;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -10,6 +11,7 @@ public class Tunnel extends SubsystemBase {
   private TunnelIO io;
   private TunnelIOInputsAutoLogged inputs = new TunnelIOInputsAutoLogged();
   private boolean initialized;
+  private double tunnelTarget;
 
   private static Tunnel tunnel;
 
@@ -46,15 +48,22 @@ public class Tunnel extends SubsystemBase {
     }
   }
 
-  public void feed() { // run the tunnel in the direction of the outtake
+  public void feedToShootingPos() { // run the tunnel in the direction towards the outtake
     if (Constants.tunnelEnabled && initialized) {
-      io.setTunnel(TunnelConstants.turnSpeedPct);
+      io.setTunnelTarget(TunnelConstants.Feed.feedPositionRotations);
+      tunnelTarget = TunnelConstants.Feed.feedPositionRotations;
       Logger.recordOutput(
-          TunnelConstants.Logging.key + "TunnelTargetSpeedPct", TunnelConstants.turnSpeedPct);
+          TunnelConstants.Logging.key + "TunnelTarget",
+          TunnelConstants.Feed.feedPositionRotations);
       Logger.recordOutput(TunnelConstants.Logging.key + "TunnelStopped", false);
     }
   }
 
+  public boolean isAtTarget() {
+    return OrangeMath.equalToEpsilon(
+        inputs.tunnelRotations, tunnelTarget, TunnelConstants.Feed.toleranceRotations);
+  }
+  
   public void setBrakeMode() {
     if (Constants.tunnelEnabled && initialized) {
       io.setBrakeMode();
