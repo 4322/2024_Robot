@@ -108,7 +108,7 @@ public class Robot extends LoggedRobot {
     m_robotContainer = new RobotContainer();
   }
 
-  // create new shuffleboard tab to show whether or not subsystem is enabled
+  // create new shuffleboard widget to show whether or not subsystem is enabled
   // also print error to driver station if not
   private void subsystemEnabled(String title, int posX, int posY, boolean enabled) {
     tab.add(title, enabled)

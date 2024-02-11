@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.FieldConstants;
 
 public class PositionVector {
-  // 218.353069 in
+  // 218.353069 inches
   public static Translation2d getVectorToSpeaker(
       double x, double y) { // Position of robot relative to origin ()
     double distance;

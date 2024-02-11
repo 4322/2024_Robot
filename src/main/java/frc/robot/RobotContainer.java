@@ -78,20 +78,6 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    switch (Constants.currentMode) {
-        // Real robot, instantiate hardware IO implementations
-      case REAL:
-        break;
-
-        // Sim robot, instantiate physics sim IO implementations
-      case SIM:
-        break;
-
-        // Replayed robot, disable hardware IO implementations
-      case REPLAY:
-        break;
-    }
-
     configureButtonBindings();
 
     if (Constants.driveEnabled) {
@@ -187,4 +173,5 @@ public class RobotContainer {
   public Command getAutoInitialize() {
     return new SequentialCommandGroup(new ResetFieldCentric(drive, true));
   }
+
 }
