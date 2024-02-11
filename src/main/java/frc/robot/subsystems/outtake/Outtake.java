@@ -19,7 +19,7 @@ public class Outtake extends SubsystemBase {
     }
     return outtake;
   }
-  
+
   private Outtake() {
     switch (Constants.currentMode) {
       case REAL:

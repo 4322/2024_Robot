@@ -8,7 +8,9 @@ import org.littletonrobotics.junction.Logger;
 public class Intake extends SubsystemBase {
 
   public enum IntakeStates {
-    INTAKING, EJECTING, STOPPED;
+    INTAKING,
+    EJECTING,
+    STOPPED;
   }
 
   private IntakeIO io;

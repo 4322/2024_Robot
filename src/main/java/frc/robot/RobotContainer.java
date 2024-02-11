@@ -16,8 +16,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.CenterLine.ScoreCenterLine;
-import frc.robot.commands.CenterLine.ScoreCenterLine.ScoringStrategy;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
@@ -114,8 +112,7 @@ public class RobotContainer {
       xbox.start()
           .onTrue(
               new SetRobotPose(
-                  new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()),
-                  true));
+                  new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()), true));
       xbox.povDown().onTrue(driveStop);
     }
   }
@@ -159,5 +156,4 @@ public class RobotContainer {
   public Command getAutoInitialize() {
     return new SequentialCommandGroup(new ResetFieldCentric(true));
   }
-
 }

@@ -17,7 +17,6 @@ public class WriteFiringSolutionAtCurrentPos extends InstantCommand {
   private OuttakePivot outtakePivot;
   double shotAngle;
   double shotMag;
-  
 
   public WriteFiringSolutionAtCurrentPos(FiringSolutionManager solutionManager) {
     drive = Drive.getInstance();

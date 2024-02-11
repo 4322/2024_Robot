@@ -25,7 +25,7 @@ public class IntakeDeployer extends SubsystemBase {
     }
     return intakeDeployer;
   }
-  
+
   private IntakeDeployer() {
     switch (Constants.currentMode) {
       case REAL:

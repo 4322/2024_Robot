@@ -31,18 +31,18 @@ public class RobotCoordinator extends SubsystemBase {
     intakeDeployer = IntakeDeployer.getInstance();
     outtakePivot = OuttakePivot.getInstance();
     switch (Constants.currentMode) {
-        case REAL:
-          NoteTracker.noteTrackerSensorsIO = new DistanceSensorIOReal();
-          break;
-        case SIM:
-          break;
-        case REPLAY: 
-          break;
-      }
-      
-      if (NoteTracker.noteTrackerSensorsIO == null) {
-        NoteTracker.noteTrackerSensorsIO = new DistanceSensorIO() {};
-      }
+      case REAL:
+        NoteTracker.noteTrackerSensorsIO = new DistanceSensorIOReal();
+        break;
+      case SIM:
+        break;
+      case REPLAY:
+        break;
+    }
+
+    if (NoteTracker.noteTrackerSensorsIO == null) {
+      NoteTracker.noteTrackerSensorsIO = new DistanceSensorIO() {};
+    }
   }
 
   @Override
@@ -59,7 +59,9 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public boolean canShoot() {
-    return outtake.isFlyWheelUpToSpeed() && outtakePivot.isAtPosition() && NoteTracker.inFiringPos();
+    return outtake.isFlyWheelUpToSpeed()
+        && outtakePivot.isAtPosition()
+        && NoteTracker.inFiringPos();
   }
 
   public boolean canPivot() {
@@ -67,7 +69,15 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public boolean intakingNote() {
-      return NoteTracker.inputs.intakeBeamBreak && intake.getState() == IntakeStates.INTAKING;
+    return NoteTracker.inputs.intakeBeamBreak && intake.getState() == IntakeStates.INTAKING;
+  }
+
+  public boolean noteInRobot() {
+    return NoteTracker.hasPassedIntake();
+  }
+
+  public boolean noteInFiringPos() {
+    return NoteTracker.inFiringPos();
   }
 
   private static class NoteTracker {
@@ -75,15 +85,12 @@ public class RobotCoordinator extends SubsystemBase {
     private static DistanceSensorIOInputsAutoLogged inputs = new DistanceSensorIOInputsAutoLogged();
 
     public static boolean inFiringPos() {
-      return OrangeMath.equalToTwoDecimal(inputs.tunnelDistance, Constants.TunnelConstants.noteToSensorDistMeters);
+      return OrangeMath.equalToTwoDecimal(
+          inputs.tunnelDistance, Constants.TunnelConstants.noteToSensorDistMeters);
     }
 
     public static boolean hasPassedIntake() {
       return !inputs.intakeBeamBreak && inputs.tunnelBeamBreak;
-    }
-
-    public static boolean isPassingIntake() {
-      return inputs.intakeBeamBreak;
     }
   }
 }

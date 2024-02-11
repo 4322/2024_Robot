@@ -22,7 +22,7 @@ public class OuttakePivot extends SubsystemBase {
     }
     return outtakePivot;
   }
-  
+
   private OuttakePivot() {
     switch (Constants.currentMode) {
       case REAL:

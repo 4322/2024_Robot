@@ -10,6 +10,7 @@ public class TunnelFeed extends Command {
   // Used to interrupt all other drive commands and stop the drive
 
   private final Tunnel tunnel;
+
   private final RobotCoordinator coordinator;
 
   public TunnelFeed() {
@@ -22,13 +23,11 @@ public class TunnelFeed extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {
-    if (coordinator.hasNote() && !coordinator.noteInFiringPosition()) {
+    if (coordinator.noteInRobot() && !coordinator.noteInFiringPos()) {
       // PID here
       tunnel.feed(); // give PID result
     }
@@ -36,9 +35,7 @@ public class TunnelFeed extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {
