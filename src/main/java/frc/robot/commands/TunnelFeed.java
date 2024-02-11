@@ -23,14 +23,12 @@ public class TunnelFeed extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
   }
 
   @Override
   public void execute() {
     if (coordinator.hasNote() && !coordinator.noteInFiringPosition()) {
-      // PID here
-      tunnel.feedToShootingPos(); // give PID result
+      tunnel.feedToShootingPos();
     }
   }
 
