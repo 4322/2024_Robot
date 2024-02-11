@@ -7,7 +7,7 @@ import frc.robot.Constants.OuttakeConstants;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
-public class OuttakePivot extends SubsystemBase {
+public class OuttakePivot extends SubsystemBase implements OuttakePivotInterface {
   private OuttakePivotIO io;
   private OuttakePivotIOInputsAutoLogged inputs = new OuttakePivotIOInputsAutoLogged();
   private Timer existenceTimer;
@@ -32,6 +32,10 @@ public class OuttakePivot extends SubsystemBase {
 
     existenceTimer = new Timer();
     existenceTimer.start();
+  }
+
+  public double getTarget() {
+    return pivotTarget;
   }
 
   public void periodic() {

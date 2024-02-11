@@ -1,26 +1,27 @@
 package frc.robot.subsystems.outtakePivot;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.reduxrobotics.sensors.canandcoder.Canandcoder;
 import frc.robot.Constants;
-import frc.robot.Constants.OuttakeConstants;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
 public class OuttakePivotIOReal implements OuttakePivotIO {
   private TalonFX pivotMotor;
-  private Canandcoder pivotEncoder;
+  private CANcoder pivotEncoder;
 
   public OuttakePivotIOReal() {
     pivotMotor = new TalonFX(Constants.OuttakeConstants.pivotDeviceID);
-    pivotEncoder = new Canandcoder(Constants.OuttakeConstants.pivotEncoderID);
     configPivot();
+    configEncoder();
   }
 
   private void configPivot() {
@@ -42,6 +43,12 @@ public class OuttakePivotIOReal implements OuttakePivotIO {
     pivotMotor.getConfigurator().apply(motorOutputConfigs);
   }
 
+  private void configEncoder() {
+    CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
+    canCoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+    pivotEncoder.getConfigurator().apply(canCoderConfig);
+  }
+
   @Override
   public void updateInputs(OuttakePivotIOInputs inputs) {
     inputs.pivotRotations = pivotMotor.getPosition().getValue();
@@ -51,30 +58,17 @@ public class OuttakePivotIOReal implements OuttakePivotIO {
     inputs.pivotCurrentAmps = pivotMotor.getSupplyCurrent().getValue();
     inputs.pivotTempC = pivotMotor.getDeviceTemp().getValue();
     inputs.pivotIsAlive = pivotMotor.isAlive();
-
-    inputs.pivotEncoderRotations = pivotEncoder.getPosition();
-    inputs.pivotEncoderRotationsPerSec = pivotEncoder.getVelocity();
   }
 
   @Override
   public boolean initPivot() {
-    pivotMotor.setPosition(
-        pivotEncoder.getAbsPosition() * OuttakeConstants.gearReductionEncoderToMotor);
-    return OrangeMath.equalToTwoDecimal(pivotEncoder.getVelocity(), 0);
+    pivotMotor.setPosition(pivotEncoder.getAbsolutePosition().getValue());
+    return OrangeMath.equalToTwoDecimal(pivotEncoder.getVelocity().getValue(), 0);
   }
 
   @Override
   public void setPivotTarget(double rotations) {
-    pivotMotor.setControl(
-        new PositionVoltage(
-            rotations,
-            OuttakeConstants.maxVelRotationsPerSec,
-            OuttakeConstants.enableFOC,
-            OuttakeConstants.pivotkFF,
-            OuttakeConstants.positionVoltageSlot,
-            OuttakeConstants.overrideBrakeDuringNeutral,
-            OuttakeConstants.limitForwardMotion,
-            OuttakeConstants.limitReverseMotion));
+    pivotMotor.setControl(new PositionVoltage(rotations));
   }
 
   @Override

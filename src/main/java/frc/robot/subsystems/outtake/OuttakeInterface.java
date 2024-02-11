@@ -12,4 +12,6 @@ public interface OuttakeInterface extends Subsystem {
   public void setBrakeMode();
 
   public boolean isFlyWheelUpToSpeed();
+
+  public double getTargetRPM();
 }

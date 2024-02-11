@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -24,11 +25,20 @@ import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetRobotPose;
 import frc.robot.commands.TunnelFeed;
 import frc.robot.commands.TunnelStop;
+import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
+import frc.robot.shooting.FiringSolution;
+import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.TestRobotCoordinator;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveInterface;
+import frc.robot.subsystems.outtake.Outtake;
+import frc.robot.subsystems.outtake.OuttakeInterface;
+import frc.robot.subsystems.outtakePivot.OuttakePivot;
+import frc.robot.subsystems.outtakePivot.OuttakePivotInterface;
 import frc.robot.subsystems.tunnel.Tunnel;
 import frc.robot.subsystems.tunnel.TunnelInterface;
+import frc.utility.interpolation.Calculator1D;
+import java.util.ArrayList;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -50,6 +60,15 @@ public class RobotContainer {
 
   private final DriveInterface drive = new Drive();
   private final TunnelInterface tunnel = new Tunnel();
+  private final OuttakeInterface outtake = new Outtake();
+  private final OuttakePivotInterface outtakePivot = new OuttakePivot();
+
+  private ObjectMapper objectMapper = new ObjectMapper();
+  private ArrayList<FiringSolution> solutions = new ArrayList<>();
+  private FiringSolutionManager firingSolutionManager =
+      new FiringSolutionManager(solutions, new Calculator1D<>(), objectMapper);
+  private final WriteFiringSolutionAtCurrentPos writeFiringSolution =
+      new WriteFiringSolutionAtCurrentPos(outtake, drive, outtakePivot, firingSolutionManager);
 
   private final DriveManual driveManual = new DriveManual(drive);
   private final DriveStop driveStop = new DriveStop(drive);
@@ -120,6 +139,9 @@ public class RobotContainer {
                   new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()),
                   true));
       xbox.povDown().onTrue(driveStop);
+      if (Constants.debug) {
+        xbox.a().onTrue(writeFiringSolution);
+      }
     }
   }
 

@@ -1,0 +1,32 @@
+[
+  {
+    "shotMag": 2.0189437609923457,
+    "shotDeg": 44.78219787670463,
+    "flywheelSpeed": 2000.0,
+    "shotAngle": 36.0
+  },
+  {
+    "shotMag": 2.6049062119741913,
+    "shotDeg": 68.40095368021848,
+    "flywheelSpeed": 2000.0,
+    "shotAngle": 36.0
+  },
+  {
+    "shotMag": 3.286922536119106,
+    "shotDeg": 53.0544283975138,
+    "flywheelSpeed": 2000.0,
+    "shotAngle": 36.0
+  },
+  {
+    "shotMag": 3.8132153009650938,
+    "shotDeg": 72.34963298071203,
+    "flywheelSpeed": 2000.0,
+    "shotAngle": 36.0
+  },
+  {
+    "shotMag": 4.708685737704936,
+    "shotDeg": 39.00908130567733,
+    "flywheelSpeed": 2000.0,
+    "shotAngle": 36.0
+  }
+]

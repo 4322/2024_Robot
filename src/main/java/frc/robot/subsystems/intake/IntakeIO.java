@@ -17,7 +17,7 @@ public interface IntakeIO {
 
   public default void updateInputs(IntakeIOInputs inputs) {}
 
-  public default void setIntake(double pct) {}
+  public default void setIntakeRPM(double rpm) {}
 
   public default void setBrakeMode() {}
 

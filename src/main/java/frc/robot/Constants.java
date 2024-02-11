@@ -31,6 +31,7 @@ public final class Constants {
   }
 
   public static final RobotType currentRobot = RobotType.NEMO;
+  public static final Mode currentMode = Mode.REAL;
 
   // Must be below currentRobot to initialize properly
   private static RobotChooserInterface robotSpecificConstants =
@@ -43,6 +44,7 @@ public final class Constants {
   public static final boolean intakeDeployerEnabled = true;
   public static final boolean gyroEnabled = true;
   public static final boolean tunnelEnabled = true;
+  public static final boolean outtakeEnabled = true;
   public static final boolean joysticksEnabled = false;
   public static final boolean xboxEnabled = true;
 
@@ -250,8 +252,7 @@ public final class Constants {
     public static final double kS = 0;
     public static final double voltPerRPS =
         0; // since we likely aren't going to adjust the speed, it's likely safe to not interpolate
-    public static final int pivotDeviceID = 0; // TODO
-    public static final int pivotEncoderID = 0; // TODO
+    public static final int pivotDeviceID = 0;
 
     public static final double pivotkD = 0;
     public static final double pivotkI = 0;
@@ -291,8 +292,9 @@ public final class Constants {
     }
 
     public static final class Intake {
-      public static final double intakeSpeedPct = 0;
-      public static final double outtakeSpeedPct = -0; // signed
+      public static final double intakeSpeedRPM = 0;
+      public static final double outtakeSpeedRPM = -0; // signed
+      public static final double maxIntakeRPM = 0.0;
     }
 
     public static final class Logging {
@@ -387,10 +389,6 @@ public final class Constants {
       wheelNumber = id;
     }
   }
-
-  public static final Mode currentMode = Mode.REAL;
-
-  public static final boolean outtakeEnabled = true;
 
   public static enum Mode {
     /** Running on a real robot. */

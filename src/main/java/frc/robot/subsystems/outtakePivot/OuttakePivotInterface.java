@@ -16,4 +16,6 @@ public interface OuttakePivotInterface extends Subsystem {
   public boolean isAtPosition();
 
   public boolean isInitialized();
+
+  public double getTarget();
 }

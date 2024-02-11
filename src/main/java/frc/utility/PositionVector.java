@@ -16,7 +16,6 @@ public class PositionVector {
     Translation2d vector;
     double xDistToTarget;
     double yDistToTarget;
-
     distance =
         Math.sqrt(
             ((x - FieldConstants.xSpeakerPosM) * (x - FieldConstants.xSpeakerPosM))
