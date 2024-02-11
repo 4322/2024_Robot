@@ -7,14 +7,23 @@ import frc.robot.Constants.OuttakeConstants;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
-public class OuttakePivot extends SubsystemBase implements OuttakePivotInterface {
+public class OuttakePivot extends SubsystemBase {
   private OuttakePivotIO io;
   private OuttakePivotIOInputsAutoLogged inputs = new OuttakePivotIOInputsAutoLogged();
   private Timer existenceTimer;
   private double pivotTarget;
   private boolean initialized;
 
-  public OuttakePivot() {
+  private static OuttakePivot outtakePivot;
+
+  public static OuttakePivot getInstance() {
+    if (outtakePivot == null) {
+      outtakePivot = new OuttakePivot();
+    }
+    return outtakePivot;
+  }
+  
+  private OuttakePivot() {
     switch (Constants.currentMode) {
       case REAL:
         if (Constants.outtakeEnabled) {

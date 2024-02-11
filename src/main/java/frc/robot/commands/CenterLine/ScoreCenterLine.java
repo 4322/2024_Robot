@@ -8,16 +8,16 @@ import frc.robot.commands.CenterLine.statemachine.CLSM;
 import frc.robot.commands.CenterLine.statemachine.CLSM.CLSMState;
 import frc.robot.commands.CenterLine.statemachine.CLSM.CLSMTrigger;
 import frc.robot.commands.CenterLine.statemachine.CLSM.TravelState;
-import frc.robot.subsystems.RobotCoordinatorInterface;
-import frc.robot.subsystems.drive.DriveInterface;
+import frc.robot.subsystems.RobotCoordinator;
+import frc.robot.subsystems.drive.Drive;
 
 public class ScoreCenterLine extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final DriveInterface drive;
+  private final Drive drive;
 
   private final CLSM machine;
   private final EnvironmentTracker tracker;
-  private final RobotCoordinatorInterface coordinator;
+  private final RobotCoordinator coordinator;
 
   private Command travelCommand;
   private boolean isFinished = false;
@@ -27,12 +27,9 @@ public class ScoreCenterLine extends Command {
     DoNothing,
   }
 
-  public ScoreCenterLine(
-      DriveInterface drivesubsystem,
-      RobotCoordinatorInterface coordinator,
-      ScoringStrategy strategy) {
-    drive = drivesubsystem;
-    this.coordinator = coordinator;
+  public ScoreCenterLine(ScoringStrategy strategy) {
+    drive = Drive.getInstance();
+    coordinator = RobotCoordinator.getInstance();
     machine = new CLSM(strategy);
     tracker = new EnvironmentTracker(new NoteStatus(true, true, true, true, true));
 

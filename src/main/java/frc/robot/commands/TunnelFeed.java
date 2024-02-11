@@ -1,20 +1,20 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.RobotCoordinatorInterface;
-import frc.robot.subsystems.tunnel.TunnelInterface;
+import frc.robot.subsystems.RobotCoordinator;
+import frc.robot.subsystems.tunnel.Tunnel;
 
 public class TunnelFeed extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
   // Used to interrupt all other drive commands and stop the drive
 
-  private final TunnelInterface tunnel;
-  private final RobotCoordinatorInterface coordinator;
+  private final Tunnel tunnel;
+  private final RobotCoordinator coordinator;
 
-  public TunnelFeed(TunnelInterface tunnelSubsystem, RobotCoordinatorInterface coordinator) {
-    tunnel = tunnelSubsystem;
-    this.coordinator = coordinator;
+  public TunnelFeed() {
+    tunnel = Tunnel.getInstance();
+    coordinator = RobotCoordinator.getInstance();
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(tunnel);

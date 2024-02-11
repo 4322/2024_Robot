@@ -28,15 +28,10 @@ import frc.robot.commands.TunnelStop;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
 import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
-import frc.robot.subsystems.TestRobotCoordinator;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.drive.DriveInterface;
 import frc.robot.subsystems.outtake.Outtake;
-import frc.robot.subsystems.outtake.OuttakeInterface;
 import frc.robot.subsystems.outtakePivot.OuttakePivot;
-import frc.robot.subsystems.outtakePivot.OuttakePivotInterface;
 import frc.robot.subsystems.tunnel.Tunnel;
-import frc.robot.subsystems.tunnel.TunnelInterface;
 import frc.utility.interpolation.Calculator1D;
 import java.util.ArrayList;
 
@@ -54,27 +49,26 @@ public class RobotContainer {
   public static Joystick driveStick;
   public static Joystick rotateStick;
 
-  private JoystickButton driveButtonThree;
   private JoystickButton driveButtonSeven;
   private JoystickButton driveButtonTwelve;
 
-  private final DriveInterface drive = new Drive();
-  private final TunnelInterface tunnel = new Tunnel();
-  private final OuttakeInterface outtake = new Outtake();
-  private final OuttakePivotInterface outtakePivot = new OuttakePivot();
+  private final Drive drive = Drive.getInstance();
+  private final Tunnel tunnel = Tunnel.getInstance();
+  private final Outtake outtake = Outtake.getInstance();
+  private final OuttakePivot outtakePivot = OuttakePivot.getInstance();
 
   private ObjectMapper objectMapper = new ObjectMapper();
   private ArrayList<FiringSolution> solutions = new ArrayList<>();
   private FiringSolutionManager firingSolutionManager =
       new FiringSolutionManager(solutions, new Calculator1D<>(), objectMapper);
   private final WriteFiringSolutionAtCurrentPos writeFiringSolution =
-      new WriteFiringSolutionAtCurrentPos(outtake, drive, outtakePivot, firingSolutionManager);
+      new WriteFiringSolutionAtCurrentPos(firingSolutionManager);
 
-  private final DriveManual driveManual = new DriveManual(drive);
-  private final DriveStop driveStop = new DriveStop(drive);
+  private final DriveManual driveManual = new DriveManual();
+  private final DriveStop driveStop = new DriveStop();
 
-  private final TunnelFeed tunnelFeedDefault = new TunnelFeed(tunnel);
-  private final TunnelStop tunnelStop = new TunnelStop(tunnel);
+  private final TunnelFeed tunnelFeedDefault = new TunnelFeed();
+  private final TunnelStop tunnelStop = new TunnelStop();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -99,11 +93,10 @@ public class RobotContainer {
       driveStick = new Joystick(0);
       rotateStick = new Joystick(1);
 
-      driveButtonThree = new JoystickButton(driveStick, 3);
       driveButtonSeven = new JoystickButton(driveStick, 7);
       driveButtonTwelve = new JoystickButton(driveStick, 12);
 
-      driveButtonSeven.onTrue(new ResetFieldCentric(drive, true));
+      driveButtonSeven.onTrue(new ResetFieldCentric(true));
       driveButtonTwelve.onTrue(driveStop);
     }
 
@@ -115,13 +108,12 @@ public class RobotContainer {
                   () -> {
                     driveManual.updateStateMachine(DriveManualTrigger.JOYSTICK_IN);
                   }));
-      xbox.povUp().onTrue(new ResetFieldCentric(drive, true));
+      xbox.povUp().onTrue(new ResetFieldCentric(true));
       // Reset the odometry for testing speaker-centric driving. This assumes robot is on the
       // very left on the front of the speaker, facing down-field (forward).
       xbox.start()
           .onTrue(
               new SetRobotPose(
-                  drive,
                   new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()),
                   true));
       xbox.povDown().onTrue(driveStop);
@@ -158,17 +150,14 @@ public class RobotContainer {
     if (Constants.Demo.inDemoMode) {
       return null;
     }
-    return new ScoreCenterLine(
-        drive,
-        new TestRobotCoordinator(true, true, true, true, true, true),
-        ScoringStrategy.OneToFive);
+    return null;
   }
 
   // AUTO COMMANDS
 
   // Command that should always start off every auto
   public Command getAutoInitialize() {
-    return new SequentialCommandGroup(new ResetFieldCentric(drive, true));
+    return new SequentialCommandGroup(new ResetFieldCentric(true));
   }
 
 }

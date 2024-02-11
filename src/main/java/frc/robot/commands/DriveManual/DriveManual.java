@@ -11,7 +11,7 @@ import frc.robot.Constants.InputScalingStrings;
 import frc.robot.RobotContainer;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualState;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
-import frc.robot.subsystems.drive.DriveInterface;
+import frc.robot.subsystems.drive.Drive;
 import frc.utility.OrangeMath;
 import frc.utility.PositionVector;
 import org.littletonrobotics.junction.Logger;
@@ -23,7 +23,7 @@ public class DriveManual extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  private final DriveInterface drive;
+  private final Drive drive;
 
   private final DriveManualStateMachine stateMachine;
 
@@ -53,8 +53,8 @@ public class DriveManual extends Command {
     frontRight;
   }
 
-  public DriveManual(DriveInterface drivesubsystem) {
-    drive = drivesubsystem;
+  public DriveManual() {
+    drive = Drive.getInstance();
     stateMachine = new DriveManualStateMachine(DriveManualState.DEFAULT);
 
     // Use addRequirements() here to declare subsystem dependencies.

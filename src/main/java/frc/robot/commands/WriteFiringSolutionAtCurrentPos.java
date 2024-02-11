@@ -4,28 +4,25 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
-import frc.robot.subsystems.drive.DriveInterface;
-import frc.robot.subsystems.outtake.OuttakeInterface;
-import frc.robot.subsystems.outtakePivot.OuttakePivotInterface;
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.outtake.Outtake;
+import frc.robot.subsystems.outtakePivot.OuttakePivot;
 import frc.utility.PositionVector;
 
 public class WriteFiringSolutionAtCurrentPos extends InstantCommand {
 
   private FiringSolutionManager firingSolutionManager;
-  private OuttakeInterface outtake;
-  private DriveInterface drive;
-  private OuttakePivotInterface outtakePivot;
+  private Drive drive;
+  private Outtake outtake;
+  private OuttakePivot outtakePivot;
   double shotAngle;
   double shotMag;
+  
 
-  public WriteFiringSolutionAtCurrentPos(
-      OuttakeInterface outtakeSubsystem,
-      DriveInterface drivesubsystem,
-      OuttakePivotInterface pivot,
-      FiringSolutionManager solutionManager) {
-    outtake = outtakeSubsystem;
-    drive = drivesubsystem;
-    outtakePivot = pivot;
+  public WriteFiringSolutionAtCurrentPos(FiringSolutionManager solutionManager) {
+    drive = Drive.getInstance();
+    outtake = Outtake.getInstance();
+    outtakePivot = OuttakePivot.getInstance();
     firingSolutionManager = solutionManager;
   }
 

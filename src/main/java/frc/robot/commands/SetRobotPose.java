@@ -3,17 +3,17 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.drive.DriveInterface;
+import frc.robot.subsystems.drive.Drive;
 
 public class SetRobotPose extends InstantCommand {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final DriveInterface driveSubsystem;
+  private final Drive drive;
 
   private final Pose2d pose;
   private final boolean runWhenEnabled;
 
-  public SetRobotPose(DriveInterface drive, Pose2d pose, boolean runWhenEnabled) {
-    this.driveSubsystem = drive;
+  public SetRobotPose(Pose2d pose, boolean runWhenEnabled) {
+    drive = Drive.getInstance();
     this.pose = pose;
     this.runWhenEnabled = runWhenEnabled;
 
@@ -25,7 +25,7 @@ public class SetRobotPose extends InstantCommand {
   @Override
   public void initialize() {
     if (DriverStation.isDisabled() || runWhenEnabled) {
-      driveSubsystem.resetOdometry(pose);
+      drive.resetOdometry(pose);
       // TODO: AdvantageKit
       String report = "Reset Field Pose";
       DriverStation.reportWarning(report, false);

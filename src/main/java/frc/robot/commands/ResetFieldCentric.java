@@ -2,27 +2,27 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.drive.DriveInterface;
+import frc.robot.subsystems.drive.Drive;
 
 public class ResetFieldCentric extends InstantCommand {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final DriveInterface driveSubsystem;
+  private final Drive drive;
 
   private final boolean runWhenEnabled;
 
-  public ResetFieldCentric(DriveInterface driveSubsystem, boolean runWhenEnabled) {
-    this.driveSubsystem = driveSubsystem;
+  public ResetFieldCentric(boolean runWhenEnabled) {
+    drive = Drive.getInstance();
     this.runWhenEnabled = runWhenEnabled;
     // Interrupt the active DriveManual command so we don't auto-rotate
     // back to the old heading lock that is no longer valid after the reset.
-    addRequirements(driveSubsystem);
+    addRequirements(drive);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     if (DriverStation.isDisabled() || runWhenEnabled) {
-      driveSubsystem.resetFieldCentric();
+      drive.resetFieldCentric();
       String report = "Reset Field Centric";
       DriverStation.reportWarning(report, false);
     }

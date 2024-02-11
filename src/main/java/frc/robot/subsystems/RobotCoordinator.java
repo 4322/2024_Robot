@@ -1,30 +1,34 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.NoteTracker.NoteTrackerInterface;
-import frc.robot.subsystems.intake.IntakeInterface;
-import frc.robot.subsystems.intakeDeployer.IntakeDeployerInterface;
-import frc.robot.subsystems.outtake.OuttakeInterface;
-import frc.robot.subsystems.outtakePivot.OuttakePivotInterface;
+import frc.robot.subsystems.NoteTracker.NoteTracker;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intakeDeployer.IntakeDeployer;
+import frc.robot.subsystems.outtake.Outtake;
+import frc.robot.subsystems.outtakePivot.OuttakePivot;
 
-public class RobotCoordinator extends SubsystemBase implements RobotCoordinatorInterface {
-  private IntakeInterface intake;
-  private OuttakeInterface outtake;
-  private IntakeDeployerInterface intakeDeployer;
-  private OuttakePivotInterface outtakePivot;
-  private NoteTrackerInterface noteTracker;
+public class RobotCoordinator extends SubsystemBase {
+  private Intake intake;
+  private Outtake outtake;
+  private IntakeDeployer intakeDeployer;
+  private OuttakePivot outtakePivot;
+  private NoteTracker noteTracker;
 
-  public RobotCoordinator(
-      IntakeInterface intake,
-      OuttakeInterface outtake,
-      IntakeDeployerInterface deployer,
-      OuttakePivotInterface pivot,
-      NoteTrackerInterface noteTracker) {
-    this.intake = intake;
-    this.outtake = outtake;
-    intakeDeployer = deployer;
-    outtakePivot = pivot;
-    this.noteTracker = noteTracker;
+  private static RobotCoordinator robotCoordinator;
+
+  public static RobotCoordinator getInstance() {
+    if (robotCoordinator == null) {
+      robotCoordinator = new RobotCoordinator();
+    }
+    return robotCoordinator;
+  }
+
+  private RobotCoordinator() {
+    intake = Intake.getInstance();
+    outtake = Outtake.getInstance();
+    intakeDeployer = IntakeDeployer.getInstance();
+    outtakePivot = OuttakePivot.getInstance();
+    noteTracker = NoteTracker.getInstance();
   }
 
   @Override
