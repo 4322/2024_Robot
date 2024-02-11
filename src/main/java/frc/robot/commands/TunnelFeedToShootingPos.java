@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.tunnel.Tunnel;
 
-public class TunnelFeed extends Command {
+public class TunnelFeedToShootingPos extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
   // Used to interrupt all other drive commands and stop the drive
@@ -12,7 +12,7 @@ public class TunnelFeed extends Command {
   private final Tunnel tunnel;
   private final RobotCoordinator coordinator;
 
-  public TunnelFeed() {
+  public TunnelFeedToShootingPos() {
     tunnel = Tunnel.getInstance();
     coordinator = RobotCoordinator.getInstance();
 
