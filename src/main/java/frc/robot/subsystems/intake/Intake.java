@@ -7,9 +7,14 @@ import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
 
+  public enum IntakeStates {
+    INTAKING, EJECTING, STOPPED;
+  }
+
   private IntakeIO io;
   private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
   private boolean initialized;
+  private IntakeStates intakeState = IntakeStates.STOPPED;
 
   private static Intake intake;
 
@@ -53,6 +58,7 @@ public class Intake extends SubsystemBase {
           IntakeConstants.Logging.key + "IntakeTargetSpeedPct",
           IntakeConstants.Intake.intakeSpeedRPM);
       Logger.recordOutput(IntakeConstants.Logging.key + "IntakeStopped", false);
+      intakeState = IntakeStates.INTAKING;
     }
   }
 
@@ -63,6 +69,7 @@ public class Intake extends SubsystemBase {
           IntakeConstants.Logging.key + "IntakeTargetSpeedPct",
           IntakeConstants.Intake.outtakeSpeedRPM);
       Logger.recordOutput(IntakeConstants.Logging.key + "IntakeStopped", false);
+      intakeState = IntakeStates.EJECTING;
     }
   }
 
@@ -85,6 +92,11 @@ public class Intake extends SubsystemBase {
       io.stopIntake();
       Logger.recordOutput(IntakeConstants.Logging.key + "IntakeTargetSpeedPct", 0);
       Logger.recordOutput(IntakeConstants.Logging.key + "IntakeStopped", true);
+      intakeState = intakeState.STOPPED;
     }
+  }
+
+  public IntakeStates getState() {
+    return intakeState;
   }
 }

@@ -346,6 +346,8 @@ public final class Constants {
     public static final double turnSpeedPct = 0.0;
     public static final double maxTunnelRPS = 0.0;
 
+    public static final double noteToSensorDistMeters = 0.0; // TODO
+
     public static final class TunnelConfig {
       public static final NeutralModeValue neutralMode = NeutralModeValue.Coast;
       public static final double updateHz =
