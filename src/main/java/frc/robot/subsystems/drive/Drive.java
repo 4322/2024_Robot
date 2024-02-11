@@ -548,13 +548,22 @@ public class Drive extends SubsystemBase {
     return Constants.DriveConstants.Manual.maxManualRotation;
   }
 
-  public String getInputScaling() {
+  public String getDriveInputScaling() {
     if (Constants.driveEnabled) {
       if (Constants.debug) {
-        return driveShuffleBoardInputs.inputScaling;
+        return driveShuffleBoardInputs.driveInputScaling;
       }
     }
     return Constants.driveInputScaling;
+  }
+
+  public String getRotateInputScaling() {
+    if (Constants.driveEnabled) {
+      if (Constants.debug) {
+        return driveShuffleBoardInputs.rotateInputScaling;
+      }
+    }
+    return Constants.rotateInputScaling;
   }
 
   public String getControlType() {

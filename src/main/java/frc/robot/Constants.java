@@ -44,13 +44,20 @@ public final class Constants {
   public static final boolean spinoutCenterEnabled = true; // center rotate burst of power
   public static final boolean spinoutCornerEnabled = true;
   public static final boolean psuedoAutoRotateEnabled = false;
-  public static final String driveInputScaling = InputScalingStrings.quadratic;
+  public static final String driveInputScaling = DriveInputScalingStrings.quadratic;
+  public static final String rotateInputScaling = RotateInputScalingStrings.linear;
   public static final String controllerType = ControllerTypeStrings.xboxLeftDrive;
 
-  public static final class InputScalingStrings {
+  public static final class DriveInputScalingStrings {
     public static final String linear = "Linear";
     public static final String quadratic = "Quadratic";
     public static final String cubic = "Cubic";
+  }
+
+  public static final class RotateInputScalingStrings {
+    public static final String linear = "Linear";
+    public static final String squareRoot = "Square Root";
+    public static final String quadratic = "Quadratic";
   }
 
   public static final class ControllerTypeStrings {
