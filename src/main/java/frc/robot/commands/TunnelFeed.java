@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.RobotCoordinatorInterface;
 import frc.robot.subsystems.tunnel.TunnelInterface;
 
 public class TunnelFeed extends Command {
@@ -9,9 +10,11 @@ public class TunnelFeed extends Command {
   // Used to interrupt all other drive commands and stop the drive
 
   private final TunnelInterface tunnel;
+  private final RobotCoordinatorInterface coordinator;
 
-  public TunnelFeed(TunnelInterface tunnelSubsystem) {
+  public TunnelFeed(TunnelInterface tunnelSubsystem, RobotCoordinatorInterface coordinator) {
     tunnel = tunnelSubsystem;
+    this.coordinator = coordinator;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(tunnel);
@@ -20,10 +23,25 @@ public class TunnelFeed extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    tunnel.feed();
+    
+  }
+
+  @Override
+  public void execute() {
+    if (coordinator.hasNote() && !coordinator.noteInFiringPosition()) {
+      // PID here
+      tunnel.feed(); // give PID result
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+
+  }
+
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
 }
