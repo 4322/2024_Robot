@@ -15,7 +15,6 @@ public class IntakeDeployer extends SubsystemBase {
   private Timer existenceTimer;
   private boolean initialized;
   private double deployTarget = 99999; // set to very high value in case target not yet set
-  private boolean isDeployed;
 
   private static IntakeDeployer intakeDeployer;
 
@@ -64,7 +63,6 @@ public class IntakeDeployer extends SubsystemBase {
     if (Constants.intakeEnabled && initialized) {
       io.setDeployTarget(IntakeDeployerConstants.Deploy.deployPositionRotations);
       deployTarget = IntakeDeployerConstants.Deploy.deployPositionRotations;
-      isDeployed = true;
       Logger.recordOutput(
           IntakeDeployerConstants.Logging.key + "DeployTargetRotations",
           IntakeDeployerConstants.Deploy.deployPositionRotations);
@@ -76,7 +74,6 @@ public class IntakeDeployer extends SubsystemBase {
     if (Constants.intakeDeployerEnabled && initialized) {
       io.setDeployTarget(IntakeDeployerConstants.Deploy.retractPositionRotations);
       deployTarget = IntakeDeployerConstants.Deploy.retractPositionRotations;
-      isDeployed = false;
       Logger.recordOutput(
           IntakeDeployerConstants.Logging.key + "DeployTargetRotations",
           IntakeDeployerConstants.Deploy.retractPositionRotations);
@@ -111,7 +108,7 @@ public class IntakeDeployer extends SubsystemBase {
   }
 
   public boolean isDeployed() {
-    return isDeployed;
+    return this.isAtPosition();
   }
 
   public boolean isInitialized() {

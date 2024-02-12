@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
+import frc.robot.commands.IntakeDeploy;
+import frc.robot.commands.IntakeIn;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetRobotPose;
 import frc.robot.commands.TunnelFeed;
@@ -114,6 +116,7 @@ public class RobotContainer {
               new SetRobotPose(
                   new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()), true));
       xbox.povDown().onTrue(driveStop);
+      xbox.rightTrigger().whileTrue(new SequentialCommandGroup(new IntakeDeploy(), new IntakeIn()));
     }
   }
 

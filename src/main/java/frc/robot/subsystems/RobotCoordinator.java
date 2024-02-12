@@ -11,6 +11,24 @@ import frc.utility.OrangeMath;
 
 public class RobotCoordinator extends SubsystemBase {
 
+  public enum RobotStates {
+    defaultDrive, 
+    deploying,
+    feeding,
+    stowing,
+    noteObtained,
+    noteSecured,
+    readyToShoot,
+    shoot;
+  }
+
+  public enum FeedingStates {
+    manual,
+    auto;
+  }
+
+  private RobotStates robotState = RobotStates.defaultDrive;
+
   private Intake intake;
   private Outtake outtake;
   private IntakeDeployer intakeDeployer;
@@ -53,8 +71,16 @@ public class RobotCoordinator extends SubsystemBase {
     noteTrackerSensorsIO.updateInputs(inputs);
   }
 
+  public RobotStates getRobotState() {
+    return robotState;
+  }
+
   public boolean canIntake() {
     return intakeDeployer.isAtPosition() && intakeDeployer.isDeployed();
+  }
+
+  public boolean isIntakeDeployed() {
+    return intakeDeployer.isDeployed();
   }
 
   public boolean canDeploy() {
@@ -77,6 +103,10 @@ public class RobotCoordinator extends SubsystemBase {
 
   public boolean noteInRobot() {
     return !inputs.intakeBeamBreak && inputs.tunnelBeamBreak;
+  }
+
+  public boolean noteAtFirstSensor() {
+    return inputs.intakeBeamBreak;
   }
 
   public boolean noteInFiringPos() {
