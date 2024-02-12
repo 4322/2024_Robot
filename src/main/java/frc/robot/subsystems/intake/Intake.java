@@ -15,7 +15,6 @@ public class Intake extends SubsystemBase {
 
   private IntakeIO io;
   private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
-  private boolean initialized;
   private IntakeStates intakeState = IntakeStates.STOPPED;
 
   private static Intake intake;
@@ -47,14 +46,14 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (Constants.intakeEnabled && initialized) {
+    if (Constants.intakeEnabled) {
       io.updateInputs(inputs);
       Logger.processInputs(IntakeConstants.Logging.key, inputs);
     }
   }
 
   public void intake() {
-    if (Constants.intakeEnabled && initialized) {
+    if (Constants.intakeEnabled) {
       io.setIntakeRPM(IntakeConstants.Intake.intakeSpeedRPM);
       Logger.recordOutput(
           IntakeConstants.Logging.key + "IntakeTargetSpeedPct",
@@ -65,7 +64,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void outtake() {
-    if (Constants.intakeEnabled && initialized) {
+    if (Constants.intakeEnabled) {
       io.setIntakeRPM(IntakeConstants.Intake.outtakeSpeedRPM);
       Logger.recordOutput(
           IntakeConstants.Logging.key + "IntakeTargetSpeedPct",
@@ -76,21 +75,21 @@ public class Intake extends SubsystemBase {
   }
 
   public void setBrakeMode() {
-    if (Constants.intakeEnabled && initialized) {
+    if (Constants.intakeEnabled) {
       io.setBrakeMode();
       Logger.recordOutput(IntakeConstants.Logging.key + "TargetBrakeMode", "Brake");
     }
   }
 
   public void setCoastMode() {
-    if (Constants.intakeEnabled && initialized) {
+    if (Constants.intakeEnabled) {
       io.setCoastMode();
       Logger.recordOutput(IntakeConstants.Logging.key + "TargetBrakeMode", "Coast");
     }
   }
 
   public void stopIntake() {
-    if (Constants.intakeEnabled && initialized) {
+    if (Constants.intakeEnabled) {
       io.stopIntake();
       Logger.recordOutput(IntakeConstants.Logging.key + "IntakeTargetSpeedPct", 0);
       Logger.recordOutput(IntakeConstants.Logging.key + "IntakeStopped", true);

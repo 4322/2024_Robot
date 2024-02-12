@@ -8,7 +8,6 @@ import org.littletonrobotics.junction.Logger;
 public class Tunnel extends SubsystemBase {
   private TunnelIO io;
   private TunnelIOInputsAutoLogged inputs = new TunnelIOInputsAutoLogged();
-  private boolean initialized;
 
   private static Tunnel tunnel;
 
@@ -39,14 +38,14 @@ public class Tunnel extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (Constants.tunnelEnabled && initialized) {
+    if (Constants.tunnelEnabled) {
       io.updateInputs(inputs);
       Logger.processInputs(TunnelConstants.Logging.key, inputs);
     }
   }
 
   public void feed() { // run the tunnel in the direction of the outtake
-    if (Constants.tunnelEnabled && initialized) {
+    if (Constants.tunnelEnabled) {
       io.setTunnel(TunnelConstants.turnSpeedPct);
       Logger.recordOutput(
           TunnelConstants.Logging.key + "TunnelTargetSpeedPct", TunnelConstants.turnSpeedPct);
@@ -55,21 +54,21 @@ public class Tunnel extends SubsystemBase {
   }
 
   public void setBrakeMode() {
-    if (Constants.tunnelEnabled && initialized) {
+    if (Constants.tunnelEnabled) {
       io.setBrakeMode();
       Logger.recordOutput(TunnelConstants.Logging.key + "TargetBrakeMode", "Brake");
     }
   }
 
   public void setCoastMode() {
-    if (Constants.tunnelEnabled && initialized) {
+    if (Constants.tunnelEnabled) {
       io.setCoastMode();
       Logger.recordOutput(TunnelConstants.Logging.key + "TargetBrakeMode", "Coast");
     }
   }
 
   public void stopTunnel() {
-    if (Constants.tunnelEnabled && initialized) {
+    if (Constants.tunnelEnabled) {
       io.stopTunnel();
       Logger.recordOutput(TunnelConstants.Logging.key + "TunnelTargetSpeedPct", 0);
       Logger.recordOutput(TunnelConstants.Logging.key + "TunnelStopped", true);
