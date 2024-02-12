@@ -29,11 +29,11 @@ public class PivotAndIntake extends Command {
 
   @Override
   public void execute() {
-    if (coordinator.canDeploy() && !deployed) { // only deploy once to not break PID (just in case)
+    if (coordinator.canDeploy() && !deployed && !coordinator.noteInRobot()) { // only deploy once to not break PID (just in case)
       deployed = true;
       intakeDeployer.deploy();
     }
-    if (coordinator.canIntake() && !coordinator.noteInRobot()) {
+    if (coordinator.canIntake()) {
       intake.intake();
     }
   }
