@@ -33,7 +33,7 @@ public class PivotAndIntake extends Command {
       deployed = true;
       intakeDeployer.deploy();
     }
-    if (coordinator.canIntake()) {
+    if (coordinator.canIntake() && !coordinator.noteInRobot()) {
       intake.intake();
     }
   }
