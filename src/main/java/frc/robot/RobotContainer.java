@@ -21,6 +21,7 @@ import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.IntakeDeploy;
 import frc.robot.commands.IntakeIn;
+import frc.robot.commands.OuttakeOut;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetRobotPose;
 import frc.robot.commands.TunnelFeed;
@@ -63,12 +64,15 @@ public class RobotContainer {
       new FiringSolutionManager(solutions, new Calculator1D<>(), objectMapper);
   private final WriteFiringSolutionAtCurrentPos writeFiringSolution =
       new WriteFiringSolutionAtCurrentPos(firingSolutionManager);
+  private final FiringSolution firingSolution = firingSolutionManager.loadSolutions();
 
   private final DriveManual driveManual = new DriveManual();
   private final DriveStop driveStop = new DriveStop();
 
   private final TunnelFeed tunnelFeedDefault = new TunnelFeed();
-  private final TunnelStop tunnelStop = new TunnelStop();
+  private final TunnelStop tunnelStodp = new TunnelStop();
+
+  private final OuttakeOut outtakeOut = new OuttakeOut(0);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -80,6 +84,10 @@ public class RobotContainer {
 
     if (Constants.tunnelEnabled) {
       tunnel.setDefaultCommand(tunnelFeedDefault);
+    }
+
+    if (Constants.outtakeEnabled) {
+      outtake.setDefaultCommand(outtakeOut);
     }
   }
   /**
