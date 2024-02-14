@@ -33,6 +33,7 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.robot.subsystems.outtakePivot.OuttakePivot;
 import frc.robot.subsystems.tunnel.Tunnel;
+import frc.utility.PositionVector;
 import frc.utility.interpolation.Calculator1D;
 import java.util.ArrayList;
 
@@ -67,9 +68,10 @@ public class RobotContainer {
   private final DriveStop driveStop = new DriveStop();
 
   private final TunnelFeed tunnelFeedDefault = new TunnelFeed();
-  private final TunnelStop tunnelStodp = new TunnelStop();
+  private final TunnelStop tunnelStop = new TunnelStop();
 
-  private final OuttakeOut outtakeOut = new OuttakeOut(0);
+  private final OuttakeOut outtakeOut = new OuttakeOut(
+    new PositionVector().getVectorToSpeaker(drive.getPose2d().getX(), drive.getPose2d().getY()));
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
