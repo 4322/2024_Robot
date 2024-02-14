@@ -10,6 +10,7 @@ public class TunnelFeed extends Command {
   // Used to interrupt all other drive commands and stop the drive
 
   private final Tunnel tunnel;
+  private boolean noteDetected;
 
   public TunnelFeed() {
     tunnel = Tunnel.getInstance();
@@ -20,18 +21,26 @@ public class TunnelFeed extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    noteDetected = false;
+  }
 
   @Override
   public void execute() {
-    if (!RobotCoordinator.getInstance().noteInFiringPos() && RobotCoordinator.getInstance().noteAtFirstSensor()) {
+    // If note midway between intake and tunnel sensor, tunnel still runs
+    if (RobotCoordinator.getInstance().noteAtFirstSensor()) {
+      noteDetected = true;
+    }
+
+    if (noteDetected) {
       tunnel.feed();
     }
+    
   }
 
   @Override
   public boolean isFinished() {
-    return RobotCoordinator.getInstance().noteInFiringPos();
+    return RobotCoordinator.getInstance().noteInFiringPos() && !RobotCoordinator.getInstance().noteAtFirstSensor();
   }
 
   // Called once the command ends or is interrupted.
