@@ -60,12 +60,9 @@ public class RobotContainer {
 
   private ObjectMapper objectMapper = new ObjectMapper();
   private ArrayList<FiringSolution> solutions = new ArrayList<>();
-  private FiringSolutionManager firingSolutionManager =
-      new FiringSolutionManager(solutions, new Calculator1D<>(), objectMapper);
-  private final WriteFiringSolutionAtCurrentPos writeFiringSolution =
-      new WriteFiringSolutionAtCurrentPos(firingSolutionManager);
-  private final FiringSolution firingSolution = firingSolutionManager.loadSolutions();
-
+  private FiringSolutionManager firingSolutionManager = FiringSolutionManager.getInstance();
+  private final WriteFiringSolutionAtCurrentPos writeFiringSolution = new WriteFiringSolutionAtCurrentPos();
+  
   private final DriveManual driveManual = new DriveManual();
   private final DriveStop driveStop = new DriveStop();
 
