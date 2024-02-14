@@ -36,7 +36,7 @@ public class WriteFiringSolutionAtCurrentPos extends InstantCommand {
             rawTranslation.getX() * rawTranslation.getX()
                 + rawTranslation.getY() * rawTranslation.getY());
     FiringSolution solution =
-        new FiringSolution(shotMag, shotAngle, outtake.getTargetRPM(), outtakePivot.getTarget());
+        new FiringSolution(shotMag, shotAngle, outtake.getTargetRPS(), outtakePivot.getTarget());
     firingSolutionManager.writeSolution(solution);
   }
 

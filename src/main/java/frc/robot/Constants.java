@@ -272,9 +272,9 @@ public final class Constants {
     public static final NeutralModeValue pivotDefaultNeutralMode = NeutralModeValue.Coast;
     public static final double defaultPivotPosition = 0;
 
-    public static final double topOuttakeRPM = 0;
-    public static final double bottomOuttakeRPM = 0;
-    public static final double outtakeToleranceRPM = 0;
+    public static final double topOuttakeRPS = 0;
+    public static final double bottomOuttakeRPS = 0;
+    public static final double outtakeToleranceRPS = 0;
     public static final double pivotToleranceRotations = 0;
 
     public static final double maxRPM = 0;
