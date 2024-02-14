@@ -8,14 +8,14 @@ import frc.robot.Constants.FieldConstants;
 
 public class PositionVector {
   // 218.353069 inches
-  private double distance;
-  private double angleRadians;
-  private Rotation2d angle;
-  private Translation2d vector;
-  private double xDistToTarget;
-  private double yDistToTarget;
+  private static double distance;
+  private static double angleRadians;
+  private static Rotation2d angle;
+  private static Translation2d vector;
+  private static double xDistToTarget;
+  private static double yDistToTarget;
 
-  public Translation2d getVectorToSpeaker(
+  public static Translation2d getVectorToSpeaker(
       double x, double y) { // Position of robot relative to origin ()
     distance =
         Math.sqrt(
