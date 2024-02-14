@@ -70,8 +70,7 @@ public class RobotContainer {
   private final DriveManual driveManual = new DriveManual();
   private final DriveStop driveStop = new DriveStop();
 
-  private final TunnelFeed tunnelFeedDefault = new TunnelFeed();
-  private final TunnelStop tunnelStop = new TunnelStop();
+  private final TunnelFeed tunnelFeed = new TunnelFeed();
 
   private final IntakeRetract intakeRetract = new IntakeRetract();
 
@@ -84,7 +83,7 @@ public class RobotContainer {
     }
 
     if (Constants.tunnelEnabled) {
-      tunnel.setDefaultCommand(tunnelFeedDefault);
+      tunnel.setDefaultCommand(tunnelFeed);
     }
 
     if (Constants.intakeDeployerEnabled) {

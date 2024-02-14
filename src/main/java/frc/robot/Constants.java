@@ -345,19 +345,18 @@ public final class Constants {
     public static final int intakeBeamBreakID = 0; // TODO
   }
 
-  public static final class TunnelConstants {
-    public static final int tunnelMotorID = 0;
+  public static final class TunnelConstants { 
+    public static final int tunnelMotorID = 0; // TODO
 
-    public static final double turnSpeedPct = 0.0;
-    public static final double maxTunnelRPS = 0.0;
+    public static final double kP = 0; // TODO
+    public static final double kI = 0; // TODO
+    public static final double kD = 0; // TODO
+    public static final double kF = 0; // TODO
 
-    public static final double noteToSensorDistMeters = 0.0; // TODO
+    public static final double openLoopRampSec = 0; // TODO
+    public static final double closedLoopRampSec = 0; // TODO
 
-    public static final class TunnelConfig {
-      public static final NeutralModeValue neutralMode = NeutralModeValue.Coast;
-      public static final double updateHz =
-          OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
-    }
+    public static final double desiredVelocityRPS = 0.0; // TODO
 
     public static final class Logging {
       public static final String key = "Tunnel/";

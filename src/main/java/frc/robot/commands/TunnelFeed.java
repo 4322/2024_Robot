@@ -11,11 +11,8 @@ public class TunnelFeed extends Command {
 
   private final Tunnel tunnel;
 
-  private final RobotCoordinator coordinator;
-
   public TunnelFeed() {
     tunnel = Tunnel.getInstance();
-    coordinator = RobotCoordinator.getInstance();
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(tunnel);
@@ -27,18 +24,19 @@ public class TunnelFeed extends Command {
 
   @Override
   public void execute() {
-    if (coordinator.noteInRobot() && !coordinator.noteInFiringPos()) {
-      // PID here
-      tunnel.feed(); // give PID result
+    if (!RobotCoordinator.getInstance().noteInFiringPos() && RobotCoordinator.getInstance().noteAtFirstSensor()) {
+      tunnel.feed();
     }
+  }
+
+  @Override
+  public boolean isFinished() {
+    return RobotCoordinator.getInstance().noteInFiringPos();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
-
-  @Override
-  public boolean isFinished() {
-    return false;
+  public void end(boolean interrupted) {
+    tunnel.stopTunnel();
   }
 }

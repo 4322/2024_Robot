@@ -46,9 +46,9 @@ public class Tunnel extends SubsystemBase {
 
   public void feed() { // run the tunnel in the direction of the outtake
     if (Constants.tunnelEnabled) {
-      io.setTunnel(TunnelConstants.turnSpeedPct);
+      io.setTunnel(TunnelConstants.desiredVelocityRPS);
       Logger.recordOutput(
-          TunnelConstants.Logging.key + "TunnelTargetSpeedPct", TunnelConstants.turnSpeedPct);
+          TunnelConstants.Logging.key + "TunnelTargetVelocityRPS", TunnelConstants.desiredVelocityRPS);
       Logger.recordOutput(TunnelConstants.Logging.key + "TunnelStopped", false);
     }
   }
@@ -70,7 +70,7 @@ public class Tunnel extends SubsystemBase {
   public void stopTunnel() {
     if (Constants.tunnelEnabled) {
       io.stopTunnel();
-      Logger.recordOutput(TunnelConstants.Logging.key + "TunnelTargetSpeedPct", 0);
+      Logger.recordOutput(TunnelConstants.Logging.key + "TunnelTargetVelocityRPS", 0);
       Logger.recordOutput(TunnelConstants.Logging.key + "TunnelStopped", true);
     }
   }

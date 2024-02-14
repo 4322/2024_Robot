@@ -1,9 +1,14 @@
 package frc.robot.subsystems.tunnel;
 
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import frc.robot.Constants;
 import frc.robot.Constants.TunnelConstants;
 import org.littletonrobotics.junction.Logger;
 
@@ -16,11 +21,21 @@ public class TunnelIOReal implements TunnelIO {
   }
 
   private void configTalon() {
-    tunnel.getConfigurator().apply(new TalonFXConfiguration());
-    MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-    motorOutputConfigs.NeutralMode = TunnelConstants.TunnelConfig.neutralMode;
-    tunnel.getConfigurator().apply(motorOutputConfigs);
-    tunnel.getVelocity().setUpdateFrequency(TunnelConstants.TunnelConfig.updateHz);
+    ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
+    OpenLoopRampsConfigs openLoopRampsConfigs = new OpenLoopRampsConfigs();
+    Slot0Configs slot0Configs = new Slot0Configs();
+    slot0Configs.kP = Constants.OuttakeConstants.kP;
+    slot0Configs.kI = Constants.OuttakeConstants.kI;
+    slot0Configs.kD = Constants.OuttakeConstants.kD;
+    slot0Configs.kV = Constants.OuttakeConstants.kF;
+    closedLoopRampsConfigs.VoltageClosedLoopRampPeriod =
+        Constants.OuttakeConstants.closedLoopRampSec;
+    openLoopRampsConfigs.VoltageOpenLoopRampPeriod = Constants.OuttakeConstants.openLoopRampSec;
+    // bottomOuttakeMotor.setControl(new
+    // Follower(topOuttakeMotor.getDeviceID(),true));
+    tunnel.getConfigurator().apply(slot0Configs);
+    tunnel.getConfigurator().apply(closedLoopRampsConfigs);
+    tunnel.getConfigurator().apply(openLoopRampsConfigs);
   }
 
   @Override
@@ -36,8 +51,8 @@ public class TunnelIOReal implements TunnelIO {
   }
 
   @Override
-  public void setTunnel(double rps) {
-    tunnel.set(rps / TunnelConstants.maxTunnelRPS); // set takes in pct
+  public void setTunnel(double desiredVelocityRPS) {
+    tunnel.setControl(new VelocityVoltage(desiredVelocityRPS));
   }
 
   @Override

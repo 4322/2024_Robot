@@ -11,7 +11,7 @@ import frc.robot.subsystems.outtakePivot.OuttakePivot;
 public class RobotCoordinator extends SubsystemBase {
 
   public enum RobotStates {
-    defaultDrive,
+    defaultDrive, 
     deploying,
     feeding,
     stowing,
@@ -91,7 +91,9 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public boolean canShoot() {
-    return outtake.isFlyWheelUpToSpeed() && outtakePivot.isAtPosition() && noteInFiringPos();
+    return outtake.isFlyWheelUpToSpeed()
+        && outtakePivot.isAtPosition()
+        && noteInFiringPos();
   }
 
   public boolean canPivot() {
@@ -111,6 +113,7 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public boolean noteInFiringPos() {
-    return false; // TODO
+    return !inputs.tunnelBeamBreak;
   }
+
 }
