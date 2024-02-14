@@ -22,6 +22,5 @@ public class OuttakeOut extends Command {
   @Override
   public void end(boolean interrupted) {
     outtake.stopOuttake();
-    ;
   }
 }

@@ -16,9 +16,7 @@ public class IntakeDeploy extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {
@@ -34,7 +32,5 @@ public class IntakeDeploy extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    
-  }
+  public void end(boolean interrupted) {}
 }

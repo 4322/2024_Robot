@@ -83,6 +83,10 @@ public class RobotCoordinator extends SubsystemBase {
     return intakeDeployer.isDeployed();
   }
 
+  public boolean isIntakeRetracted() {
+    return intakeDeployer.isRetracted();
+  }
+
   public boolean canDeploy() {
     return intakeDeployer.isInitialized() && !intakeDeployer.isDeployed();
   }

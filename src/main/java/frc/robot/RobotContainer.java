@@ -21,6 +21,7 @@ import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.IntakeDeploy;
 import frc.robot.commands.IntakeIn;
+import frc.robot.commands.IntakeRetract;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetRobotPose;
 import frc.robot.commands.TunnelFeed;
@@ -29,6 +30,7 @@ import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
 import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.intakeDeployer.IntakeDeployer;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.robot.subsystems.outtakePivot.OuttakePivot;
 import frc.robot.subsystems.tunnel.Tunnel;
@@ -56,6 +58,7 @@ public class RobotContainer {
   private final Tunnel tunnel = Tunnel.getInstance();
   private final Outtake outtake = Outtake.getInstance();
   private final OuttakePivot outtakePivot = OuttakePivot.getInstance();
+  private final IntakeDeployer intakeDeployer = IntakeDeployer.getInstance();
 
   private ObjectMapper objectMapper = new ObjectMapper();
   private ArrayList<FiringSolution> solutions = new ArrayList<>();
@@ -70,6 +73,8 @@ public class RobotContainer {
   private final TunnelFeed tunnelFeedDefault = new TunnelFeed();
   private final TunnelStop tunnelStop = new TunnelStop();
 
+  private final IntakeRetract intakeRetract = new IntakeRetract();
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     configureButtonBindings();
@@ -80,6 +85,10 @@ public class RobotContainer {
 
     if (Constants.tunnelEnabled) {
       tunnel.setDefaultCommand(tunnelFeedDefault);
+    }
+
+    if (Constants.intakeDeployerEnabled) {
+      intakeDeployer.setDefaultCommand(intakeRetract);
     }
   }
   /**

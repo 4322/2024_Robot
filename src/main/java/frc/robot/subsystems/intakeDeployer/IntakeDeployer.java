@@ -108,7 +108,15 @@ public class IntakeDeployer extends SubsystemBase {
   }
 
   public boolean isDeployed() {
-    return this.isAtPosition();
+    return OrangeMath.equalToEpsilon(
+      inputs.deployRotations, IntakeDeployerConstants.Deploy.deployPositionRotations, 
+        IntakeDeployerConstants.Deploy.toleranceRotations);
+  }
+
+  public boolean isRetracted() {
+    return OrangeMath.equalToEpsilon(
+      inputs.deployRotations, IntakeDeployerConstants.Deploy.retractPositionRotations, 
+        IntakeDeployerConstants.Deploy.toleranceRotations);
   }
 
   public boolean isInitialized() {

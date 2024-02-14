@@ -1,9 +1,10 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.intakeDeployer.IntakeDeployer;
 
-public class IntakeRetract extends InstantCommand {
+public class IntakeRetract extends Command {
   private final IntakeDeployer intakeDeployer;
 
   public IntakeRetract() {
@@ -15,8 +16,18 @@ public class IntakeRetract extends InstantCommand {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    intakeDeployer.retract();
+  public void initialize() {}
+
+  @Override
+  public void execute() {
+    if (!RobotCoordinator.getInstance().intakingNote()) {
+      intakeDeployer.retract();
+    }
+  }
+
+  @Override
+  public boolean isFinished() {
+    return RobotCoordinator.getInstance().isIntakeRetracted();
   }
 
   // Called once the command ends or is interrupted.
