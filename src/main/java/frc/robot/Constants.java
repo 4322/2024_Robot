@@ -375,6 +375,8 @@ public final class Constants {
         ySpeakerPosM = 5.546;
       }
     }
+
+    public static final double xCenterLineM = 8.2955;
   }
 
   public enum WheelPosition {

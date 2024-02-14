@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.outtake.Outtake;
 // may change this to take firing solution
 
@@ -16,12 +17,17 @@ public class OuttakeOut extends Command {
 
   @Override
   public void initialize() {
-    outtake.outtake(outtakeRPM);
+  }
+
+  @Override
+  public void execute() {
+    if (RobotCoordinator.getInstance().isAcrossCenterLine()) {
+      outtake.outtake(outtakeRPM);
+    }
   }
 
   @Override
   public void end(boolean interrupted) {
     outtake.stopOuttake();
-    ;
   }
 }
