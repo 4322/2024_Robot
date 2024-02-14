@@ -340,6 +340,11 @@ public final class Constants {
     }
   }
 
+  public static final class BeakBreakConstants {
+    public static final int tunnelBeamBreakID = 0; // TODO
+    public static final int intakeBeamBreakID = 0; // TODO
+  }
+
   public static final class TunnelConstants {
     public static final int tunnelMotorID = 0;
 

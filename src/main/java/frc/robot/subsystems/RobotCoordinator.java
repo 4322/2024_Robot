@@ -7,12 +7,11 @@ import frc.robot.subsystems.intake.Intake.IntakeStates;
 import frc.robot.subsystems.intakeDeployer.IntakeDeployer;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.robot.subsystems.outtakePivot.OuttakePivot;
-import frc.utility.OrangeMath;
 
 public class RobotCoordinator extends SubsystemBase {
 
   public enum RobotStates {
-    defaultDrive, 
+    defaultDrive,
     deploying,
     feeding,
     stowing,
@@ -34,8 +33,8 @@ public class RobotCoordinator extends SubsystemBase {
   private IntakeDeployer intakeDeployer;
   private OuttakePivot outtakePivot;
 
-  private static DistanceSensorIO noteTrackerSensorsIO;
-  private static DistanceSensorIOInputsAutoLogged inputs = new DistanceSensorIOInputsAutoLogged();
+  private static BeamBreakSensorIO noteTrackerSensorsIO;
+  private static BeamBreakSensorIOInputsAutoLogged inputs = new BeamBreakSensorIOInputsAutoLogged();
 
   private static RobotCoordinator robotCoordinator;
 
@@ -53,7 +52,7 @@ public class RobotCoordinator extends SubsystemBase {
     outtakePivot = OuttakePivot.getInstance();
     switch (Constants.currentMode) {
       case REAL:
-        noteTrackerSensorsIO = new DistanceSensorIOReal();
+        noteTrackerSensorsIO = new BeamBreakSensorIOReal();
         break;
       case SIM:
         break;
@@ -62,7 +61,7 @@ public class RobotCoordinator extends SubsystemBase {
     }
 
     if (noteTrackerSensorsIO == null) {
-      noteTrackerSensorsIO = new DistanceSensorIO() {};
+      noteTrackerSensorsIO = new BeamBreakSensorIO() {};
     }
   }
 
@@ -92,9 +91,7 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public boolean canShoot() {
-    return outtake.isFlyWheelUpToSpeed()
-        && outtakePivot.isAtPosition()
-        && noteInFiringPos();
+    return outtake.isFlyWheelUpToSpeed() && outtakePivot.isAtPosition() && noteInFiringPos();
   }
 
   public boolean canPivot() {
@@ -106,16 +103,14 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public boolean noteInRobot() {
-    return !inputs.intakeBeamBreak && inputs.tunnelBeamBreak;
+    return inputs.intakeBeamBreak && !inputs.tunnelBeamBreak;
   }
 
   public boolean noteAtFirstSensor() {
-    return inputs.intakeBeamBreak;
+    return !inputs.intakeBeamBreak;
   }
 
   public boolean noteInFiringPos() {
-    return OrangeMath.equalToTwoDecimal(
-      inputs.tunnelDistance, Constants.TunnelConstants.noteToSensorDistMeters);
+    return false; // TODO
   }
-
 }
