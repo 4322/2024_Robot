@@ -20,9 +20,7 @@ public class IntakeRetract extends Command {
 
   @Override
   public void execute() {
-    if (!RobotCoordinator.getInstance().intakingNote()) {
       intakeDeployer.retract();
-    }
   }
 
   @Override
