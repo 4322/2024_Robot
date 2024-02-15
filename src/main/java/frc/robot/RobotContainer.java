@@ -37,8 +37,6 @@ import frc.robot.subsystems.intakeDeployer.IntakeDeployer;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.robot.subsystems.outtakePivot.OuttakePivot;
 import frc.robot.subsystems.tunnel.Tunnel;
-import frc.utility.PositionVector;
-import frc.utility.interpolation.Calculator1D;
 import java.util.ArrayList;
 
 /**
@@ -64,9 +62,6 @@ public class RobotContainer {
   private final OuttakePivot outtakePivot = OuttakePivot.getInstance();
   private final IntakeDeployer intakeDeployer = IntakeDeployer.getInstance();
 
-  private ObjectMapper objectMapper = new ObjectMapper();
-  private ArrayList<FiringSolution> solutions = new ArrayList<>();
-  private FiringSolutionManager firingSolutionManager = FiringSolutionManager.getInstance();
   private final WriteFiringSolutionAtCurrentPos writeFiringSolution = new WriteFiringSolutionAtCurrentPos();
   
   private final DriveManual driveManual = new DriveManual();
@@ -75,8 +70,6 @@ public class RobotContainer {
   private final TunnelFeed tunnelFeed = new TunnelFeed();
 
   private final IntakeRetract intakeRetract = new IntakeRetract();
-  private final TunnelFeed tunnelFeedDefault = new TunnelFeed();
-  private final TunnelStop tunnelStop = new TunnelStop();
 
   private final OuttakeOut outtakeOut = new OuttakeOut();
 
@@ -96,14 +89,6 @@ public class RobotContainer {
 
     if (Constants.intakeDeployerEnabled) {
       intakeDeployer.setDefaultCommand(intakeRetract);
-    }
-
-    if (Constants.outtakeEnabled) {
-      outtake.setDefaultCommand(outtakeOut);
-    }
-
-    if (Constants.outtakePivotEnabled) {
-      outtakePivot.setDefaultCommand(pivotToAngle);
     }
 
     if (Constants.outtakeEnabled) {
