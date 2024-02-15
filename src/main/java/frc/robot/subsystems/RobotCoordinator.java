@@ -127,4 +127,12 @@ public class RobotCoordinator extends SubsystemBase {
       return (drive.getPose2d().getX() < Constants.FieldConstants.xCenterLineM);
     }
   }
+
+  public double getRobotXPos() {
+    return drive.getPose2d().getX();
+  }
+
+  public double getRobotYPos() {
+    return drive.getPose2d().getY();
+  }
 }

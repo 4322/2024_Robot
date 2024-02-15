@@ -70,8 +70,7 @@ public class RobotContainer {
   private final TunnelFeed tunnelFeedDefault = new TunnelFeed();
   private final TunnelStop tunnelStop = new TunnelStop();
 
-  private final OuttakeOut outtakeOut = new OuttakeOut(
-    new PositionVector().getVectorToSpeaker(drive.getPose2d().getX(), drive.getPose2d().getY()));
+  private final OuttakeOut outtakeOut = new OuttakeOut();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {

@@ -1,21 +1,20 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.outtake.Outtake;
-// may change this to take firing solution
+import frc.utility.PositionVector;
 
 public class OuttakeOut extends Command {
   Outtake outtake;
   FiringSolutionManager firingSolutionManager;
-  Translation2d vectorToSpeaker;
+  RobotCoordinator robotCoordinator;
 
-  public OuttakeOut(Translation2d vector) {
+  public OuttakeOut() {
     outtake = Outtake.getInstance();
     firingSolutionManager = FiringSolutionManager.getInstance();
-    vectorToSpeaker = vector;
+    robotCoordinator = RobotCoordinator.getInstance();
 
     addRequirements(outtake);
   }
@@ -26,10 +25,11 @@ public class OuttakeOut extends Command {
 
   @Override
   public void execute() {
-    if (RobotCoordinator.getInstance().isAcrossCenterLine()) {
+    if (robotCoordinator.isAcrossCenterLine()) {
       outtake.outtake(
         firingSolutionManager.calcSolution(
-          vectorToSpeaker.getDistance(vectorToSpeaker), vectorToSpeaker.getAngle().getDegrees())
+          PositionVector.getMag(robotCoordinator.getRobotXPos(), robotCoordinator.getRobotYPos()),
+          PositionVector.getAngle(robotCoordinator.getRobotXPos(), robotCoordinator.getRobotYPos()).getDegrees())
             .getFlywheelSpeed());
     }
   }
