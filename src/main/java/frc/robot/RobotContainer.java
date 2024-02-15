@@ -24,6 +24,7 @@ import frc.robot.commands.IntakeIn;
 import frc.robot.commands.IntakeRetract;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetRobotPose;
+import frc.robot.commands.Shoot;
 import frc.robot.commands.TunnelFeed;
 import frc.robot.commands.TunnelStop;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
@@ -125,6 +126,7 @@ public class RobotContainer {
                   new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()), true));
       xbox.povDown().onTrue(driveStop);
       xbox.rightTrigger().whileTrue(new SequentialCommandGroup(new IntakeDeploy(), new IntakeIn()));
+      xbox.leftTrigger().whileTrue(new Shoot());
     }
   }
 

@@ -24,7 +24,7 @@ public class IntakeIn extends Command {
   @Override
   public void execute() {
     // when the note first breaks the beam
-    if (RobotCoordinator.getInstance().noteAtFirstSensor()) {
+    if (RobotCoordinator.getInstance().noteAtIntakeSensor()) {
       hasDetectedNoteInitial = true;
     }
 
@@ -36,7 +36,7 @@ public class IntakeIn extends Command {
   @Override
   public boolean isFinished() {
     // if the note initally broke the beam and now doesn't break it, then note is secured in intake
-    return hasDetectedNoteInitial && !RobotCoordinator.getInstance().noteAtFirstSensor();
+    return hasDetectedNoteInitial && !RobotCoordinator.getInstance().noteAtIntakeSensor();
   }
 
   // Called once the command ends or is interrupted.

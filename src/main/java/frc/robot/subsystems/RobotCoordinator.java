@@ -93,7 +93,7 @@ public class RobotCoordinator extends SubsystemBase {
   public boolean canShoot() {
     return outtake.isFlyWheelUpToSpeed()
         && outtakePivot.isAtPosition()
-        && noteInFiringPos();
+        && noteInRobot();
   }
 
   public boolean canPivot() {
@@ -101,18 +101,18 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public boolean intakingNote() {
-    return inputs.intakeBeamBreak && intake.getState() == IntakeStates.INTAKING;
+    return !inputs.intakeBeamBreak && intake.getState() == IntakeStates.INTAKING;
   }
 
   public boolean noteInRobot() {
     return inputs.intakeBeamBreak && !inputs.tunnelBeamBreak;
   }
 
-  public boolean noteAtFirstSensor() {
+  public boolean noteAtIntakeSensor() {
     return !inputs.intakeBeamBreak;
   }
 
-  public boolean noteInFiringPos() {
+  public boolean noteAtTunnelSensor() {
     return !inputs.tunnelBeamBreak;
   }
 
