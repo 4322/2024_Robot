@@ -24,7 +24,7 @@ public class PivotToAngle extends Command {
 
   @Override
   public void execute() {
-    if (robotCoordinator.canPivot()) {
+    if (robotCoordinator.canPivot() && robotCoordinator.isAcrossCenterLine()) {
       outtakePivot.pivot(
         firingSolutionManager.calcSolution(
           PositionVector.getMag(robotCoordinator.getRobotXPos(), robotCoordinator.getRobotYPos()),
@@ -36,7 +36,7 @@ public class PivotToAngle extends Command {
 
   @Override
   public boolean isFinished() {
-    return true;
+    return !robotCoordinator.isAcrossCenterLine();
   }
 
   @Override

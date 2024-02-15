@@ -35,6 +35,11 @@ public class OuttakeOut extends Command {
   }
 
   @Override
+  public boolean isFinished() {
+    return !robotCoordinator.isAcrossCenterLine();
+  }
+
+  @Override
   public void end(boolean interrupted) {
     outtake.stopOuttake();
   }
