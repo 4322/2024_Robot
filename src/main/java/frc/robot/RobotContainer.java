@@ -22,6 +22,7 @@ import frc.robot.commands.DriveStop;
 import frc.robot.commands.IntakeDeploy;
 import frc.robot.commands.IntakeIn;
 import frc.robot.commands.OuttakeOut;
+import frc.robot.commands.PivotToAngle;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetRobotPose;
 import frc.robot.commands.TunnelFeed;
@@ -72,6 +73,8 @@ public class RobotContainer {
 
   private final OuttakeOut outtakeOut = new OuttakeOut();
 
+  private final PivotToAngle pivotToAngle = new PivotToAngle();
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     configureButtonBindings();
@@ -86,6 +89,10 @@ public class RobotContainer {
 
     if (Constants.outtakeEnabled) {
       outtake.setDefaultCommand(outtakeOut);
+    }
+
+    if (Constants.outtakePivotEnabled) {
+      outtakePivot.setDefaultCommand(pivotToAngle);
     }
   }
   /**
