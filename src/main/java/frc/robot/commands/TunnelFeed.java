@@ -40,7 +40,7 @@ public class TunnelFeed extends Command {
 
   @Override
   public boolean isFinished() {
-    return RobotCoordinator.getInstance().noteAtTunnelSensor() && !RobotCoordinator.getInstance().noteAtIntakeSensor();
+    return RobotCoordinator.getInstance().noteInRobot();
   }
 
   // Called once the command ends or is interrupted.
