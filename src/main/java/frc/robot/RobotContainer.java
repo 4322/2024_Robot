@@ -21,6 +21,8 @@ import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.IntakeDeploy;
 import frc.robot.commands.IntakeIn;
+import frc.robot.commands.OuttakeOut;
+import frc.robot.commands.PivotToAngle;
 import frc.robot.commands.IntakeRetract;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetRobotPose;
@@ -35,6 +37,7 @@ import frc.robot.subsystems.intakeDeployer.IntakeDeployer;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.robot.subsystems.outtakePivot.OuttakePivot;
 import frc.robot.subsystems.tunnel.Tunnel;
+import frc.utility.PositionVector;
 import frc.utility.interpolation.Calculator1D;
 import java.util.ArrayList;
 
@@ -63,17 +66,21 @@ public class RobotContainer {
 
   private ObjectMapper objectMapper = new ObjectMapper();
   private ArrayList<FiringSolution> solutions = new ArrayList<>();
-  private FiringSolutionManager firingSolutionManager =
-      new FiringSolutionManager(solutions, new Calculator1D<>(), objectMapper);
-  private final WriteFiringSolutionAtCurrentPos writeFiringSolution =
-      new WriteFiringSolutionAtCurrentPos(firingSolutionManager);
-
+  private FiringSolutionManager firingSolutionManager = FiringSolutionManager.getInstance();
+  private final WriteFiringSolutionAtCurrentPos writeFiringSolution = new WriteFiringSolutionAtCurrentPos();
+  
   private final DriveManual driveManual = new DriveManual();
   private final DriveStop driveStop = new DriveStop();
 
   private final TunnelFeed tunnelFeed = new TunnelFeed();
 
   private final IntakeRetract intakeRetract = new IntakeRetract();
+  private final TunnelFeed tunnelFeedDefault = new TunnelFeed();
+  private final TunnelStop tunnelStop = new TunnelStop();
+
+  private final OuttakeOut outtakeOut = new OuttakeOut();
+
+  private final PivotToAngle pivotToAngle = new PivotToAngle();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -89,6 +96,22 @@ public class RobotContainer {
 
     if (Constants.intakeDeployerEnabled) {
       intakeDeployer.setDefaultCommand(intakeRetract);
+    }
+
+    if (Constants.outtakeEnabled) {
+      outtake.setDefaultCommand(outtakeOut);
+    }
+
+    if (Constants.outtakePivotEnabled) {
+      outtakePivot.setDefaultCommand(pivotToAngle);
+    }
+
+    if (Constants.outtakeEnabled) {
+      outtake.setDefaultCommand(outtakeOut);
+    }
+
+    if (Constants.outtakePivotEnabled) {
+      outtakePivot.setDefaultCommand(pivotToAngle);
     }
   }
   /**

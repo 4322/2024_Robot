@@ -1,7 +1,11 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
+import frc.robot.Constants.FieldConstants;
+import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakeStates;
 import frc.robot.subsystems.intakeDeployer.IntakeDeployer;
@@ -32,6 +36,7 @@ public class RobotCoordinator extends SubsystemBase {
   private Outtake outtake;
   private IntakeDeployer intakeDeployer;
   private OuttakePivot outtakePivot;
+  private Drive drive;
 
   private static BeamBreakSensorIO noteTrackerSensorsIO;
   private static BeamBreakSensorIOInputsAutoLogged inputs = new BeamBreakSensorIOInputsAutoLogged();
@@ -50,6 +55,7 @@ public class RobotCoordinator extends SubsystemBase {
     outtake = Outtake.getInstance();
     intakeDeployer = IntakeDeployer.getInstance();
     outtakePivot = OuttakePivot.getInstance();
+    drive = Drive.getInstance();
     switch (Constants.currentMode) {
       case REAL:
         noteTrackerSensorsIO = new BeamBreakSensorIOReal();
@@ -116,4 +122,19 @@ public class RobotCoordinator extends SubsystemBase {
     return !inputs.tunnelBeamBreak;
   }
 
+  public boolean isAcrossCenterLine() {
+    if (Robot.getAllianceColor().equals(Alliance.Red)) {
+      return (drive.getPose2d().getX() > Constants.FieldConstants.xCenterLineM);
+    } else {
+      return (drive.getPose2d().getX() < Constants.FieldConstants.xCenterLineM);
+    }
+  }
+
+  public double getRobotXPos() {
+    return drive.getPose2d().getX();
+  }
+
+  public double getRobotYPos() {
+    return drive.getPose2d().getY();
+  }
 }

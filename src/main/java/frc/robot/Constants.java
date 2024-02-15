@@ -45,6 +45,7 @@ public final class Constants {
   public static final boolean gyroEnabled = true;
   public static final boolean tunnelEnabled = false;
   public static final boolean outtakeEnabled = false;
+  public static final boolean outtakePivotEnabled = false;
   public static final boolean joysticksEnabled = false;
   public static final boolean xboxEnabled = true;
 
@@ -372,6 +373,8 @@ public final class Constants {
         ySpeakerPosM = 5.546;
       }
     }
+
+    public static final double xCenterLineM = 8.2955;
   }
 
   public enum WheelPosition {
