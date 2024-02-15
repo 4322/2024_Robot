@@ -4,13 +4,13 @@
 
 package frc.robot;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -28,16 +28,13 @@ import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetRobotPose;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.TunnelFeed;
-import frc.robot.commands.TunnelStop;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
-import frc.robot.shooting.FiringSolution;
-import frc.robot.shooting.FiringSolutionManager;
+import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intakeDeployer.IntakeDeployer;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.robot.subsystems.outtakePivot.OuttakePivot;
 import frc.robot.subsystems.tunnel.Tunnel;
-import java.util.ArrayList;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -47,6 +44,8 @@ import java.util.ArrayList;
  */
 public class RobotContainer {
   private Timer disableTimer = new Timer();
+  private Timer rumbleTimer = new Timer();
+  private boolean hasRumbled;
 
   // Define controllers
   public static CommandXboxController xbox;
@@ -135,6 +134,21 @@ public class RobotContainer {
       xbox.povDown().onTrue(driveStop);
       xbox.rightTrigger().whileTrue(new SequentialCommandGroup(new IntakeDeploy(), new IntakeIn()));
       xbox.leftTrigger().whileTrue(new Shoot());
+
+      if (RobotCoordinator.getInstance().noteInRobot() && !hasRumbled) {
+        rumbleTimer.start();
+        if (!rumbleTimer.hasElapsed(0.5)) {
+          xbox.getHID().setRumble(RumbleType.kBothRumble, 1);
+        }
+        else {
+          rumbleTimer.stop();
+          rumbleTimer.reset(); 
+          hasRumbled = true;
+        } 
+      } 
+      else if (!RobotCoordinator.getInstance().noteInRobot()) {
+        hasRumbled = false;
+      }
     }
   }
 
