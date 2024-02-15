@@ -6,13 +6,14 @@ import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.outtake.Outtake;
 // may change this to take firing solution
+import frc.utility.PositionVector;
 
 public class OuttakeOut extends Command {
   Outtake outtake;
   FiringSolutionManager firingSolutionManager;
-  Translation2d vectorToSpeaker;
+  PositionVector vectorToSpeaker;
 
-  public OuttakeOut(Translation2d vector) {
+  public OuttakeOut(PositionVector vector) {
     outtake = Outtake.getInstance();
     firingSolutionManager = FiringSolutionManager.getInstance();
     vectorToSpeaker = vector;
@@ -29,7 +30,7 @@ public class OuttakeOut extends Command {
     if (RobotCoordinator.getInstance().isAcrossCenterLine()) {
       outtake.outtake(
         firingSolutionManager.calcSolution(
-          vectorToSpeaker.getDistance(vectorToSpeaker), vectorToSpeaker.getAngle().getDegrees())
+          vectorToSpeaker.getMag(), vectorToSpeaker.getAngle().getDegrees())
             .getFlywheelSpeed());
     }
   }
