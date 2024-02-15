@@ -348,15 +348,8 @@ public final class Constants {
   public static final class TunnelConstants { 
     public static final int tunnelMotorID = 0; // TODO
 
-    public static final double kP = 0; // TODO
-    public static final double kI = 0; // TODO
-    public static final double kD = 0; // TODO
-    public static final double kF = 0; // TODO
-
-    public static final double openLoopRampSec = 0; // TODO
-    public static final double closedLoopRampSec = 0; // TODO
-
-    public static final double desiredVelocityRPS = 0.0; // TODO
+    public static final double desiredVoltage = 0.0; // TODO
+    public static final double peakVoltage = 0.0; // TODO: shouldn't be greater than 12
 
     public static final class Logging {
       public static final String key = "Tunnel/";

@@ -46,9 +46,9 @@ public class Tunnel extends SubsystemBase {
 
   public void feed() { // run the tunnel in the direction of the outtake
     if (Constants.tunnelEnabled) {
-      io.setTunnel(TunnelConstants.desiredVelocityRPS);
+      io.setTunnel(TunnelConstants.desiredVoltage);
       Logger.recordOutput(
-          TunnelConstants.Logging.key + "TunnelTargetVelocityRPS", TunnelConstants.desiredVelocityRPS);
+          TunnelConstants.Logging.key + "TunnelTargetVelocityRPS", TunnelConstants.desiredVoltage);
       Logger.recordOutput(TunnelConstants.Logging.key + "TunnelStopped", false);
     }
   }
