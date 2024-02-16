@@ -20,7 +20,12 @@ public class IntakeRetract extends Command {
 
   @Override
   public void execute() {
+    // Auto retract if on opponent side of field and note is in robot
+    if (!RobotCoordinator.getInstance().isAcrossCenterLine() && RobotCoordinator.getInstance().noteInRobot()) {
       intakeDeployer.retract();
+    }
+    // Retract when RT released
+    intakeDeployer.retract();
   }
 
   @Override
