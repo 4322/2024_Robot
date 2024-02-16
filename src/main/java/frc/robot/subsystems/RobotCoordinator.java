@@ -69,7 +69,7 @@ public class RobotCoordinator extends SubsystemBase {
         break;
     }
 
-    if (noteTrackerSensorsIO == null && Constants.sensorsEnabled) {
+    if (noteTrackerSensorsIO == null) {
       noteTrackerSensorsIO = new BeamBreakSensorIO() {};
     }
   }
