@@ -58,7 +58,9 @@ public class RobotCoordinator extends SubsystemBase {
     drive = Drive.getInstance();
     switch (Constants.currentMode) {
       case REAL:
-        noteTrackerSensorsIO = new BeamBreakSensorIOReal();
+        if (Constants.sensorsEnabled) {
+          noteTrackerSensorsIO = new BeamBreakSensorIOReal();
+        }
         break;
       case SIM:
         break;
@@ -66,7 +68,7 @@ public class RobotCoordinator extends SubsystemBase {
         break;
     }
 
-    if (noteTrackerSensorsIO == null) {
+    if (noteTrackerSensorsIO == null && Constants.sensorsEnabled) {
       noteTrackerSensorsIO = new BeamBreakSensorIO() {};
     }
   }

@@ -8,13 +8,9 @@ import frc.utility.PositionVector;
 
 public class OuttakeOut extends Command {
   Outtake outtake;
-  FiringSolutionManager firingSolutionManager;
-  RobotCoordinator robotCoordinator;
 
   public OuttakeOut() {
     outtake = Outtake.getInstance();
-    firingSolutionManager = FiringSolutionManager.getInstance();
-    robotCoordinator = RobotCoordinator.getInstance();
 
     addRequirements(outtake);
   }
@@ -25,18 +21,18 @@ public class OuttakeOut extends Command {
 
   @Override
   public void execute() {
-    if (robotCoordinator.isAcrossCenterLine()) {
+    if (RobotCoordinator.getInstance().isAcrossCenterLine()) {
       outtake.outtake(
-        firingSolutionManager.calcSolution(
-          PositionVector.getMag(robotCoordinator.getRobotXPos(), robotCoordinator.getRobotYPos()),
-          PositionVector.getAngle(robotCoordinator.getRobotXPos(), robotCoordinator.getRobotYPos()).getDegrees())
+        FiringSolutionManager.getInstance().calcSolution(
+          PositionVector.getMag(RobotCoordinator.getInstance().getRobotXPos(), RobotCoordinator.getInstance().getRobotYPos()),
+          PositionVector.getAngle(RobotCoordinator.getInstance().getRobotXPos(), RobotCoordinator.getInstance().getRobotYPos()).getDegrees())
             .getFlywheelSpeed());
     }
   }
 
   @Override
   public boolean isFinished() {
-    return !robotCoordinator.isAcrossCenterLine();
+    return !RobotCoordinator.getInstance().isAcrossCenterLine();
   }
 
   @Override
