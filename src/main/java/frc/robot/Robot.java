@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -200,16 +202,14 @@ public class Robot extends LoggedRobot {
     if (allianceColor == Alliance.Red || allianceColor == Alliance.Blue) {
       try {
         allianceColor = DriverStation.getAlliance().get();
-      } catch (NullPointerException e) {
+      } catch (NoSuchElementException e) {
+        DriverStation.reportError("No Alliance Color", false);
         allianceColor = null;
       }
     }
   }
 
   public static Alliance getAllianceColor() {
-    if (allianceColor == null) {
-      DriverStation.reportError("No Alliance Color", false);
-    }
     return allianceColor;
   }
 }
