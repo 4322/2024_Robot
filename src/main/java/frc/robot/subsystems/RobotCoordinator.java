@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -127,8 +128,10 @@ public class RobotCoordinator extends SubsystemBase {
   public boolean isAcrossCenterLine() {
     if (Robot.getAllianceColor().equals(Alliance.Red)) {
       return (drive.getPose2d().getX() > Constants.FieldConstants.xCenterLineM);
-    } else {
+    } else if (Robot.getAllianceColor().equals(Alliance.Blue)) {
       return (drive.getPose2d().getX() < Constants.FieldConstants.xCenterLineM);
+    } else {
+      return false;
     }
   }
 

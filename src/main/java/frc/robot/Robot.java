@@ -34,7 +34,7 @@ public class Robot extends LoggedRobot {
   private ShuffleboardTab tab;
   private ShuffleboardTab PDHTab;
   private RobotContainer m_robotContainer;
-  private static Alliance allianceColor = Alliance.Blue;
+  private static Alliance allianceColor;
   Timer updateAllianceTimer;
 
   /**
@@ -197,13 +197,19 @@ public class Robot extends LoggedRobot {
   public void simulationPeriodic() {}
 
   private void updateAllianceColor() {
-    Optional<Alliance> temp = DriverStation.getAlliance();
-    if ((temp.get() == Alliance.Red || temp.get() == Alliance.Blue)) {
-      allianceColor = temp.get();
+    if (allianceColor == Alliance.Red || allianceColor == Alliance.Blue) {
+      try {
+        allianceColor = DriverStation.getAlliance().get();
+      } catch (NullPointerException e) {
+        allianceColor = null;
+      }
     }
   }
 
   public static Alliance getAllianceColor() {
+    if (allianceColor == null) {
+      DriverStation.reportError("No Alliance Color", false);
+    }
     return allianceColor;
   }
 }
