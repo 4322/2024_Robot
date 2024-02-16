@@ -29,6 +29,7 @@ import frc.robot.commands.SetRobotPose;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.TunnelFeed;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
+import frc.robot.commands.XboxControllerRumble;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intakeDeployer.IntakeDeployer;
@@ -132,23 +133,9 @@ public class RobotContainer {
               new SetRobotPose(
                   new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()), true));
       xbox.povDown().onTrue(driveStop);
-      xbox.rightTrigger().whileTrue(new SequentialCommandGroup(new IntakeDeploy(), new IntakeIn()));
+      xbox.rightTrigger().whileTrue(new SequentialCommandGroup(
+        new IntakeDeploy(), new IntakeIn(), new XboxControllerRumble(xbox)));
       xbox.leftTrigger().whileTrue(new Shoot());
-
-      if (RobotCoordinator.getInstance().noteInRobot() && !hasRumbled) {
-        rumbleTimer.start();
-        if (!rumbleTimer.hasElapsed(0.5)) {
-          xbox.getHID().setRumble(RumbleType.kBothRumble, 1);
-        }
-        else {
-          rumbleTimer.stop();
-          rumbleTimer.reset(); 
-          hasRumbled = true;
-        } 
-      } 
-      else if (!RobotCoordinator.getInstance().noteInRobot()) {
-        hasRumbled = false;
-      }
     }
   }
 
