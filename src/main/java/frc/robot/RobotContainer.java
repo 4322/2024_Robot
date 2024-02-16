@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -30,7 +29,6 @@ import frc.robot.commands.Shoot;
 import frc.robot.commands.TunnelFeed;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
 import frc.robot.commands.XboxControllerRumble;
-import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intakeDeployer.IntakeDeployer;
 import frc.robot.subsystems.outtake.Outtake;
@@ -45,8 +43,6 @@ import frc.robot.subsystems.tunnel.Tunnel;
  */
 public class RobotContainer {
   private Timer disableTimer = new Timer();
-  private Timer rumbleTimer = new Timer();
-  private boolean hasRumbled;
 
   // Define controllers
   public static CommandXboxController xbox;
