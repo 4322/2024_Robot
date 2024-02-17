@@ -19,7 +19,6 @@ import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.IntakeDeploy;
-import frc.robot.commands.IntakeIn;
 import frc.robot.commands.OuttakeOut;
 import frc.robot.commands.PivotToAngle;
 import frc.robot.commands.IntakeRetract;
@@ -129,8 +128,7 @@ public class RobotContainer {
               new SetRobotPose(
                   new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()), true));
       xbox.povDown().onTrue(driveStop);
-      xbox.rightTrigger().whileTrue(new SequentialCommandGroup(
-        new IntakeDeploy(), new IntakeIn(), new XboxControllerRumble(xbox)));
+      xbox.rightTrigger().whileTrue(new IntakeDeploy().alongWith(new XboxControllerRumble(xbox)));
       xbox.leftTrigger().whileTrue(new Shoot());
     }
   }
