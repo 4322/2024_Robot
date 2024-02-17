@@ -34,7 +34,7 @@ public class XboxControllerRumble extends Command {
 
   @Override
   public boolean isFinished() {
-    return rumbleTimer.hasElapsed(0.5);
+    return rumbleTimer.hasElapsed(0.75);
   }
 
   // Called once the command ends or is interrupted.
