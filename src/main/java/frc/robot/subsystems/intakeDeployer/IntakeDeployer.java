@@ -5,16 +5,26 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakeDeployerConstants;
+import frc.robot.subsystems.RobotCoordinator;
+import frc.robot.subsystems.intake.Intake.IntakeStates;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
 public class IntakeDeployer extends SubsystemBase {
+
+  public enum IntakeDeployerStates {
+    deploying,
+    retracting,
+    deployed,
+    retracted;
+  }
 
   private IntakeDeployerIO io;
   private IntakeDeployerIOInputsAutoLogged inputs = new IntakeDeployerIOInputsAutoLogged();
   private Timer existenceTimer;
   private boolean initialized;
   private double deployTarget = 99999; // set to very high value in case target not yet set
+  private IntakeDeployerStates deployerState = IntakeDeployerStates.retracted;
 
   private static IntakeDeployer intakeDeployer;
 
@@ -56,6 +66,25 @@ public class IntakeDeployer extends SubsystemBase {
     if (Constants.intakeDeployerEnabled && initialized) {
       io.updateInputs(inputs);
       Logger.processInputs(IntakeDeployerConstants.Logging.key, inputs);
+
+      switch(deployerState) {
+        case deploying:
+          deploy();
+          if (isDeployed()) {
+            deployerState = IntakeDeployerStates.deployed;
+          }
+          break;
+        case deployed:
+          break;
+        case retracting:
+          retract();
+          if (isRetracted()) {
+            deployerState = IntakeDeployerStates.retracted;
+          }
+          break;
+        case retracted:
+          break;
+      }
     }
   }
 
@@ -123,5 +152,13 @@ public class IntakeDeployer extends SubsystemBase {
 
   public boolean isInitialized() {
     return initialized;
+  }
+
+  public IntakeDeployerStates getState() {
+    return deployerState;
+  }
+
+  public void setState(IntakeDeployerStates newState) {
+    deployerState = newState;
   }
 }

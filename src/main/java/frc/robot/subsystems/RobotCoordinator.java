@@ -10,6 +10,7 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakeStates;
 import frc.robot.subsystems.intakeDeployer.IntakeDeployer;
+import frc.robot.subsystems.intakeDeployer.IntakeDeployer.IntakeDeployerStates;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.robot.subsystems.outtakePivot.OuttakePivot;
 
@@ -17,22 +18,20 @@ public class RobotCoordinator extends SubsystemBase {
 
   public enum RobotStates {
     defaultDrive, 
-    deploying,
-    feeding,
-    stowing,
-    allianceSideDeployed,
+    deployRequested,
+    retractRequested,
     noteObtained,
     noteSecured,
-    readyToShoot,
-    shoot;
+    huntingNote;
   }
 
-  public enum FeedingStates {
+  public enum HuntingStates {
     manual,
     auto;
   }
 
   private RobotStates robotState = RobotStates.defaultDrive;
+  private HuntingStates huntingState = HuntingStates.manual;
 
   private Intake intake;
   private Outtake outtake;
@@ -87,46 +86,52 @@ public class RobotCoordinator extends SubsystemBase {
   public void periodic() {
     noteTrackerSensorsIO.updateInputs(inputs);
 
-    switch(robotState) {
+    switch (robotState) {
       case defaultDrive:
         break;
-      case deploying:
-        intakeDeployer.deploy();
-        if (isIntakeDeployed()) {
-          robotState = RobotStates.feeding;
+      case deployRequested:
+        if (canDeploy()) {
+          intakeDeployer.setState(IntakeDeployerStates.deploying);
+        }
+        if (!noteInRobot() && intakeDeployer.getState() == IntakeDeployerStates.deployed) {
+          robotState = RobotStates.huntingNote;
         }
         break;
-      case feeding:
-        intake.intake();
-        if (intakingNote()) {
+      case huntingNote:
+        if (canIntake()) {
+          intake.setState(IntakeStates.feeding);
+        }
+        switch (huntingState) {
+          case manual:
+            break;
+          case auto:
+            break;
+        }
+        if (noteAtIntakeSensor()) {
           robotState = RobotStates.noteObtained;
         }
         break;
       case noteObtained:
-        intake.intake();
         if (noteInRobot()) {
           robotState = RobotStates.noteSecured;
         }
         break;
       case noteSecured:
-        intake.stopIntake();
-        if (isAcrossCenterLine()) {
-          robotState = RobotStates.stowing;
+        intake.setState(IntakeStates.stopped);
+        if (!isAcrossCenterLine()) {
+          robotState = RobotStates.retractRequested;
         }
         break;
-      case stowing:
-        intake.stopIntake();
+      case retractRequested:
+        intake.setState(IntakeStates.stopped);
         if (canRetract()) {
-          intakeDeployer.retract();
+          intakeDeployer.setState(IntakeDeployerStates.retracting);
         }
-        break;
-      case allianceSideDeployed:
+        if (isIntakeRetracted() && intakeDeployer.getState() == IntakeDeployerStates.retracted) {
+          robotState = RobotStates.defaultDrive;
+        }
         break;
     }
-  }
-
-  private void executeState() {
-
   }
 
   // below are all boolean checks polled from subsystems
@@ -147,7 +152,7 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public boolean canRetract() {
-    return intake.getState() == IntakeStates.STOPPED && inputs.intakeBeamBreak;
+    return intake.getState() == IntakeStates.stopped && inputs.intakeBeamBreak;
   }
 
   public boolean canShoot() {
@@ -161,7 +166,7 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public boolean intakingNote() {
-    return !inputs.intakeBeamBreak && intake.getState() == IntakeStates.INTAKING;
+    return !inputs.intakeBeamBreak && intake.getState() == IntakeStates.feeding;
   }
 
   public boolean noteInRobot() {
