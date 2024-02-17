@@ -20,6 +20,7 @@ public class RobotCoordinator extends SubsystemBase {
     deploying,
     feeding,
     stowing,
+    allianceSideDeployed,
     noteObtained,
     noteSecured,
     readyToShoot,
@@ -74,15 +75,61 @@ public class RobotCoordinator extends SubsystemBase {
     }
   }
 
-  @Override
-  public void periodic() {
-    noteTrackerSensorsIO.updateInputs(inputs);
-  }
-
   public RobotStates getRobotState() {
     return robotState;
   }
 
+  public void setRobotState(RobotStates newState) {
+    robotState = newState;
+  }
+
+  @Override
+  public void periodic() {
+    noteTrackerSensorsIO.updateInputs(inputs);
+
+    switch(robotState) {
+      case defaultDrive:
+        break;
+      case deploying:
+        intakeDeployer.deploy();
+        if (isIntakeDeployed()) {
+          robotState = RobotStates.feeding;
+        }
+        break;
+      case feeding:
+        intake.intake();
+        if (intakingNote()) {
+          robotState = RobotStates.noteObtained;
+        }
+        break;
+      case noteObtained:
+        intake.intake();
+        if (noteInRobot()) {
+          robotState = RobotStates.noteSecured;
+        }
+        break;
+      case noteSecured:
+        intake.stopIntake();
+        if (isAcrossCenterLine()) {
+          robotState = RobotStates.stowing;
+        }
+        break;
+      case stowing:
+        intake.stopIntake();
+        if (canRetract()) {
+          intakeDeployer.retract();
+        }
+        break;
+      case allianceSideDeployed:
+        break;
+    }
+  }
+
+  private void executeState() {
+
+  }
+
+  // below are all boolean checks polled from subsystems
   public boolean canIntake() {
     return intakeDeployer.isAtPosition() && intakeDeployer.isDeployed();
   }
@@ -97,6 +144,10 @@ public class RobotCoordinator extends SubsystemBase {
 
   public boolean canDeploy() {
     return intakeDeployer.isInitialized() && !intakeDeployer.isDeployed();
+  }
+
+  public boolean canRetract() {
+    return intake.getState() == IntakeStates.STOPPED && inputs.intakeBeamBreak;
   }
 
   public boolean canShoot() {
