@@ -306,10 +306,9 @@ public final class Constants {
       public static final double timeoutMs = 50;
     }
 
-    public static final class Intake {
-      public static final double intakeSpeedRPM = 0;
-      public static final double outtakeSpeedRPM = -0; // signed
-      public static final double maxIntakeRPM = 0.0;
+    public static final class Feeder {
+      public static final double intakeFeedVoltage = 0.0; // TODO: set max voltage we want for feeding
+      public static final double intakeEjectVoltage = 0.0;
     }
     
     public static final class Deploy {

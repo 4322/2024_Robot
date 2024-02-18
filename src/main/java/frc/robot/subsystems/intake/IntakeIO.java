@@ -29,7 +29,7 @@ public interface IntakeIO {
 
   public default void updateInputs(IntakeIOInputs inputs) {}
 
-  public default void setIntakeRPM(double rpm) {}
+  public default void setFeedingVoltage(double voltage) {}
 
   public default boolean initMotorPos() {
     return false;

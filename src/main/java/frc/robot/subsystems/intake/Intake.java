@@ -136,10 +136,7 @@ public class Intake extends SubsystemBase {
 
   public void intake() {
     if (Constants.intakeEnabled && initialized) {
-      io.setIntakeRPM(IntakeConstants.Intake.intakeSpeedRPM);
-      Logger.recordOutput(
-          IntakeConstants.Logging.feederKey + "IntakeTargetSpeedPct",
-          IntakeConstants.Intake.intakeSpeedRPM);
+      io.setFeedingVoltage(IntakeConstants.Feeder.intakeFeedVoltage);
       Logger.recordOutput(IntakeConstants.Logging.feederKey + "IntakeStopped", false);
       isFeeding = true;
     }
@@ -147,10 +144,7 @@ public class Intake extends SubsystemBase {
 
   public void outtake() {
     if (Constants.intakeEnabled && initialized) {
-      io.setIntakeRPM(IntakeConstants.Intake.outtakeSpeedRPM);
-      Logger.recordOutput(
-          IntakeConstants.Logging.feederKey + "IntakeTargetSpeedPct",
-          IntakeConstants.Intake.outtakeSpeedRPM);
+      io.setFeedingVoltage(IntakeConstants.Feeder.intakeEjectVoltage);
       Logger.recordOutput(IntakeConstants.Logging.feederKey + "IntakeStopped", false);
       isFeeding = true;
     }
@@ -173,7 +167,6 @@ public class Intake extends SubsystemBase {
   public void stopFeeder() {
     if (Constants.intakeEnabled && initialized) {
       io.stopFeeder();
-      Logger.recordOutput(IntakeConstants.Logging.feederKey + "IntakeTargetSpeedPct", 0);
       Logger.recordOutput(IntakeConstants.Logging.key + "IntakeStopped", true);
       isFeeding = false;
     }

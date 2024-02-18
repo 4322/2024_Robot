@@ -98,8 +98,8 @@ public class IntakeIOReal implements IntakeIO {
   }
 
   @Override
-  public void setIntakeRPM(double rpm) {
-    intake.set(rpm / IntakeConstants.Intake.maxIntakeRPM);
+  public void setFeedingVoltage(double voltage) {
+    intake.setVoltage(voltage);
   }
 
   @Override
