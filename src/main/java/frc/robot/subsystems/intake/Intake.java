@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.RobotCoordinator;
-import frc.robot.Constants.IntakeConstants;
 import frc.utility.OrangeMath;
 
 import org.littletonrobotics.junction.Logger;
