@@ -10,9 +10,5 @@ public class LimelightIOReal implements LimelightIO{
     private Limelight outtakeLimelight;
 
     public LimelightIOReal() {
-        if (Constants.limelightEnabled) {
-            intakeLimelight = new Limelight();
-            outtakeLimelight = new Limelight();
-        }
     }
 }
