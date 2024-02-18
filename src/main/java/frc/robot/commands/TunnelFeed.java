@@ -42,7 +42,7 @@ public class TunnelFeed extends Command {
 
   @Override
   public boolean isFinished() {
-    return RobotCoordinator.getInstance().noteInTunnel();
+    return RobotCoordinator.getInstance().noteInFiringPosition();
   }
 
   // Called once the command ends or is interrupted.

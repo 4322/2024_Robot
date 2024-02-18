@@ -28,7 +28,7 @@ public class XboxControllerRumble extends Command {
 
   @Override
   public void execute() {
-    if (RobotCoordinator.getInstance().noteInTunnel() && !hasRumbled 
+    if (RobotCoordinator.getInstance().noteInFiringPosition() && !hasRumbled 
           && Intake.getInstance().getState() == IntakeStates.notePastIntake) {
         rumbleTimer.start();
         xbox.getHID().setRumble(RumbleType.kBothRumble, 1);

@@ -113,14 +113,14 @@ public class RobotCoordinator extends SubsystemBase {
   public boolean canShoot() {
     return outtake.isFlyWheelUpToSpeed()
         && outtakePivot.isAtPosition()
-        && noteInTunnel();
+        && noteInFiringPosition();
   }
 
   public boolean canPivot() {
     return outtakePivot.isInitialized();
   }
 
-  public boolean noteInTunnel() {
+  public boolean noteInFiringPosition() {
     return !inputs.tunnelBeamBreak;
   }
 

@@ -52,7 +52,7 @@ public class ScoreCenterLine extends Command {
       if (isNotNoteState(machine.getState())) {
         machine.fire(CLSMTrigger.Finished, tracker.getNoteStatus());
       } else {
-        if (coordinator.noteInTunnel()) {
+        if (coordinator.noteInFiringPosition()) {
           machine.fire(CLSMTrigger.HaveNote, tracker.getNoteStatus());
         } else {
           machine.fire(CLSMTrigger.NoNote, tracker.getNoteStatus());
