@@ -2,14 +2,11 @@ package frc.robot.subsystems;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.BeamBreakConstants;
-import frc.robot.Constants.FieldConstants;
-import frc.robot.Constants.TunnelConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakeStates;
@@ -80,8 +77,10 @@ public class RobotCoordinator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    noteTrackerSensorsIO.updateInputs(inputs);
-    Logger.processInputs(BeamBreakConstants.Logging.key, inputs);
+    if (Constants.sensorsEnabled) {
+      noteTrackerSensorsIO.updateInputs(inputs);
+      Logger.processInputs(BeamBreakConstants.Logging.key, inputs);
+    }
   }
 
   public RobotStates getRobotState() {
