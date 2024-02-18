@@ -342,9 +342,14 @@ public final class Constants {
     }
   }
 
-  public static final class BeakBreakConstants {
+  public static final class BeamBreakConstants {
     public static final int tunnelBeamBreakID = 0; // TODO
     public static final int intakeBeamBreakID = 0; // TODO
+
+    public static final class Logging {
+      public static final String key = "Sensors/";
+      public static final String hardwareOutputsKey = "Sensors/Hardware/";
+    }
   }
 
   public static final class TunnelConstants { 
