@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -20,8 +21,11 @@ public class RobotCoordinator extends SubsystemBase {
   private static BeamBreakSensorIOInputsAutoLogged inputs = new BeamBreakSensorIOInputsAutoLogged();
 
   private static RobotCoordinator robotCoordinator;
+  private Timer shootTimer = new Timer();
 
   private boolean intakeButtonPressed;
+  private boolean notePassingIntake;
+  private boolean notePassingTunnel;
 
   public static RobotCoordinator getInstance() {
     if (robotCoordinator == null) {
@@ -55,6 +59,25 @@ public class RobotCoordinator extends SubsystemBase {
   @Override
   public void periodic() {
     noteTrackerSensorsIO.updateInputs(inputs);
+
+    // update note tracking logic in robot
+    if (!inputs.intakeBeamBreak) {
+      notePassingIntake = true;
+    }
+
+    else if (!inputs.tunnelBeamBreak) {
+      notePassingIntake = false;
+      notePassingTunnel = true;
+    }
+
+    else if (inputs.tunnelBeamBreak && notePassingTunnel) {
+      shootTimer.start();
+      if (shootTimer.hasElapsed(0.5)) {
+        notePassingTunnel = false;
+        shootTimer.stop();
+        shootTimer.reset();
+      }
+    }
   }
 
   public void setIntakeButtonState(boolean isPressed) {
@@ -66,10 +89,6 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   // below are all boolean checks polled from subsystems
-  public boolean canIntake() {
-    return intake.isAtPosition() && intake.isDeployed();
-  }
-
   public boolean isIntakeDeployed() {
     return intake.isDeployed();
   }
@@ -96,20 +115,20 @@ public class RobotCoordinator extends SubsystemBase {
     return outtakePivot.isInitialized();
   }
 
-  public boolean intakingNote() {
-    return !inputs.intakeBeamBreak && intake.getState() == IntakeStates.feeding;
-  }
-
-  public boolean noteInRobot() {
-    return !inputs.intakeBeamBreak || !inputs.tunnelBeamBreak;
-  }
-
   public boolean noteInTunnel() {
     return !inputs.tunnelBeamBreak;
   }
 
   public boolean noteInIntake() {
     return !inputs.intakeBeamBreak;
+  }
+
+  public boolean noteInRobot() {
+    return !inputs.intakeBeamBreak || !inputs.tunnelBeamBreak || notePassingIntake || notePassingTunnel;
+  }
+
+  public boolean noteIsShot() {
+    return !notePassingTunnel && inputs.tunnelBeamBreak;
   }
 
   public boolean isAcrossCenterLine() {

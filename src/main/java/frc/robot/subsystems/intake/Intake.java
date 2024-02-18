@@ -92,7 +92,7 @@ public class Intake extends SubsystemBase {
           }
           break;
         case feeding:
-          if (coordinator.canIntake()) {
+          if (coordinator.isIntakeDeployed()) {
             intake();
           }
           if (!coordinator.getIntakeButtonPressed()) {
@@ -103,7 +103,7 @@ public class Intake extends SubsystemBase {
           }
           break;
         case noteObtained:
-          if (coordinator.canIntake()) {
+          if (coordinator.isIntakeDeployed()) {
             intake();
           }
           if (!coordinator.noteInIntake()) {
