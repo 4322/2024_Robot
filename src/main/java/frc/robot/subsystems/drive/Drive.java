@@ -53,7 +53,7 @@ public class Drive extends SubsystemBase {
           DriveConstants.frontRightWheelLocation, DriveConstants.frontLeftWheelLocation,
           DriveConstants.backLeftWheelLocation, DriveConstants.backRightWheelLocation);
 
-  private final SwerveDrivePoseEstimator poseEstimator;
+  private SwerveDrivePoseEstimator poseEstimator;
 
   private ShuffleboardTab tab;
 
