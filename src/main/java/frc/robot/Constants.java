@@ -362,9 +362,16 @@ public final class Constants {
     }
   }
 public static final class LimelightConstants {
-    public static final double limelightAngle = 0;
-    public static final double gridLimelightHeight = OrangeMath.inchesToMeters(26.125);
-    public static final double substationLimelightHeight = OrangeMath.inchesToMeters(46.3);
+    public static final double outtakeLimelightAngle = 0;
+    public static final double outtakeLimelightHeight = OrangeMath.inchesToMeters(26.125);
+    public static final double outtakeLimelightXOffsetMeters = 0.0;
+    public static final double outtakeLimelightYOffsetMeters = 0.0;
+
+    public static final double intakeLimelightAngle = 0;
+    public static final double intakeLimelightHeight = OrangeMath.inchesToMeters(46.3);
+    public static final double intakeLimeLightXOffsetMeters = 0.0; 
+    public static final double intakeLimelightYOffsetMeters = 0.0;
+    
 
     // Tape heights are 1 inch higher than described in manual to account for
     // height to center of tape
@@ -374,7 +381,6 @@ public static final class LimelightConstants {
     // AprilTag heights are 4 inches higher than described in manual to account
     // for height to center of tag
     public static final double gridAprilTagHeight = OrangeMath.inchesToMeters(18.25);
-    public static final double doubleSubstationAprilTagHeight = OrangeMath.inchesToMeters(27.375);
     public static final double singleSubstationAprilTagHeight = 
       OrangeMath.inchesToMeters(51.5); // TODO: adjust for field (VPHS = 55.75)
 

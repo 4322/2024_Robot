@@ -13,9 +13,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.limelight.LimelightHelpers;
 import frc.robot.Constants.LimelightConstants;
-import frc.utility.OrangeMath;
 
 public class Limelight extends SubsystemBase {
   NetworkTable table;
@@ -47,32 +45,39 @@ public class Limelight extends SubsystemBase {
   // should always be calculated with WPI coordinates (front is positive X)
   Translation2d offset;
 
-  private static Limelight gridLimelight;
-  private static Limelight substationLimelight;
+  private static Limelight outtakeLimelight;
+  private static Limelight intakeLimelight;
 
-  public static Limelight getSubstationInstance() {
-    if (substationLimelight == null) {
+  public static Limelight getIntakeInstance() {
+    if (intakeLimelight == null) {
       // Measuring from front of bumpers
       // Limelight name must match limelight tool
-      substationLimelight = new Limelight("limelight-load", 
-      Constants.LimelightConstants.substationLimelightHeight,
-      0, OrangeMath.inchesToMeters(-29.75), 
-      OrangeMath.inchesToMeters(-3 - 1/4 - 3.875/2), 
-      false, false, Constants.intakeLimeLightEnabled);
+      intakeLimelight = new Limelight("limelight-intake", 
+      Constants.LimelightConstants.intakeLimelightHeight,
+      Constants.LimelightConstants.intakeLimelightAngle, 
+      Constants.LimelightConstants.intakeLimeLightXOffsetMeters, 
+      Constants.LimelightConstants.intakeLimelightYOffsetMeters, 
+      false, 
+      false, 
+      Constants.intakeLimeLightEnabled);
     }
-    return substationLimelight;
+    return intakeLimelight;
   }
 
-  public static Limelight getGridInstance() {
-    if (gridLimelight == null) {
+  public static Limelight getOuttakeInstance() {
+    if (outtakeLimelight == null) {
       // Measuring from back of bumpers
       // Limelight name must match limelight tool
-      gridLimelight = new Limelight("limelight-grid",  
-      Constants.LimelightConstants.gridLimelightHeight,
-      0, OrangeMath.inchesToMeters(-5.25), 
-      0, true, false, Constants.outtakeLimeLightEnabled);
+      outtakeLimelight = new Limelight("limelight-outtake",  
+      Constants.LimelightConstants.outtakeLimelightHeight,
+      Constants.LimelightConstants.outtakeLimelightAngle, 
+      Constants.LimelightConstants.outtakeLimelightXOffsetMeters, 
+      Constants.LimelightConstants.outtakeLimelightYOffsetMeters, 
+      true, 
+      false, 
+      Constants.outtakeLimeLightEnabled);
     }
-    return gridLimelight;
+    return outtakeLimelight;
   }
 
   private Limelight(String limelightName, double limelightHeightMeters, double limelightAngleDegrees,
@@ -94,7 +99,6 @@ public class Limelight extends SubsystemBase {
       ledMode = table.getEntry("ledMode");
       camMode = table.getEntry("camMode");
       pipeline = table.getEntry("pipeline");
-      activateCustomAprilTag();
 
       if (Constants.debug) {
         tab = Shuffleboard.getTab(name);
@@ -260,10 +264,6 @@ public class Limelight extends SubsystemBase {
 
   public void activateAprilTag() {
     switchPipeline(1);
-  }
-
-  public void activateCustomAprilTag() {
-    switchPipeline(2);
   }
 
   private void switchPipeline(int pipelineIdx) {
