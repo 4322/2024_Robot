@@ -62,7 +62,7 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // initialize motor internal encoder position until the intake isn't moving
-    if (Constants.intakeDeployerEnabled && !initialized && !existenceTimer.hasElapsed(5)) {
+    if (Constants.intakeEnabled && !initialized && !existenceTimer.hasElapsed(5)) {
       initialized = io.initMotorPos();
     }
 
@@ -191,7 +191,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void retract() {
-    if (Constants.intakeDeployerEnabled && initialized) {
+    if (Constants.intakeEnabled && initialized) {
       io.setDeployTarget(IntakeConstants.Deploy.retractPositionRotations);
       deployTarget = IntakeConstants.Deploy.retractPositionRotations;
       Logger.recordOutput(
