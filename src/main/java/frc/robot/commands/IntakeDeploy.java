@@ -20,12 +20,12 @@ public class IntakeDeploy extends Command {
 
   @Override
   public void execute() {
-    if (!initialDeploy) {
-      coordinator.setRobotState(RobotStates.deployRequested);
+    if (!initialDeploy && coordinator.getRobotState() != RobotStates.noteObtained) {
+      coordinator.setRobotState(RobotStates.deploy);
       initialDeploy = true;
     }
     else if (coordinator.getRobotState() == RobotStates.noteSecured && coordinator.isAcrossCenterLine()) {
-      coordinator.setRobotState(RobotStates.deployRequested);
+      coordinator.setRobotState(RobotStates.deploy);
     }
   }
 
@@ -41,7 +41,7 @@ public class IntakeDeploy extends Command {
       return;
     }
     else {
-      coordinator.setRobotState(RobotStates.retractRequested);
+      coordinator.setRobotState(RobotStates.retract);
     }
   }
 }

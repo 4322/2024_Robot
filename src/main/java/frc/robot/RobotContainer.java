@@ -21,7 +21,6 @@ import frc.robot.commands.DriveStop;
 import frc.robot.commands.IntakeDeploy;
 import frc.robot.commands.OuttakeOut;
 import frc.robot.commands.PivotToAngle;
-import frc.robot.commands.IntakeRetract;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetRobotPose;
 import frc.robot.commands.Shoot;
@@ -64,8 +63,6 @@ public class RobotContainer {
 
   private final TunnelFeed tunnelFeed = new TunnelFeed();
 
-  private final IntakeRetract intakeRetract = new IntakeRetract();
-
   private final OuttakeOut outtakeOut = new OuttakeOut();
 
   private final PivotToAngle pivotToAngle = new PivotToAngle();
@@ -80,10 +77,6 @@ public class RobotContainer {
 
     if (Constants.tunnelEnabled) {
       tunnel.setDefaultCommand(tunnelFeed);
-    }
-
-    if (Constants.intakeDeployerEnabled) {
-      intakeDeployer.setDefaultCommand(intakeRetract);
     }
 
     if (Constants.outtakeEnabled) {
