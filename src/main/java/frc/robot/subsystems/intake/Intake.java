@@ -86,7 +86,7 @@ public class Intake extends SubsystemBase {
           else if (isDeployed() && !coordinator.noteInRobot()) {
             intakeState = IntakeStates.feeding;
           }
-          else if (coordinator.noteInRobot()) {
+          else if (coordinator.noteInRobot() && isDeployed()) {
             intakeState = IntakeStates.notePastIntake;
           }
           break;
