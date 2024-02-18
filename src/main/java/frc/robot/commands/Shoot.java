@@ -11,17 +11,19 @@ public class Shoot extends Command{
         tunnel = Tunnel.getInstance();
         addRequirements(tunnel);
     }
+
     @Override
     public void execute()
     {
-        if (RobotCoordinator.getInstance().canShoot())
+        if (RobotCoordinator.getInstance().canShoot() && 
+                RobotCoordinator.getInstance().isAcrossCenterLine()) 
         {
             tunnel.feed();
         }
     }
     @Override
     public boolean isFinished() {
-        return !RobotCoordinator.getInstance().noteAtTunnelSensor(); // once the tunnel beam can no longer 'see' the note, it'll be on the flywheel and can be stopped.
+        return !RobotCoordinator.getInstance().noteInFiringPosition(); // once the tunnel beam can no longer 'see' the note, it'll be on the flywheel and can be stopped.
     }
     @Override
     public void end(boolean interrupted) {
