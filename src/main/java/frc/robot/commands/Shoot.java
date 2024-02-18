@@ -11,10 +11,12 @@ public class Shoot extends Command{
         tunnel = Tunnel.getInstance();
         addRequirements(tunnel);
     }
+
     @Override
     public void execute()
     {
-        if (RobotCoordinator.getInstance().canShoot())
+        if (RobotCoordinator.getInstance().canShoot() && 
+                RobotCoordinator.getInstance().isAcrossCenterLine()) 
         {
             tunnel.feed();
         }
