@@ -42,6 +42,8 @@ public class RobotCoordinator extends SubsystemBase {
 
   private static RobotCoordinator robotCoordinator;
 
+  private boolean intakeButtonPressed;
+
   public static RobotCoordinator getInstance() {
     if (robotCoordinator == null) {
       robotCoordinator = new RobotCoordinator();
@@ -91,7 +93,7 @@ public class RobotCoordinator extends SubsystemBase {
         if (canDeploy()) {
           intakeDeployer.setState(IntakeDeployerStates.deploying);
         }
-        if (!noteAtTunnelSensor() && intakeDeployer.getState() == IntakeDeployerStates.deployed) {
+        if (!noteInTunnel() && intakeDeployer.getState() == IntakeDeployerStates.deployed) {
           robotState = RobotStates.huntingNote;
         }
         break;
@@ -105,12 +107,12 @@ public class RobotCoordinator extends SubsystemBase {
           case auto:
             break;
         }
-        if (noteAtIntakeSensor()) {
+        if (noteInIntake()) {
           robotState = RobotStates.noteObtained;
         }
         break;
       case noteObtained:
-        if (noteAtTunnelSensor()) {
+        if (noteInTunnel()) {
           robotState = RobotStates.noteSecured;
         }
         break;
@@ -156,7 +158,7 @@ public class RobotCoordinator extends SubsystemBase {
   public boolean canShoot() {
     return outtake.isFlyWheelUpToSpeed()
         && outtakePivot.isAtPosition()
-        && noteAtTunnelSensor();
+        && noteInTunnel();
   }
 
   public boolean canPivot() {
@@ -167,11 +169,11 @@ public class RobotCoordinator extends SubsystemBase {
     return !inputs.intakeBeamBreak && intake.getState() == IntakeStates.feeding;
   }
 
-  public boolean noteAtTunnelSensor() {
+  public boolean noteInTunnel() {
     return inputs.intakeBeamBreak && !inputs.tunnelBeamBreak;
   }
 
-  public boolean noteAtIntakeSensor() {
+  public boolean noteInIntake() {
     return !inputs.intakeBeamBreak;
   }
 
