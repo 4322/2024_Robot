@@ -82,6 +82,10 @@ public class RobotCoordinator extends SubsystemBase {
     return intake.isInitialized() && !intake.isDeployed();
   }
 
+  public boolean canRetract() {
+    return !intake.isFeeding() && intake.isInitialized();
+  }
+
   public boolean canShoot() {
     return outtake.isFlyWheelUpToSpeed()
         && outtakePivot.isAtPosition()
@@ -96,8 +100,12 @@ public class RobotCoordinator extends SubsystemBase {
     return !inputs.intakeBeamBreak && intake.getState() == IntakeStates.feeding;
   }
 
+  public boolean noteInRobot() {
+    return !inputs.intakeBeamBreak || !inputs.tunnelBeamBreak;
+  }
+
   public boolean noteInTunnel() {
-    return inputs.intakeBeamBreak && !inputs.tunnelBeamBreak;
+    return !inputs.tunnelBeamBreak;
   }
 
   public boolean noteInIntake() {

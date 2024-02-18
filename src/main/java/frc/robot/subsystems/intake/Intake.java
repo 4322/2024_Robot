@@ -28,6 +28,7 @@ public class Intake extends SubsystemBase {
   private boolean initialized;
   private double deployTarget = 99999; // set to very high value in case target not yet set
   private RobotCoordinator coordinator;
+  private boolean isFeeding;
 
   private static Intake intake;
 
@@ -72,16 +73,63 @@ public class Intake extends SubsystemBase {
 
       switch (intakeState) {
         case retracted:
+          if (coordinator.getIntakeButtonPressed() && (coordinator.isAcrossCenterLine() || !coordinator.noteInRobot())) {
+            intakeState = IntakeStates.deploying;
+          }
           break;
         case deploying:
+          if (coordinator.canDeploy()) {
+            deploy();
+          }
+          if (!coordinator.getIntakeButtonPressed()) {
+            intakeState = IntakeStates.retracting;
+          }
+          else if (isDeployed() && !coordinator.noteInRobot()) {
+            intakeState = IntakeStates.feeding;
+          }
+          else if (coordinator.noteInRobot()) {
+            intakeState = IntakeStates.notePastIntake;
+          }
           break;
         case feeding:
+          if (coordinator.canIntake()) {
+            intake();
+          }
+          if (!coordinator.getIntakeButtonPressed()) {
+            intakeState = IntakeStates.retracting;
+          }
+          else if (coordinator.noteInIntake()) {
+            intakeState = IntakeStates.noteObtained;
+          }
           break;
         case noteObtained:
+          if (coordinator.canIntake()) {
+            intake();
+          }
+          if (!coordinator.noteInIntake()) {
+            intakeState = IntakeStates.notePastIntake;
+          }
           break;
         case notePastIntake:
+          stopFeeder();
+          if (!coordinator.isAcrossCenterLine() || !coordinator.getIntakeButtonPressed()) {
+            intakeState = IntakeStates.retracting;
+          }
+          else if (!coordinator.noteInRobot()) {
+            intakeState = IntakeStates.feeding;
+          }
           break;
         case retracting:
+          stopFeeder();
+          if (coordinator.canRetract()) {
+            retract();
+          }
+          if (coordinator.getIntakeButtonPressed() && (coordinator.isAcrossCenterLine() || !coordinator.noteInRobot())) {
+            intakeState = IntakeStates.deploying;
+          }
+          else if (coordinator.isIntakeRetracted()) {
+            intakeState = IntakeStates.retracted;
+          }
           break;
       }
     }
@@ -94,6 +142,7 @@ public class Intake extends SubsystemBase {
           IntakeConstants.Logging.feederKey + "IntakeTargetSpeedPct",
           IntakeConstants.Intake.intakeSpeedRPM);
       Logger.recordOutput(IntakeConstants.Logging.feederKey + "IntakeStopped", false);
+      isFeeding = true;
     }
   }
 
@@ -104,6 +153,7 @@ public class Intake extends SubsystemBase {
           IntakeConstants.Logging.feederKey + "IntakeTargetSpeedPct",
           IntakeConstants.Intake.outtakeSpeedRPM);
       Logger.recordOutput(IntakeConstants.Logging.feederKey + "IntakeStopped", false);
+      isFeeding = true;
     }
   }
 
@@ -121,11 +171,19 @@ public class Intake extends SubsystemBase {
     }
   }
 
-  public void stopIntake() {
+  public void stopFeeder() {
     if (Constants.intakeEnabled && initialized) {
-      io.stopIntake();
+      io.stopFeeder();
       Logger.recordOutput(IntakeConstants.Logging.feederKey + "IntakeTargetSpeedPct", 0);
       Logger.recordOutput(IntakeConstants.Logging.key + "IntakeStopped", true);
+      isFeeding = false;
+    }
+  }
+
+  public void stopDeployer() {
+    if (Constants.intakeEnabled && initialized) {
+      io.stopFeeder();
+      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "DeployStopped", true);
     }
   }
 
@@ -172,6 +230,10 @@ public class Intake extends SubsystemBase {
 
   public boolean isInitialized() {
     return initialized;
+  }
+
+  public boolean isFeeding() {
+    return isFeeding;
   }
 
   public IntakeStates getState() {

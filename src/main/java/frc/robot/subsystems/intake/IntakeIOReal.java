@@ -150,8 +150,12 @@ public class IntakeIOReal implements IntakeIO {
   }
 
   @Override
-  public void stopIntake() {
+  public void stopFeeder() {
     intake.stopMotor();
+  }
+
+  @Override
+  public void stopDeployer() {
     deploy.stopMotor();
   }
 }

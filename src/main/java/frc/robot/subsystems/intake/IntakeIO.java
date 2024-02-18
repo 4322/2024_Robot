@@ -41,5 +41,7 @@ public interface IntakeIO {
 
   public default void setCoastMode() {}
 
-  public default void stopIntake() {}
+  public default void stopFeeder() {}
+
+  public default void stopDeployer() {}
 }
