@@ -18,19 +18,15 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
-import frc.robot.commands.IntakeDeploy;
-import frc.robot.commands.IntakeIn;
 import frc.robot.commands.OuttakeOut;
 import frc.robot.commands.PivotToAngle;
-import frc.robot.commands.IntakeRetract;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetRobotPose;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.TunnelFeed;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
-import frc.robot.commands.XboxControllerRumble;
+import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.intakeDeployer.IntakeDeployer;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.robot.subsystems.outtakePivot.OuttakePivot;
 import frc.robot.subsystems.tunnel.Tunnel;
@@ -56,7 +52,6 @@ public class RobotContainer {
   private final Tunnel tunnel = Tunnel.getInstance();
   private final Outtake outtake = Outtake.getInstance();
   private final OuttakePivot outtakePivot = OuttakePivot.getInstance();
-  private final IntakeDeployer intakeDeployer = IntakeDeployer.getInstance();
 
   private final WriteFiringSolutionAtCurrentPos writeFiringSolution = new WriteFiringSolutionAtCurrentPos();
   
@@ -64,8 +59,6 @@ public class RobotContainer {
   private final DriveStop driveStop = new DriveStop();
 
   private final TunnelFeed tunnelFeed = new TunnelFeed();
-
-  private final IntakeRetract intakeRetract = new IntakeRetract();
 
   private final OuttakeOut outtakeOut = new OuttakeOut();
 
@@ -81,10 +74,6 @@ public class RobotContainer {
 
     if (Constants.tunnelEnabled) {
       tunnel.setDefaultCommand(tunnelFeed);
-    }
-
-    if (Constants.intakeDeployerEnabled) {
-      intakeDeployer.setDefaultCommand(intakeRetract);
     }
 
     if (Constants.outtakeEnabled) {
@@ -129,8 +118,8 @@ public class RobotContainer {
               new SetRobotPose(
                   new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()), true));
       xbox.povDown().onTrue(driveStop);
-      xbox.rightTrigger().whileTrue(new SequentialCommandGroup(
-        new IntakeDeploy(), new IntakeIn(), new XboxControllerRumble(xbox)));
+      xbox.rightTrigger().onTrue(Commands.runOnce(() -> {RobotCoordinator.getInstance().setIntakeButtonState(true);}));
+      xbox.rightTrigger().onFalse(Commands.runOnce(() -> {RobotCoordinator.getInstance().setIntakeButtonState(false);}));
       xbox.leftTrigger().whileTrue(new Shoot());
     }
   }

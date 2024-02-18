@@ -285,6 +285,8 @@ public final class Constants {
   public static final class IntakeConstants {
     // TODO: update these
     public static final int intakeMotorID = 0;
+    public static final int deployMotorID = 0;
+    public static final int deployEncoderID = 0;
 
     public static final class IntakeConfig {
       public static final NeutralModeValue neutralMode = NeutralModeValue.Coast;
@@ -292,22 +294,6 @@ public final class Constants {
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
     }
-
-    public static final class Intake {
-      public static final double intakeSpeedRPM = 0;
-      public static final double outtakeSpeedRPM = -0; // signed
-      public static final double maxIntakeRPM = 0.0;
-    }
-
-    public static final class Logging {
-      public static final String key = "Intake/";
-      public static final String hardwareOutputsKey = "Intake/Hardware/";
-    }
-  }
-
-  public static final class IntakeDeployerConstants {
-    public static final int deployMotorID = 0;
-    public static final int deployEncoderID = 0;
 
     public static final class DeployConfig {
       public static final double kP = 0;
@@ -320,6 +306,12 @@ public final class Constants {
       public static final double timeoutMs = 50;
     }
 
+    public static final class Intake {
+      public static final double intakeSpeedRPM = 0;
+      public static final double outtakeSpeedRPM = -0; // signed
+      public static final double maxIntakeRPM = 0.0;
+    }
+    
     public static final class Deploy {
       public static final double deployPositionRotations = 0;
       public static final double retractPositionRotations = 0;
@@ -337,8 +329,11 @@ public final class Constants {
     }
 
     public static final class Logging {
-      public static final String key = "IntakeDeployer/";
-      public static final String hardwareOutputsKey = "IntakeDeployer/Hardware/";
+      public static final String key = "Intake/";
+      public static final String feederKey = "Intake/Feeder/";
+      public static final String feederHardwareOutputsKey = "Intake/Feeder/Hardware/";
+      public static final String deployerKey = "Intake/Deployer/";
+      public static final String deployerHardwareOutputsKey = "Intake/Deployer/Hardware/";
     }
   }
 

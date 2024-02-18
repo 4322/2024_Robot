@@ -28,7 +28,7 @@ public class TunnelFeed extends Command {
   @Override
   public void execute() {
     // If note midway between intake and tunnel sensor, tunnel still runs
-    if (RobotCoordinator.getInstance().noteAtIntakeSensor()) {
+    if (RobotCoordinator.getInstance().noteInIntake()) {
       noteDetected = true;
     }
 
@@ -40,7 +40,7 @@ public class TunnelFeed extends Command {
 
   @Override
   public boolean isFinished() {
-    return RobotCoordinator.getInstance().noteInRobot();
+    return RobotCoordinator.getInstance().noteInTunnel();
   }
 
   // Called once the command ends or is interrupted.

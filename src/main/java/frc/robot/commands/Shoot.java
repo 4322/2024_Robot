@@ -21,7 +21,7 @@ public class Shoot extends Command{
     }
     @Override
     public boolean isFinished() {
-        return !RobotCoordinator.getInstance().noteAtTunnelSensor(); // once the tunnel beam can no longer 'see' the note, it'll be on the flywheel and can be stopped.
+        return !RobotCoordinator.getInstance().noteInTunnel(); // once the tunnel beam can no longer 'see' the note, it'll be on the flywheel and can be stopped.
     }
     @Override
     public void end(boolean interrupted) {
