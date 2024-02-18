@@ -7,33 +7,12 @@ import frc.robot.Robot;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakeStates;
-import frc.robot.subsystems.intakeDeployer.IntakeDeployer;
-import frc.robot.subsystems.intakeDeployer.IntakeDeployer.IntakeDeployerStates;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.robot.subsystems.outtakePivot.OuttakePivot;
 
 public class RobotCoordinator extends SubsystemBase {
-
-  public enum RobotStates {
-    defaultDrive, 
-    deploy,
-    retract,
-    noteObtained,
-    noteSecured,
-    huntingNote;
-  }
-
-  public enum HuntingStates {
-    manual,
-    auto;
-  }
-
-  private RobotStates robotState = RobotStates.defaultDrive;
-  private HuntingStates huntingState = HuntingStates.manual;
-
   private Intake intake;
   private Outtake outtake;
-  private IntakeDeployer intakeDeployer;
   private OuttakePivot outtakePivot;
   private Drive drive;
 
@@ -54,7 +33,6 @@ public class RobotCoordinator extends SubsystemBase {
   private RobotCoordinator() {
     intake = Intake.getInstance();
     outtake = Outtake.getInstance();
-    intakeDeployer = IntakeDeployer.getInstance();
     outtakePivot = OuttakePivot.getInstance();
     drive = Drive.getInstance();
     switch (Constants.currentMode) {
@@ -74,85 +52,34 @@ public class RobotCoordinator extends SubsystemBase {
     }
   }
 
-  public RobotStates getRobotState() {
-    return robotState;
-  }
-
-  public void setRobotState(RobotStates newState) {
-    robotState = newState;
-  }
-
   @Override
   public void periodic() {
     noteTrackerSensorsIO.updateInputs(inputs);
+  }
 
-    switch (robotState) {
-      case defaultDrive:
-        break;
-      case deploy:
-        if (canDeploy()) {
-          intakeDeployer.setState(IntakeDeployerStates.deploying);
-        }
-        if (!noteInTunnel() && intakeDeployer.getState() == IntakeDeployerStates.deployed) {
-          robotState = RobotStates.huntingNote;
-        }
-        break;
-      case huntingNote:
-        if (canIntake()) {
-          intake.setState(IntakeStates.feeding);
-        }
-        switch (huntingState) { // TODO: finish
-          case manual:
-            break;
-          case auto:
-            break;
-        }
-        if (noteInIntake()) {
-          robotState = RobotStates.noteObtained;
-        }
-        break;
-      case noteObtained:
-        if (noteInTunnel()) {
-          robotState = RobotStates.noteSecured;
-        }
-        break;
-      case noteSecured:
-        intake.setState(IntakeStates.stopped);
-        if (!isAcrossCenterLine()) {
-          robotState = RobotStates.retract;
-        }
-        break;
-      case retract:
-        intake.setState(IntakeStates.stopped);
-        if (canRetract()) {
-          intakeDeployer.setState(IntakeDeployerStates.retracting);
-        }
-        if (isIntakeRetracted() && intakeDeployer.getState() == IntakeDeployerStates.retracted) {
-          robotState = RobotStates.defaultDrive;
-        }
-        break;
-    }
+  public void setIntakeButtonState(boolean isPressed) {
+    intakeButtonPressed = isPressed;
+  }
+
+  public boolean getIntakeButtonPressed() {
+    return intakeButtonPressed;
   }
 
   // below are all boolean checks polled from subsystems
   public boolean canIntake() {
-    return intakeDeployer.isAtPosition() && intakeDeployer.isDeployed();
+    return intake.isAtPosition() && intake.isDeployed();
   }
 
   public boolean isIntakeDeployed() {
-    return intakeDeployer.isDeployed();
+    return intake.isDeployed();
   }
 
   public boolean isIntakeRetracted() {
-    return intakeDeployer.isRetracted();
+    return intake.isRetracted();
   }
 
   public boolean canDeploy() {
-    return intakeDeployer.isInitialized() && !intakeDeployer.isDeployed();
-  }
-
-  public boolean canRetract() {
-    return intake.getState() == IntakeStates.stopped && inputs.intakeBeamBreak;
+    return intake.isInitialized() && !intake.isDeployed();
   }
 
   public boolean canShoot() {
