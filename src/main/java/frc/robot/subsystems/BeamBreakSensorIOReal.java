@@ -9,8 +9,8 @@ public class BeamBreakSensorIOReal implements BeamBreakSensorIO {
 
   public BeamBreakSensorIOReal() {
     if (Constants.sensorsEnabled) {
-      intakeInput = new DigitalInput(Constants.BeakBreakConstants.intakeBeamBreakID);
-      tunneInput = new DigitalInput(Constants.BeakBreakConstants.tunnelBeamBreakID);
+      intakeInput = new DigitalInput(Constants.BeamBreakConstants.intakeBeamBreakID);
+      tunneInput = new DigitalInput(Constants.BeamBreakConstants.tunnelBeamBreakID);
     }
   }
 
