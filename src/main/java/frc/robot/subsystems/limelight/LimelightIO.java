@@ -1,5 +1,5 @@
 package frc.robot.subsystems.limelight;
 
-public class LimelightIO {
+public interface LimelightIO {
     
 }

@@ -46,6 +46,7 @@ public final class Constants {
   public static final boolean tunnelEnabled = false;
   public static final boolean outtakeEnabled = false;
   public static final boolean outtakePivotEnabled = false;
+  public static final boolean limelightEnabled = false;
   public static final boolean sensorsEnabled = false;
   public static final boolean joysticksEnabled = false;
   public static final boolean xboxEnabled = true;
