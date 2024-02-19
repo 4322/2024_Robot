@@ -301,7 +301,7 @@ public class Drive extends SubsystemBase {
             .getDistance(RobotCoordinator.getInstance().getOuttakeLimelightPose2d()
               .getTranslation()) < Constants.LimelightConstants.visionOdometryTolerance) {
         updateVision(RobotCoordinator.getInstance().getOuttakeLimelightPose2d(), 
-                      RobotCoordinator.getInstance().getOuttakeLimelightLatency());
+                      Timer.getFPGATimestamp() - RobotCoordinator.getInstance().getOuttakeLimelightLatency());
       }
 
       if (Constants.debug) {
