@@ -11,9 +11,6 @@ import frc.utility.OrangeMath;
 public class AutoAcquireNote extends Command {
 
   private Drive drive;
-  private RobotCoordinator coordinator;
-  private Double initTx;
-  private Double initTy;
   private boolean initialized;
 
   private double desiredHeadingAngle;
@@ -24,26 +21,25 @@ public class AutoAcquireNote extends Command {
 
   public AutoAcquireNote() {
     drive = Drive.getInstance();
-    coordinator = RobotCoordinator.getInstance();
     addRequirements(drive);
   }
 
   @Override
   public void initialize() {
-    initTx = coordinator.getNearestNoteTX();
-    initTy = coordinator.getNearestNoteTY();
+    
+    RobotCoordinator coordinator = RobotCoordinator.getInstance();
 
     initialized = true;
 
     if (!coordinator.noteInVision()) {
-      initialized =
-          false; // this cancels auto aquisition (although the button will automatically restart it)
+      initialized = false; // this cancels auto aquisition (although the button will automatically restart it)
       return;
     }
     UpdateHeading();
   }
 
   private void UpdateHeading() {
+    RobotCoordinator coordinator = RobotCoordinator.getInstance();
     Double tx = coordinator.getNearestNoteTX();
     Double ty = coordinator.getNearestNoteTY();
     // I'm assuming that null from either implies that the data being returned is bad / donut is
@@ -88,6 +84,7 @@ public class AutoAcquireNote extends Command {
 
   @Override
   public boolean isFinished() {
+    RobotCoordinator coordinator = RobotCoordinator.getInstance();
     return !initialized
         || coordinator.noteInRobot()
         || !coordinator.getAutoIntakeButtonPressed()

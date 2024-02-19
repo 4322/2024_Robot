@@ -28,7 +28,6 @@ public class Intake extends SubsystemBase {
   private Timer existenceTimer;
   private boolean initialized;
   private double deployTarget = 99999; // set to very high value in case target not yet set
-  private RobotCoordinator coordinator;
   private boolean isFeeding;
 
   private AutoAcquireNote autoAcquireNote = new AutoAcquireNote();
@@ -55,7 +54,6 @@ public class Intake extends SubsystemBase {
       case REPLAY:
         break;
     }
-    coordinator = RobotCoordinator.getInstance();
 
     if (io == null) {
       io = new IntakeIO() {};
@@ -66,6 +64,8 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
+    
+    RobotCoordinator coordinator = RobotCoordinator.getInstance();
     // initialize motor internal encoder position until the intake isn't moving
     if (Constants.intakeEnabled && !initialized && !existenceTimer.hasElapsed(5)) {
       initialized = io.initMotorPos();
