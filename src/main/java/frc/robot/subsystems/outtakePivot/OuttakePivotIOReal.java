@@ -10,18 +10,21 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.reduxrobotics.sensors.canandcoder.Canandcoder;
+
 import frc.robot.Constants;
+import frc.robot.Constants.OuttakeConstants;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
 public class OuttakePivotIOReal implements OuttakePivotIO {
   private TalonFX pivotMotor;
-  private CANcoder pivotEncoder;
+  private Canandcoder pivotEncoder;
 
   public OuttakePivotIOReal() {
     pivotMotor = new TalonFX(Constants.OuttakeConstants.pivotDeviceID);
+    pivotEncoder = new Canandcoder(Constants.OuttakeConstants.pivotDeviceID);
     configPivot();
-    configEncoder();
   }
 
   private void configPivot() {
@@ -43,12 +46,6 @@ public class OuttakePivotIOReal implements OuttakePivotIO {
     pivotMotor.getConfigurator().apply(motorOutputConfigs);
   }
 
-  private void configEncoder() {
-    CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
-    canCoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
-    pivotEncoder.getConfigurator().apply(canCoderConfig);
-  }
-
   @Override
   public void updateInputs(OuttakePivotIOInputs inputs) {
     inputs.pivotRotations = pivotMotor.getPosition().getValue();
@@ -62,8 +59,8 @@ public class OuttakePivotIOReal implements OuttakePivotIO {
 
   @Override
   public boolean initPivot() {
-    pivotMotor.setPosition(pivotEncoder.getAbsolutePosition().getValue());
-    return OrangeMath.equalToTwoDecimal(pivotEncoder.getVelocity().getValue(), 0);
+    pivotMotor.setPosition(pivotEncoder.getAbsPosition() * OuttakeConstants.gearReductionEncoderToMotor);
+    return OrangeMath.equalToTwoDecimal(pivotEncoder.getVelocity(), 0);
   }
 
   @Override
