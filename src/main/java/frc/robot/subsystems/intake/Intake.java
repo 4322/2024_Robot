@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.AutoAquireNote;
+import frc.robot.commands.XboxControllerRumble;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
@@ -31,6 +32,7 @@ public class Intake extends SubsystemBase {
   private boolean isFeeding;
 
   private AutoAquireNote autoAquireNote = new AutoAquireNote();
+  private XboxControllerRumble xBoxRumble = new XboxControllerRumble();
 
   private static Intake intake;
 
@@ -111,6 +113,7 @@ public class Intake extends SubsystemBase {
             intake();
           }
           if (!coordinator.noteInIntake()) {
+            CommandScheduler.getInstance().schedule(xBoxRumble);
             intakeState = IntakeStates.notePastIntake;
           }
           break;
