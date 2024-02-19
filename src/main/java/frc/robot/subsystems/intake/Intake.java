@@ -7,6 +7,8 @@ import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.AutoAquireNote;
 import frc.robot.subsystems.RobotCoordinator;
+import frc.robot.subsystems.LED.LED;
+import frc.robot.subsystems.LED.LED.LEDState;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -29,6 +31,7 @@ public class Intake extends SubsystemBase {
   private double deployTarget = 99999; // set to very high value in case target not yet set
   private RobotCoordinator coordinator;
   private boolean isFeeding;
+  private LED led;
 
   private AutoAquireNote autoAquireNote = new AutoAquireNote();
 
@@ -54,6 +57,7 @@ public class Intake extends SubsystemBase {
         break;
     }
     coordinator = RobotCoordinator.getInstance();
+    led = LED.getInstance();
 
     if (io == null) {
       io = new IntakeIO() {};
@@ -78,11 +82,13 @@ public class Intake extends SubsystemBase {
           if (coordinator.getIntakeButtonPressed()
               && (coordinator.isAcrossCenterLine() || !coordinator.noteInRobot())) {
             intakeState = IntakeStates.deploying;
+            led.setLEDState(LEDState.blue);
           }
           break;
         case deploying:
           if (coordinator.canDeploy()) {
             deploy();
+            led.setLEDState(LEDState.red);
           }
           if (!coordinator.getIntakeButtonPressed()) {
             intakeState = IntakeStates.retracting;
@@ -95,6 +101,7 @@ public class Intake extends SubsystemBase {
         case feeding:
           if (coordinator.isIntakeDeployed()) {
             intake();
+            led.setLEDState(LEDState.purple);
           }
           if (!coordinator.getIntakeButtonPressed()) {
             intakeState = IntakeStates.retracting;
@@ -109,6 +116,7 @@ public class Intake extends SubsystemBase {
         case noteObtained:
           if (coordinator.isIntakeDeployed()) {
             intake();
+            led.setLEDState(LEDState.purple);
           }
           if (!coordinator.noteInIntake()) {
             intakeState = IntakeStates.notePastIntake;
@@ -116,6 +124,7 @@ public class Intake extends SubsystemBase {
           break;
         case notePastIntake:
           stopFeeder();
+          led.setLEDState(LEDState.purple);
           if (!coordinator.isAcrossCenterLine() || !coordinator.getIntakeButtonPressed()) {
             intakeState = IntakeStates.retracting;
           } else if (!coordinator.noteInRobot()) {
@@ -124,6 +133,7 @@ public class Intake extends SubsystemBase {
           break;
         case retracting:
           stopFeeder();
+          led.setLEDState(LEDState.purple);
           if (coordinator.canRetract()) {
             retract();
           }
