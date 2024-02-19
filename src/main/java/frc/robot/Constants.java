@@ -109,6 +109,7 @@ public final class Constants {
   public static final int shuffleboardStatusPeriodMaxMs = 90; // for interactive response
   public static final int slowStatusPeriodMaxMs = 255;
   public static final int controllerConfigTimeoutMs = 50;
+public static final boolean inShotTuning = false;
 
   public static final class DriveConstants {
 

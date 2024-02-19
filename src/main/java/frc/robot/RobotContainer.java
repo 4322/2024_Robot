@@ -115,6 +115,7 @@ public class RobotContainer {
                     driveManual.updateStateMachine(DriveManualTrigger.JOYSTICK_IN);
                   }));
       xbox.povUp().onTrue(new ResetFieldCentric(true));
+      xbox.povRight().onTrue(writeFiringSolution);
       // Reset the odometry for testing speaker-centric driving. This assumes robot is on the
       // very left on the front of the speaker, facing down-field (forward).
       xbox.start()
