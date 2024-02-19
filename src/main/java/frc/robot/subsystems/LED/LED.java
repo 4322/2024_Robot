@@ -5,12 +5,12 @@ import frc.robot.Constants;
 
 public class LED extends SubsystemBase {
   public LedIO io;
-  private LEDState currentState = LEDState.flashing;
+  private LEDState currentState = LEDState.flashingRed;
 
   public enum LEDState {
     // priority 1 runs for undefined amount of time so keep time at 0
     rainbow,
-    flashing,
+    flashingRed,
     red,
     green,
     blue,
@@ -50,7 +50,7 @@ public class LED extends SubsystemBase {
       case rainbow:
         io.rainbowAnimate(1, 0.3, 20, 0);
         break;
-      case flashing:
+      case flashingRed:
         io.flashAnimate(255, 0, 0, 0.6, 20, 6);
         break;
       case red:
