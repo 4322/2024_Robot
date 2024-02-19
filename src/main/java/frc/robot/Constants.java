@@ -362,15 +362,18 @@ public final class Constants {
     }
   }
 public static final class LimelightConstants {
+    public static final double visionOdometryTolerance = 1.0;
     public static final double outtakeLimelightAngle = 0;
     public static final double outtakeLimelightHeight = OrangeMath.inchesToMeters(26.125);
     public static final double outtakeLimelightXOffsetMeters = 0.0;
     public static final double outtakeLimelightYOffsetMeters = 0.0;
+    public static final String outtakeLimelightName = "limelight-outtake";
 
     public static final double intakeLimelightAngle = 0;
     public static final double intakeLimelightHeight = OrangeMath.inchesToMeters(46.3);
     public static final double intakeLimeLightXOffsetMeters = 0.0; 
     public static final double intakeLimelightYOffsetMeters = 0.0;
+    public static final String intakeLimelightName = "limelight-intake";
     
 
     // Tape heights are 1 inch higher than described in manual to account for

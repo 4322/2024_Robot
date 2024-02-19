@@ -2,6 +2,9 @@ package frc.robot.subsystems.limelight;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
@@ -52,7 +55,7 @@ public class Limelight extends SubsystemBase {
     if (intakeLimelight == null) {
       // Measuring from front of bumpers
       // Limelight name must match limelight tool
-      intakeLimelight = new Limelight("limelight-intake", 
+      intakeLimelight = new Limelight(LimelightConstants.intakeLimelightName, 
       Constants.LimelightConstants.intakeLimelightHeight,
       Constants.LimelightConstants.intakeLimelightAngle, 
       Constants.LimelightConstants.intakeLimeLightXOffsetMeters, 
@@ -68,7 +71,7 @@ public class Limelight extends SubsystemBase {
     if (outtakeLimelight == null) {
       // Measuring from back of bumpers
       // Limelight name must match limelight tool
-      outtakeLimelight = new Limelight("limelight-outtake",  
+      outtakeLimelight = new Limelight(LimelightConstants.outtakeLimelightName,  
       Constants.LimelightConstants.outtakeLimelightHeight,
       Constants.LimelightConstants.outtakeLimelightAngle, 
       Constants.LimelightConstants.outtakeLimelightXOffsetMeters, 
@@ -123,6 +126,14 @@ public class Limelight extends SubsystemBase {
         }
       }
     }
+  }
+
+  public Pose2d getAprilTagPose2d() {
+    return LimelightHelpers.getBotPose2d_wpiBlue(name);
+  }
+
+  public double getTotalLatency() {
+    return LimelightHelpers.getLatency_Capture(name) + LimelightHelpers.getLatency_Pipeline(name);
   }
 
   public void refreshOdometry() {
@@ -256,6 +267,10 @@ public class Limelight extends SubsystemBase {
     double distanceY = distanceX * Math.tan(Math.toRadians(getVerticalDegToTarget()));
 
     return distanceY;
+  }
+
+  public void updatePoseEstimatorWithVisionBotPose() {
+    
   }
 
   public void activateRetroReflective() {

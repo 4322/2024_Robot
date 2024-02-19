@@ -21,6 +21,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.WheelPosition;
 import frc.robot.RobotChooser.RobotChooser;
 import frc.robot.RobotChooser.RobotChooserInterface;
+import frc.robot.subsystems.RobotCoordinator;
 import frc.utility.OrangeMath;
 import frc.utility.SnapshotTranslation2D;
 import java.util.ArrayList;
@@ -294,6 +295,13 @@ public class Drive extends SubsystemBase {
 
       if (Constants.gyroEnabled) {
         updateOdometry();
+      }
+
+      if (poseEstimator.getEstimatedPosition().getTranslation()
+            .getDistance(RobotCoordinator.getInstance().getOuttakeLimelightPose2d()
+              .getTranslation()) < Constants.LimelightConstants.visionOdometryTolerance) {
+        updateVision(RobotCoordinator.getInstance().getOuttakeLimelightPose2d(), 
+                      RobotCoordinator.getInstance().getOuttakeLimelightLatency());
       }
 
       if (Constants.debug) {
