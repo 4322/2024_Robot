@@ -88,7 +88,11 @@ public class Intake extends SubsystemBase {
         case deploying:
           if (coordinator.canDeploy()) {
             deploy();
-            led.setLEDState(LEDState.red);
+            if (coordinator.noteInRobot()) {
+              led.setLEDState(LEDState.purple);
+            } else {
+              led.setLEDState(LEDState.red);
+            }
           }
           if (!coordinator.getIntakeButtonPressed()) {
             intakeState = IntakeStates.retracting;
@@ -101,7 +105,7 @@ public class Intake extends SubsystemBase {
         case feeding:
           if (coordinator.isIntakeDeployed()) {
             intake();
-            led.setLEDState(LEDState.purple);
+            led.setLEDState(LEDState.red);
           }
           if (!coordinator.getIntakeButtonPressed()) {
             intakeState = IntakeStates.retracting;
