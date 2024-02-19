@@ -17,7 +17,16 @@ public class LED extends SubsystemBase {
     gamePieceDetected;
   }
 
-  public LED() {
+  private static LED led;
+
+  public static LED getInstance() {
+    if (led == null) {
+      led = new LED();
+    }
+    return led;
+  }
+
+  private LED() {
     switch (Constants.currentMode) {
       case REAL:
         io = new LedIOReal();
