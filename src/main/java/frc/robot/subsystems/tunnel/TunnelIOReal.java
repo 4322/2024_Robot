@@ -2,6 +2,8 @@ package frc.robot.subsystems.tunnel;
 
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.VoltageConfigs;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.Constants.TunnelConstants;
@@ -18,9 +20,13 @@ public class TunnelIOReal implements TunnelIO {
   private void configTalon() {
     tunnel.getConfigurator().apply(new TalonFXConfiguration());
     MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-    motorOutputConfigs.NeutralMode = TunnelConstants.TunnelConfig.neutralMode;
+    VoltageConfigs voltageConfigs = new VoltageConfigs();
+
+    motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
+    voltageConfigs.PeakForwardVoltage = TunnelConstants.peakVoltage;
+    voltageConfigs.PeakReverseVoltage = -TunnelConstants.peakVoltage;
     tunnel.getConfigurator().apply(motorOutputConfigs);
-    tunnel.getVelocity().setUpdateFrequency(TunnelConstants.TunnelConfig.updateHz);
+    tunnel.getConfigurator().apply(voltageConfigs);
   }
 
   @Override
@@ -36,8 +42,8 @@ public class TunnelIOReal implements TunnelIO {
   }
 
   @Override
-  public void setTunnel(double rps) {
-    tunnel.set(rps / TunnelConstants.maxTunnelRPS); // set takes in pct
+  public void setTunnel(double desiredVolts) {
+    tunnel.setControl(new VoltageOut(desiredVolts));
   }
 
   @Override

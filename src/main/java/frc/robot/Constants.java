@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import java.util.List;
+import java.util.Map;
+
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -36,17 +39,21 @@ public final class Constants {
   // Must be below currentRobot to initialize properly
   private static RobotChooserInterface robotSpecificConstants =
       RobotChooser.getInstance().getConstants();
+  public static double noteRadiusInches = 7;
 
   public static final boolean debug = false;
 
   public static final boolean driveEnabled = true;
   public static final boolean intakeEnabled = false;
-  public static final boolean intakeDeployerEnabled = false;
   public static final boolean gyroEnabled = true;
   public static final boolean tunnelEnabled = false;
   public static final boolean outtakeEnabled = false;
+  public static final boolean outtakePivotEnabled = false;
+  public static final boolean sensorsEnabled = false;
   public static final boolean joysticksEnabled = false;
   public static final boolean xboxEnabled = true;
+  public static final boolean intakeLimeLightEnabled = false;
+  public static final boolean outtakeLimeLightEnabled = false;
 
   public static final boolean spinoutCenterEnabled = true; // center rotate burst of power
   public static final boolean spinoutCornerEnabled = true;
@@ -234,6 +241,8 @@ public final class Constants {
       public static final double supplyThreshold = 60;
       public static final double supplyTime = 2.0;
     }
+
+    public static final double autoFeedMoveSpeed = 1;
   }
 
   public static final class OuttakeConstants {
@@ -272,9 +281,9 @@ public final class Constants {
     public static final NeutralModeValue pivotDefaultNeutralMode = NeutralModeValue.Coast;
     public static final double defaultPivotPosition = 0;
 
-    public static final double topOuttakeRPM = 0;
-    public static final double bottomOuttakeRPM = 0;
-    public static final double outtakeToleranceRPM = 0;
+    public static final double topOuttakeRPS = 0;
+    public static final double bottomOuttakeRPS = 0;
+    public static final double outtakeToleranceRPS = 0;
     public static final double pivotToleranceRotations = 0;
 
     public static final double maxRPM = 0;
@@ -283,6 +292,8 @@ public final class Constants {
   public static final class IntakeConstants {
     // TODO: update these
     public static final int intakeMotorID = 0;
+    public static final int deployMotorID = 0;
+    public static final int deployEncoderID = 0;
 
     public static final class IntakeConfig {
       public static final NeutralModeValue neutralMode = NeutralModeValue.Coast;
@@ -290,22 +301,6 @@ public final class Constants {
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
     }
-
-    public static final class Intake {
-      public static final double intakeSpeedRPM = 0;
-      public static final double outtakeSpeedRPM = -0; // signed
-      public static final double maxIntakeRPM = 0.0;
-    }
-
-    public static final class Logging {
-      public static final String key = "Intake/";
-      public static final String hardwareOutputsKey = "Intake/Hardware/";
-    }
-  }
-
-  public static final class IntakeDeployerConstants {
-    public static final int deployMotorID = 0;
-    public static final int deployEncoderID = 0;
 
     public static final class DeployConfig {
       public static final double kP = 0;
@@ -316,6 +311,12 @@ public final class Constants {
       public static final double updateHz =
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
+    }
+
+    public static final class Feeder {
+      public static final double intakeFeedVoltage =
+          0.0; // TODO: set max voltage we want for feeding
+      public static final double intakeEjectVoltage = 0.0;
     }
 
     public static final class Deploy {
@@ -335,29 +336,82 @@ public final class Constants {
     }
 
     public static final class Logging {
-      public static final String key = "IntakeDeployer/";
-      public static final String hardwareOutputsKey = "IntakeDeployer/Hardware/";
+      public static final String key = "Intake/";
+      public static final String feederKey = "Intake/Feeder/";
+      public static final String feederHardwareOutputsKey = "Intake/Feeder/Hardware/";
+      public static final String deployerKey = "Intake/Deployer/";
+      public static final String deployerHardwareOutputsKey = "Intake/Deployer/Hardware/";
+    }
+  }
+
+  public static final class BeamBreakConstants {
+    public static final int tunnelBeamBreakID = 0; // TODO
+    public static final int intakeBeamBreakID = 0; // TODO
+
+    public static final class Logging {
+      public static final String key = "Sensors/";
+      public static final String hardwareOutputsKey = "Sensors/Hardware/";
     }
   }
 
   public static final class TunnelConstants {
-    public static final int tunnelMotorID = 0;
+    public static final int tunnelMotorID = 0; // TODO
 
-    public static final double turnSpeedPct = 0.0;
-    public static final double maxTunnelRPS = 0.0;
-
-    public static final double noteToSensorDistMeters = 0.0; // TODO
-
-    public static final class TunnelConfig {
-      public static final NeutralModeValue neutralMode = NeutralModeValue.Coast;
-      public static final double updateHz =
-          OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
-    }
+    public static final double desiredVoltage = 0.0; // TODO
+    public static final double peakVoltage = 0.0; // TODO: shouldn't be greater than 12
 
     public static final class Logging {
       public static final String key = "Tunnel/";
       public static final String hardwareOutputsKey = "Tunnel/Hardware/";
     }
+  }
+public static final class LimelightConstants {
+    public static final double visionOdometryTolerance = 1.0;
+    public static final double outtakeLimelightAngle = 0;
+    public static final double outtakeLimelightHeight = OrangeMath.inchesToMeters(26.125);
+    public static final double outtakeLimelightXOffsetMeters = 0.0;
+    public static final double outtakeLimelightYOffsetMeters = 0.0;
+    public static final String outtakeLimelightName = "limelight-outtake";
+
+    public static final double intakeLimelightAngle = 0;
+    public static final double intakeLimelightHeight = OrangeMath.inchesToMeters(46.3);
+    public static final double intakeLimeLightXOffsetMeters = 0.0; 
+    public static final double intakeLimelightYOffsetMeters = 0.0;
+    public static final String intakeLimelightName = "limelight-intake";
+    
+
+    // Tape heights are 1 inch higher than described in manual to account for
+    // height to center of tape
+    public static final double middleTapeHeight = OrangeMath.inchesToMeters(23.125);
+    public static final double highTapeHeight = OrangeMath.inchesToMeters(42.875);
+
+    // AprilTag heights are 4 inches higher than described in manual to account
+    // for height to center of tag
+    public static final double gridAprilTagHeight = OrangeMath.inchesToMeters(18.25);
+    public static final double singleSubstationAprilTagHeight = 
+      OrangeMath.inchesToMeters(51.5); // TODO: adjust for field (VPHS = 55.75)
+
+    // Threshold for limelight tape target height
+    // above = high tape, below = middle tape
+    public static final double tapeTargetHeightThresholdDeg = 0;
+
+    // Target alignment values
+    public static final double substationMinLargeTargetArea = 1.8;  // small target is < 1.2 against substation
+    public static final double substationOffsetDeg = -10.02; // account for limelight being to the left of actual robot center
+    public static final double substationTargetToleranceDeg = 17.5;  // human player can drop game piece to the side
+    public static final double gridMinHighTargetArea = 0.025;
+    public static final double gridMaxHighTargetArea = 0.2;
+    // For a given lateral alignment error, the mid target will be further off-center in the limelight image.
+    // Therefore, the mid tolerance should be about double the high tolerance.
+    public static final double gridMidTargetToleranceDeg = 2.0;
+    public static final double gridHighTargetToleranceDeg = 1.0;
+
+    // List of tape pipelines (should only be 1 for now)
+    public static final List<Integer> tapePipelines = List.of(0);
+
+    // Map of pipelines and tag heights
+    public static final Map<Integer, Double> tagPipelinesHeights = Map
+        .ofEntries(Map.entry(1, gridAprilTagHeight), Map.entry(2, singleSubstationAprilTagHeight));
   }
 
   public static final class FieldConstants {
@@ -375,6 +429,8 @@ public final class Constants {
         ySpeakerPosM = 5.546;
       }
     }
+
+    public static final double xCenterLineM = 8.2955;
   }
 
   public enum WheelPosition {

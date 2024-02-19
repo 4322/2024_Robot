@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -19,19 +18,18 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
+import frc.robot.commands.SpinUpFlywheels;
+import frc.robot.commands.PivotToAngle;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetRobotPose;
+import frc.robot.commands.Shoot;
 import frc.robot.commands.TunnelFeed;
-import frc.robot.commands.TunnelStop;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
-import frc.robot.shooting.FiringSolution;
-import frc.robot.shooting.FiringSolutionManager;
+import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.robot.subsystems.outtakePivot.OuttakePivot;
 import frc.robot.subsystems.tunnel.Tunnel;
-import frc.utility.interpolation.Calculator1D;
-import java.util.ArrayList;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -55,18 +53,17 @@ public class RobotContainer {
   private final Outtake outtake = Outtake.getInstance();
   private final OuttakePivot outtakePivot = OuttakePivot.getInstance();
 
-  private ObjectMapper objectMapper = new ObjectMapper();
-  private ArrayList<FiringSolution> solutions = new ArrayList<>();
-  private FiringSolutionManager firingSolutionManager =
-      new FiringSolutionManager(solutions, new Calculator1D<>(), objectMapper);
   private final WriteFiringSolutionAtCurrentPos writeFiringSolution =
-      new WriteFiringSolutionAtCurrentPos(firingSolutionManager);
+      new WriteFiringSolutionAtCurrentPos();
 
   private final DriveManual driveManual = new DriveManual();
   private final DriveStop driveStop = new DriveStop();
 
-  private final TunnelFeed tunnelFeedDefault = new TunnelFeed();
-  private final TunnelStop tunnelStop = new TunnelStop();
+  private final TunnelFeed tunnelFeed = new TunnelFeed();
+
+  private final SpinUpFlywheels outtakeOut = new SpinUpFlywheels();
+
+  private final PivotToAngle pivotToAngle = new PivotToAngle();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -77,7 +74,15 @@ public class RobotContainer {
     }
 
     if (Constants.tunnelEnabled) {
-      tunnel.setDefaultCommand(tunnelFeedDefault);
+      tunnel.setDefaultCommand(tunnelFeed);
+    }
+
+    if (Constants.outtakeEnabled) {
+      outtake.setDefaultCommand(outtakeOut);
+    }
+
+    if (Constants.outtakePivotEnabled) {
+      outtakePivot.setDefaultCommand(pivotToAngle);
     }
   }
   /**
@@ -114,6 +119,32 @@ public class RobotContainer {
               new SetRobotPose(
                   new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()), true));
       xbox.povDown().onTrue(driveStop);
+      xbox.rightTrigger()
+          .onTrue(
+              Commands.runOnce(
+                  () -> {
+                    RobotCoordinator.getInstance().setIntakeButtonState(true);
+                  }));
+      xbox.rightTrigger()
+          .onFalse(
+              Commands.runOnce(
+                  () -> {
+                    RobotCoordinator.getInstance().setIntakeButtonState(false);
+                  }));
+      xbox.rightBumper()
+          .onTrue(
+              Commands.runOnce(
+                  () -> {
+                    RobotCoordinator.getInstance().setAutoIntakeButtonPressed(true);
+                  }));
+
+      xbox.rightBumper()
+          .onFalse(
+              Commands.runOnce(
+                  () -> {
+                    RobotCoordinator.getInstance().setAutoIntakeButtonPressed(false);
+                  }));
+      xbox.leftTrigger().whileTrue(new Shoot());
     }
   }
 

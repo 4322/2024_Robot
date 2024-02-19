@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -34,7 +34,7 @@ public class Robot extends LoggedRobot {
   private ShuffleboardTab tab;
   private ShuffleboardTab PDHTab;
   private RobotContainer m_robotContainer;
-  private static Alliance allianceColor = Alliance.Blue;
+  private static Alliance allianceColor;
   Timer updateAllianceTimer;
 
   /**
@@ -197,9 +197,13 @@ public class Robot extends LoggedRobot {
   public void simulationPeriodic() {}
 
   private void updateAllianceColor() {
-    Optional<Alliance> temp = DriverStation.getAlliance();
-    if ((temp.get() == Alliance.Red || temp.get() == Alliance.Blue)) {
-      allianceColor = temp.get();
+    if (allianceColor == Alliance.Red || allianceColor == Alliance.Blue) {
+      try {
+        allianceColor = DriverStation.getAlliance().get();
+      } catch (NoSuchElementException e) {
+        DriverStation.reportError("No Alliance Color", false);
+        allianceColor = null;
+      }
     }
   }
 

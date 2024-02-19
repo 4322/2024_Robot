@@ -3,6 +3,7 @@ package frc.robot.shooting;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.utility.interpolation.Calculator1D;
 import frc.utility.interpolation.GenericCalculator;
 import frc.utility.interpolation.GenericFiringSolutionManager;
 import java.io.File;
@@ -10,17 +11,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FiringSolutionManager implements GenericFiringSolutionManager<FiringSolution> {
-  private final ArrayList<FiringSolution> solutions;
-  private final GenericCalculator<FiringSolution> calculator;
-  private ObjectMapper objectMapper;
+  private static ArrayList<FiringSolution> solutions = new ArrayList<FiringSolution>();
+  private static GenericCalculator<FiringSolution> calculator = new Calculator1D<>();
+  private static ObjectMapper objectMapper = new ObjectMapper();
 
-  public FiringSolutionManager(
-      ArrayList<FiringSolution> solutionArrayList,
-      GenericCalculator<FiringSolution> calculator,
-      ObjectMapper objectMapper) {
-    solutions = solutionArrayList;
-    this.calculator = calculator;
-    this.objectMapper = objectMapper;
+  private static FiringSolutionManager firingSolutionManager;
+
+  public static final FiringSolutionManager getInstance() {
+    if (firingSolutionManager == null) {
+      firingSolutionManager = new FiringSolutionManager();
+    }
+    return firingSolutionManager;
+  }
+
+  private FiringSolutionManager() {
     calculator.init(solutions);
   }
 

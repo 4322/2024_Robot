@@ -1,0 +1,45 @@
+package frc.robot.commands;
+
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.RobotCoordinator;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.Intake.IntakeStates;
+
+public class XboxControllerRumble extends Command {
+
+  private Timer rumbleTimer = new Timer();
+  private boolean hasRumbled;
+
+  public XboxControllerRumble() {}
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {}
+
+  @Override
+  public void execute() {
+    if (RobotCoordinator.getInstance().noteInFiringPosition()
+        && !hasRumbled
+        && Intake.getInstance().getState() == IntakeStates.notePastIntake) {
+      rumbleTimer.start();
+      RobotContainer.xbox.getHID().setRumble(RumbleType.kBothRumble, 1);
+    }
+  }
+
+  @Override
+  public boolean isFinished() {
+    return rumbleTimer.hasElapsed(0.75);
+  }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {
+    RobotContainer.xbox.getHID().setRumble(RumbleType.kBothRumble, 0);
+    rumbleTimer.stop();
+    rumbleTimer.reset();
+    hasRumbled = false;
+  }
+}

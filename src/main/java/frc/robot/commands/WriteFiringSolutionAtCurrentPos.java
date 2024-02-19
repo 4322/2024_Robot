@@ -18,11 +18,11 @@ public class WriteFiringSolutionAtCurrentPos extends InstantCommand {
   double shotAngle;
   double shotMag;
 
-  public WriteFiringSolutionAtCurrentPos(FiringSolutionManager solutionManager) {
+  public WriteFiringSolutionAtCurrentPos() {
     drive = Drive.getInstance();
     outtake = Outtake.getInstance();
     outtakePivot = OuttakePivot.getInstance();
-    firingSolutionManager = solutionManager;
+    firingSolutionManager = FiringSolutionManager.getInstance();
   }
 
   @Override
@@ -36,7 +36,7 @@ public class WriteFiringSolutionAtCurrentPos extends InstantCommand {
             rawTranslation.getX() * rawTranslation.getX()
                 + rawTranslation.getY() * rawTranslation.getY());
     FiringSolution solution =
-        new FiringSolution(shotMag, shotAngle, outtake.getTargetRPM(), outtakePivot.getTarget());
+        new FiringSolution(shotMag, shotAngle, outtake.getTargetRPS(), outtakePivot.getTarget());
     firingSolutionManager.writeSolution(solution);
   }
 

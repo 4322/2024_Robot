@@ -1,25 +1,36 @@
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.BeamBreakConstants;
+import frc.robot.Robot;
+import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.Intake.IntakeStates;
-import frc.robot.subsystems.intakeDeployer.IntakeDeployer;
+import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.robot.subsystems.outtakePivot.OuttakePivot;
-import frc.utility.OrangeMath;
 
 public class RobotCoordinator extends SubsystemBase {
-
   private Intake intake;
   private Outtake outtake;
-  private IntakeDeployer intakeDeployer;
   private OuttakePivot outtakePivot;
+  private Drive drive;
 
-  private static DistanceSensorIO noteTrackerSensorsIO;
-  private static DistanceSensorIOInputsAutoLogged inputs = new DistanceSensorIOInputsAutoLogged();
+  private static BeamBreakSensorIO noteTrackerSensorsIO;
+  private static BeamBreakSensorIOInputsAutoLogged inputs = new BeamBreakSensorIOInputsAutoLogged();
 
   private static RobotCoordinator robotCoordinator;
+  private Timer shootTimer = new Timer();
+
+  private boolean intakeButtonPressed;
+  private boolean notePassingIntake;
+  private boolean notePassingTunnel;
+  private boolean autoIntakeButtonPressed;
 
   public static RobotCoordinator getInstance() {
     if (robotCoordinator == null) {
@@ -31,11 +42,13 @@ public class RobotCoordinator extends SubsystemBase {
   private RobotCoordinator() {
     intake = Intake.getInstance();
     outtake = Outtake.getInstance();
-    intakeDeployer = IntakeDeployer.getInstance();
     outtakePivot = OuttakePivot.getInstance();
+    drive = Drive.getInstance();
     switch (Constants.currentMode) {
       case REAL:
-        noteTrackerSensorsIO = new DistanceSensorIOReal();
+        if (Constants.sensorsEnabled) {
+          noteTrackerSensorsIO = new BeamBreakSensorIOReal();
+        }
         break;
       case SIM:
         break;
@@ -44,44 +57,129 @@ public class RobotCoordinator extends SubsystemBase {
     }
 
     if (noteTrackerSensorsIO == null) {
-      noteTrackerSensorsIO = new DistanceSensorIO() {};
+      noteTrackerSensorsIO = new BeamBreakSensorIO() {};
     }
   }
 
   @Override
   public void periodic() {
-    noteTrackerSensorsIO.updateInputs(inputs);
+    if (Constants.sensorsEnabled) {
+      noteTrackerSensorsIO.updateInputs(inputs);
+      Logger.processInputs(BeamBreakConstants.Logging.key, inputs);
+    }
+
+    // update note tracking logic in robot
+    if (!inputs.intakeBeamBreak) {
+      notePassingIntake = true;
+    } else if (!inputs.tunnelBeamBreak) {
+      notePassingIntake = false;
+      notePassingTunnel = true;
+    } else if (inputs.tunnelBeamBreak && notePassingTunnel) {
+      shootTimer.start();
+      if (shootTimer.hasElapsed(0.5)) {
+        notePassingTunnel = false;
+        shootTimer.stop();
+        shootTimer.reset();
+      }
+    }
   }
 
-  public boolean canIntake() {
-    return intakeDeployer.isAtPosition() && intakeDeployer.isDeployed();
+  public void setIntakeButtonState(boolean isPressed) {
+    intakeButtonPressed = isPressed;
+  }
+
+  public boolean getIntakeButtonPressed() {
+    return intakeButtonPressed
+        || getAutoIntakeButtonPressed(); // auto intake button is an identical bind so it also
+    // counts as an intake button
+  }
+
+  public void setAutoIntakeButtonPressed(boolean isPressed) {
+    autoIntakeButtonPressed = isPressed;
+  }
+
+  public boolean getAutoIntakeButtonPressed() {
+    return autoIntakeButtonPressed;
+  }
+
+  // below are all boolean checks polled from subsystems
+  public boolean isIntakeDeployed() {
+    return intake.isDeployed();
+  }
+
+  public boolean isIntakeRetracted() {
+    return intake.isRetracted();
   }
 
   public boolean canDeploy() {
-    return intakeDeployer.isInitialized() && !intakeDeployer.isDeployed();
+    return intake.isInitialized() && !intake.isDeployed();
+  }
+
+  public boolean canRetract() {
+    return !intake.isFeeding() && intake.isInitialized();
   }
 
   public boolean canShoot() {
-    return outtake.isFlyWheelUpToSpeed()
-        && outtakePivot.isAtPosition()
-        && noteInFiringPos();
+    return outtake.isFlyWheelUpToSpeed() && outtakePivot.isAtPosition() && noteInFiringPosition();
   }
 
   public boolean canPivot() {
     return outtakePivot.isInitialized();
   }
 
-  public boolean intakingNote() {
-    return inputs.intakeBeamBreak && intake.getState() == IntakeStates.INTAKING;
+  public boolean noteInFiringPosition() {
+    return !inputs.tunnelBeamBreak;
+  }
+
+  public boolean noteInIntake() {
+    return !inputs.intakeBeamBreak;
   }
 
   public boolean noteInRobot() {
-    return !inputs.intakeBeamBreak && inputs.tunnelBeamBreak;
+    return !inputs.intakeBeamBreak
+        || !inputs.tunnelBeamBreak
+        || notePassingIntake
+        || notePassingTunnel;
   }
 
-  public boolean noteInFiringPos() {
-    return OrangeMath.equalToTwoDecimal(
-      inputs.tunnelDistance, Constants.TunnelConstants.noteToSensorDistMeters);
+  public boolean noteIsShot() {
+    return !notePassingTunnel && inputs.tunnelBeamBreak;
   }
 
+  public boolean onOurSideOfField() {
+    if (Robot.getAllianceColor().equals(Alliance.Red)) {
+      return (drive.getPose2d().getX() > Constants.FieldConstants.xCenterLineM);
+    } else if (Robot.getAllianceColor().equals(Alliance.Blue)) {
+      return (drive.getPose2d().getX() < Constants.FieldConstants.xCenterLineM);
+    } else {
+      return false;
+    }
+  }
+
+  public double getRobotXPos() {
+    return drive.getPose2d().getX();
+  }
+
+  public double getRobotYPos() {
+    return drive.getPose2d().getY();
+  }
+
+  public Double getNearestNoteTX() {
+    return Limelight.getIntakeInstance().getHorizontalDegToTarget();
+  }
+
+  public Double getNearestNoteTY() {
+    return Limelight.getIntakeInstance().getVerticalDegToTarget();
+  }
+
+  public boolean noteInVision() {
+    return Limelight.getIntakeInstance().getTargetVisible();
+  }
+  public Pose2d getOuttakeLimelightPose2d() {
+    return Limelight.getOuttakeInstance().getAprilTagPose2d();
+  }
+
+  public double getOuttakeLimelightLatency() {
+    return Limelight.getOuttakeInstance().getTotalLatency();
+  }
 }
