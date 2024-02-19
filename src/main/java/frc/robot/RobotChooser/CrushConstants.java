@@ -40,11 +40,11 @@ public class CrushConstants implements RobotChooserInterface {
 
   // full length of drivebase divided by 2 for distance between wheels
   public double getDistWheelMetersX() {
-    return OrangeMath.inchesToMeters(29.5 / 2); // 29.5 in
+    return OrangeMath.inchesToMeters(26 / 2); // 26 in
   }
 
   public double getDistWheelMetersY() {
-    return OrangeMath.inchesToMeters(29.5 / 2); // 29.5 in
+    return OrangeMath.inchesToMeters(26 / 2); // 26 in
   }
 
   // top speed at full motor output is 91 rot/sec with voltage comp at 11.5 volts
@@ -79,7 +79,7 @@ public class CrushConstants implements RobotChooserInterface {
   }
 
   public double getGearRatio() {
-    return 7.80; // drive gear ratio
+    return 7.80; // drive gear ratio // TODO
   }
 
   public double getDrivekSVolts() {

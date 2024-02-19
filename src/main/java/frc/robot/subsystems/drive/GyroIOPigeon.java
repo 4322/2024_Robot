@@ -2,13 +2,14 @@ package frc.robot.subsystems.drive;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Constants;
 
 public class GyroIOPigeon implements GyroIO {
   private Pigeon2 gyro;
   Timer disconnectTimer = new Timer();
 
   public GyroIOPigeon() {
-    gyro = new Pigeon2(0, "rio");
+    gyro = new Pigeon2(Constants.DriveConstants.Drive.canivoreID, Constants.DriveConstants.Drive.canivoreName);
   }
 
   @Override

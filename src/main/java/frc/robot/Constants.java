@@ -33,7 +33,7 @@ public final class Constants {
     CRUSH
   }
 
-  public static final RobotType currentRobot = RobotType.NEMO;
+  public static final RobotType currentRobot = RobotType.CRUSH;
   public static final Mode currentMode = Mode.REAL;
 
   // Must be below currentRobot to initialize properly
@@ -230,10 +230,13 @@ public static final boolean inShotTuning = false;
 
       public static final double wheelDiameterInches = 3.9;
 
-      public static final int frontLeftCANID = 0;
-      public static final int rearLeftCANID = 0;
-      public static final int frontRightCANID = 0;
-      public static final int rearRightCANID = 0;
+      public static final String canivoreName = "Drivebase";
+      public static final int canivoreID = 7;
+
+      public static final int frontLeftCANID = 3;
+      public static final int rearLeftCANID = 4;
+      public static final int frontRightCANID = 5;
+      public static final int rearRightCANID = 6;
 
       // when supply threshold is exceeded for the time, drop the current to the limit
       public static final double statorLimit = 60;
