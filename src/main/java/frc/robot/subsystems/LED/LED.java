@@ -5,16 +5,16 @@ import frc.robot.Constants;
 
 public class LED extends SubsystemBase {
   public LedIO io;
-  private LEDState currentState = LEDState.idle;
+  private LEDState currentState = LEDState.flashing;
 
   public enum LEDState {
     // priority 1 runs for undefined amount of time so keep time at 0
-    idle,
-    autoNoteAcq,
-    notZeroed,
-    zeroed,
-    shooterReady,
-    gamePieceDetected;
+    rainbow,
+    flashing,
+    red,
+    green,
+    blue,
+    purple;
   }
 
   private static LED led;
@@ -47,21 +47,34 @@ public class LED extends SubsystemBase {
   @Override
   public void periodic() {
     switch (currentState) {
-      case idle:
+      case rainbow:
         io.rainbowAnimate(1, 0.3, 20, 0);
         break;
-      case notZeroed:
+      case flashing:
         io.flashAnimate(255, 0, 0, 0.6, 20, 6);
         break;
-      case zeroed:
+      case red:
+        io.setLED(255, 0, 0, 0, Constants.LED.totalLEDs);
+        break;
+      case green:
         io.setLED(0, 255, 0, 0, Constants.LED.totalLEDs);
         break;
-      case autoNoteAcq:
+      case blue:
+        io.setLED(0, 0, 255, 0, Constants.LED.totalLEDs);
         break;
-      case shooterReady:
-        break;
-      case gamePieceDetected:
+      case purple:
+        io.setLED(238, 130, 238, 0, Constants.LED.totalLEDs);
         break;
     }
+  }
+
+  public void setLEDState(LEDState state) {
+    if (currentState != state) {
+      currentState = state;
+    }
+  }
+
+  public LEDState getLEDState() {
+    return currentState;
   }
 }
