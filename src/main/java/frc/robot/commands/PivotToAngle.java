@@ -19,19 +19,22 @@ public class PivotToAngle extends Command {
   }
 
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {
     if (robotCoordinator.canPivot() && robotCoordinator.isAcrossCenterLine()) {
       // divide by 360 because pivot uses rotations instead of degrees
       outtakePivot.pivot(
-        firingSolutionManager.calcSolution(
-          PositionVector.getMag(robotCoordinator.getRobotXPos(), robotCoordinator.getRobotYPos()),
-          PositionVector.getAngle(robotCoordinator.getRobotXPos(), robotCoordinator.getRobotYPos()).getDegrees())
-            .getShotAngle() / 360
-      );
+          firingSolutionManager
+                  .calcSolution(
+                      PositionVector.getMag(
+                          robotCoordinator.getRobotXPos(), robotCoordinator.getRobotYPos()),
+                      PositionVector.getAngle(
+                              robotCoordinator.getRobotXPos(), robotCoordinator.getRobotYPos())
+                          .getDegrees())
+                  .getShotAngle()
+              / 360);
     }
   }
 

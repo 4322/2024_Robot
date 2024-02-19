@@ -1,12 +1,13 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.commands.AutoAquireNote;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.utility.OrangeMath;
-
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
@@ -28,6 +29,8 @@ public class Intake extends SubsystemBase {
   private double deployTarget = 99999; // set to very high value in case target not yet set
   private RobotCoordinator coordinator;
   private boolean isFeeding;
+
+  private AutoAquireNote autoAquireNote = new AutoAquireNote();
 
   private static Intake intake;
 
@@ -72,7 +75,8 @@ public class Intake extends SubsystemBase {
 
       switch (intakeState) {
         case retracted:
-          if (coordinator.getIntakeButtonPressed() && (coordinator.isAcrossCenterLine() || !coordinator.noteInRobot())) {
+          if (coordinator.getIntakeButtonPressed()
+              && (coordinator.isAcrossCenterLine() || !coordinator.noteInRobot())) {
             intakeState = IntakeStates.deploying;
           }
           break;
@@ -82,11 +86,9 @@ public class Intake extends SubsystemBase {
           }
           if (!coordinator.getIntakeButtonPressed()) {
             intakeState = IntakeStates.retracting;
-          }
-          else if (isDeployed() && !coordinator.noteInRobot()) {
+          } else if (isDeployed() && !coordinator.noteInRobot()) {
             intakeState = IntakeStates.feeding;
-          }
-          else if (coordinator.noteInRobot() && isDeployed()) {
+          } else if (coordinator.noteInRobot() && isDeployed()) {
             intakeState = IntakeStates.notePastIntake;
           }
           break;
@@ -96,9 +98,12 @@ public class Intake extends SubsystemBase {
           }
           if (!coordinator.getIntakeButtonPressed()) {
             intakeState = IntakeStates.retracting;
-          }
-          else if (coordinator.noteInIntake()) {
+          } else if (coordinator.noteInIntake()) {
             intakeState = IntakeStates.noteObtained;
+          } else if (coordinator.getAutoIntakeButtonPressed()) {
+            if (!autoAquireNote.isScheduled()) {
+              CommandScheduler.getInstance().schedule(autoAquireNote);
+            }
           }
           break;
         case noteObtained:
@@ -113,8 +118,7 @@ public class Intake extends SubsystemBase {
           stopFeeder();
           if (!coordinator.isAcrossCenterLine() || !coordinator.getIntakeButtonPressed()) {
             intakeState = IntakeStates.retracting;
-          }
-          else if (!coordinator.noteInRobot()) {
+          } else if (!coordinator.noteInRobot()) {
             intakeState = IntakeStates.feeding;
           }
           break;
@@ -123,10 +127,10 @@ public class Intake extends SubsystemBase {
           if (coordinator.canRetract()) {
             retract();
           }
-          if (coordinator.getIntakeButtonPressed() && (coordinator.isAcrossCenterLine() || !coordinator.noteInRobot())) {
+          if (coordinator.getIntakeButtonPressed()
+              && (coordinator.isAcrossCenterLine() || !coordinator.noteInRobot())) {
             intakeState = IntakeStates.deploying;
-          }
-          else if (coordinator.isIntakeRetracted()) {
+          } else if (coordinator.isIntakeRetracted()) {
             intakeState = IntakeStates.retracted;
           }
           break;

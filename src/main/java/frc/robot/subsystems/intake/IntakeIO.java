@@ -36,7 +36,7 @@ public interface IntakeIO {
   }
 
   public default void setDeployTarget(double rotations) {}
-  
+
   public default void setBrakeMode() {}
 
   public default void setCoastMode() {}

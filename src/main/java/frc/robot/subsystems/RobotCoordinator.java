@@ -1,17 +1,16 @@
 package frc.robot.subsystems;
 
-import org.littletonrobotics.junction.Logger;
-
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Robot;
 import frc.robot.Constants.BeamBreakConstants;
+import frc.robot.Robot;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.robot.subsystems.outtakePivot.OuttakePivot;
+import org.littletonrobotics.junction.Logger;
 
 public class RobotCoordinator extends SubsystemBase {
   private Intake intake;
@@ -28,6 +27,7 @@ public class RobotCoordinator extends SubsystemBase {
   private boolean intakeButtonPressed;
   private boolean notePassingIntake;
   private boolean notePassingTunnel;
+  private boolean autoIntakeButtonPressed;
 
   public static RobotCoordinator getInstance() {
     if (robotCoordinator == null) {
@@ -68,14 +68,10 @@ public class RobotCoordinator extends SubsystemBase {
     // update note tracking logic in robot
     if (!inputs.intakeBeamBreak) {
       notePassingIntake = true;
-    }
-
-    else if (!inputs.tunnelBeamBreak) {
+    } else if (!inputs.tunnelBeamBreak) {
       notePassingIntake = false;
       notePassingTunnel = true;
-    }
-
-    else if (inputs.tunnelBeamBreak && notePassingTunnel) {
+    } else if (inputs.tunnelBeamBreak && notePassingTunnel) {
       shootTimer.start();
       if (shootTimer.hasElapsed(0.5)) {
         notePassingTunnel = false;
@@ -90,7 +86,17 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public boolean getIntakeButtonPressed() {
-    return intakeButtonPressed;
+    return intakeButtonPressed
+        || getAutoIntakeButtonPressed(); // auto intake button is an identical bind so it also
+    // counts as an intake button
+  }
+
+  public void setAutoIntakeButtonPressed(boolean isPressed) {
+    autoIntakeButtonPressed = isPressed;
+  }
+
+  public boolean getAutoIntakeButtonPressed() {
+    return autoIntakeButtonPressed;
   }
 
   // below are all boolean checks polled from subsystems
@@ -111,9 +117,7 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public boolean canShoot() {
-    return outtake.isFlyWheelUpToSpeed()
-        && outtakePivot.isAtPosition()
-        && noteInFiringPosition();
+    return outtake.isFlyWheelUpToSpeed() && outtakePivot.isAtPosition() && noteInFiringPosition();
   }
 
   public boolean canPivot() {
@@ -129,7 +133,10 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public boolean noteInRobot() {
-    return !inputs.intakeBeamBreak || !inputs.tunnelBeamBreak || notePassingIntake || notePassingTunnel;
+    return !inputs.intakeBeamBreak
+        || !inputs.tunnelBeamBreak
+        || notePassingIntake
+        || notePassingTunnel;
   }
 
   public boolean noteIsShot() {
@@ -152,5 +159,13 @@ public class RobotCoordinator extends SubsystemBase {
 
   public double getRobotYPos() {
     return drive.getPose2d().getY();
+  }
+
+  public Double getNearestNoteTX() {
+    throw new UnsupportedOperationException("Unimplemented method 'getNearestNoteTX'");
+  }
+
+  public Double getNearestNoteTY() {
+    throw new UnsupportedOperationException("Unimplemented method 'getNearestNoteTY'");
   }
 }

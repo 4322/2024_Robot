@@ -9,10 +9,8 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandcoder.Canandcoder;
-
 import frc.robot.Constants.IntakeConstants;
 import frc.utility.OrangeMath;
-
 import org.littletonrobotics.junction.Logger;
 
 public class IntakeIOReal implements IntakeIO {
@@ -68,8 +66,7 @@ public class IntakeIOReal implements IntakeIO {
     deploy
         .getPosition()
         .setUpdateFrequency(
-            IntakeConstants.DeployConfig.updateHz,
-            IntakeConstants.DeployConfig.timeoutMs);
+            IntakeConstants.DeployConfig.updateHz, IntakeConstants.DeployConfig.timeoutMs);
   }
 
   @Override
@@ -123,8 +120,6 @@ public class IntakeIOReal implements IntakeIO {
             IntakeConstants.Deploy.limitReverseMotion));
   }
 
-
-
   @Override
   public void setBrakeMode() {
     MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
@@ -132,9 +127,9 @@ public class IntakeIOReal implements IntakeIO {
     intake.getConfigurator().refresh(motorOutputConfigs);
     deploy.getConfigurator().refresh(motorOutputConfigs);
 
+    Logger.recordOutput(IntakeConstants.Logging.feederHardwareOutputsKey + "NeutralMode", "Brake");
     Logger.recordOutput(
-        IntakeConstants.Logging.feederHardwareOutputsKey + "NeutralMode", "Brake");
-    Logger.recordOutput(IntakeConstants.Logging.deployerHardwareOutputsKey + "NeutralMode", "Brake");
+        IntakeConstants.Logging.deployerHardwareOutputsKey + "NeutralMode", "Brake");
   }
 
   @Override
@@ -144,9 +139,9 @@ public class IntakeIOReal implements IntakeIO {
     intake.getConfigurator().refresh(motorOutputConfigs);
     deploy.getConfigurator().refresh(motorOutputConfigs);
 
+    Logger.recordOutput(IntakeConstants.Logging.feederHardwareOutputsKey + "NeutralMode", "Coast");
     Logger.recordOutput(
-        IntakeConstants.Logging.feederHardwareOutputsKey + "NeutralMode", "Coast");
-    Logger.recordOutput(IntakeConstants.Logging.deployerHardwareOutputsKey + "NeutralMode", "Coast");
+        IntakeConstants.Logging.deployerHardwareOutputsKey + "NeutralMode", "Coast");
   }
 
   @Override

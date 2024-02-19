@@ -25,7 +25,7 @@ public class FiringSolutionManager implements GenericFiringSolutionManager<Firin
   }
 
   private FiringSolutionManager() {
-      calculator.init(solutions);
+    calculator.init(solutions);
   }
 
   public void addSolution(FiringSolution solution) {

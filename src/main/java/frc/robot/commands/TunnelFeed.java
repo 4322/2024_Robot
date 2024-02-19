@@ -12,6 +12,7 @@ public class TunnelFeed extends Command {
   // Used to interrupt all other drive commands and stop the drive
 
   private final Tunnel tunnel;
+
   private boolean noteDetected;
 
   public TunnelFeed() {

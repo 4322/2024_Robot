@@ -36,6 +36,7 @@ public final class Constants {
   // Must be below currentRobot to initialize properly
   private static RobotChooserInterface robotSpecificConstants =
       RobotChooser.getInstance().getConstants();
+  public static double noteRadiusInches = 7;
 
   public static final boolean debug = false;
 
@@ -235,6 +236,8 @@ public final class Constants {
       public static final double supplyThreshold = 60;
       public static final double supplyTime = 2.0;
     }
+
+    public static final double autoFeedMoveSpeed = 1;
   }
 
   public static final class OuttakeConstants {
@@ -306,10 +309,11 @@ public final class Constants {
     }
 
     public static final class Feeder {
-      public static final double intakeFeedVoltage = 0.0; // TODO: set max voltage we want for feeding
+      public static final double intakeFeedVoltage =
+          0.0; // TODO: set max voltage we want for feeding
       public static final double intakeEjectVoltage = 0.0;
     }
-    
+
     public static final class Deploy {
       public static final double deployPositionRotations = 0;
       public static final double retractPositionRotations = 0;
@@ -345,7 +349,7 @@ public final class Constants {
     }
   }
 
-  public static final class TunnelConstants { 
+  public static final class TunnelConstants {
     public static final int tunnelMotorID = 0; // TODO
 
     public static final double desiredVoltage = 0.0; // TODO

@@ -6,9 +6,7 @@ import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import frc.robot.Constants.TunnelConstants;
-
 import org.littletonrobotics.junction.Logger;
 
 public class TunnelIOReal implements TunnelIO {

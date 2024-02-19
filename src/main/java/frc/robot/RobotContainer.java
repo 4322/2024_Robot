@@ -53,8 +53,9 @@ public class RobotContainer {
   private final Outtake outtake = Outtake.getInstance();
   private final OuttakePivot outtakePivot = OuttakePivot.getInstance();
 
-  private final WriteFiringSolutionAtCurrentPos writeFiringSolution = new WriteFiringSolutionAtCurrentPos();
-  
+  private final WriteFiringSolutionAtCurrentPos writeFiringSolution =
+      new WriteFiringSolutionAtCurrentPos();
+
   private final DriveManual driveManual = new DriveManual();
   private final DriveStop driveStop = new DriveStop();
 
@@ -118,8 +119,31 @@ public class RobotContainer {
               new SetRobotPose(
                   new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()), true));
       xbox.povDown().onTrue(driveStop);
-      xbox.rightTrigger().onTrue(Commands.runOnce(() -> {RobotCoordinator.getInstance().setIntakeButtonState(true);}));
-      xbox.rightTrigger().onFalse(Commands.runOnce(() -> {RobotCoordinator.getInstance().setIntakeButtonState(false);}));
+      xbox.rightTrigger()
+          .onTrue(
+              Commands.runOnce(
+                  () -> {
+                    RobotCoordinator.getInstance().setIntakeButtonState(true);
+                  }));
+      xbox.rightTrigger()
+          .onFalse(
+              Commands.runOnce(
+                  () -> {
+                    RobotCoordinator.getInstance().setIntakeButtonState(false);
+                  }));
+      xbox.rightBumper()
+          .onTrue(
+              Commands.runOnce(
+                  () -> {
+                    RobotCoordinator.getInstance().setAutoIntakeButtonPressed(true);
+                  }));
+
+      xbox.rightBumper()
+          .onFalse(
+              Commands.runOnce(
+                  () -> {
+                    RobotCoordinator.getInstance().setAutoIntakeButtonPressed(false);
+                  }));
       xbox.leftTrigger().whileTrue(new Shoot());
     }
   }

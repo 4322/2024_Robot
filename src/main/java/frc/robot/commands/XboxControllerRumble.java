@@ -23,15 +23,15 @@ public class XboxControllerRumble extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {
-    if (RobotCoordinator.getInstance().noteInFiringPosition() && !hasRumbled 
-          && Intake.getInstance().getState() == IntakeStates.notePastIntake) {
-        rumbleTimer.start();
-        xbox.getHID().setRumble(RumbleType.kBothRumble, 1);
+    if (RobotCoordinator.getInstance().noteInFiringPosition()
+        && !hasRumbled
+        && Intake.getInstance().getState() == IntakeStates.notePastIntake) {
+      rumbleTimer.start();
+      xbox.getHID().setRumble(RumbleType.kBothRumble, 1);
     }
   }
 
@@ -49,4 +49,3 @@ public class XboxControllerRumble extends Command {
     hasRumbled = false;
   }
 }
-

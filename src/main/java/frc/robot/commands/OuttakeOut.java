@@ -16,17 +16,22 @@ public class OuttakeOut extends Command {
   }
 
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {
     if (RobotCoordinator.getInstance().isAcrossCenterLine()) {
       outtake.outtake(
-        FiringSolutionManager.getInstance().calcSolution(
-          PositionVector.getMag(RobotCoordinator.getInstance().getRobotXPos(), RobotCoordinator.getInstance().getRobotYPos()),
-          PositionVector.getAngle(RobotCoordinator.getInstance().getRobotXPos(), RobotCoordinator.getInstance().getRobotYPos()).getDegrees())
-            .getFlywheelSpeed());
+          FiringSolutionManager.getInstance()
+              .calcSolution(
+                  PositionVector.getMag(
+                      RobotCoordinator.getInstance().getRobotXPos(),
+                      RobotCoordinator.getInstance().getRobotYPos()),
+                  PositionVector.getAngle(
+                          RobotCoordinator.getInstance().getRobotXPos(),
+                          RobotCoordinator.getInstance().getRobotYPos())
+                      .getDegrees())
+              .getFlywheelSpeed());
     }
   }
 

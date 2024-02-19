@@ -39,13 +39,13 @@ public class PositionVector {
 
   public static double getMag(double x, double y) {
     return Math.sqrt(
-            ((x - FieldConstants.xSpeakerPosM) * (x - FieldConstants.xSpeakerPosM))
-                + ((y - FieldConstants.ySpeakerPosM) * (y - FieldConstants.ySpeakerPosM)));
+        ((x - FieldConstants.xSpeakerPosM) * (x - FieldConstants.xSpeakerPosM))
+            + ((y - FieldConstants.ySpeakerPosM) * (y - FieldConstants.ySpeakerPosM)));
   }
 
   public static Rotation2d getAngle(double x, double y) {
-    return new Rotation2d(Math.atan2(
-      Math.abs(y - FieldConstants.ySpeakerPosM),
-      Math.abs(x - FieldConstants.xSpeakerPosM)));
+    return new Rotation2d(
+        Math.atan2(
+            Math.abs(y - FieldConstants.ySpeakerPosM), Math.abs(x - FieldConstants.xSpeakerPosM)));
   }
 }
