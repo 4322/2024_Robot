@@ -59,33 +59,14 @@ public class AutoAquireNote extends Command {
             + OrangeMath.inchesToMeters(
                 Constants.noteRadiusInches); // get the distance to the far end of the donut
     Pose2d pose = drive.getPose2d();
-    double desiredHeadingAngle = pose.getRotation().getRadians() - Math.atan2(tx, ty);
-    double desiredRobotDirectionX = -Math.cos(desiredHeadingAngle);
-    double desiredRobotDirectionY = -Math.sin(desiredHeadingAngle);
-    double newNotePositionX = noteDistance * desiredRobotDirectionX + pose.getX();
-    double newNotePositionY = noteDistance * desiredRobotDirectionY + pose.getY();
-    // if there is a large enough difference between the previous calc and current field centric
-    // position then this is a new donut, ignore it.
-    if (notePositionX == null || notePositionY == null) {
-      notePositionX = newNotePositionX;
-      notePositionY = newNotePositionY;
-    } else if (distance(notePositionX, notePositionY, newNotePositionX, newNotePositionY)
-        > OrangeMath.inchesToMeters(
-            Constants.noteRadiusInches
-                + 3)) // the new note found is *probably* a new note ignore it
-    {
-      // ignore this, its probably a different note. we will hone in on *one* note.
-      // we can ignore this and let the robot find the next new note if they want.
-    } else {
-      // this is probably the same donut use same headings
-      // what do we do if the distance between notePosition and newNotePosition is significant but
-      // still indicates same note?
-      // for example, about 6 inches? I'm personally not sure. for the moment we assume the initial
-      // note position is accurate.
-      this.desiredHeadingAngle = desiredHeadingAngle;
-      this.desiredRobotDirectionX = desiredRobotDirectionX;
-      this.desiredRobotDirectionY = desiredRobotDirectionY;
-    }
+    desiredHeadingAngle = pose.getRotation().getRadians() - Math.atan2(tx, ty);
+    desiredRobotDirectionX = -Math.cos(desiredHeadingAngle);
+    desiredRobotDirectionY = -Math.sin(desiredHeadingAngle);
+    notePositionX = noteDistance * desiredRobotDirectionX + pose.getX();
+    notePositionY = noteDistance * desiredRobotDirectionY + pose.getY();
+    notePositionX = newNotePositionX;
+    notePositionY = newNotePositionY;
+      
   }
 
   @Override
@@ -109,7 +90,8 @@ public class AutoAquireNote extends Command {
     return !initialized
         || coordinator.noteInRobot()
         || !coordinator.getAutoIntakeButtonPressed()
-        || Intake.getInstance().getState() != Intake.IntakeStates.feeding;
+        || Intake.getInstance().getState() != Intake.IntakeStates.feeding
+        || !coordinator.NoteInVision();
   }
 
   @Override

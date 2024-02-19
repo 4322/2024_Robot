@@ -168,4 +168,8 @@ public class RobotCoordinator extends SubsystemBase {
   public Double getNearestNoteTY() {
     throw new UnsupportedOperationException("Unimplemented method 'getNearestNoteTY'");
   }
+
+  public boolean NoteInVision() {
+    return getNearestNoteTX() != null && getNearestNoteTY() != null;
+  }
 }

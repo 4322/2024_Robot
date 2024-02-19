@@ -100,7 +100,7 @@ public class Intake extends SubsystemBase {
             intakeState = IntakeStates.retracting;
           } else if (coordinator.noteInIntake()) {
             intakeState = IntakeStates.noteObtained;
-          } else if (coordinator.getAutoIntakeButtonPressed()) {
+          } else if (coordinator.getAutoIntakeButtonPressed() && coordinator.NoteInVision()) {
             if (!autoAquireNote.isScheduled()) {
               CommandScheduler.getInstance().schedule(autoAquireNote);
             }
