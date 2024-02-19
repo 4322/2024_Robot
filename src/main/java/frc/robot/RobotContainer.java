@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
+import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.SpinUpFlywheels;
 import frc.robot.commands.PivotToAngle;
@@ -68,6 +69,8 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     configureButtonBindings();
+
+    FiringSolutionManager.getInstance().loadSolutions();
 
     if (Constants.driveEnabled) {
       drive.setDefaultCommand(driveManual);
