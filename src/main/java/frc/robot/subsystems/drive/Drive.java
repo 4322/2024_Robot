@@ -19,14 +19,14 @@ import frc.robot.Constants;
 import frc.robot.Constants.ControllerTypeStrings;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.WheelPosition;
-import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
-import frc.robot.subsystems.drive.RobotChooser.RobotChooserInterface;
+import frc.robot.RobotChooser.RobotChooser;
+import frc.robot.RobotChooser.RobotChooserInterface;
 import frc.utility.OrangeMath;
 import frc.utility.SnapshotTranslation2D;
 import java.util.ArrayList;
 import org.littletonrobotics.junction.Logger;
 
-public class Drive extends SubsystemBase implements DriveInterface {
+public class Drive extends SubsystemBase {
   private RobotChooserInterface robotSpecificConstants = RobotChooser.getInstance().getConstants();
 
   private SwerveModule[] swerveModules = new SwerveModule[4];
@@ -53,7 +53,7 @@ public class Drive extends SubsystemBase implements DriveInterface {
           DriveConstants.frontRightWheelLocation, DriveConstants.frontLeftWheelLocation,
           DriveConstants.backLeftWheelLocation, DriveConstants.backRightWheelLocation);
 
-  private final SwerveDrivePoseEstimator poseEstimator;
+  private SwerveDrivePoseEstimator poseEstimator;
 
   private ShuffleboardTab tab;
 
@@ -79,7 +79,16 @@ public class Drive extends SubsystemBase implements DriveInterface {
   private double lastClosedRampRate = DriveConstants.Drive.closedLoopRampSec;
   private double lastOpenRampRate = DriveConstants.Drive.openLoopRampSec;
 
-  public Drive() {
+  private static Drive drive;
+
+  public static Drive getInstance() {
+    if (drive == null) {
+      drive = new Drive();
+    }
+    return drive;
+  }
+
+  private Drive() {
     runTime.start();
     switch (Constants.currentMode) {
         // Real robot, instantiate hardware IO implementations

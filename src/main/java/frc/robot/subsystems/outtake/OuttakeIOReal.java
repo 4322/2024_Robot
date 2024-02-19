@@ -4,10 +4,10 @@ import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.Constants;
-import frc.robot.Constants.OuttakeConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class OuttakeIOReal implements OuttakeIO {
@@ -54,11 +54,9 @@ public class OuttakeIOReal implements OuttakeIO {
   }
 
   @Override
-  public void setOuttakeRPM(double desiredTopVelocityRPM, double desiredBottomVelocityRPM) {
-    double desiredTopVelocityPct = desiredTopVelocityRPM / OuttakeConstants.maxRPM;
-    double desiredBottomVelocityPct = desiredBottomVelocityRPM / OuttakeConstants.maxRPM;
-    topOuttakeMotor.set(desiredTopVelocityPct);
-    bottomOuttakeMotor.set(desiredBottomVelocityPct);
+  public void setOuttakeRPS(double desiredTopVelocityRPS, double desiredBottomVelocityRPS) {
+    topOuttakeMotor.setControl(new VelocityVoltage(desiredTopVelocityRPS));
+    bottomOuttakeMotor.setControl(new VelocityVoltage(desiredBottomVelocityRPS));
   }
 
   @Override

@@ -9,9 +9,18 @@ import org.littletonrobotics.junction.Logger;
 public class Outtake extends SubsystemBase {
   private OuttakeIO io;
   private OuttakeIOInputsAutoLogged inputs = new OuttakeIOInputsAutoLogged();
-  private double targetRPM;
+  private double targetRPS;
 
-  public Outtake() {
+  private static Outtake outtake;
+
+  public static Outtake getInstance() {
+    if (outtake == null) {
+      outtake = new Outtake();
+    }
+    return outtake;
+  }
+
+  private Outtake() {
     switch (Constants.currentMode) {
       case REAL:
         if (Constants.outtakeEnabled) {
@@ -28,6 +37,10 @@ public class Outtake extends SubsystemBase {
     }
   }
 
+  public double getTargetRPS() {
+    return targetRPS;
+  }
+
   public void periodic() {
     if (Constants.outtakeEnabled) {
       io.updateInputs(inputs);
@@ -38,15 +51,15 @@ public class Outtake extends SubsystemBase {
     }
   }
 
-  public void outtake(double targetRPM) {
+  public void outtake(double targetRPS) {
     if (Constants.outtakeEnabled) {
-      this.targetRPM = targetRPM;
-      io.setOuttakeRPM(
-          Constants.OuttakeConstants.topOuttakeRPM, Constants.OuttakeConstants.bottomOuttakeRPM);
+      this.targetRPS = targetRPS;
+      io.setOuttakeRPS(
+          Constants.OuttakeConstants.topOuttakeRPS, Constants.OuttakeConstants.bottomOuttakeRPS);
       Logger.recordOutput(
-          "Outtake/TopOuttakeTargetSpeedRPM", Constants.OuttakeConstants.topOuttakeRPM);
+          "Outtake/TopOuttakeTargetSpeedRPS", Constants.OuttakeConstants.topOuttakeRPS);
       Logger.recordOutput(
-          "Outtake/BottomOuttakeTargetSpeedRPM", Constants.OuttakeConstants.bottomOuttakeRPM);
+          "Outtake/BottomOuttakeTargetSpeedRPS", Constants.OuttakeConstants.bottomOuttakeRPS);
       Logger.recordOutput("Outtake/OuttakeStopped", false);
     }
   }
@@ -54,8 +67,8 @@ public class Outtake extends SubsystemBase {
   public void stopOuttake() {
     if (Constants.outtakeEnabled) {
       io.stopOuttake();
-      Logger.recordOutput("Outtake/TopOuttakeTargetSpeedRPM", 0);
-      Logger.recordOutput("Outtake/BottomOuttakeTargetSpeedRPM", 0);
+      Logger.recordOutput("Outtake/TopOuttakeTargetSpeedRPS", 0);
+      Logger.recordOutput("Outtake/BottomOuttakeTargetSpeedRPS", 0);
       Logger.recordOutput("Outtake/OuttakeStopped", true);
     }
   }
@@ -76,8 +89,8 @@ public class Outtake extends SubsystemBase {
 
   public boolean isFlyWheelUpToSpeed() {
     return (OrangeMath.equalToEpsilon(
-            inputs.topRotationsPerSec * 60, targetRPM, OuttakeConstants.outtakeToleranceRPM)
+            inputs.topRotationsPerSec, targetRPS, OuttakeConstants.outtakeToleranceRPS)
         && OrangeMath.equalToEpsilon(
-            inputs.bottomRotationsPerSec * 60, targetRPM, OuttakeConstants.outtakeToleranceRPM));
+            inputs.bottomRotationsPerSec, targetRPS, OuttakeConstants.outtakeToleranceRPS));
   }
 }

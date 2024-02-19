@@ -8,8 +8,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
-import frc.robot.subsystems.drive.RobotChooser.RobotChooserInterface;
+import frc.robot.RobotChooser.RobotChooser;
+import frc.robot.RobotChooser.RobotChooserInterface;
 import frc.utility.CanBusUtil;
 import frc.utility.OrangeMath;
 
@@ -31,23 +31,28 @@ public final class Constants {
   }
 
   public static final RobotType currentRobot = RobotType.NEMO;
+  public static final Mode currentMode = Mode.REAL;
 
   // Must be below currentRobot to initialize properly
   private static RobotChooserInterface robotSpecificConstants =
       RobotChooser.getInstance().getConstants();
+  public static double noteRadiusInches = 7;
 
-  public static final boolean debug = true;
+  public static final boolean debug = false;
 
   public static final boolean driveEnabled = true;
-  public static final boolean intakeEnabled = true;
-  public static final boolean intakeDeployerEnabled = true;
+  public static final boolean intakeEnabled = false;
   public static final boolean gyroEnabled = true;
-  public static final boolean joysticksEnabled = true;
+  public static final boolean tunnelEnabled = false;
+  public static final boolean outtakeEnabled = false;
+  public static final boolean outtakePivotEnabled = false;
+  public static final boolean sensorsEnabled = false;
+  public static final boolean joysticksEnabled = false;
   public static final boolean xboxEnabled = true;
 
   public static final boolean spinoutCenterEnabled = true; // center rotate burst of power
   public static final boolean spinoutCornerEnabled = true;
-  public static final boolean psuedoAutoRotateEnabled = false;
+  public static final boolean psuedoAutoRotateEnabled = true;
   public static final String driveInputScaling = InputScalingStrings.quadratic;
   public static final String controllerType = ControllerTypeStrings.xboxLeftDrive;
 
@@ -231,6 +236,8 @@ public final class Constants {
       public static final double supplyThreshold = 60;
       public static final double supplyTime = 2.0;
     }
+
+    public static final double autoFeedMoveSpeed = 1;
   }
 
   public static final class OuttakeConstants {
@@ -249,8 +256,7 @@ public final class Constants {
     public static final double kS = 0;
     public static final double voltPerRPS =
         0; // since we likely aren't going to adjust the speed, it's likely safe to not interpolate
-    public static final int pivotDeviceID = 0; // TODO
-    public static final int pivotEncoderID = 0; // TODO
+    public static final int pivotDeviceID = 0;
 
     public static final double pivotkD = 0;
     public static final double pivotkI = 0;
@@ -270,34 +276,19 @@ public final class Constants {
     public static final NeutralModeValue pivotDefaultNeutralMode = NeutralModeValue.Coast;
     public static final double defaultPivotPosition = 0;
 
-    public static final double topOuttakeRPM = 0;
-    public static final double bottomOuttakeRPM = 0;
-    public static final double outtakeToleranceRPM = 0;
+    public static final double topOuttakeRPS = 0;
+    public static final double bottomOuttakeRPS = 0;
+    public static final double outtakeToleranceRPS = 0;
     public static final double pivotToleranceRotations = 0;
 
     public static final double maxRPM = 0;
   }
 
-  public static final class FieldConstants {
-    public static double xSpeakerPosM;
-    public static double ySpeakerPosM;
-
-    static {
-      if (DriverStation.getAlliance()
-          .get()
-          .equals(Alliance.Blue)) { // Account for origin remaining same between blue and red
-        xSpeakerPosM = 0;
-        ySpeakerPosM = 5.546;
-      } else {
-        xSpeakerPosM = 16.591;
-        ySpeakerPosM = 5.546;
-      }
-    }
-  }
-
   public static final class IntakeConstants {
     // TODO: update these
     public static final int intakeMotorID = 0;
+    public static final int deployMotorID = 0;
+    public static final int deployEncoderID = 0;
 
     public static final class IntakeConfig {
       public static final NeutralModeValue neutralMode = NeutralModeValue.Coast;
@@ -305,21 +296,6 @@ public final class Constants {
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
     }
-
-    public static final class Intake {
-      public static final double intakeSpeedPct = 0;
-      public static final double outtakeSpeedPct = -0; // signed
-    }
-
-    public static final class Logging {
-      public static final String key = "Intake/";
-      public static final String hardwareOutputsKey = "Intake/Hardware/";
-    }
-  }
-
-  public static final class IntakeDeployerConstants {
-    public static final int deployMotorID = 0;
-    public static final int deployEncoderID = 0;
 
     public static final class DeployConfig {
       public static final double kP = 0;
@@ -330,6 +306,12 @@ public final class Constants {
       public static final double updateHz =
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
+    }
+
+    public static final class Feeder {
+      public static final double intakeFeedVoltage =
+          0.0; // TODO: set max voltage we want for feeding
+      public static final double intakeEjectVoltage = 0.0;
     }
 
     public static final class Deploy {
@@ -349,14 +331,58 @@ public final class Constants {
     }
 
     public static final class Logging {
-      public static final String key = "IntakeDeployer/";
-      public static final String hardwareOutputsKey = "IntakeDeployer/Hardware/";
+      public static final String key = "Intake/";
+      public static final String feederKey = "Intake/Feeder/";
+      public static final String feederHardwareOutputsKey = "Intake/Feeder/Hardware/";
+      public static final String deployerKey = "Intake/Deployer/";
+      public static final String deployerHardwareOutputsKey = "Intake/Deployer/Hardware/";
+    }
+  }
+
+  public static final class BeamBreakConstants {
+    public static final int tunnelBeamBreakID = 0; // TODO
+    public static final int intakeBeamBreakID = 0; // TODO
+
+    public static final class Logging {
+      public static final String key = "Sensors/";
+      public static final String hardwareOutputsKey = "Sensors/Hardware/";
+    }
+  }
+
+  public static final class TunnelConstants {
+    public static final int tunnelMotorID = 0; // TODO
+
+    public static final double desiredVoltage = 0.0; // TODO
+    public static final double peakVoltage = 0.0; // TODO: shouldn't be greater than 12
+
+    public static final class Logging {
+      public static final String key = "Tunnel/";
+      public static final String hardwareOutputsKey = "Tunnel/Hardware/";
     }
   }
 
   public static final class LED {
     public static final int totalLEDs = 0; // TODO: find umber of INDIVIDUAL LEDs mounted on robot
     public static final int CANdleID = 3;
+  }
+
+  public static final class FieldConstants {
+    public static double xSpeakerPosM;
+    public static double ySpeakerPosM;
+
+    static {
+      if (DriverStation.getAlliance()
+          .get()
+          .equals(Alliance.Blue)) { // Account for origin remaining same between blue and red
+        xSpeakerPosM = 0;
+        ySpeakerPosM = 5.546;
+      } else {
+        xSpeakerPosM = 16.591;
+        ySpeakerPosM = 5.546;
+      }
+    }
+
+    public static final double xCenterLineM = 8.2955;
   }
 
   public enum WheelPosition {
@@ -373,10 +399,6 @@ public final class Constants {
       wheelNumber = id;
     }
   }
-
-  public static final Mode currentMode = Mode.REAL;
-
-  public static final boolean outtakeEnabled = true;
 
   public static enum Mode {
     /** Running on a real robot. */

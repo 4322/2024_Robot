@@ -14,7 +14,16 @@ public class OuttakePivot extends SubsystemBase {
   private double pivotTarget;
   private boolean initialized;
 
-  public OuttakePivot() {
+  private static OuttakePivot outtakePivot;
+
+  public static OuttakePivot getInstance() {
+    if (outtakePivot == null) {
+      outtakePivot = new OuttakePivot();
+    }
+    return outtakePivot;
+  }
+
+  private OuttakePivot() {
     switch (Constants.currentMode) {
       case REAL:
         if (Constants.outtakeEnabled) {
@@ -32,6 +41,10 @@ public class OuttakePivot extends SubsystemBase {
 
     existenceTimer = new Timer();
     existenceTimer.start();
+  }
+
+  public double getTarget() {
+    return pivotTarget;
   }
 
   public void periodic() {

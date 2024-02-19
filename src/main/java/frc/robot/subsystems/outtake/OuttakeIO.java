@@ -20,8 +20,8 @@ public interface OuttakeIO {
   public default void updateInputs(OuttakeIOInputs inputs) {}
   ;
 
-  public default void setOuttakeRPM(
-      double desiredTopVelocityRPM, double desiredBottomVelocityRPM) {}
+  public default void setOuttakeRPS(
+      double desiredTopVelocityRPS, double desiredBottomVelocityRPS) {}
   ;
 
   public default void setBrakeMode() {}

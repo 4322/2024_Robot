@@ -4,18 +4,33 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.DriveManual;
+import frc.robot.commands.DriveManual.DriveManual;
+import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
+import frc.robot.commands.OuttakeOut;
+import frc.robot.commands.PivotToAngle;
 import frc.robot.commands.ResetFieldCentric;
+import frc.robot.commands.SetRobotPose;
+import frc.robot.commands.Shoot;
+import frc.robot.commands.TunnelFeed;
+import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
+import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.LED.LED;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.drive.DriveInterface;
+import frc.robot.subsystems.outtake.Outtake;
+import frc.robot.subsystems.outtakePivot.OuttakePivot;
+import frc.robot.subsystems.tunnel.Tunnel;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -31,36 +46,32 @@ public class RobotContainer {
   public static Joystick driveStick;
   public static Joystick rotateStick;
 
-  private JoystickButton driveButtonThree;
   private JoystickButton driveButtonSeven;
   private JoystickButton driveButtonTwelve;
 
   private final DriveInterface drive = new Drive();
-  public final LED led = new LED();
 
   private final DriveManual driveManualDefault = new DriveManual(drive, DriveManual.AutoPose.none);
   private final DriveStop driveStop = new DriveStop(drive);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    switch (Constants.currentMode) {
-        // Real robot, instantiate hardware IO implementations
-      case REAL:
-        break;
-
-        // Sim robot, instantiate physics sim IO implementations
-      case SIM:
-        break;
-
-        // Replayed robot, disable hardware IO implementations
-      case REPLAY:
-        break;
-    }
-
     configureButtonBindings();
 
     if (Constants.driveEnabled) {
-      drive.setDefaultCommand(driveManualDefault);
+      drive.setDefaultCommand(driveManual);
+    }
+
+    if (Constants.tunnelEnabled) {
+      tunnel.setDefaultCommand(tunnelFeed);
+    }
+
+    if (Constants.outtakeEnabled) {
+      outtake.setDefaultCommand(outtakeOut);
+    }
+
+    if (Constants.outtakePivotEnabled) {
+      outtakePivot.setDefaultCommand(pivotToAngle);
     }
   }
   /**
@@ -74,20 +85,55 @@ public class RobotContainer {
       driveStick = new Joystick(0);
       rotateStick = new Joystick(1);
 
-      driveButtonThree = new JoystickButton(driveStick, 3);
       driveButtonSeven = new JoystickButton(driveStick, 7);
       driveButtonTwelve = new JoystickButton(driveStick, 12);
 
-      driveButtonThree.onTrue(new DriveManual(drive, DriveManual.AutoPose.usePresetAuto));
-      driveButtonSeven.onTrue(new ResetFieldCentric(drive, true));
+      driveButtonSeven.onTrue(new ResetFieldCentric(true));
       driveButtonTwelve.onTrue(driveStop);
     }
 
     if (Constants.xboxEnabled) {
       xbox = new CommandXboxController(2);
-      xbox.povUp().onTrue(new ResetFieldCentric(drive, true));
-      xbox.rightBumper().onTrue(new DriveManual(drive, DriveManual.AutoPose.usePresetAuto));
+      xbox.x()
+          .onTrue(
+              Commands.runOnce(
+                  () -> {
+                    driveManual.updateStateMachine(DriveManualTrigger.JOYSTICK_IN);
+                  }));
+      xbox.povUp().onTrue(new ResetFieldCentric(true));
+      // Reset the odometry for testing speaker-centric driving. This assumes robot is on the
+      // very left on the front of the speaker, facing down-field (forward).
+      xbox.start()
+          .onTrue(
+              new SetRobotPose(
+                  new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()), true));
       xbox.povDown().onTrue(driveStop);
+      xbox.rightTrigger()
+          .onTrue(
+              Commands.runOnce(
+                  () -> {
+                    RobotCoordinator.getInstance().setIntakeButtonState(true);
+                  }));
+      xbox.rightTrigger()
+          .onFalse(
+              Commands.runOnce(
+                  () -> {
+                    RobotCoordinator.getInstance().setIntakeButtonState(false);
+                  }));
+      xbox.rightBumper()
+          .onTrue(
+              Commands.runOnce(
+                  () -> {
+                    RobotCoordinator.getInstance().setAutoIntakeButtonPressed(true);
+                  }));
+
+      xbox.rightBumper()
+          .onFalse(
+              Commands.runOnce(
+                  () -> {
+                    RobotCoordinator.getInstance().setAutoIntakeButtonPressed(false);
+                  }));
+      xbox.leftTrigger().whileTrue(new Shoot());
     }
   }
 
@@ -105,6 +151,7 @@ public class RobotContainer {
 
   public void enableSubsystems() {
     drive.setBrakeMode();
+    tunnel.setBrakeMode();
     disableTimer.stop();
     disableTimer.reset();
     led.periodic();
@@ -112,6 +159,7 @@ public class RobotContainer {
 
   public void disableSubsystems() {
     driveStop.schedule(); // interrupt all drive commands
+
     disableTimer.reset();
     disableTimer.start();
   }
@@ -120,13 +168,13 @@ public class RobotContainer {
     if (Constants.Demo.inDemoMode) {
       return null;
     }
-    return new SequentialCommandGroup(getAutoInitialize(), null);
+    return null;
   }
 
   // AUTO COMMANDS
 
   // Command that should always start off every auto
   public Command getAutoInitialize() {
-    return new SequentialCommandGroup(new ResetFieldCentric(drive, true));
+    return new SequentialCommandGroup(new ResetFieldCentric(true));
   }
 }

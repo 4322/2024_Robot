@@ -11,8 +11,8 @@ import frc.robot.Constants;
 import frc.robot.Constants.ControllerTypeStrings;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.InputScalingStrings;
-import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
-import frc.robot.subsystems.drive.RobotChooser.RobotChooserInterface;
+import frc.robot.RobotChooser.RobotChooser;
+import frc.robot.RobotChooser.RobotChooserInterface;
 
 public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
   private RobotChooserInterface robotSpecificConstants = RobotChooser.getInstance().getConstants();
