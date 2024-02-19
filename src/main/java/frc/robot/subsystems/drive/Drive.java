@@ -288,7 +288,7 @@ public class Drive extends SubsystemBase {
         gyro.updateInputs(gyroInputs);
         Logger.processInputs("Drive/Gyro", gyroInputs);
         if (!gyroInputs.connected) {
-          DriverStation.reportError("Gyro disconnected", null);
+          DriverStation.reportError("Gyro disconnected", false);
         }
       }
       updateVelAcc();

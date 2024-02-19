@@ -40,7 +40,7 @@ public class FiringSolutionManager implements GenericFiringSolutionManager<Firin
       DriverStation.reportWarning("Wrote new solution to firing solution json", false);
     } catch (Exception e) {
       e.printStackTrace();
-      DriverStation.reportError("Failed to write new firing solution", null);
+      DriverStation.reportError("Failed to write new firing solution", false);
     }
   }
 
@@ -54,7 +54,7 @@ public class FiringSolutionManager implements GenericFiringSolutionManager<Firin
       for (FiringSolution solution : solutionList) {
         addSolution(solution);
       }
-      DriverStation.reportWarning("Loaded all firing solutions", null);
+      DriverStation.reportWarning("Loaded all firing solutions", false);
     } catch (Exception e) {
       e.printStackTrace();
       DriverStation.reportError("Failed to load firing solutions", e.getStackTrace());
