@@ -8,7 +8,7 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.utility.OrangeMath;
 
-public class AutoAquireNote extends Command {
+public class AutoAcquireNote extends Command {
 
   private Drive drive;
   private RobotCoordinator coordinator;
@@ -22,7 +22,7 @@ public class AutoAquireNote extends Command {
   private Double notePositionY; // field centric
   private Double notePositionX; // field centric
 
-  public AutoAquireNote() {
+  public AutoAcquireNote() {
     drive = Drive.getInstance();
     coordinator = RobotCoordinator.getInstance();
     addRequirements(drive);
@@ -35,7 +35,7 @@ public class AutoAquireNote extends Command {
 
     initialized = true;
 
-    if (initTx == null || initTy == null) {
+    if (!coordinator.noteInVision()) {
       initialized =
           false; // this cancels auto aquisition (although the button will automatically restart it)
       return;
@@ -49,7 +49,7 @@ public class AutoAquireNote extends Command {
     // I'm assuming that null from either implies that the data being returned is bad / donut is
     // lost on camera
     // this probably means that we are close to the donut and should use an approach speed.
-    if (tx == null || ty == null) {
+    if (!coordinator.noteInVision()) {
       // dont update, we've lost the target. use old data.
       // TODO: we should mark this in the LED subsystem when that becomes a thing.
       return;
@@ -91,7 +91,7 @@ public class AutoAquireNote extends Command {
         || coordinator.noteInRobot()
         || !coordinator.getAutoIntakeButtonPressed()
         || Intake.getInstance().getState() != Intake.IntakeStates.feeding
-        || !coordinator.NoteInVision();
+        || !coordinator.noteInVision();
   }
 
   @Override

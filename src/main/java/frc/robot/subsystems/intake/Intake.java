@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.commands.AutoAquireNote;
+import frc.robot.commands.AutoAcquireNote;
 import frc.robot.commands.XboxControllerRumble;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.utility.OrangeMath;
@@ -31,7 +31,7 @@ public class Intake extends SubsystemBase {
   private RobotCoordinator coordinator;
   private boolean isFeeding;
 
-  private AutoAquireNote autoAquireNote = new AutoAquireNote();
+  private AutoAcquireNote autoAcquireNote = new AutoAcquireNote();
   private XboxControllerRumble xBoxRumble = new XboxControllerRumble();
 
   private static Intake intake;
@@ -78,7 +78,7 @@ public class Intake extends SubsystemBase {
       switch (intakeState) {
         case retracted:
           if (coordinator.getIntakeButtonPressed()
-              && (coordinator.isAcrossCenterLine() || !coordinator.noteInRobot())) {
+              && (coordinator.onOurSideOfField() || !coordinator.noteInRobot())) {
             intakeState = IntakeStates.deploying;
           }
           break;
@@ -102,9 +102,9 @@ public class Intake extends SubsystemBase {
             intakeState = IntakeStates.retracting;
           } else if (coordinator.noteInIntake()) {
             intakeState = IntakeStates.noteObtained;
-          } else if (coordinator.getAutoIntakeButtonPressed() && coordinator.NoteInVision()) {
-            if (!autoAquireNote.isScheduled()) {
-              CommandScheduler.getInstance().schedule(autoAquireNote);
+          } else if (coordinator.getAutoIntakeButtonPressed() && coordinator.noteInVision()) {
+            if (!autoAcquireNote.isScheduled()) {
+              CommandScheduler.getInstance().schedule(autoAcquireNote);
             }
           }
           break;
@@ -119,7 +119,7 @@ public class Intake extends SubsystemBase {
           break;
         case notePastIntake:
           stopFeeder();
-          if (!coordinator.isAcrossCenterLine() || !coordinator.getIntakeButtonPressed()) {
+          if (!coordinator.onOurSideOfField() || !coordinator.getIntakeButtonPressed()) {
             intakeState = IntakeStates.retracting;
           } else if (!coordinator.noteInRobot()) {
             intakeState = IntakeStates.feeding;
@@ -131,7 +131,7 @@ public class Intake extends SubsystemBase {
             retract();
           }
           if (coordinator.getIntakeButtonPressed()
-              && (coordinator.isAcrossCenterLine() || !coordinator.noteInRobot())) {
+              && (coordinator.onOurSideOfField() || !coordinator.noteInRobot())) {
             intakeState = IntakeStates.deploying;
           } else if (coordinator.isIntakeRetracted()) {
             intakeState = IntakeStates.retracted;

@@ -146,7 +146,7 @@ public class RobotCoordinator extends SubsystemBase {
     return !notePassingTunnel && inputs.tunnelBeamBreak;
   }
 
-  public boolean isAcrossCenterLine() {
+  public boolean onOurSideOfField() {
     if (Robot.getAllianceColor().equals(Alliance.Red)) {
       return (drive.getPose2d().getX() > Constants.FieldConstants.xCenterLineM);
     } else if (Robot.getAllianceColor().equals(Alliance.Blue)) {
@@ -172,7 +172,7 @@ public class RobotCoordinator extends SubsystemBase {
     return Limelight.getIntakeInstance().getVerticalDegToTarget();
   }
 
-  public boolean NoteInVision() {
+  public boolean noteInVision() {
     return Limelight.getIntakeInstance().getTargetVisible();
   }
   public Pose2d getOuttakeLimelightPose2d() {

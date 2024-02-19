@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
-import frc.robot.commands.OuttakeOut;
+import frc.robot.commands.SpinUpFlywheels;
 import frc.robot.commands.PivotToAngle;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetRobotPose;
@@ -61,7 +61,7 @@ public class RobotContainer {
 
   private final TunnelFeed tunnelFeed = new TunnelFeed();
 
-  private final OuttakeOut outtakeOut = new OuttakeOut();
+  private final SpinUpFlywheels outtakeOut = new SpinUpFlywheels();
 
   private final PivotToAngle pivotToAngle = new PivotToAngle();
 
