@@ -1,5 +1,9 @@
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -8,6 +12,7 @@ import frc.robot.Constants.BeamBreakConstants;
 import frc.robot.Robot;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.robot.subsystems.outtakePivot.OuttakePivot;
 import org.littletonrobotics.junction.Logger;
@@ -171,5 +176,12 @@ public class RobotCoordinator extends SubsystemBase {
 
   public boolean NoteInVision() {
     return getNearestNoteTX() != null && getNearestNoteTY() != null;
+  }
+  public Pose2d getOuttakeLimelightPose2d() {
+    return Limelight.getOuttakeInstance().getAprilTagPose2d();
+  }
+
+  public double getOuttakeLimelightLatency() {
+    return Limelight.getOuttakeInstance().getTotalLatency();
   }
 }
