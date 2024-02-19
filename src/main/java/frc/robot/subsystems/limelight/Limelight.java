@@ -142,11 +142,17 @@ public class Limelight extends SubsystemBase {
   }
 
   public Pose2d getAprilTagPose2d() {
-    return LimelightHelpers.getBotPose2d_wpiBlue(name);
+    if (Constants.outtakeLimeLightEnabled) {
+      return LimelightHelpers.getBotPose2d_wpiBlue(name);
+    }
+    return null;
   }
 
   public double getTotalLatency() {
-    return LimelightHelpers.getLatency_Capture(name) + LimelightHelpers.getLatency_Pipeline(name);
+    if (Constants.outtakeLimeLightEnabled) {
+      return LimelightHelpers.getLatency_Capture(name) + LimelightHelpers.getLatency_Pipeline(name);
+    }
+    return 0;
   }
 
   public void refreshOdometry() {
