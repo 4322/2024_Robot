@@ -54,19 +54,20 @@ public class AutoAcquireNote extends Command {
       // TODO: we should mark this in the LED subsystem when that becomes a thing.
       return;
     }
-    double yNoteDistance = Constants.LimelightConstants.intakeLimelightHeight * Math.tan(Math.toRadians(65 - ty));
+    double yNoteDistance =
+        Constants.LimelightConstants.intakeLimelightHeight * Math.tan(Math.toRadians(65 - ty));
     double xNoteDistance = Math.tan(Math.toRadians(tx)) * yNoteDistance;
     double noteDistance =
         Math.sqrt(xNoteDistance * xNoteDistance + yNoteDistance * yNoteDistance)
             + OrangeMath.inchesToMeters(
                 Constants.noteRadiusInches); // get the distance to the far end of the donut
     Pose2d pose = drive.getPose2d();
-    desiredHeadingAngle = pose.getRotation().getRadians() - Math.atan2(xNoteDistance, yNoteDistance);
+    desiredHeadingAngle =
+        pose.getRotation().getRadians() - Math.atan2(xNoteDistance, yNoteDistance);
     desiredRobotDirectionX = Math.cos(desiredHeadingAngle);
     desiredRobotDirectionY = Math.sin(desiredHeadingAngle);
     notePositionX = noteDistance * desiredRobotDirectionX + pose.getX();
     notePositionY = noteDistance * desiredRobotDirectionY + pose.getY();
-      
   }
 
   @Override

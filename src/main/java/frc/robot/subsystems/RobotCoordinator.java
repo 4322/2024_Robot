@@ -1,10 +1,8 @@
 package frc.robot.subsystems;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.BeamBreakConstants;
@@ -14,6 +12,7 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.robot.subsystems.outtakePivot.OuttakePivot;
+import org.littletonrobotics.junction.Logger;
 
 public class RobotCoordinator extends SubsystemBase {
   private Intake intake;
@@ -175,6 +174,7 @@ public class RobotCoordinator extends SubsystemBase {
   public boolean noteInVision() {
     return Limelight.getIntakeInstance().getTargetVisible();
   }
+
   public Pose2d getOuttakeLimelightPose2d() {
     return Limelight.getOuttakeInstance().getAprilTagPose2d();
   }

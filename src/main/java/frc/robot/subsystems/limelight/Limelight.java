@@ -1,9 +1,5 @@
 package frc.robot.subsystems.limelight;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -17,6 +13,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.LimelightConstants;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Limelight extends SubsystemBase {
   NetworkTable table;
@@ -42,7 +40,8 @@ public class Limelight extends SubsystemBase {
   double limeAngle;
   boolean enabled;
   int currentPipeline = -1;
-  Map<Double, LimelightHelpers.LimelightTarget_Fiducial> llFiducialMap = new HashMap<Double, LimelightHelpers.LimelightTarget_Fiducial>();
+  Map<Double, LimelightHelpers.LimelightTarget_Fiducial> llFiducialMap =
+      new HashMap<Double, LimelightHelpers.LimelightTarget_Fiducial>();
 
   // the distance from where you want to calculate from
   // should always be calculated with WPI coordinates (front is positive X)
@@ -55,14 +54,16 @@ public class Limelight extends SubsystemBase {
     if (intakeLimelight == null) {
       // Measuring from front of bumpers
       // Limelight name must match limelight tool
-      intakeLimelight = new Limelight(LimelightConstants.intakeLimelightName, 
-      Constants.LimelightConstants.intakeLimelightHeight,
-      Constants.LimelightConstants.intakeLimelightAngle, 
-      Constants.LimelightConstants.intakeLimeLightXOffsetMeters, 
-      Constants.LimelightConstants.intakeLimelightYOffsetMeters, 
-      false, 
-      false, 
-      Constants.intakeLimeLightEnabled);
+      intakeLimelight =
+          new Limelight(
+              LimelightConstants.intakeLimelightName,
+              Constants.LimelightConstants.intakeLimelightHeight,
+              Constants.LimelightConstants.intakeLimelightAngle,
+              Constants.LimelightConstants.intakeLimeLightXOffsetMeters,
+              Constants.LimelightConstants.intakeLimelightYOffsetMeters,
+              false,
+              false,
+              Constants.intakeLimeLightEnabled);
     }
     return intakeLimelight;
   }
@@ -71,20 +72,29 @@ public class Limelight extends SubsystemBase {
     if (outtakeLimelight == null) {
       // Measuring from back of bumpers
       // Limelight name must match limelight tool
-      outtakeLimelight = new Limelight(LimelightConstants.outtakeLimelightName,  
-      Constants.LimelightConstants.outtakeLimelightHeight,
-      Constants.LimelightConstants.outtakeLimelightAngle, 
-      Constants.LimelightConstants.outtakeLimelightXOffsetMeters, 
-      Constants.LimelightConstants.outtakeLimelightYOffsetMeters, 
-      true, 
-      false, 
-      Constants.outtakeLimeLightEnabled);
+      outtakeLimelight =
+          new Limelight(
+              LimelightConstants.outtakeLimelightName,
+              Constants.LimelightConstants.outtakeLimelightHeight,
+              Constants.LimelightConstants.outtakeLimelightAngle,
+              Constants.LimelightConstants.outtakeLimelightXOffsetMeters,
+              Constants.LimelightConstants.outtakeLimelightYOffsetMeters,
+              true,
+              false,
+              Constants.outtakeLimeLightEnabled);
     }
     return outtakeLimelight;
   }
 
-  private Limelight(String limelightName, double limelightHeightMeters, double limelightAngleDegrees,
-      double xOffsetMeters, double yOffsetMeters, boolean facingBackward, boolean isTestSubsystem, boolean enabled) {
+  private Limelight(
+      String limelightName,
+      double limelightHeightMeters,
+      double limelightAngleDegrees,
+      double xOffsetMeters,
+      double yOffsetMeters,
+      boolean facingBackward,
+      boolean isTestSubsystem,
+      boolean enabled) {
     name = limelightName;
     limeHeight = limelightHeightMeters;
     limeAngle = limelightAngleDegrees;
@@ -105,8 +115,11 @@ public class Limelight extends SubsystemBase {
 
       if (Constants.debug) {
         tab = Shuffleboard.getTab(name);
-        targetVisible = tab.add("Target Visible", false).withWidget(BuiltInWidgets.kBooleanBox)
-            .withPosition(0, 0).getEntry();
+        targetVisible =
+            tab.add("Target Visible", false)
+                .withWidget(BuiltInWidgets.kBooleanBox)
+                .withPosition(0, 0)
+                .getEntry();
         distanceToTargetX = tab.add("Target X", 0).withPosition(0, 1).getEntry();
         distanceToTargetY = tab.add("Target Y", 0).withPosition(0, 2).getEntry();
       }
@@ -142,9 +155,10 @@ public class Limelight extends SubsystemBase {
     int nextPos = 0;
     while ((nextPos = json.indexOf("\"fID\":", nextPos)) != -1) {
       int startIndex = nextPos + 6;
-      nextPos++;  // don't get stuck in a loop if there is no tx
+      nextPos++; // don't get stuck in a loop if there is no tx
       if ((nextPos = json.indexOf(',', nextPos)) != -1) {
-        LimelightHelpers.LimelightTarget_Fiducial fiducial = new LimelightHelpers.LimelightTarget_Fiducial();
+        LimelightHelpers.LimelightTarget_Fiducial fiducial =
+            new LimelightHelpers.LimelightTarget_Fiducial();
         fiducial.fiducialID = Double.valueOf(json.substring(startIndex, nextPos));
         if ((nextPos = json.indexOf("\"tx\":", nextPos)) != -1) {
           startIndex = nextPos + 5;
@@ -210,7 +224,8 @@ public class Limelight extends SubsystemBase {
   }
 
   public enum CamMode {
-    VisionProcessor, DriverCamera;
+    VisionProcessor,
+    DriverCamera;
   }
 
   // All distances use WPILib coordinates (where x is perpendicular to the target and y
@@ -251,27 +266,26 @@ public class Limelight extends SubsystemBase {
         if (targetHeight != -1) {
           return calcTargetPos(targetHeight, yDeg, xDeg);
         }
-        //DataLogManager.log(name + ": Tried to get target pos, but pipline was invalid");
+        // DataLogManager.log(name + ": Tried to get target pos, but pipline was invalid");
         return new Translation2d(0, 0);
       }
-      //DataLogManager.log(name + ": Tried to get target pos, but no target found");
+      // DataLogManager.log(name + ": Tried to get target pos, but no target found");
       return new Translation2d(0, 0);
     }
-    //DataLogManager.log(name + ": Tried to get target pos, but limelight is disabled");
+    // DataLogManager.log(name + ": Tried to get target pos, but limelight is disabled");
     return new Translation2d(0, 0);
   }
 
   public double getHorizontalDistToTarget() {
-    double distanceX = (getTargetHeight(currentPipeline, getHorizontalDegToTarget()) - limeHeight) / 
-                        Math.tan(Math.toRadians(getHorizontalDegToTarget() + limeAngle));
+    double distanceX =
+        (getTargetHeight(currentPipeline, getHorizontalDegToTarget()) - limeHeight)
+            / Math.tan(Math.toRadians(getHorizontalDegToTarget() + limeAngle));
     double distanceY = distanceX * Math.tan(Math.toRadians(getVerticalDegToTarget()));
 
     return distanceY;
   }
 
-  public void updatePoseEstimatorWithVisionBotPose() {
-    
-  }
+  public void updatePoseEstimatorWithVisionBotPose() {}
 
   public void activateRetroReflective() {
     switchPipeline(0);

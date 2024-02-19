@@ -4,9 +4,6 @@
 
 package frc.robot;
 
-import java.util.List;
-import java.util.Map;
-
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -15,6 +12,8 @@ import frc.robot.RobotChooser.RobotChooser;
 import frc.robot.RobotChooser.RobotChooserInterface;
 import frc.utility.CanBusUtil;
 import frc.utility.OrangeMath;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -109,7 +108,7 @@ public final class Constants {
   public static final int shuffleboardStatusPeriodMaxMs = 90; // for interactive response
   public static final int slowStatusPeriodMaxMs = 255;
   public static final int controllerConfigTimeoutMs = 50;
-public static final boolean inShotTuning = false;
+  public static final boolean inShotTuning = false;
 
   public static final class DriveConstants {
 
@@ -369,7 +368,8 @@ public static final boolean inShotTuning = false;
       public static final String hardwareOutputsKey = "Tunnel/Hardware/";
     }
   }
-public static final class LimelightConstants {
+
+  public static final class LimelightConstants {
     public static final double visionOdometryTolerance = 1.0;
     public static final double outtakeLimelightAngle = 0;
     public static final double outtakeLimelightHeight = OrangeMath.inchesToMeters(26.125);
@@ -379,10 +379,9 @@ public static final class LimelightConstants {
 
     public static final double intakeLimelightAngle = 0;
     public static final double intakeLimelightHeight = OrangeMath.inchesToMeters(46.3);
-    public static final double intakeLimeLightXOffsetMeters = 0.0; 
+    public static final double intakeLimeLightXOffsetMeters = 0.0;
     public static final double intakeLimelightYOffsetMeters = 0.0;
     public static final String intakeLimelightName = "limelight-intake";
-    
 
     // Tape heights are 1 inch higher than described in manual to account for
     // height to center of tape
@@ -392,20 +391,24 @@ public static final class LimelightConstants {
     // AprilTag heights are 4 inches higher than described in manual to account
     // for height to center of tag
     public static final double gridAprilTagHeight = OrangeMath.inchesToMeters(18.25);
-    public static final double singleSubstationAprilTagHeight = 
-      OrangeMath.inchesToMeters(51.5); // TODO: adjust for field (VPHS = 55.75)
+    public static final double singleSubstationAprilTagHeight =
+        OrangeMath.inchesToMeters(51.5); // TODO: adjust for field (VPHS = 55.75)
 
     // Threshold for limelight tape target height
     // above = high tape, below = middle tape
     public static final double tapeTargetHeightThresholdDeg = 0;
 
     // Target alignment values
-    public static final double substationMinLargeTargetArea = 1.8;  // small target is < 1.2 against substation
-    public static final double substationOffsetDeg = -10.02; // account for limelight being to the left of actual robot center
-    public static final double substationTargetToleranceDeg = 17.5;  // human player can drop game piece to the side
+    public static final double substationMinLargeTargetArea =
+        1.8; // small target is < 1.2 against substation
+    public static final double substationOffsetDeg =
+        -10.02; // account for limelight being to the left of actual robot center
+    public static final double substationTargetToleranceDeg =
+        17.5; // human player can drop game piece to the side
     public static final double gridMinHighTargetArea = 0.025;
     public static final double gridMaxHighTargetArea = 0.2;
-    // For a given lateral alignment error, the mid target will be further off-center in the limelight image.
+    // For a given lateral alignment error, the mid target will be further off-center in the
+    // limelight image.
     // Therefore, the mid tolerance should be about double the high tolerance.
     public static final double gridMidTargetToleranceDeg = 2.0;
     public static final double gridHighTargetToleranceDeg = 1.0;
@@ -414,8 +417,9 @@ public static final class LimelightConstants {
     public static final List<Integer> tapePipelines = List.of(0);
 
     // Map of pipelines and tag heights
-    public static final Map<Integer, Double> tagPipelinesHeights = Map
-        .ofEntries(Map.entry(1, gridAprilTagHeight), Map.entry(2, singleSubstationAprilTagHeight));
+    public static final Map<Integer, Double> tagPipelinesHeights =
+        Map.ofEntries(
+            Map.entry(1, gridAprilTagHeight), Map.entry(2, singleSubstationAprilTagHeight));
   }
 
   public static final class FieldConstants {

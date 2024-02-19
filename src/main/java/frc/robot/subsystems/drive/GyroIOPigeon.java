@@ -9,7 +9,9 @@ public class GyroIOPigeon implements GyroIO {
   Timer disconnectTimer = new Timer();
 
   public GyroIOPigeon() {
-    gyro = new Pigeon2(Constants.DriveConstants.Drive.canivoreID, Constants.DriveConstants.Drive.canivoreName);
+    gyro =
+        new Pigeon2(
+            Constants.DriveConstants.Drive.canivoreID, Constants.DriveConstants.Drive.canivoreName);
   }
 
   @Override

@@ -29,15 +29,16 @@ public class WriteFiringSolutionAtCurrentPos extends InstantCommand {
   @Override
   public void initialize() {
     if (Constants.inShotTuning) {
-      Translation2d rawTranslation = PositionVector.getVectorToSpeaker(drive.getPose2d().getX(),
-          drive.getPose2d().getY());
+      Translation2d rawTranslation =
+          PositionVector.getVectorToSpeaker(drive.getPose2d().getX(), drive.getPose2d().getY());
       shotAngle = rawTranslation.getAngle().getDegrees();
       // Calculates magnitude from x and y vals
-      shotMag = Math.sqrt(
-          rawTranslation.getX() * rawTranslation.getX()
-              + rawTranslation.getY() * rawTranslation.getY());
-      FiringSolution solution = new FiringSolution(shotMag, shotAngle, outtake.getTargetRPS(),
-          outtakePivot.getTarget());
+      shotMag =
+          Math.sqrt(
+              rawTranslation.getX() * rawTranslation.getX()
+                  + rawTranslation.getY() * rawTranslation.getY());
+      FiringSolution solution =
+          new FiringSolution(shotMag, shotAngle, outtake.getTargetRPS(), outtakePivot.getTarget());
       firingSolutionManager.writeSolution(solution);
     }
   }
@@ -48,6 +49,5 @@ public class WriteFiringSolutionAtCurrentPos extends InstantCommand {
   }
 
   @Override
-  public void end(boolean interrupted) {
-  }
+  public void end(boolean interrupted) {}
 }

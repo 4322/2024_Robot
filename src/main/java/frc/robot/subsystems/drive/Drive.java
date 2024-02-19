@@ -297,11 +297,15 @@ public class Drive extends SubsystemBase {
         updateOdometry();
       }
 
-      if (poseEstimator.getEstimatedPosition().getTranslation()
-            .getDistance(RobotCoordinator.getInstance().getOuttakeLimelightPose2d()
-              .getTranslation()) < Constants.LimelightConstants.visionOdometryTolerance) {
-        updateVision(RobotCoordinator.getInstance().getOuttakeLimelightPose2d(), 
-                      Timer.getFPGATimestamp() - RobotCoordinator.getInstance().getOuttakeLimelightLatency());
+      if (poseEstimator
+              .getEstimatedPosition()
+              .getTranslation()
+              .getDistance(
+                  RobotCoordinator.getInstance().getOuttakeLimelightPose2d().getTranslation())
+          < Constants.LimelightConstants.visionOdometryTolerance) {
+        updateVision(
+            RobotCoordinator.getInstance().getOuttakeLimelightPose2d(),
+            Timer.getFPGATimestamp() - RobotCoordinator.getInstance().getOuttakeLimelightLatency());
       }
 
       if (Constants.debug) {
