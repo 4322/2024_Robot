@@ -40,6 +40,7 @@ public class Limelight extends SubsystemBase {
   double limeAngle;
   boolean enabled;
   int currentPipeline = -1;
+  boolean isNetworkTableConnected;
   Map<Double, LimelightHelpers.LimelightTarget_Fiducial> llFiducialMap =
       new HashMap<Double, LimelightHelpers.LimelightTarget_Fiducial>();
 
@@ -138,15 +139,28 @@ public class Limelight extends SubsystemBase {
           distanceToTargetY.setDouble(targetPos.getY());
         }
       }
+
+      if (table == null) {
+        isNetworkTableConnected = false;
+      }
+      else {
+        isNetworkTableConnected = true;
+      }
     }
   }
 
   public Pose2d getAprilTagPose2d() {
-    return LimelightHelpers.getBotPose2d_wpiBlue(name);
+    if (enabled && isNetworkTableConnected) {
+      return LimelightHelpers.getBotPose2d_wpiBlue(name);
+    }
+    return new Pose2d();
   }
 
   public double getTotalLatency() {
-    return LimelightHelpers.getLatency_Capture(name) + LimelightHelpers.getLatency_Pipeline(name);
+    if (enabled && isNetworkTableConnected) {
+      return LimelightHelpers.getLatency_Capture(name) + LimelightHelpers.getLatency_Pipeline(name);
+    }
+    return 0;
   }
 
   public void refreshOdometry() {
@@ -182,7 +196,7 @@ public class Limelight extends SubsystemBase {
   }
 
   public double getHorizontalDegToTarget() {
-    if (enabled) {
+    if (enabled && isNetworkTableConnected) {
       return tx.getDouble(0);
     } else {
       return 0;
@@ -190,7 +204,7 @@ public class Limelight extends SubsystemBase {
   }
 
   public double getVerticalDegToTarget() {
-    if (enabled) {
+    if (enabled && isNetworkTableConnected) {
       return ty.getDouble(0);
     } else {
       return 0;
@@ -198,7 +212,7 @@ public class Limelight extends SubsystemBase {
   }
 
   public double getTargetArea() {
-    if (enabled) {
+    if (enabled && isNetworkTableConnected) {
       return ta.getDouble(0);
     } else {
       return 0;
@@ -206,7 +220,7 @@ public class Limelight extends SubsystemBase {
   }
 
   public boolean getTargetVisible() {
-    if (enabled) {
+    if (enabled && isNetworkTableConnected) {
       return tv.getDouble(0.0) == 1.0;
     } else {
       return false;
@@ -214,7 +228,7 @@ public class Limelight extends SubsystemBase {
   }
 
   public void setCamMode(CamMode mode) {
-    if (enabled) {
+    if (enabled && isNetworkTableConnected) {
       if (mode == CamMode.VisionProcessor) {
         camMode.setNumber(0);
       } else if (mode == CamMode.DriverCamera) {
@@ -257,7 +271,7 @@ public class Limelight extends SubsystemBase {
   }
 
   public Translation2d getTargetPosRobotRelative() {
-    if (enabled) {
+    if (enabled && isNetworkTableConnected) {
       if (getTargetVisible()) {
         double yDeg = getVerticalDegToTarget();
         double xDeg = getHorizontalDegToTarget();
@@ -296,7 +310,7 @@ public class Limelight extends SubsystemBase {
   }
 
   private void switchPipeline(int pipelineIdx) {
-    if (enabled && (currentPipeline != pipelineIdx)) {
+    if (enabled && (currentPipeline != pipelineIdx) && isNetworkTableConnected) {
       pipeline.setNumber(pipelineIdx);
       currentPipeline = pipelineIdx;
     }

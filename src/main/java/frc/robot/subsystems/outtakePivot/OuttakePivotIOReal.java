@@ -1,14 +1,11 @@
 package frc.robot.subsystems.outtakePivot;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandcoder.Canandcoder;
 
@@ -22,8 +19,8 @@ public class OuttakePivotIOReal implements OuttakePivotIO {
   private Canandcoder pivotEncoder;
 
   public OuttakePivotIOReal() {
-    pivotMotor = new TalonFX(Constants.OuttakeConstants.pivotDeviceID);
-    pivotEncoder = new Canandcoder(Constants.OuttakeConstants.pivotDeviceID);
+    pivotMotor = new TalonFX(Constants.OuttakeConstants.pivotDeviceID, Constants.DriveConstants.Drive.canivoreName);
+    pivotEncoder = new Canandcoder(Constants.OuttakeConstants.pivotEncoderID);
     configPivot();
   }
 

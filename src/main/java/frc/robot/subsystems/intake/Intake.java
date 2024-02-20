@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.IntakeConstants.IntakeConfig;
 import frc.robot.commands.AutoAcquireNote;
 import frc.robot.commands.XboxControllerRumble;
 import frc.robot.subsystems.RobotCoordinator;
@@ -59,18 +60,17 @@ public class Intake extends SubsystemBase {
       io = new IntakeIO() {};
     }
     existenceTimer = new Timer();
-    existenceTimer.start();
   }
 
   @Override
   public void periodic() {
-    
     RobotCoordinator coordinator = RobotCoordinator.getInstance();
     // initialize motor internal encoder position until the intake isn't moving
-    if (Constants.intakeEnabled && !initialized && !existenceTimer.hasElapsed(5)) {
+    if (Constants.intakeEnabled && !initialized && !existenceTimer.hasElapsed(5) 
+          && coordinator.getInitAbsEncoderPressed()) {
+      existenceTimer.start();
       initialized = io.initMotorPos();
     }
-
     if (Constants.intakeEnabled) {
       io.updateInputs(inputs);
       Logger.processInputs(IntakeConstants.Logging.key, inputs);

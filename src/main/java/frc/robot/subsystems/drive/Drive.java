@@ -288,7 +288,7 @@ public class Drive extends SubsystemBase {
         gyro.updateInputs(gyroInputs);
         Logger.processInputs("Drive/Gyro", gyroInputs);
         if (!gyroInputs.connected) {
-          DriverStation.reportError("Gyro disconnected", false);
+          DriverStation.reportWarning("Gyro disconnected", false);
         }
       }
       updateVelAcc();
@@ -297,15 +297,18 @@ public class Drive extends SubsystemBase {
         updateOdometry();
       }
 
-      if (poseEstimator
-              .getEstimatedPosition()
-              .getTranslation()
-              .getDistance(
-                  RobotCoordinator.getInstance().getOuttakeLimelightPose2d().getTranslation())
-          < Constants.LimelightConstants.visionOdometryTolerance) {
-        updateVision(
-            RobotCoordinator.getInstance().getOuttakeLimelightPose2d(),
-            Timer.getFPGATimestamp() - RobotCoordinator.getInstance().getOuttakeLimelightLatency());
+      if (Constants.outtakeLimeLightEnabled) {
+        if (poseEstimator
+                .getEstimatedPosition()
+                .getTranslation()
+                .getDistance(
+                    RobotCoordinator.getInstance().getOuttakeLimelightPose2d().getTranslation())
+            < Constants.LimelightConstants.visionOdometryTolerance) {
+          updateVision(
+              RobotCoordinator.getInstance().getOuttakeLimelightPose2d(),
+              Timer.getFPGATimestamp()
+                  - RobotCoordinator.getInstance().getOuttakeLimelightLatency());
+        }
       }
 
       if (Constants.debug) {
@@ -469,7 +472,7 @@ public class Drive extends SubsystemBase {
   }
 
   public void updateVision(Pose2d pose, double timestampSeconds) {
-    if (Constants.gyroEnabled) {
+    if (Constants.intakeLimeLightEnabled) {
       poseEstimator.addVisionMeasurement(pose, timestampSeconds);
     }
   }

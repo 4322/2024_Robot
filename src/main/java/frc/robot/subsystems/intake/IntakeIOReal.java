@@ -34,8 +34,8 @@ public class IntakeIOReal implements IntakeIO {
   GenericEntry isCoasting;
   GenericEntry flywheelRPS;
   public IntakeIOReal() {
-    intake = new TalonFX(IntakeConstants.intakeMotorID);
-    deploy = new TalonFX(IntakeConstants.deployMotorID);
+    intake = new TalonFX(IntakeConstants.intakeMotorID, Constants.DriveConstants.Drive.canivoreName);
+    deploy = new TalonFX(IntakeConstants.deployMotorID, Constants.DriveConstants.Drive.canivoreName);
     deployEncoder = new Canandcoder(IntakeConstants.deployEncoderID);
 
     configDeploy();
