@@ -163,6 +163,7 @@ public class RobotContainer {
       disableTimer.reset();
     }
     // pressed when intake and outtake are in starting config
+    // can only be pressed once after bootup
     xbox.povLeft().onTrue(Commands.runOnce(() -> {RobotCoordinator.getInstance().setInitAbsEncoderPressed(true);}));
   }
 
