@@ -318,6 +318,10 @@ public final class Constants {
       public static final NeutralModeValue neutralMode = NeutralModeValue.Brake;
       public static final double updateHz = OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
+      public static final boolean limitForwardMotion = true;
+      public static final boolean limitReverseMotion = true;
+      public static final double forwardSoftLimitThresholdRotations = 99; //TODO
+      public static final double reverseSoftLimitThresholdRotations = 0;
     }
 
     public static final class Deploy {
