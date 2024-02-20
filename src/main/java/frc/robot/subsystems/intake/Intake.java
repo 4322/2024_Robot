@@ -32,7 +32,7 @@ public class Intake extends SubsystemBase {
   private boolean initialized;
   private double deployTarget = 99999; // set to very high value in case target not yet set
   private boolean isFeeding;
-  private LED led;
+  private boolean deployRequested;
 
   private AutoAcquireNote autoAcquireNote = new AutoAcquireNote();
   private XboxControllerRumble xBoxRumble = new XboxControllerRumble();
@@ -83,16 +83,13 @@ public class Intake extends SubsystemBase {
           if (coordinator.getIntakeButtonPressed()
               && (coordinator.onOurSideOfField() || !coordinator.noteInRobot())) {
             intakeState = IntakeStates.deploying;
-            led.setLEDState(LEDState.blue);
           }
           break;
         case deploying:
           if (coordinator.canDeploy()) {
             deploy();
             if (coordinator.noteInRobot()) {
-              led.setLEDState(LEDState.purple);
             } else {
-              led.setLEDState(LEDState.red);
             }
           }
           if (!coordinator.getIntakeButtonPressed()) {
@@ -106,7 +103,6 @@ public class Intake extends SubsystemBase {
         case feeding:
           if (coordinator.isIntakeDeployed()) {
             intake();
-            led.setLEDState(LEDState.red);
           }
           if (!coordinator.getIntakeButtonPressed()) {
             intakeState = IntakeStates.retracting;
@@ -121,7 +117,6 @@ public class Intake extends SubsystemBase {
         case noteObtained:
           if (coordinator.isIntakeDeployed()) {
             intake();
-            led.setLEDState(LEDState.purple);
           }
           if (!coordinator.noteInIntake()) {
             CommandScheduler.getInstance().schedule(xBoxRumble);
@@ -138,7 +133,6 @@ public class Intake extends SubsystemBase {
           break;
         case retracting:
           stopFeeder();
-          led.setLEDState(LEDState.purple);
           if (coordinator.canRetract()) {
             retract();
           }
@@ -195,6 +189,7 @@ public class Intake extends SubsystemBase {
     if (Constants.intakeEnabled && initialized) {
       io.stopFeeder();
       Logger.recordOutput(IntakeConstants.Logging.deployerKey + "DeployStopped", true);
+      deployRequested = false;
     }
   }
 
@@ -206,6 +201,7 @@ public class Intake extends SubsystemBase {
           IntakeConstants.Logging.deployerKey + "DeployTargetRotations",
           inputs.deployPositionRotations);
       Logger.recordOutput(IntakeConstants.Logging.deployerKey + "DeployStopped", false);
+      deployRequested = true;
     }
   }
 
@@ -217,6 +213,7 @@ public class Intake extends SubsystemBase {
           IntakeConstants.Logging.deployerKey + "DeployTargetRotations",
           inputs.retractPositionRotations);
       Logger.recordOutput(IntakeConstants.Logging.deployerKey + "DeployStopped", false);
+      deployRequested = false;
     }
   }
 
@@ -230,6 +227,14 @@ public class Intake extends SubsystemBase {
         inputs.deployRotations,
         inputs.deployPositionRotations,
         IntakeConstants.Deploy.toleranceRotations);
+  }
+
+  public boolean isDeploying() {
+    return deployRequested && !isDeployed();
+  }
+
+  public double getDeployRotations() {
+    return inputs.deployRotations;
   }
 
   public boolean isRetracted() {

@@ -1,20 +1,24 @@
 package frc.robot.subsystems.LED;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.RobotCoordinator;
+import frc.robot.subsystems.intake.Intake;
 
 public class LED extends SubsystemBase {
   public LedIO io;
-  private LEDState currentState = LEDState.flashingRed;
+  private LEDState currentState = LEDState.idle;
+  private Timer initTimer = new Timer();
 
   public enum LEDState {
-    // priority 1 runs for undefined amount of time so keep time at 0
-    rainbow,
-    flashingRed,
-    red,
-    green,
-    blue,
-    purple;
+    notInitialized,
+    initialized,
+    idle,
+    deployingIntake,
+    noteInRobot,
+    noteInFiringPos,
+    noteReadyToShoot;
   }
 
   private static LED led;
@@ -46,31 +50,63 @@ public class LED extends SubsystemBase {
 
   @Override
   public void periodic() {
-    switch (currentState) {
-      case rainbow:
-        io.rainbowAnimate(1, 0.3, 20, 0);
-        break;
-      case flashingRed:
-        io.flashAnimate(255, 0, 0, 0.6, 20, 6);
-        break;
-      case red:
-        io.setLED(255, 0, 0, 0, Constants.LED.totalLEDs);
-        break;
-      case green:
-        io.setLED(0, 255, 0, 0, Constants.LED.totalLEDs);
-        break;
-      case blue:
-        io.setLED(0, 0, 255, 0, Constants.LED.totalLEDs);
-        break;
-      case purple:
-        io.setLED(238, 130, 238, 0, Constants.LED.totalLEDs);
-        break;
+    // initial check 
+    if (!RobotCoordinator.getInstance().getInitAbsEncoderPressed() 
+            && !RobotCoordinator.getInstance().isInitialized()) {
+      setLEDState(LEDState.notInitialized);
+    }
+    else if (RobotCoordinator.getInstance().getInitAbsEncoderPressed() 
+                && RobotCoordinator.getInstance().isInitialized() && !initTimer.hasElapsed(1)) {
+      initTimer.start();
+      setLEDState(LEDState.initialized);
+    }
+    else if (RobotCoordinator.getInstance().canShoot()) { // robot LED states listed from highest to lowest priority
+      setLEDState(LEDState.noteReadyToShoot);
+    }
+    else if (RobotCoordinator.getInstance().noteInFiringPosition()) {
+      setLEDState(LEDState.noteInFiringPos);
+    }
+    else if (RobotCoordinator.getInstance().noteInRobot()) {
+      setLEDState(LEDState.noteInRobot);
+    }
+    else if (RobotCoordinator.getInstance().isIntakeDeployed() && RobotCoordinator.getInstance().isIntakeDeploying()) {
+      setLEDState(LEDState.deployingIntake);
+    }
+    else {
+      setLEDState(LEDState.idle);
     }
   }
 
   public void setLEDState(LEDState state) {
     if (currentState != state) {
       currentState = state;
+    }
+    io.configBrightness(1); // reset brightness scalar
+    io.clearAnimation(); // allows for other LED states to be set
+    switch (currentState) {
+      case notInitialized:
+        io.flashAnimate(255, 0, 0, 0.5, Constants.LED.totalLEDs, 0);
+        break;
+      case initialized:
+        io.setLED(0, 255, 0, 0, Constants.LED.totalLEDs);
+        break;
+      case idle:
+        io.setLED(0, 0, 255, 0, Constants.LED.totalLEDs);
+        break;
+      case deployingIntake:
+        io.configBrightness(RobotCoordinator.getInstance().getDeployRotations() / 
+            Constants.IntakeConstants.Deploy.deployPositionRotations);
+        io.setLED(255, 0, 0, 0, Constants.LED.totalLEDs);
+        break;
+      case noteInRobot:
+        io.setLED(255, 255, 255, 0, Constants.LED.totalLEDs);
+        break;
+      case noteInFiringPos:
+        io.setLED(0, 255, 0, 0, Constants.LED.totalLEDs);
+        break;
+      case noteReadyToShoot:
+        io.rainbowAnimate(1, 0.5, Constants.LED.totalLEDs, 0);
+        break;
     }
   }
 
