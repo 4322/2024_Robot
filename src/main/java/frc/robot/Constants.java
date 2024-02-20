@@ -229,13 +229,13 @@ public final class Constants {
 
       public static final double wheelDiameterInches = 3.9;
 
-      public static final String canivoreName = "Drivebase";
-      public static final int canivoreID = 7;
+      public static final String canivoreName = "Clockwork";
+      public static final int pigeonID = 10;
 
-      public static final int frontLeftCANID = 3;
-      public static final int rearLeftCANID = 4;
-      public static final int frontRightCANID = 5;
-      public static final int rearRightCANID = 6;
+      public static final int frontLeftEncoderID = 11;
+      public static final int rearLeftEncoderID = 12;
+      public static final int frontRightEncoderID = 13;
+      public static final int rearRightEncoderID = 14;
 
       // when supply threshold is exceeded for the time, drop the current to the limit
       public static final double statorLimit = 60;
@@ -249,8 +249,10 @@ public final class Constants {
   }
 
   public static final class OuttakeConstants {
-    public static final int topOuttakeDeviceID = 0;
-    public static final int bottomOuttakeDeviceID = 0;
+    public static final int leftOuttakeDeviceID = 5;
+    public static final int rightOuttakeDeviceID = 4;
+    public static final int pivotDeviceID = 6;
+    public static final int pivotEncoderID = 9;
 
     public static final double kP = 0;
     public static final double kI = 0;
@@ -264,7 +266,6 @@ public final class Constants {
     public static final double kS = 0;
     public static final double voltPerRPS =
         0; // since we likely aren't going to adjust the speed, it's likely safe to not interpolate
-    public static final int pivotDeviceID = 0;
 
     public static final double pivotkD = 0;
     public static final double pivotkI = 0;
@@ -293,10 +294,9 @@ public final class Constants {
   }
 
   public static final class IntakeConstants {
-    // TODO: update these
-    public static final int intakeMotorID = 0;
-    public static final int deployMotorID = 0;
-    public static final int deployEncoderID = 0;
+    public static final int intakeMotorID = 7;
+    public static final int deployMotorID = 2;
+    public static final int deployEncoderID = 8;
 
     public static final class IntakeConfig {
       public static final NeutralModeValue neutralMode = NeutralModeValue.Coast;
@@ -358,7 +358,7 @@ public final class Constants {
   }
 
   public static final class TunnelConstants {
-    public static final int tunnelMotorID = 0; // TODO
+    public static final int tunnelMotorID = 3;
 
     public static final double desiredVoltage = 0.0; // TODO
     public static final double peakVoltage = 0.0; // TODO: shouldn't be greater than 12

@@ -23,7 +23,7 @@ public class OuttakePivotIOReal implements OuttakePivotIO {
 
   public OuttakePivotIOReal() {
     pivotMotor = new TalonFX(Constants.OuttakeConstants.pivotDeviceID);
-    pivotEncoder = new Canandcoder(Constants.OuttakeConstants.pivotDeviceID);
+    pivotEncoder = new Canandcoder(Constants.OuttakeConstants.pivotEncoderID);
     configPivot();
   }
 

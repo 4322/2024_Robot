@@ -5,36 +5,36 @@ import frc.utility.OrangeMath;
 
 public class CrushConstants implements RobotChooserInterface {
   // drive IDs
-  public int getFrontLeftDriveID() { // TODO
+  public int getFrontLeftDriveID() {
     return 17;
   }
 
-  public int getFrontRightDriveID() { // TODO
+  public int getFrontRightDriveID() {
     return 18;
   }
 
-  public int getBackRightDriveID() { // TODO
+  public int getBackRightDriveID() {
     return 19;
   }
 
-  public int getBackLeftDriveID() { // TODO
+  public int getBackLeftDriveID() {
     return 16;
   }
 
   // rotation IDs
-  public int getFrontLeftRotationID() { // TODO
+  public int getFrontLeftRotationID() {
     return 21;
   }
 
-  public int getFrontRightRotationID() { // TODO
+  public int getFrontRightRotationID() {
     return 15;
   }
 
-  public int getBackRightRotationID() { // TODO
+  public int getBackRightRotationID() {
     return 22;
   }
 
-  public int getBackLeftRotationID() { // TODO
+  public int getBackLeftRotationID() {
     return 20;
   }
 

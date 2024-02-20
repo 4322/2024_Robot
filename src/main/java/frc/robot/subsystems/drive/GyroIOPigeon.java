@@ -11,7 +11,7 @@ public class GyroIOPigeon implements GyroIO {
   public GyroIOPigeon() {
     gyro =
         new Pigeon2(
-            Constants.DriveConstants.Drive.canivoreID, Constants.DriveConstants.Drive.canivoreName);
+            Constants.DriveConstants.Drive.pigeonID, Constants.DriveConstants.Drive.canivoreName);
   }
 
   @Override

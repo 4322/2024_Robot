@@ -45,22 +45,22 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
       case FRONT_RIGHT:
         driveMotor = new TalonFX(robotSpecificConstants.getFrontRightDriveID());
         turningMotor = new TalonFX(robotSpecificConstants.getFrontRightRotationID());
-        encoder = new CANcoder(DriveConstants.Drive.frontRightCANID);
+        encoder = new CANcoder(DriveConstants.Drive.frontRightEncoderID);
         break;
       case FRONT_LEFT:
         driveMotor = new TalonFX(robotSpecificConstants.getFrontLeftDriveID());
         turningMotor = new TalonFX(robotSpecificConstants.getFrontLeftRotationID());
-        encoder = new CANcoder(DriveConstants.Drive.frontLeftCANID);
+        encoder = new CANcoder(DriveConstants.Drive.frontLeftEncoderID);
         break;
       case BACK_RIGHT:
         driveMotor = new TalonFX(robotSpecificConstants.getBackRightDriveID());
         turningMotor = new TalonFX(robotSpecificConstants.getBackRightRotationID());
-        encoder = new CANcoder(DriveConstants.Drive.rearRightCANID);
+        encoder = new CANcoder(DriveConstants.Drive.rearRightEncoderID);
         break;
       case BACK_LEFT:
         driveMotor = new TalonFX(robotSpecificConstants.getBackLeftDriveID());
         turningMotor = new TalonFX(robotSpecificConstants.getBackLeftRotationID());
-        encoder = new CANcoder(DriveConstants.Drive.rearLeftCANID);
+        encoder = new CANcoder(DriveConstants.Drive.rearLeftEncoderID);
         break;
     }
 
