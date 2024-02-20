@@ -17,11 +17,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants
+ * should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
@@ -37,8 +41,7 @@ public final class Constants {
   public static final Mode currentMode = Mode.REAL;
 
   // Must be below currentRobot to initialize properly
-  private static RobotChooserInterface robotSpecificConstants =
-      RobotChooser.getInstance().getConstants();
+  private static RobotChooserInterface robotSpecificConstants = RobotChooser.getInstance().getConstants();
   public static double noteRadiusInches = 7;
 
   public static final boolean debug = false;
@@ -114,22 +117,18 @@ public final class Constants {
   public static final class DriveConstants {
 
     // wheel location constants
-    public static final Translation2d frontLeftWheelLocation =
-        new Translation2d(
-            robotSpecificConstants.getDistWheelMetersX(),
-            robotSpecificConstants.getDistWheelMetersY());
-    public static final Translation2d frontRightWheelLocation =
-        new Translation2d(
-            robotSpecificConstants.getDistWheelMetersX(),
-            -robotSpecificConstants.getDistWheelMetersY());
-    public static final Translation2d backLeftWheelLocation =
-        new Translation2d(
-            -robotSpecificConstants.getDistWheelMetersX(),
-            robotSpecificConstants.getDistWheelMetersY());
-    public static final Translation2d backRightWheelLocation =
-        new Translation2d(
-            -robotSpecificConstants.getDistWheelMetersX(),
-            -robotSpecificConstants.getDistWheelMetersY());
+    public static final Translation2d frontLeftWheelLocation = new Translation2d(
+        robotSpecificConstants.getDistWheelMetersX(),
+        robotSpecificConstants.getDistWheelMetersY());
+    public static final Translation2d frontRightWheelLocation = new Translation2d(
+        robotSpecificConstants.getDistWheelMetersX(),
+        -robotSpecificConstants.getDistWheelMetersY());
+    public static final Translation2d backLeftWheelLocation = new Translation2d(
+        -robotSpecificConstants.getDistWheelMetersX(),
+        robotSpecificConstants.getDistWheelMetersY());
+    public static final Translation2d backRightWheelLocation = new Translation2d(
+        -robotSpecificConstants.getDistWheelMetersX(),
+        -robotSpecificConstants.getDistWheelMetersY());
 
     public static final double disableBreakSec = 2.0;
 
@@ -141,7 +140,7 @@ public final class Constants {
 
     public static final double spinoutCenterPower = 1.0;
     public static final double spinoutCornerPower = 0.75;
-    public static final double encoderResolution = 0; //TODO
+    public static final double encoderResolution = 0; // TODO
 
     public static final class Manual {
 
@@ -155,8 +154,7 @@ public final class Constants {
       public static final double inhibitPseudoAutoRotateAngularVelocity = 0.05;
 
       public static final double spinoutRotateDeadBand = 0.9;
-      public static final double spinoutMinAngularVelocity =
-          0.5; // looks like radians per second but we don't know
+      public static final double spinoutMinAngularVelocity = 0.5; // looks like radians per second but we don't know
       public static final double spinoutActivationSec = 0.35;
       public static final double spinoutMinAngularVelocity2 = 0.25;
       public static final double spinout2ActivationSec = 0.2;
@@ -165,22 +163,18 @@ public final class Constants {
     public static final class Auto {
 
       // Values for autonomous path finding
-      public static final double autoMaxSpeedMetersPerSecond =
-          0.75 * robotSpecificConstants.getMaxSpeedMetersPerSec();
+      public static final double autoMaxSpeedMetersPerSecond = 0.75 * robotSpecificConstants.getMaxSpeedMetersPerSec();
 
       // acceleration off the line is 109 rotations per sec^2
       // acceleration in the mid-range is 46.8 rotations per sec^2
-      public static final double autoMaxAccelerationMetersPerSec2 =
-          0.75
-              * OrangeMath.falconRotationsToMeters(
-                  73,
-                  OrangeMath.inchesToMeters(OrangeMath.getCircumference(Drive.wheelDiameterInches)),
-                  robotSpecificConstants.getGearRatio());
+      public static final double autoMaxAccelerationMetersPerSec2 = 0.75
+          * OrangeMath.falconRotationsToMeters(
+              73,
+              OrangeMath.inchesToMeters(OrangeMath.getCircumference(Drive.wheelDiameterInches)),
+              robotSpecificConstants.getGearRatio());
 
-      public static final double minAutoRotateStoppedPower =
-          robotSpecificConstants.getMinAutoRotateStoppedPower();
-      public static final double minAutoRotateMovingPower =
-          robotSpecificConstants.getminAutoRotateMovingPower();
+      public static final double minAutoRotateStoppedPower = robotSpecificConstants.getMinAutoRotateStoppedPower();
+      public static final double minAutoRotateMovingPower = robotSpecificConstants.getminAutoRotateMovingPower();
       public static final double rotateStoppedToleranceDegrees = 0.5;
       public static final double rotateMovingToleranceDegrees = 1.5;
       public static final double slowMovingAutoRotate = 0.5;
@@ -225,10 +219,9 @@ public final class Constants {
     public static final class Drive {
 
       // Talon FXs with Phoenix 6 do not currently honor ramp rates!
-      public static final double closedLoopRampSec =
-          0.08; // used for auto and manual acceleration/deceleration
-      public static final double openLoopRampSec =
-          0.08; // only used when stopping, including letting go of the drive stick
+      public static final double closedLoopRampSec = 0.08; // used for auto and manual acceleration/deceleration
+      public static final double openLoopRampSec = 0.08; // only used when stopping, including letting go of the drive
+                                                         // stick
 
       public static final double voltageCompSaturation = 12.0;
 
@@ -274,8 +267,8 @@ public final class Constants {
     public static final int gearRatioMotorToWheel = 0;
     public static final double gearReductionEncoderToMotor = (29.0 / 28.0) * 125.0;
     public static final double kS = 0;
-    public static final double voltPerRPS =
-        0; // since we likely aren't going to adjust the speed, it's likely safe to not interpolate
+    public static final double voltPerRPS = 0; // since we likely aren't going to adjust the speed, it's likely safe to
+                                               // not interpolate
 
     public static final double pivotkD = 0;
     public static final double pivotkI = 0;
@@ -310,11 +303,9 @@ public final class Constants {
 
     public static final class IntakeConfig {
       public static final NeutralModeValue neutralMode = NeutralModeValue.Coast;
-      public static final double updateHz =
-          OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
+      public static final double updateHz = OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
-      public static final double intakeFeedVoltage =
-          0.0; // TODO: set max voltage we want for feeding
+      public static final double intakeFeedVoltage = 0.0; // TODO: set max voltage we want for feeding
       public static final double intakeEjectVoltage = 0.0;
     }
 
@@ -324,8 +315,7 @@ public final class Constants {
       public static final double configCLosedLoopRamp = 0;
       public static final double maxVoltage = 16;
       public static final NeutralModeValue neutralMode = NeutralModeValue.Brake;
-      public static final double updateHz =
-          OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
+      public static final double updateHz = OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
     }
 
@@ -336,10 +326,8 @@ public final class Constants {
       public static final double maxVelRotationsPerSec = 0;
       public static final boolean enableFOC = true;
       public static final double FF = 0;
-      public static final int positionVoltageSlot =
-          0; // TODO: check if this can be 0 if PID is also 0
-      public static final boolean overrideBrakeDuringNeutral =
-          false; // we want to brake if not moving
+      public static final int positionVoltageSlot = 0; // TODO: check if this can be 0 if PID is also 0
+      public static final boolean overrideBrakeDuringNeutral = false; // we want to brake if not moving
       public static final boolean limitForwardMotion = true;
       public static final boolean limitReverseMotion = true;
       public static final double encoderGearReduction = 0.0; // TODO: should be a large number
@@ -390,19 +378,31 @@ public final class Constants {
     public static final double intakeLimelightYOffsetMeters = 0.0;
     public static final String intakeLimelightName = "limelight-intake";
 
-
     // Target alignment values
-    public static final double substationMinLargeTargetArea =
-        1.8; // small target is < 1.2 against substation
-    public static final double substationOffsetDeg =
-        -10.02; // account for limelight being to the left of actual robot center
-    public static final double substationTargetToleranceDeg =
-        17.5; // human player can drop game piece to the side
+    public static final double substationMinLargeTargetArea = 1.8; // small target is < 1.2 against substation
+    public static final double substationOffsetDeg = -10.02; // account for limelight being to the left of actual robot
+                                                             // center
+    public static final double substationTargetToleranceDeg = 17.5; // human player can drop game piece to the side
 
     // List of tape pipelines (should only be 1 for now)
 
     // Map of pipelines and tag heights
-    }
+    // Map of pipelines andcenter of tag heights
+    public static final double sourceZoneAprilTagHeight = 53.38;
+    public static final double speakerAprilTagHeight = 57.13;
+    public static final double ampZoneAprilTagHeight = 53.38;
+    public static final double stageAprilTagHeight = 52.00;
+    public static final Map<Integer, Double> tagPipelinesHeights = Map
+        .ofEntries(Map.entry(1, sourceZoneAprilTagHeight), Map.entry(2, sourceZoneAprilTagHeight),
+            Map.entry(3, speakerAprilTagHeight), Map.entry(4, speakerAprilTagHeight),
+            Map.entry(5, ampZoneAprilTagHeight), Map.entry(6, ampZoneAprilTagHeight),
+            Map.entry(7, speakerAprilTagHeight), Map.entry(8, speakerAprilTagHeight),
+            Map.entry(9, sourceZoneAprilTagHeight), Map.entry(10, sourceZoneAprilTagHeight),
+            Map.entry(11, stageAprilTagHeight), Map.entry(12, stageAprilTagHeight),
+            Map.entry(13, stageAprilTagHeight), Map.entry(14, stageAprilTagHeight),
+            Map.entry(15, stageAprilTagHeight), Map.entry(16, stageAprilTagHeight));
+
+  }
 
   public static final class FieldConstants {
     public static double xSpeakerPosM;
