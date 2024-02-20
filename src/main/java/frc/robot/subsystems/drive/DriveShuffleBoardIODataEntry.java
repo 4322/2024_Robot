@@ -39,7 +39,7 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
     if (Constants.debug) {
       // new shuffleboard tabs
       customizationTab = Shuffleboard.getTab("Drivebase Customization");
-    
+
       // widgets for customizationTab
       pseudoAutoRotateCheckbox =
           customizationTab

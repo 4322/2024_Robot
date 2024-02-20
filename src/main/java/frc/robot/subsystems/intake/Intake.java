@@ -66,8 +66,10 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     RobotCoordinator coordinator = RobotCoordinator.getInstance();
     // initialize motor internal encoder position until the intake isn't moving
-    if (Constants.intakeEnabled && !initialized && !existenceTimer.hasElapsed(5) 
-          && coordinator.getInitAbsEncoderPressed()) {
+    if (Constants.intakeEnabled
+        && !initialized
+        && !existenceTimer.hasElapsed(5)
+        && coordinator.getInitAbsEncoderPressed()) {
       existenceTimer.start();
       initialized = io.initMotorPos();
     }

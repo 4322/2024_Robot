@@ -1,7 +1,5 @@
 package frc.robot.subsystems.drive;
 
-import com.ctre.phoenix.ErrorCode;
-import com.ctre.phoenix.sensors.CANCoderStatusFrame;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
@@ -47,24 +45,60 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   public SwerveModuleIOTalonFX(WheelPosition wheelPos) {
     switch (wheelPos) {
       case FRONT_RIGHT:
-        driveMotor = new TalonFX(robotSpecificConstants.getFrontRightDriveID(), Constants.DriveConstants.Drive.canivoreName);
-        turningMotor = new TalonFX(robotSpecificConstants.getFrontRightRotationID(), Constants.DriveConstants.Drive.canivoreName);
-        encoder = new CANcoder(DriveConstants.Drive.frontRightEncoderID, Constants.DriveConstants.Drive.canivoreName);
+        driveMotor =
+            new TalonFX(
+                robotSpecificConstants.getFrontRightDriveID(),
+                Constants.DriveConstants.Drive.canivoreName);
+        turningMotor =
+            new TalonFX(
+                robotSpecificConstants.getFrontRightRotationID(),
+                Constants.DriveConstants.Drive.canivoreName);
+        encoder =
+            new CANcoder(
+                DriveConstants.Drive.frontRightEncoderID,
+                Constants.DriveConstants.Drive.canivoreName);
         break;
       case FRONT_LEFT:
-        driveMotor = new TalonFX(robotSpecificConstants.getFrontLeftDriveID(), Constants.DriveConstants.Drive.canivoreName);
-        turningMotor = new TalonFX(robotSpecificConstants.getFrontLeftRotationID(), Constants.DriveConstants.Drive.canivoreName);
-        encoder = new CANcoder(DriveConstants.Drive.frontLeftEncoderID, Constants.DriveConstants.Drive.canivoreName);
+        driveMotor =
+            new TalonFX(
+                robotSpecificConstants.getFrontLeftDriveID(),
+                Constants.DriveConstants.Drive.canivoreName);
+        turningMotor =
+            new TalonFX(
+                robotSpecificConstants.getFrontLeftRotationID(),
+                Constants.DriveConstants.Drive.canivoreName);
+        encoder =
+            new CANcoder(
+                DriveConstants.Drive.frontLeftEncoderID,
+                Constants.DriveConstants.Drive.canivoreName);
         break;
       case BACK_RIGHT:
-        driveMotor = new TalonFX(robotSpecificConstants.getBackRightDriveID(), Constants.DriveConstants.Drive.canivoreName);
-        turningMotor = new TalonFX(robotSpecificConstants.getBackRightRotationID(), Constants.DriveConstants.Drive.canivoreName);
-        encoder = new CANcoder(DriveConstants.Drive.rearRightEncoderID, Constants.DriveConstants.Drive.canivoreName);
+        driveMotor =
+            new TalonFX(
+                robotSpecificConstants.getBackRightDriveID(),
+                Constants.DriveConstants.Drive.canivoreName);
+        turningMotor =
+            new TalonFX(
+                robotSpecificConstants.getBackRightRotationID(),
+                Constants.DriveConstants.Drive.canivoreName);
+        encoder =
+            new CANcoder(
+                DriveConstants.Drive.rearRightEncoderID,
+                Constants.DriveConstants.Drive.canivoreName);
         break;
       case BACK_LEFT:
-        driveMotor = new TalonFX(robotSpecificConstants.getBackLeftDriveID(), Constants.DriveConstants.Drive.canivoreName);
-        turningMotor = new TalonFX(robotSpecificConstants.getBackLeftRotationID(), Constants.DriveConstants.Drive.canivoreName);
-        encoder = new CANcoder(DriveConstants.Drive.rearLeftEncoderID, Constants.DriveConstants.Drive.canivoreName);
+        driveMotor =
+            new TalonFX(
+                robotSpecificConstants.getBackLeftDriveID(),
+                Constants.DriveConstants.Drive.canivoreName);
+        turningMotor =
+            new TalonFX(
+                robotSpecificConstants.getBackLeftRotationID(),
+                Constants.DriveConstants.Drive.canivoreName);
+        encoder =
+            new CANcoder(
+                DriveConstants.Drive.rearLeftEncoderID,
+                Constants.DriveConstants.Drive.canivoreName);
         break;
     }
 
@@ -135,23 +169,26 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     talonFX.getConfigurator().apply(closedLoopGeneralConfigs);
     talonFX.getConfigurator().apply(voltageConfigs);
     talonFX.getConfigurator().apply(motorOutputConfigs);
-        // need fast initial reading from the CANCoder
-    encoder.getPosition().setUpdateFrequency(OrangeMath.msAndHzConverter(Constants.controllerConfigTimeoutMs));
+    // need fast initial reading from the CANCoder
+    encoder
+        .getPosition()
+        .setUpdateFrequency(OrangeMath.msAndHzConverter(Constants.controllerConfigTimeoutMs));
     try {
       Thread.sleep(50); // 5 status frames to be safe
     } catch (InterruptedException e) {
     }
 
     // initialize internal Falcon encoder to absolute wheel position from CANCoder
-    double count = (encoder.getAbsolutePosition().getValueAsDouble()
-        - DriveConstants.Rotation.CANCoderOffsetRotations[wheelPos.wheelNumber]);
+    double count =
+        (encoder.getAbsolutePosition().getValueAsDouble()
+            - DriveConstants.Rotation.CANCoderOffsetRotations[wheelPos.wheelNumber]);
     StatusCode error = talonFX.setPosition(count, Constants.controllerConfigTimeoutMs);
     if (error != StatusCode.OK) {
       DriverStation.reportError(
           "Error " + error.value + " initializing Talon FX " + talonFX.getDeviceID() + " position ",
           false);
     }
-        // need rapid position feedback for steering control
+    // need rapid position feedback for steering control
     talonFX
         .getPosition()
         .setUpdateFrequency(

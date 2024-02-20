@@ -142,8 +142,7 @@ public class Limelight extends SubsystemBase {
 
       if (table == null) {
         isNetworkTableConnected = false;
-      }
-      else {
+      } else {
         isNetworkTableConnected = true;
       }
     }
@@ -245,7 +244,7 @@ public class Limelight extends SubsystemBase {
   // All distances use WPILib coordinates (where x is perpendicular to the target and y
   // is parallel to the target)
   public double getTargetHeight(int pipelineIdx, double yDeg) {
-   if (LimelightConstants.tagPipelinesHeights.containsKey(pipelineIdx)) {
+    if (LimelightConstants.tagPipelinesHeights.containsKey(pipelineIdx)) {
       return LimelightConstants.tagPipelinesHeights.get(pipelineIdx);
     }
     return -1; // invalid pipeline

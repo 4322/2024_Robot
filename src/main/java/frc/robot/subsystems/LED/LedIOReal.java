@@ -47,7 +47,7 @@ public class LedIOReal implements LedIO {
 
   public void clearAnimation() {
     // clears animation slot so rainbow or strobe won't override setLED
-    candle.clearAnimation(0); 
+    candle.clearAnimation(0);
   }
 
   public void configBrightness(double brightness) {

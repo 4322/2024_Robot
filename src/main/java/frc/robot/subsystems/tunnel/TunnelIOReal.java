@@ -6,7 +6,6 @@ import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import frc.robot.Constants;
 import frc.robot.Constants.TunnelConstants;
 import org.littletonrobotics.junction.Logger;
@@ -15,7 +14,8 @@ public class TunnelIOReal implements TunnelIO {
   private TalonFX tunnel;
 
   public TunnelIOReal() {
-    tunnel = new TalonFX(TunnelConstants.tunnelMotorID, Constants.DriveConstants.Drive.canivoreName);
+    tunnel =
+        new TalonFX(TunnelConstants.tunnelMotorID, Constants.DriveConstants.Drive.canivoreName);
     configTalon();
   }
 

@@ -191,7 +191,7 @@ public class Drive extends SubsystemBase {
                 kinematics, getRotation2d(), getModulePostitions(), new Pose2d());
         resetFieldCentric();
       }
-    disconnectTimer = new Timer();
+      disconnectTimer = new Timer();
       if (Constants.debug) {
         tab = Shuffleboard.getTab("Drivebase");
 
@@ -289,13 +289,14 @@ public class Drive extends SubsystemBase {
         Logger.processInputs("Drive/Gyro", gyroInputs);
         if (!gyroInputs.connected) {
           disconnectTimer.start();
-          if(disconnectTimer.hasElapsed(5))
-          {
-            DriverStation.reportWarning("Gyro disconnected", false); //it will spam it from now until the gyro reconnects
+          if (disconnectTimer.hasElapsed(5)) {
+            DriverStation.reportWarning(
+                "Gyro disconnected", false); // it will spam it from now until the gyro reconnects
           }
-        }
-        else{
-          if(disconnectTimer.hasElapsed(0.01)) //this makes sure that it only stops it if it's been running since there's no running check
+        } else {
+          if (disconnectTimer.hasElapsed(
+              0.01)) // this makes sure that it only stops it if it's been running since there's no
+          // running check
           {
             disconnectTimer.stop();
             disconnectTimer.reset();

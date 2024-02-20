@@ -8,7 +8,6 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandcoder.Canandcoder;
-
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -20,17 +19,20 @@ import org.littletonrobotics.junction.Logger;
 public class OuttakePivotIOReal implements OuttakePivotIO {
   private TalonFX pivotMotor;
   private Canandcoder pivotEncoder;
-  //shuffleboard
+  // shuffleboard
   ShuffleboardTab tab;
   GenericEntry pivotPosition;
+
   public OuttakePivotIOReal() {
-    pivotMotor = new TalonFX(Constants.OuttakeConstants.pivotDeviceID, Constants.DriveConstants.Drive.canivoreName);
+    pivotMotor =
+        new TalonFX(
+            Constants.OuttakeConstants.pivotDeviceID, Constants.DriveConstants.Drive.canivoreName);
     pivotEncoder = new Canandcoder(Constants.OuttakeConstants.pivotEncoderID);
     configPivot();
-    if(Constants.debug)
-    {
+    if (Constants.debug) {
       tab = Shuffleboard.getTab("Outtake");
-      pivotPosition = tab.add("Pivot Position (Rotations)", 0).withSize(1,1).withPosition(1, 0).getEntry();
+      pivotPosition =
+          tab.add("Pivot Position (Rotations)", 0).withSize(1, 1).withPosition(1, 0).getEntry();
     }
   }
 
@@ -56,20 +58,20 @@ public class OuttakePivotIOReal implements OuttakePivotIO {
   @Override
   public void updateInputs(OuttakePivotIOInputs inputs) {
     inputs.pivotRotations = pivotMotor.getPosition().getValue();
-    
+
     inputs.pivotRotationsPerSec = pivotMotor.getVelocity().getValue() / 60;
     inputs.pivotAppliedVolts =
         pivotMotor.getDutyCycle().getValue() / 2 * pivotMotor.getSupplyVoltage().getValue();
     inputs.pivotCurrentAmps = pivotMotor.getSupplyCurrent().getValue();
     inputs.pivotTempC = pivotMotor.getDeviceTemp().getValue();
     inputs.pivotIsAlive = pivotMotor.isAlive();
-    if(Constants.debug)
-      inputs.targetPivotPosition = pivotPosition.getDouble(0);
+    if (Constants.debug) inputs.targetPivotPosition = pivotPosition.getDouble(0);
   }
 
   @Override
   public boolean initPivot() {
-    pivotMotor.setPosition(pivotEncoder.getAbsPosition() * OuttakeConstants.gearReductionEncoderToMotor);
+    pivotMotor.setPosition(
+        pivotEncoder.getAbsPosition() * OuttakeConstants.gearReductionEncoderToMotor);
     return OrangeMath.equalToTwoDecimal(pivotEncoder.getVelocity(), 0);
   }
 

@@ -26,13 +26,14 @@ public class AutoAcquireNote extends Command {
 
   @Override
   public void initialize() {
-    
+
     RobotCoordinator coordinator = RobotCoordinator.getInstance();
 
     initialized = true;
 
     if (!coordinator.noteInVision()) {
-      initialized = false; // this cancels auto aquisition (although the button will automatically restart it)
+      initialized =
+          false; // this cancels auto aquisition (although the button will automatically restart it)
       return;
     }
     UpdateHeading();
@@ -51,7 +52,9 @@ public class AutoAcquireNote extends Command {
       return;
     }
     double yNoteDistance =
-        Constants.LimelightConstants.intakeLimelightHeight * Math.tan(Math.toRadians(90.0 + Constants.LimelightConstants.intakeLimelightAngle - ty));
+        Constants.LimelightConstants.intakeLimelightHeight
+            * Math.tan(
+                Math.toRadians(90.0 + Constants.LimelightConstants.intakeLimelightAngle - ty));
     double xNoteDistance = Math.tan(Math.toRadians(tx)) * yNoteDistance;
     double noteDistance =
         Math.sqrt(xNoteDistance * xNoteDistance + yNoteDistance * yNoteDistance)

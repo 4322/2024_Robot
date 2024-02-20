@@ -19,9 +19,11 @@ public interface LedIO {
       int red, int green, int blue, double speed, int ledNum, int startOffset) {}
   ;
 
-  public default void clearAnimation() {};
+  public default void clearAnimation() {}
+  ;
 
-  public default void configBrightness(double brightness) {};
+  public default void configBrightness(double brightness) {}
+  ;
 
   public default void updateInputs(LedIOInputs inputs) {}
   ;

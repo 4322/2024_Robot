@@ -49,8 +49,10 @@ public class OuttakePivot extends SubsystemBase {
 
   public void periodic() {
     // initialize motor internal encoder position until the intake isn't moving
-    if (Constants.outtakePivotEnabled && !initialized && !existenceTimer.hasElapsed(5) 
-          && RobotCoordinator.getInstance().getInitAbsEncoderPressed()) {
+    if (Constants.outtakePivotEnabled
+        && !initialized
+        && !existenceTimer.hasElapsed(5)
+        && RobotCoordinator.getInstance().getInitAbsEncoderPressed()) {
       existenceTimer.start();
       initialized = io.initPivot();
     }
@@ -62,8 +64,7 @@ public class OuttakePivot extends SubsystemBase {
 
   public void pivot(double rotations) {
     if (Constants.outtakePivotEnabled && initialized) {
-      if(Constants.debug)
-        rotations = inputs.targetPivotPosition;
+      if (Constants.debug) rotations = inputs.targetPivotPosition;
       io.setPivotTarget(rotations);
       pivotTarget = rotations;
       Logger.recordOutput("OuttakePivot/TargetRotations", rotations);

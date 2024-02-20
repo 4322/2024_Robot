@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.RobotCoordinator;
-import frc.robot.subsystems.intake.Intake;
 
 public class LED extends SubsystemBase {
   public LedIO io;
@@ -50,29 +49,26 @@ public class LED extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // initial check 
-    if (!RobotCoordinator.getInstance().getInitAbsEncoderPressed() 
-            && !RobotCoordinator.getInstance().isInitialized()) {
+    // initial check
+    if (!RobotCoordinator.getInstance().getInitAbsEncoderPressed()
+        && !RobotCoordinator.getInstance().isInitialized()) {
       setLEDState(LEDState.notInitialized);
-    }
-    else if (RobotCoordinator.getInstance().getInitAbsEncoderPressed() 
-                && RobotCoordinator.getInstance().isInitialized() && !initTimer.hasElapsed(1)) {
+    } else if (RobotCoordinator.getInstance().getInitAbsEncoderPressed()
+        && RobotCoordinator.getInstance().isInitialized()
+        && !initTimer.hasElapsed(1)) {
       initTimer.start();
       setLEDState(LEDState.initialized);
-    }
-    else if (RobotCoordinator.getInstance().canShoot()) { // robot LED states listed from highest to lowest priority
+    } else if (RobotCoordinator.getInstance()
+        .canShoot()) { // robot LED states listed from highest to lowest priority
       setLEDState(LEDState.noteReadyToShoot);
-    }
-    else if (RobotCoordinator.getInstance().noteInFiringPosition()) {
+    } else if (RobotCoordinator.getInstance().noteInFiringPosition()) {
       setLEDState(LEDState.noteInFiringPos);
-    }
-    else if (RobotCoordinator.getInstance().noteInRobot()) {
+    } else if (RobotCoordinator.getInstance().noteInRobot()) {
       setLEDState(LEDState.noteInRobot);
-    }
-    else if (RobotCoordinator.getInstance().isIntakeDeployed() && RobotCoordinator.getInstance().isIntakeDeploying()) {
+    } else if (RobotCoordinator.getInstance().isIntakeDeployed()
+        && RobotCoordinator.getInstance().isIntakeDeploying()) {
       setLEDState(LEDState.deployingIntake);
-    }
-    else {
+    } else {
       setLEDState(LEDState.idle);
     }
   }
@@ -94,8 +90,9 @@ public class LED extends SubsystemBase {
         io.setLED(0, 0, 255, 0, Constants.LED.totalLEDs);
         break;
       case deployingIntake:
-        io.configBrightness(RobotCoordinator.getInstance().getDeployRotations() / 
-            Constants.IntakeConstants.Deploy.deployPositionRotations);
+        io.configBrightness(
+            RobotCoordinator.getInstance().getDeployRotations()
+                / Constants.IntakeConstants.Deploy.deployPositionRotations);
         io.setLED(255, 0, 0, 0, Constants.LED.totalLEDs);
         break;
       case noteInRobot:

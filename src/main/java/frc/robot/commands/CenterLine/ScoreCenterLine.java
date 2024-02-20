@@ -45,7 +45,7 @@ public class ScoreCenterLine extends Command {
 
   @Override
   public void execute() {
-    
+
     RobotCoordinator coordinator = RobotCoordinator.getInstance();
     if (travelCommand.isFinished()) {
       tracker.update(machine.getState());

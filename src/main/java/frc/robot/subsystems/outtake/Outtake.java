@@ -53,8 +53,7 @@ public class Outtake extends SubsystemBase {
 
   public void outtake(double targetRPS) {
     if (Constants.outtakeEnabled) {
-      if(Constants.debug)
-      {
+      if (Constants.debug) {
         targetRPS = inputs.debugTargetRPS;
       }
       this.targetRPS = targetRPS;

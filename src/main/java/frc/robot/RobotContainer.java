@@ -27,7 +27,6 @@ import frc.robot.commands.TunnelFeed;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
-import frc.robot.subsystems.LED.LED;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.robot.subsystems.outtakePivot.OuttakePivot;
@@ -165,7 +164,12 @@ public class RobotContainer {
     }
     // pressed when intake and outtake are in starting config
     // can only be pressed once after bootup
-    xbox.povLeft().onTrue(Commands.runOnce(() -> {RobotCoordinator.getInstance().setInitAbsEncoderPressed(true);}));
+    xbox.povLeft()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  RobotCoordinator.getInstance().setInitAbsEncoderPressed(true);
+                }));
   }
 
   public void enableSubsystems() {

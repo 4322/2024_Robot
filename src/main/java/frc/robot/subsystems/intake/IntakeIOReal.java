@@ -9,7 +9,6 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandcoder.Canandcoder;
-
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -23,7 +22,7 @@ public class IntakeIOReal implements IntakeIO {
   private final TalonFX intake;
   private final TalonFX deploy;
   private final Canandcoder deployEncoder;
-  //Shuffleboard
+  // Shuffleboard
   ShuffleboardTab tab;
   GenericEntry intakeFeederVoltage;
   GenericEntry intakeEjectVoltage;
@@ -33,24 +32,55 @@ public class IntakeIOReal implements IntakeIO {
   GenericEntry deployerRPS;
   GenericEntry isCoasting;
   GenericEntry flywheelRPS;
+
   public IntakeIOReal() {
-    intake = new TalonFX(IntakeConstants.intakeMotorID, Constants.DriveConstants.Drive.canivoreName);
-    deploy = new TalonFX(IntakeConstants.deployMotorID, Constants.DriveConstants.Drive.canivoreName);
+    intake =
+        new TalonFX(IntakeConstants.intakeMotorID, Constants.DriveConstants.Drive.canivoreName);
+    deploy =
+        new TalonFX(IntakeConstants.deployMotorID, Constants.DriveConstants.Drive.canivoreName);
     deployEncoder = new Canandcoder(IntakeConstants.deployEncoderID);
 
     configDeploy();
     configIntake();
-    if(Constants.debug)
-    {
+    if (Constants.debug) {
       tab = Shuffleboard.getTab("Intake");
-      intakeFeederVoltage = tab.add("Intake Feeder Voltage",IntakeConstants.IntakeConfig.intakeFeedVoltage).withSize(1,1).withPosition(0,0).getEntry();
-      intakeEjectVoltage = tab.add("Intake Eject Voltage",IntakeConstants.IntakeConfig.intakeEjectVoltage).withSize(1,1).withPosition(1,0).getEntry();
+      intakeFeederVoltage =
+          tab.add("Intake Feeder Voltage", IntakeConstants.IntakeConfig.intakeFeedVoltage)
+              .withSize(1, 1)
+              .withPosition(0, 0)
+              .getEntry();
+      intakeEjectVoltage =
+          tab.add("Intake Eject Voltage", IntakeConstants.IntakeConfig.intakeEjectVoltage)
+              .withSize(1, 1)
+              .withPosition(1, 0)
+              .getEntry();
       flywheelRPS = tab.add("Intake flywheel RPS", 0).withSize(1, 1).withPosition(2, 0).getEntry();
-      deployPositionRotations = tab.add("Deployer Target (Rotations)", 99999).withSize(1,1).withPosition(3, 0).getEntry();
-      retractPositionRotations = tab.add("Retract Deployer Target (Rotations)", IntakeConstants.Deploy.retractPositionRotations).withSize(1, 1).withPosition(0, 1).getEntry();
-      deployPosition = tab.add("Deployer position",0).withSize(1, 1).withPosition(1,1).getEntry();
-      deployerRPS = tab.add("Max Deployer RPS",IntakeConstants.Deploy.maxVelRotationsPerSec).withSize(1,1).withPosition(2,1).getEntry();
-      isCoasting = tab.add("Are Intake Motors in Coast Mode? (Read Only)", IntakeConstants.IntakeConfig.neutralMode == NeutralModeValue.Coast).withWidget(BuiltInWidgets.kBooleanBox).withSize(3,1).withPosition(1,1).getEntry();
+      deployPositionRotations =
+          tab.add("Deployer Target (Rotations)", 99999)
+              .withSize(1, 1)
+              .withPosition(3, 0)
+              .getEntry();
+      retractPositionRotations =
+          tab.add(
+                  "Retract Deployer Target (Rotations)",
+                  IntakeConstants.Deploy.retractPositionRotations)
+              .withSize(1, 1)
+              .withPosition(0, 1)
+              .getEntry();
+      deployPosition = tab.add("Deployer position", 0).withSize(1, 1).withPosition(1, 1).getEntry();
+      deployerRPS =
+          tab.add("Max Deployer RPS", IntakeConstants.Deploy.maxVelRotationsPerSec)
+              .withSize(1, 1)
+              .withPosition(2, 1)
+              .getEntry();
+      isCoasting =
+          tab.add(
+                  "Are Intake Motors in Coast Mode? (Read Only)",
+                  IntakeConstants.IntakeConfig.neutralMode == NeutralModeValue.Coast)
+              .withWidget(BuiltInWidgets.kBooleanBox)
+              .withSize(3, 1)
+              .withPosition(1, 1)
+              .getEntry();
     }
   }
 
@@ -97,11 +127,11 @@ public class IntakeIOReal implements IntakeIO {
             IntakeConstants.DeployConfig.updateHz, IntakeConstants.DeployConfig.timeoutMs);
   }
 
-  public void updateShuffleboard()
-  {
+  public void updateShuffleboard() {
     flywheelRPS.setDouble(intake.getVelocity().getValue() / 60);
     deployPosition.setDouble(deploy.getPosition().getValue());
   }
+
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
     inputs.intakeRotations = intake.getPosition().getValue();
@@ -124,16 +154,17 @@ public class IntakeIOReal implements IntakeIO {
     inputs.deployEncoderRotationsPerSec = deployEncoder.getVelocity();
 
     inputs.deployAppliedControl = deploy.getAppliedControl().toString();
-    if(Constants.debug)
-    {
-      inputs.intakeFeederVoltage = intakeFeederVoltage.getDouble(IntakeConstants.IntakeConfig.intakeFeedVoltage);
-      inputs.intakeEjectVoltage = intakeEjectVoltage.getDouble(IntakeConstants.IntakeConfig.intakeEjectVoltage);
-      inputs.deployPositionRotations = deployPositionRotations.getDouble(IntakeConstants.Deploy.deployPositionRotations);
-      inputs.retractPositionRotations = retractPositionRotations.getDouble(IntakeConstants.Deploy.retractPositionRotations);
+    if (Constants.debug) {
+      inputs.intakeFeederVoltage =
+          intakeFeederVoltage.getDouble(IntakeConstants.IntakeConfig.intakeFeedVoltage);
+      inputs.intakeEjectVoltage =
+          intakeEjectVoltage.getDouble(IntakeConstants.IntakeConfig.intakeEjectVoltage);
+      inputs.deployPositionRotations =
+          deployPositionRotations.getDouble(IntakeConstants.Deploy.deployPositionRotations);
+      inputs.retractPositionRotations =
+          retractPositionRotations.getDouble(IntakeConstants.Deploy.retractPositionRotations);
       updateShuffleboard();
-    }
-    else
-    {
+    } else {
       inputs.intakeFeederVoltage = IntakeConstants.IntakeConfig.intakeFeedVoltage;
       inputs.intakeEjectVoltage = IntakeConstants.IntakeConfig.intakeEjectVoltage;
       inputs.deployPositionRotations = IntakeConstants.Deploy.deployPositionRotations;
@@ -155,31 +186,28 @@ public class IntakeIOReal implements IntakeIO {
 
   @Override
   public void setDeployTarget(double rotations) {
-    if(Constants.debug)
-    {
+    if (Constants.debug) {
       deploy.setControl(
-        new PositionVoltage(
-          rotations,
-          deployerRPS.getDouble(IntakeConstants.Deploy.maxVelRotationsPerSec),
-          IntakeConstants.Deploy.enableFOC,
-          IntakeConstants.Deploy.FF,
-          IntakeConstants.Deploy.positionVoltageSlot,
-          IntakeConstants.Deploy.overrideBrakeDuringNeutral,
-          IntakeConstants.Deploy.limitForwardMotion,
-          IntakeConstants.Deploy.limitReverseMotion));
-    }
-    else
-    {
+          new PositionVoltage(
+              rotations,
+              deployerRPS.getDouble(IntakeConstants.Deploy.maxVelRotationsPerSec),
+              IntakeConstants.Deploy.enableFOC,
+              IntakeConstants.Deploy.FF,
+              IntakeConstants.Deploy.positionVoltageSlot,
+              IntakeConstants.Deploy.overrideBrakeDuringNeutral,
+              IntakeConstants.Deploy.limitForwardMotion,
+              IntakeConstants.Deploy.limitReverseMotion));
+    } else {
       deploy.setControl(
-        new PositionVoltage(
-          rotations,
-          IntakeConstants.Deploy.maxVelRotationsPerSec,
-          IntakeConstants.Deploy.enableFOC,
-          IntakeConstants.Deploy.FF,
-          IntakeConstants.Deploy.positionVoltageSlot,
-          IntakeConstants.Deploy.overrideBrakeDuringNeutral,
-          IntakeConstants.Deploy.limitForwardMotion,
-           IntakeConstants.Deploy.limitReverseMotion));
+          new PositionVoltage(
+              rotations,
+              IntakeConstants.Deploy.maxVelRotationsPerSec,
+              IntakeConstants.Deploy.enableFOC,
+              IntakeConstants.Deploy.FF,
+              IntakeConstants.Deploy.positionVoltageSlot,
+              IntakeConstants.Deploy.overrideBrakeDuringNeutral,
+              IntakeConstants.Deploy.limitForwardMotion,
+              IntakeConstants.Deploy.limitReverseMotion));
     }
   }
 
@@ -189,8 +217,7 @@ public class IntakeIOReal implements IntakeIO {
     motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
     intake.getConfigurator().refresh(motorOutputConfigs);
     deploy.getConfigurator().refresh(motorOutputConfigs);
-    if(Constants.debug)
-    {
+    if (Constants.debug) {
       isCoasting.setBoolean(false);
     }
     Logger.recordOutput(IntakeConstants.Logging.feederHardwareOutputsKey + "NeutralMode", "Brake");
@@ -204,8 +231,7 @@ public class IntakeIOReal implements IntakeIO {
     motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
     intake.getConfigurator().refresh(motorOutputConfigs);
     deploy.getConfigurator().refresh(motorOutputConfigs);
-    if(Constants.debug)
-    {
+    if (Constants.debug) {
       isCoasting.setBoolean(true);
     }
     Logger.recordOutput(IntakeConstants.Logging.feederHardwareOutputsKey + "NeutralMode", "Coast");
