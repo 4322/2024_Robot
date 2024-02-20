@@ -9,6 +9,8 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandcoder.Canandcoder;
+
+import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
@@ -19,8 +21,8 @@ public class IntakeIOReal implements IntakeIO {
   private final Canandcoder deployEncoder;
 
   public IntakeIOReal() {
-    intake = new TalonFX(IntakeConstants.intakeMotorID);
-    deploy = new TalonFX(IntakeConstants.deployMotorID);
+    intake = new TalonFX(IntakeConstants.intakeMotorID, Constants.DriveConstants.Drive.canivoreName);
+    deploy = new TalonFX(IntakeConstants.deployMotorID, Constants.DriveConstants.Drive.canivoreName);
     deployEncoder = new Canandcoder(IntakeConstants.deployEncoderID);
 
     configDeploy();

@@ -15,8 +15,8 @@ public class OuttakeIOReal implements OuttakeIO {
   private TalonFX bottomOuttakeMotor;
 
   public OuttakeIOReal() {
-    topOuttakeMotor = new TalonFX(Constants.OuttakeConstants.leftOuttakeDeviceID);
-    bottomOuttakeMotor = new TalonFX(Constants.OuttakeConstants.rightOuttakeDeviceID);
+    topOuttakeMotor = new TalonFX(Constants.OuttakeConstants.leftOuttakeDeviceID, Constants.DriveConstants.Drive.canivoreName);
+    bottomOuttakeMotor = new TalonFX(Constants.OuttakeConstants.rightOuttakeDeviceID, Constants.DriveConstants.Drive.canivoreName);
     configOuttake(topOuttakeMotor);
     configOuttake(bottomOuttakeMotor);
   }
