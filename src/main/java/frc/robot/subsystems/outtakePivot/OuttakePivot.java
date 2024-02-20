@@ -56,7 +56,7 @@ public class OuttakePivot extends SubsystemBase {
       existenceTimer.start();
       initialized = io.initPivot();
     }
-    if (Constants.outtakePivotEnabled && initialized) {
+    if (Constants.outtakePivotEnabled) {
       io.updateInputs(inputs);
       Logger.processInputs("OuttakePivot", inputs);
     }
