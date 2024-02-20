@@ -255,7 +255,7 @@ public final class Constants {
     public static final int leftOuttakeDeviceID = 5;
     public static final int rightOuttakeDeviceID = 4;
     public static final int pivotDeviceID = 6;
-    public static final int pivotEncoderID = 9;
+    public static final int pivotEncoderID = 8;
 
     public static final double kP = 0;
     public static final double kI = 0;
@@ -300,7 +300,7 @@ public final class Constants {
   public static final class IntakeConstants {
     public static final int intakeMotorID = 7;
     public static final int deployMotorID = 2;
-    public static final int deployEncoderID = 8;
+    public static final int deployEncoderID = 9;
 
     public static final class IntakeConfig {
       public static final NeutralModeValue neutralMode = NeutralModeValue.Coast;
