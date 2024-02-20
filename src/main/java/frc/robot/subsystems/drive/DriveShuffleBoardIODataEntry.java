@@ -23,7 +23,7 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
   private GenericEntry slowMovingAutoRotateEntry;
   private GenericEntry fastMovingAutoRotateEntry;
   private GenericEntry fastMovingMetersPerSecEntry;
-  private GenericEntry psuedoAutoRotateCheckbox;
+  private GenericEntry pseudoAutoRotateCheckbox;
   private ShuffleboardLayout voltsAtSpeedThresholdsLayout;
   private ShuffleboardLayout feedForwardMetersPerSecThresholdLayout;
   private GenericEntry voltsToOvercomeFrictionEntry;
@@ -39,9 +39,9 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
     if (Constants.debug) {
       // new shuffleboard tabs
       customizationTab = Shuffleboard.getTab("Drivebase Customization");
-
+    
       // widgets for customizationTab
-      psuedoAutoRotateCheckbox =
+      pseudoAutoRotateCheckbox =
           customizationTab
               .add("Psuedo Auto Rotate", Constants.psuedoAutoRotateEnabled)
               .withWidget(BuiltInWidgets.kToggleButton)
@@ -165,8 +165,8 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
   @Override
   public void updateInputs(DriveShuffleBoardIOInputs inputs) {
     if (Constants.debug) {
-      inputs.psuedoAutoRotateEnabled =
-          psuedoAutoRotateCheckbox.getBoolean(Constants.psuedoAutoRotateEnabled);
+      inputs.pseudoAutoRotateEnabled =
+          pseudoAutoRotateCheckbox.getBoolean(Constants.psuedoAutoRotateEnabled);
       inputs.inputScaling = driveInputScaling.getSelected();
       inputs.driveControllerType = driveControlType.getSelected();
       inputs.maxManualRotatePower =
@@ -197,7 +197,7 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
           voltsToOvercomeFrictionEntry.getDouble(robotSpecificConstants.getDrivekSVolts());
     } else {
       // if debug not enabled, don't want values to be 0
-      inputs.psuedoAutoRotateEnabled = Constants.psuedoAutoRotateEnabled;
+      inputs.pseudoAutoRotateEnabled = Constants.psuedoAutoRotateEnabled;
       inputs.inputScaling = Constants.driveInputScaling;
       inputs.driveControllerType = Constants.controllerType;
       inputs.maxManualRotatePower = Constants.DriveConstants.Manual.maxManualRotation;

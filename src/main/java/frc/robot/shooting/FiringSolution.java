@@ -9,6 +9,13 @@ public class FiringSolution extends GenericFiringSolution {
   private double flywheelSpeed;
   private double shotAngle; // angle at which we should shoot (robot side view)
 
+  private FiringSolution() {
+    this.shotMag = 0;
+    this.shotDeg = 0;
+    this.flywheelSpeed = 0;
+    this.shotAngle = 0;
+  }
+
   public FiringSolution(double shotMag, double shotDeg, double flywheelSpeed, double shotAngle) {
     this.shotMag = shotMag;
     this.shotDeg = shotDeg;

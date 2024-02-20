@@ -17,7 +17,6 @@ public class ScoreCenterLine extends Command {
 
   private final CLSM machine;
   private final EnvironmentTracker tracker;
-  private final RobotCoordinator coordinator;
 
   private Command travelCommand;
   private boolean isFinished = false;
@@ -29,7 +28,6 @@ public class ScoreCenterLine extends Command {
 
   public ScoreCenterLine(ScoringStrategy strategy) {
     drive = Drive.getInstance();
-    coordinator = RobotCoordinator.getInstance();
     machine = new CLSM(strategy);
     tracker = new EnvironmentTracker(new NoteStatus(true, true, true, true, true));
 
@@ -47,6 +45,8 @@ public class ScoreCenterLine extends Command {
 
   @Override
   public void execute() {
+    
+    RobotCoordinator coordinator = RobotCoordinator.getInstance();
     if (travelCommand.isFinished()) {
       tracker.update(machine.getState());
       if (isNotNoteState(machine.getState())) {

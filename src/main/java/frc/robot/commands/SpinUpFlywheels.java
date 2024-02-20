@@ -8,10 +8,10 @@ import frc.robot.subsystems.LED.LED.LEDState;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.utility.PositionVector;
 
-public class OuttakeOut extends Command {
+public class SpinUpFlywheels extends Command {
   Outtake outtake;
 
-  public OuttakeOut() {
+  public SpinUpFlywheels() {
     outtake = Outtake.getInstance();
 
     addRequirements(outtake);
@@ -22,7 +22,7 @@ public class OuttakeOut extends Command {
 
   @Override
   public void execute() {
-    if (RobotCoordinator.getInstance().isAcrossCenterLine()) {
+    if (RobotCoordinator.getInstance().onOurSideOfField()) {
       outtake.outtake(
           FiringSolutionManager.getInstance()
               .calcSolution(
@@ -39,7 +39,7 @@ public class OuttakeOut extends Command {
 
   @Override
   public boolean isFinished() {
-    return !RobotCoordinator.getInstance().isAcrossCenterLine();
+    return !RobotCoordinator.getInstance().onOurSideOfField();
   }
 
   @Override

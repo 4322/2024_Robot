@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -8,6 +9,7 @@ import frc.robot.Constants.BeamBreakConstants;
 import frc.robot.Robot;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.robot.subsystems.outtakePivot.OuttakePivot;
 import org.littletonrobotics.junction.Logger;
@@ -28,6 +30,7 @@ public class RobotCoordinator extends SubsystemBase {
   private boolean notePassingIntake;
   private boolean notePassingTunnel;
   private boolean autoIntakeButtonPressed;
+  private boolean initAbsEncoderPressed;
 
   public static RobotCoordinator getInstance() {
     if (robotCoordinator == null) {
@@ -99,6 +102,14 @@ public class RobotCoordinator extends SubsystemBase {
     return autoIntakeButtonPressed;
   }
 
+  public void setInitAbsEncoderPressed(boolean isPressed) {
+    initAbsEncoderPressed = isPressed;
+  }
+
+  public boolean getInitAbsEncoderPressed() {
+    return initAbsEncoderPressed;
+  }
+
   // below are all boolean checks polled from subsystems
   public boolean isIntakeDeployed() {
     return intake.isDeployed();
@@ -143,7 +154,7 @@ public class RobotCoordinator extends SubsystemBase {
     return !notePassingTunnel && inputs.tunnelBeamBreak;
   }
 
-  public boolean isAcrossCenterLine() {
+  public boolean onOurSideOfField() {
     if (Robot.getAllianceColor().equals(Alliance.Red)) {
       return (drive.getPose2d().getX() > Constants.FieldConstants.xCenterLineM);
     } else if (Robot.getAllianceColor().equals(Alliance.Blue)) {
@@ -162,10 +173,22 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public Double getNearestNoteTX() {
-    throw new UnsupportedOperationException("Unimplemented method 'getNearestNoteTX'");
+    return Limelight.getIntakeInstance().getHorizontalDegToTarget();
   }
 
   public Double getNearestNoteTY() {
-    throw new UnsupportedOperationException("Unimplemented method 'getNearestNoteTY'");
+    return Limelight.getIntakeInstance().getVerticalDegToTarget();
+  }
+
+  public boolean noteInVision() {
+    return Limelight.getIntakeInstance().getTargetVisible();
+  }
+
+  public Pose2d getOuttakeLimelightPose2d() {
+    return Limelight.getOuttakeInstance().getAprilTagPose2d();
+  }
+
+  public double getOuttakeLimelightLatency() {
+    return Limelight.getOuttakeInstance().getTotalLatency();
   }
 }

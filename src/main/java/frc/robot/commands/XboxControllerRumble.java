@@ -3,23 +3,17 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakeStates;
 
 public class XboxControllerRumble extends Command {
-  private final CommandXboxController xbox;
 
   private Timer rumbleTimer = new Timer();
   private boolean hasRumbled;
 
-  public XboxControllerRumble(CommandXboxController xboxController) {
-
-    xbox = xboxController;
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements();
-  }
+  public XboxControllerRumble() {}
 
   // Called when the command is initially scheduled.
   @Override
@@ -31,7 +25,7 @@ public class XboxControllerRumble extends Command {
         && !hasRumbled
         && Intake.getInstance().getState() == IntakeStates.notePastIntake) {
       rumbleTimer.start();
-      xbox.getHID().setRumble(RumbleType.kBothRumble, 1);
+      RobotContainer.xbox.getHID().setRumble(RumbleType.kBothRumble, 1);
     }
   }
 
@@ -43,7 +37,7 @@ public class XboxControllerRumble extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    xbox.getHID().setRumble(RumbleType.kBothRumble, 0);
+    RobotContainer.xbox.getHID().setRumble(RumbleType.kBothRumble, 0);
     rumbleTimer.stop();
     rumbleTimer.reset();
     hasRumbled = false;

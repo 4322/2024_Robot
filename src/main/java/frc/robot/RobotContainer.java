@@ -18,13 +18,14 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
-import frc.robot.commands.OuttakeOut;
 import frc.robot.commands.PivotToAngle;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetRobotPose;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.SpinUpFlywheels;
 import frc.robot.commands.TunnelFeed;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
+import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.LED.LED;
 import frc.robot.subsystems.drive.Drive;
@@ -49,14 +50,28 @@ public class RobotContainer {
   private JoystickButton driveButtonSeven;
   private JoystickButton driveButtonTwelve;
 
-  private final DriveInterface drive = new Drive();
+  private final Drive drive = Drive.getInstance();
+  private final Tunnel tunnel = Tunnel.getInstance();
+  private final Outtake outtake = Outtake.getInstance();
+  private final OuttakePivot outtakePivot = OuttakePivot.getInstance();
 
-  private final DriveManual driveManualDefault = new DriveManual(drive, DriveManual.AutoPose.none);
-  private final DriveStop driveStop = new DriveStop(drive);
+  private final WriteFiringSolutionAtCurrentPos writeFiringSolution =
+      new WriteFiringSolutionAtCurrentPos();
+
+  private final DriveManual driveManual = new DriveManual();
+  private final DriveStop driveStop = new DriveStop();
+
+  private final TunnelFeed tunnelFeed = new TunnelFeed();
+
+  private final SpinUpFlywheels outtakeOut = new SpinUpFlywheels();
+
+  private final PivotToAngle pivotToAngle = new PivotToAngle();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     configureButtonBindings();
+
+    FiringSolutionManager.getInstance().loadSolutions();
 
     if (Constants.driveEnabled) {
       drive.setDefaultCommand(driveManual);
@@ -101,6 +116,7 @@ public class RobotContainer {
                     driveManual.updateStateMachine(DriveManualTrigger.JOYSTICK_IN);
                   }));
       xbox.povUp().onTrue(new ResetFieldCentric(true));
+      xbox.povRight().onTrue(writeFiringSolution);
       // Reset the odometry for testing speaker-centric driving. This assumes robot is on the
       // very left on the front of the speaker, facing down-field (forward).
       xbox.start()
@@ -147,6 +163,9 @@ public class RobotContainer {
       disableTimer.stop();
       disableTimer.reset();
     }
+    // pressed when intake and outtake are in starting config
+    // can only be pressed once after bootup
+    xbox.povLeft().onTrue(Commands.runOnce(() -> {RobotCoordinator.getInstance().setInitAbsEncoderPressed(true);}));
   }
 
   public void enableSubsystems() {

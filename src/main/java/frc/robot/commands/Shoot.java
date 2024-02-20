@@ -15,7 +15,7 @@ public class Shoot extends Command {
   @Override
   public void execute() {
     if (RobotCoordinator.getInstance().canShoot()
-        && RobotCoordinator.getInstance().isAcrossCenterLine()) {
+        && RobotCoordinator.getInstance().onOurSideOfField()) {
       tunnel.feed();
       
     }

@@ -5,7 +5,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.commands.AutoAquireNote;
+import frc.robot.Constants.IntakeConstants.IntakeConfig;
+import frc.robot.commands.AutoAcquireNote;
+import frc.robot.commands.XboxControllerRumble;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.LED.LED;
 import frc.robot.subsystems.LED.LED.LEDState;
@@ -29,11 +31,11 @@ public class Intake extends SubsystemBase {
   private Timer existenceTimer;
   private boolean initialized;
   private double deployTarget = 99999; // set to very high value in case target not yet set
-  private RobotCoordinator coordinator;
   private boolean isFeeding;
   private LED led;
 
-  private AutoAquireNote autoAquireNote = new AutoAquireNote();
+  private AutoAcquireNote autoAcquireNote = new AutoAcquireNote();
+  private XboxControllerRumble xBoxRumble = new XboxControllerRumble();
 
   private static Intake intake;
 
@@ -56,23 +58,22 @@ public class Intake extends SubsystemBase {
       case REPLAY:
         break;
     }
-    coordinator = RobotCoordinator.getInstance();
-    led = LED.getInstance();
 
     if (io == null) {
       io = new IntakeIO() {};
     }
     existenceTimer = new Timer();
-    existenceTimer.start();
   }
 
   @Override
   public void periodic() {
+    RobotCoordinator coordinator = RobotCoordinator.getInstance();
     // initialize motor internal encoder position until the intake isn't moving
-    if (Constants.intakeEnabled && !initialized && !existenceTimer.hasElapsed(5)) {
+    if (Constants.intakeEnabled && !initialized && !existenceTimer.hasElapsed(5) 
+          && coordinator.getInitAbsEncoderPressed()) {
+      existenceTimer.start();
       initialized = io.initMotorPos();
     }
-
     if (Constants.intakeEnabled) {
       io.updateInputs(inputs);
       Logger.processInputs(IntakeConstants.Logging.key, inputs);
@@ -80,7 +81,7 @@ public class Intake extends SubsystemBase {
       switch (intakeState) {
         case retracted:
           if (coordinator.getIntakeButtonPressed()
-              && (coordinator.isAcrossCenterLine() || !coordinator.noteInRobot())) {
+              && (coordinator.onOurSideOfField() || !coordinator.noteInRobot())) {
             intakeState = IntakeStates.deploying;
             led.setLEDState(LEDState.blue);
           }
@@ -111,9 +112,9 @@ public class Intake extends SubsystemBase {
             intakeState = IntakeStates.retracting;
           } else if (coordinator.noteInIntake()) {
             intakeState = IntakeStates.noteObtained;
-          } else if (coordinator.getAutoIntakeButtonPressed()) {
-            if (!autoAquireNote.isScheduled()) {
-              CommandScheduler.getInstance().schedule(autoAquireNote);
+          } else if (coordinator.getAutoIntakeButtonPressed() && coordinator.noteInVision()) {
+            if (!autoAcquireNote.isScheduled()) {
+              CommandScheduler.getInstance().schedule(autoAcquireNote);
             }
           }
           break;
@@ -123,13 +124,13 @@ public class Intake extends SubsystemBase {
             led.setLEDState(LEDState.purple);
           }
           if (!coordinator.noteInIntake()) {
+            CommandScheduler.getInstance().schedule(xBoxRumble);
             intakeState = IntakeStates.notePastIntake;
           }
           break;
         case notePastIntake:
           stopFeeder();
-          led.setLEDState(LEDState.purple);
-          if (!coordinator.isAcrossCenterLine() || !coordinator.getIntakeButtonPressed()) {
+          if (!coordinator.onOurSideOfField() || !coordinator.getIntakeButtonPressed()) {
             intakeState = IntakeStates.retracting;
           } else if (!coordinator.noteInRobot()) {
             intakeState = IntakeStates.feeding;
@@ -142,7 +143,7 @@ public class Intake extends SubsystemBase {
             retract();
           }
           if (coordinator.getIntakeButtonPressed()
-              && (coordinator.isAcrossCenterLine() || !coordinator.noteInRobot())) {
+              && (coordinator.onOurSideOfField() || !coordinator.noteInRobot())) {
             intakeState = IntakeStates.deploying;
           } else if (coordinator.isIntakeRetracted()) {
             intakeState = IntakeStates.retracted;
@@ -154,7 +155,7 @@ public class Intake extends SubsystemBase {
 
   public void intake() {
     if (Constants.intakeEnabled && initialized) {
-      io.setFeedingVoltage(IntakeConstants.Feeder.intakeFeedVoltage);
+      io.setFeedingVoltage(inputs.intakeFeederVoltage);
       Logger.recordOutput(IntakeConstants.Logging.feederKey + "IntakeStopped", false);
       isFeeding = true;
     }
@@ -162,7 +163,7 @@ public class Intake extends SubsystemBase {
 
   public void outtake() {
     if (Constants.intakeEnabled && initialized) {
-      io.setFeedingVoltage(IntakeConstants.Feeder.intakeEjectVoltage);
+      io.setFeedingVoltage(inputs.intakeEjectVoltage);
       Logger.recordOutput(IntakeConstants.Logging.feederKey + "IntakeStopped", false);
       isFeeding = true;
     }
@@ -199,22 +200,22 @@ public class Intake extends SubsystemBase {
 
   public void deploy() {
     if (Constants.intakeEnabled && initialized) {
-      io.setDeployTarget(IntakeConstants.Deploy.deployPositionRotations);
-      deployTarget = IntakeConstants.Deploy.deployPositionRotations;
+      io.setDeployTarget(inputs.deployPositionRotations);
+      deployTarget = inputs.deployPositionRotations;
       Logger.recordOutput(
           IntakeConstants.Logging.deployerKey + "DeployTargetRotations",
-          IntakeConstants.Deploy.deployPositionRotations);
+          inputs.deployPositionRotations);
       Logger.recordOutput(IntakeConstants.Logging.deployerKey + "DeployStopped", false);
     }
   }
 
   public void retract() {
     if (Constants.intakeEnabled && initialized) {
-      io.setDeployTarget(IntakeConstants.Deploy.retractPositionRotations);
-      deployTarget = IntakeConstants.Deploy.retractPositionRotations;
+      io.setDeployTarget(inputs.retractPositionRotations);
+      deployTarget = inputs.retractPositionRotations;
       Logger.recordOutput(
           IntakeConstants.Logging.deployerKey + "DeployTargetRotations",
-          IntakeConstants.Deploy.retractPositionRotations);
+          inputs.retractPositionRotations);
       Logger.recordOutput(IntakeConstants.Logging.deployerKey + "DeployStopped", false);
     }
   }
@@ -227,14 +228,14 @@ public class Intake extends SubsystemBase {
   public boolean isDeployed() {
     return OrangeMath.equalToEpsilon(
         inputs.deployRotations,
-        IntakeConstants.Deploy.deployPositionRotations,
+        inputs.deployPositionRotations,
         IntakeConstants.Deploy.toleranceRotations);
   }
 
   public boolean isRetracted() {
     return OrangeMath.equalToEpsilon(
         inputs.deployRotations,
-        IntakeConstants.Deploy.retractPositionRotations,
+        inputs.retractPositionRotations,
         IntakeConstants.Deploy.toleranceRotations);
   }
 

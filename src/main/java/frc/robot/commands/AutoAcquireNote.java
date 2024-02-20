@@ -8,12 +8,9 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.utility.OrangeMath;
 
-public class AutoAquireNote extends Command {
+public class AutoAcquireNote extends Command {
 
   private Drive drive;
-  private RobotCoordinator coordinator;
-  private Double initTx;
-  private Double initTy;
   private boolean initialized;
 
   private double desiredHeadingAngle;
@@ -22,70 +19,51 @@ public class AutoAquireNote extends Command {
   private Double notePositionY; // field centric
   private Double notePositionX; // field centric
 
-  public AutoAquireNote() {
+  public AutoAcquireNote() {
     drive = Drive.getInstance();
-    coordinator = RobotCoordinator.getInstance();
     addRequirements(drive);
   }
 
   @Override
   public void initialize() {
-    initTx = coordinator.getNearestNoteTX();
-    initTy = coordinator.getNearestNoteTY();
+    
+    RobotCoordinator coordinator = RobotCoordinator.getInstance();
 
     initialized = true;
 
-    if (initTx == null || initTy == null) {
-      initialized =
-          false; // this cancels auto aquisition (although the button will automatically restart it)
+    if (!coordinator.noteInVision()) {
+      initialized = false; // this cancels auto aquisition (although the button will automatically restart it)
       return;
     }
     UpdateHeading();
   }
 
   private void UpdateHeading() {
+    RobotCoordinator coordinator = RobotCoordinator.getInstance();
     Double tx = coordinator.getNearestNoteTX();
     Double ty = coordinator.getNearestNoteTY();
     // I'm assuming that null from either implies that the data being returned is bad / donut is
     // lost on camera
     // this probably means that we are close to the donut and should use an approach speed.
-    if (tx == null || ty == null) {
+    if (!coordinator.noteInVision()) {
       // dont update, we've lost the target. use old data.
       // TODO: we should mark this in the LED subsystem when that becomes a thing.
       return;
     }
+    double yNoteDistance =
+        Constants.LimelightConstants.intakeLimelightHeight * Math.tan(Math.toRadians(90.0 + Constants.LimelightConstants.intakeLimelightAngle - ty));
+    double xNoteDistance = Math.tan(Math.toRadians(tx)) * yNoteDistance;
     double noteDistance =
-        Math.sqrt(tx * tx + ty * ty)
+        Math.sqrt(xNoteDistance * xNoteDistance + yNoteDistance * yNoteDistance)
             + OrangeMath.inchesToMeters(
                 Constants.noteRadiusInches); // get the distance to the far end of the donut
     Pose2d pose = drive.getPose2d();
-    double desiredHeadingAngle = pose.getRotation().getRadians() - Math.atan2(tx, ty);
-    double desiredRobotDirectionX = -Math.cos(desiredHeadingAngle);
-    double desiredRobotDirectionY = -Math.sin(desiredHeadingAngle);
-    double newNotePositionX = noteDistance * desiredRobotDirectionX + pose.getX();
-    double newNotePositionY = noteDistance * desiredRobotDirectionY + pose.getY();
-    // if there is a large enough difference between the previous calc and current field centric
-    // position then this is a new donut, ignore it.
-    if (notePositionX == null || notePositionY == null) {
-      notePositionX = newNotePositionX;
-      notePositionY = newNotePositionY;
-    } else if (distance(notePositionX, notePositionY, newNotePositionX, newNotePositionY)
-        > OrangeMath.inchesToMeters(
-            Constants.noteRadiusInches
-                + 3)) // the new note found is *probably* a new note ignore it
-    {
-      // ignore this, its probably a different note. we will hone in on *one* note.
-      // we can ignore this and let the robot find the next new note if they want.
-    } else {
-      // this is probably the same donut use same headings
-      // what do we do if the distance between notePosition and newNotePosition is significant but
-      // still indicates same note?
-      // for example, about 6 inches? I'm personally not sure. for the moment we assume the initial
-      // note position is accurate.
-      this.desiredHeadingAngle = desiredHeadingAngle;
-      this.desiredRobotDirectionX = desiredRobotDirectionX;
-      this.desiredRobotDirectionY = desiredRobotDirectionY;
-    }
+    desiredHeadingAngle =
+        pose.getRotation().getRadians() - Math.atan2(xNoteDistance, yNoteDistance);
+    desiredRobotDirectionX = Math.cos(desiredHeadingAngle);
+    desiredRobotDirectionY = Math.sin(desiredHeadingAngle);
+    notePositionX = noteDistance * desiredRobotDirectionX + pose.getX();
+    notePositionY = noteDistance * desiredRobotDirectionY + pose.getY();
   }
 
   @Override
@@ -106,10 +84,12 @@ public class AutoAquireNote extends Command {
 
   @Override
   public boolean isFinished() {
+    RobotCoordinator coordinator = RobotCoordinator.getInstance();
     return !initialized
         || coordinator.noteInRobot()
         || !coordinator.getAutoIntakeButtonPressed()
-        || Intake.getInstance().getState() != Intake.IntakeStates.feeding;
+        || Intake.getInstance().getState() != Intake.IntakeStates.feeding
+        || !coordinator.noteInVision();
   }
 
   @Override

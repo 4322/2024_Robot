@@ -3,6 +3,7 @@ package frc.robot.shooting;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import frc.utility.interpolation.Calculator1D;
 import frc.utility.interpolation.GenericCalculator;
 import frc.utility.interpolation.GenericFiringSolutionManager;
@@ -40,7 +41,7 @@ public class FiringSolutionManager implements GenericFiringSolutionManager<Firin
       DriverStation.reportWarning("Wrote new solution to firing solution json", false);
     } catch (Exception e) {
       e.printStackTrace();
-      DriverStation.reportError("Failed to write new firing solution", null);
+      DriverStation.reportError("Failed to write new firing solution", false);
     }
   }
 
@@ -49,12 +50,12 @@ public class FiringSolutionManager implements GenericFiringSolutionManager<Firin
     try {
       solutionList =
           objectMapper.readValue(
-              new File("/home/lvuser/deploy/FiringSolutions.json"),
-              new TypeReference<List<FiringSolution>>() {});
+              new File(Filesystem.getDeployDirectory().getPath() + "/FiringSolutions.json"),
+              new TypeReference<ArrayList<FiringSolution>>() {});
       for (FiringSolution solution : solutionList) {
         addSolution(solution);
       }
-      DriverStation.reportWarning("Loaded all firing solutions", null);
+      DriverStation.reportWarning("Loaded all firing solutions", false);
     } catch (Exception e) {
       e.printStackTrace();
       DriverStation.reportError("Failed to load firing solutions", e.getStackTrace());

@@ -8,12 +8,10 @@ import frc.utility.PositionVector;
 
 public class PivotToAngle extends Command {
   OuttakePivot outtakePivot;
-  RobotCoordinator robotCoordinator;
   FiringSolutionManager firingSolutionManager;
 
   public PivotToAngle() {
     outtakePivot = OuttakePivot.getInstance();
-    robotCoordinator = RobotCoordinator.getInstance();
     firingSolutionManager = FiringSolutionManager.getInstance();
     addRequirements(outtakePivot);
   }
@@ -23,7 +21,8 @@ public class PivotToAngle extends Command {
 
   @Override
   public void execute() {
-    if (robotCoordinator.canPivot() && robotCoordinator.isAcrossCenterLine()) {
+    RobotCoordinator robotCoordinator = RobotCoordinator.getInstance();
+    if (robotCoordinator.canPivot() && robotCoordinator.onOurSideOfField()) {
       // divide by 360 because pivot uses rotations instead of degrees
       outtakePivot.pivot(
           firingSolutionManager
@@ -40,7 +39,8 @@ public class PivotToAngle extends Command {
 
   @Override
   public boolean isFinished() {
-    return !robotCoordinator.isAcrossCenterLine();
+    RobotCoordinator robotCoordinator = RobotCoordinator.getInstance();
+    return !robotCoordinator.onOurSideOfField();
   }
 
   @Override

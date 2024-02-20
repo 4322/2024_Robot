@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.Constants;
 import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.drive.Drive;
@@ -27,17 +28,19 @@ public class WriteFiringSolutionAtCurrentPos extends InstantCommand {
 
   @Override
   public void initialize() {
-    Translation2d rawTranslation =
-        PositionVector.getVectorToSpeaker(drive.getPose2d().getX(), drive.getPose2d().getY());
-    shotAngle = rawTranslation.getAngle().getDegrees();
-    // Calculates magnitude from x and y vals
-    shotMag =
-        Math.sqrt(
-            rawTranslation.getX() * rawTranslation.getX()
-                + rawTranslation.getY() * rawTranslation.getY());
-    FiringSolution solution =
-        new FiringSolution(shotMag, shotAngle, outtake.getTargetRPS(), outtakePivot.getTarget());
-    firingSolutionManager.writeSolution(solution);
+    if (Constants.inShotTuning) {
+      Translation2d rawTranslation =
+          PositionVector.getVectorToSpeaker(drive.getPose2d().getX(), drive.getPose2d().getY());
+      shotAngle = rawTranslation.getAngle().getDegrees();
+      // Calculates magnitude from x and y vals
+      shotMag =
+          Math.sqrt(
+              rawTranslation.getX() * rawTranslation.getX()
+                  + rawTranslation.getY() * rawTranslation.getY());
+      FiringSolution solution =
+          new FiringSolution(shotMag, shotAngle, outtake.getTargetRPS(), outtakePivot.getTarget());
+      firingSolutionManager.writeSolution(solution);
+    }
   }
 
   @Override
