@@ -5,12 +5,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.Constants.IntakeConstants.IntakeConfig;
 import frc.robot.commands.AutoAcquireNote;
 import frc.robot.commands.XboxControllerRumble;
 import frc.robot.subsystems.RobotCoordinator;
-import frc.robot.subsystems.LED.LED;
-import frc.robot.subsystems.LED.LED.LEDState;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -88,9 +85,6 @@ public class Intake extends SubsystemBase {
         case deploying:
           if (coordinator.canDeploy()) {
             deploy();
-            if (coordinator.noteInRobot()) {
-            } else {
-            }
           }
           if (!coordinator.getIntakeButtonPressed()) {
             intakeState = IntakeStates.retracting;
