@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.IntakeConstants.IntakeConfig;
 import frc.robot.commands.AutoAcquireNote;
 import frc.robot.commands.XboxControllerRumble;
 import frc.robot.subsystems.RobotCoordinator;
@@ -142,7 +143,7 @@ public class Intake extends SubsystemBase {
 
   public void intake() {
     if (Constants.intakeEnabled && initialized) {
-      io.setFeedingVoltage(IntakeConstants.Feeder.intakeFeedVoltage);
+      io.setFeedingVoltage(IntakeConstants.IntakeConfig.intakeFeedVoltage);
       Logger.recordOutput(IntakeConstants.Logging.feederKey + "IntakeStopped", false);
       isFeeding = true;
     }
@@ -150,7 +151,7 @@ public class Intake extends SubsystemBase {
 
   public void outtake() {
     if (Constants.intakeEnabled && initialized) {
-      io.setFeedingVoltage(IntakeConstants.Feeder.intakeEjectVoltage);
+      io.setFeedingVoltage(IntakeConstants.IntakeConfig.intakeEjectVoltage);
       Logger.recordOutput(IntakeConstants.Logging.feederKey + "IntakeStopped", false);
       isFeeding = true;
     }

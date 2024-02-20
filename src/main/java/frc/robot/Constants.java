@@ -303,6 +303,9 @@ public final class Constants {
       public static final double updateHz =
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
+      public static final double intakeFeedVoltage =
+          0.0; // TODO: set max voltage we want for feeding
+      public static final double intakeEjectVoltage = 0.0;
     }
 
     public static final class DeployConfig {
@@ -314,12 +317,6 @@ public final class Constants {
       public static final double updateHz =
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
-    }
-
-    public static final class Feeder {
-      public static final double intakeFeedVoltage =
-          0.0; // TODO: set max voltage we want for feeding
-      public static final double intakeEjectVoltage = 0.0;
     }
 
     public static final class Deploy {
