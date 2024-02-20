@@ -30,6 +30,7 @@ public class RobotCoordinator extends SubsystemBase {
   private boolean notePassingIntake;
   private boolean notePassingTunnel;
   private boolean autoIntakeButtonPressed;
+  private boolean initAbsEncoderPressed;
 
   public static RobotCoordinator getInstance() {
     if (robotCoordinator == null) {
@@ -99,6 +100,14 @@ public class RobotCoordinator extends SubsystemBase {
 
   public boolean getAutoIntakeButtonPressed() {
     return autoIntakeButtonPressed;
+  }
+
+  public void setInitAbsEncoderPressed(boolean isPressed) {
+    initAbsEncoderPressed = isPressed;
+  }
+
+  public boolean getInitAbsEncoderPressed() {
+    return initAbsEncoderPressed;
   }
 
   // below are all boolean checks polled from subsystems
