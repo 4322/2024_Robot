@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.OuttakeConstants;
+import frc.robot.subsystems.RobotCoordinator;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -40,7 +41,6 @@ public class OuttakePivot extends SubsystemBase {
     }
 
     existenceTimer = new Timer();
-    existenceTimer.start();
   }
 
   public double getTarget() {
@@ -49,7 +49,9 @@ public class OuttakePivot extends SubsystemBase {
 
   public void periodic() {
     // initialize motor internal encoder position until the intake isn't moving
-    if (Constants.outtakeEnabled && !initialized && !existenceTimer.hasElapsed(5)) {
+    if (Constants.outtakeEnabled && !initialized && !existenceTimer.hasElapsed(5) 
+          && RobotCoordinator.getInstance().getInitAbsEncoderPressed()) {
+      existenceTimer.start();
       initialized = io.initPivot();
     }
     if (Constants.outtakeEnabled && initialized) {
