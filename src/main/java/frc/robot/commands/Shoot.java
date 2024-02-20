@@ -17,6 +17,7 @@ public class Shoot extends Command {
     if (RobotCoordinator.getInstance().canShoot()
         && RobotCoordinator.getInstance().onOurSideOfField()) {
       tunnel.feed();
+      
     }
   }
 

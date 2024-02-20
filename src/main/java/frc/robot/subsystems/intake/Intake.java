@@ -9,6 +9,8 @@ import frc.robot.Constants.IntakeConstants.IntakeConfig;
 import frc.robot.commands.AutoAcquireNote;
 import frc.robot.commands.XboxControllerRumble;
 import frc.robot.subsystems.RobotCoordinator;
+import frc.robot.subsystems.LED.LED;
+import frc.robot.subsystems.LED.LED.LEDState;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -30,6 +32,7 @@ public class Intake extends SubsystemBase {
   private boolean initialized;
   private double deployTarget = 99999; // set to very high value in case target not yet set
   private boolean isFeeding;
+  private boolean deployRequested;
 
   private AutoAcquireNote autoAcquireNote = new AutoAcquireNote();
   private XboxControllerRumble xBoxRumble = new XboxControllerRumble();
@@ -85,6 +88,9 @@ public class Intake extends SubsystemBase {
         case deploying:
           if (coordinator.canDeploy()) {
             deploy();
+            if (coordinator.noteInRobot()) {
+            } else {
+            }
           }
           if (!coordinator.getIntakeButtonPressed()) {
             intakeState = IntakeStates.retracting;
@@ -183,6 +189,7 @@ public class Intake extends SubsystemBase {
     if (Constants.intakeEnabled && initialized) {
       io.stopFeeder();
       Logger.recordOutput(IntakeConstants.Logging.deployerKey + "DeployStopped", true);
+      deployRequested = false;
     }
   }
 
@@ -194,6 +201,7 @@ public class Intake extends SubsystemBase {
           IntakeConstants.Logging.deployerKey + "DeployTargetRotations",
           inputs.deployPositionRotations);
       Logger.recordOutput(IntakeConstants.Logging.deployerKey + "DeployStopped", false);
+      deployRequested = true;
     }
   }
 
@@ -205,6 +213,7 @@ public class Intake extends SubsystemBase {
           IntakeConstants.Logging.deployerKey + "DeployTargetRotations",
           inputs.retractPositionRotations);
       Logger.recordOutput(IntakeConstants.Logging.deployerKey + "DeployStopped", false);
+      deployRequested = false;
     }
   }
 
@@ -218,6 +227,14 @@ public class Intake extends SubsystemBase {
         inputs.deployRotations,
         inputs.deployPositionRotations,
         IntakeConstants.Deploy.toleranceRotations);
+  }
+
+  public boolean isDeploying() {
+    return deployRequested && !isDeployed();
+  }
+
+  public double getDeployRotations() {
+    return inputs.deployRotations;
   }
 
   public boolean isRetracted() {

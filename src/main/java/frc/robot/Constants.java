@@ -401,7 +401,11 @@ public final class Constants {
             Map.entry(11, stageAprilTagHeight), Map.entry(12, stageAprilTagHeight),
             Map.entry(13, stageAprilTagHeight), Map.entry(14, stageAprilTagHeight),
             Map.entry(15, stageAprilTagHeight), Map.entry(16, stageAprilTagHeight));
+  }
 
+  public static final class LED {
+    public static final int totalLEDs = 0; // TODO: find umber of INDIVIDUAL LEDs mounted on robot
+    public static final int CANdleID = 3;
   }
 
   public static final class FieldConstants {

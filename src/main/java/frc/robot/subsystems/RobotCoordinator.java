@@ -115,12 +115,24 @@ public class RobotCoordinator extends SubsystemBase {
     return intake.isDeployed();
   }
 
+  public boolean isIntakeDeploying() {
+    return intake.isDeploying();
+  }
+
+  public double getDeployRotations() {
+    return intake.getDeployRotations();
+  }
+
   public boolean isIntakeRetracted() {
     return intake.isRetracted();
   }
 
   public boolean canDeploy() {
     return intake.isInitialized() && !intake.isDeployed();
+  }
+
+  public boolean isInitialized() {
+    return intake.isInitialized() && outtakePivot.isInitialized();
   }
 
   public boolean canRetract() {
