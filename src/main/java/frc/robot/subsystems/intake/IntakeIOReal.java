@@ -43,8 +43,8 @@ public class IntakeIOReal implements IntakeIO {
     if(Constants.debug)
     {
       tab = Shuffleboard.getTab("Intake");
-      intakeFeederVoltage = tab.add("Intake Feeder Voltage",IntakeConstants.Feeder.intakeFeedVoltage).withSize(1,1).withPosition(0,0).getEntry();
-      intakeEjectVoltage = tab.add("Intake Eject Voltage",IntakeConstants.Feeder.intakeEjectVoltage).withSize(1,1).withPosition(1,0).getEntry();
+      intakeFeederVoltage = tab.add("Intake Feeder Voltage",IntakeConstants.IntakeConfig.intakeFeedVoltage).withSize(1,1).withPosition(0,0).getEntry();
+      intakeEjectVoltage = tab.add("Intake Eject Voltage",IntakeConstants.IntakeConfig.intakeEjectVoltage).withSize(1,1).withPosition(1,0).getEntry();
       flywheelRPS = tab.add("Intake flywheel RPS", 0).withSize(1, 1).withPosition(2, 0).getEntry();
       deployPositionRotations = tab.add("Deployer Target (Rotations)", 99999).withSize(1,1).withPosition(3, 0).getEntry();
       retractPositionRotations = tab.add("Retract Deployer Target (Rotations)", IntakeConstants.Deploy.retractPositionRotations).withSize(1, 1).withPosition(0, 1).getEntry();
@@ -126,16 +126,16 @@ public class IntakeIOReal implements IntakeIO {
     inputs.deployAppliedControl = deploy.getAppliedControl().toString();
     if(Constants.debug)
     {
-      inputs.intakeFeederVoltage = intakeFeederVoltage.getDouble(IntakeConstants.Feeder.intakeFeedVoltage);
-      inputs.intakeEjectVoltage = intakeEjectVoltage.getDouble(IntakeConstants.Feeder.intakeEjectVoltage);
+      inputs.intakeFeederVoltage = intakeFeederVoltage.getDouble(IntakeConstants.IntakeConfig.intakeFeedVoltage);
+      inputs.intakeEjectVoltage = intakeEjectVoltage.getDouble(IntakeConstants.IntakeConfig.intakeEjectVoltage);
       inputs.deployPositionRotations = deployPositionRotations.getDouble(IntakeConstants.Deploy.deployPositionRotations);
       inputs.retractPositionRotations = retractPositionRotations.getDouble(IntakeConstants.Deploy.retractPositionRotations);
       updateShuffleboard();
     }
     else
     {
-      inputs.intakeFeederVoltage = IntakeConstants.Feeder.intakeFeedVoltage;
-      inputs.intakeEjectVoltage = IntakeConstants.Feeder.intakeEjectVoltage;
+      inputs.intakeFeederVoltage = IntakeConstants.IntakeConfig.intakeFeedVoltage;
+      inputs.intakeEjectVoltage = IntakeConstants.IntakeConfig.intakeEjectVoltage;
       inputs.deployPositionRotations = IntakeConstants.Deploy.deployPositionRotations;
       inputs.retractPositionRotations = IntakeConstants.Deploy.retractPositionRotations;
     }
