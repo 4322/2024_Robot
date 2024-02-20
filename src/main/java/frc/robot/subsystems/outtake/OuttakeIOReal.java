@@ -7,18 +7,28 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
 
 public class OuttakeIOReal implements OuttakeIO {
   private TalonFX topOuttakeMotor;
   private TalonFX bottomOuttakeMotor;
-
+  //shuffleboard
+  ShuffleboardTab tab;
+  GenericEntry outtakeFlywheelSpeed;
   public OuttakeIOReal() {
     topOuttakeMotor = new TalonFX(Constants.OuttakeConstants.leftOuttakeDeviceID, Constants.DriveConstants.Drive.canivoreName);
     bottomOuttakeMotor = new TalonFX(Constants.OuttakeConstants.rightOuttakeDeviceID, Constants.DriveConstants.Drive.canivoreName);
     configOuttake(topOuttakeMotor);
     configOuttake(bottomOuttakeMotor);
+    if(Constants.debug)
+    {
+      tab = Shuffleboard.getTab("Outtake");
+      outtakeFlywheelSpeed = tab.add("Desired Flywheel Velocity (RPS)", 0).withSize(1, 1).withPosition(0, 0).getEntry();    }
   }
 
   private void configOuttake(TalonFX talon) {
@@ -48,9 +58,11 @@ public class OuttakeIOReal implements OuttakeIO {
     inputs.bottomCurrentAmps = bottomOuttakeMotor.getSupplyCurrent().getValue();
     inputs.bottomTempC = bottomOuttakeMotor.getDeviceTemp().getValue();
     inputs.bottomRotationsPerSec = bottomOuttakeMotor.getVelocity().getValue();
-
     inputs.bottomOuttakeIsAlive = bottomOuttakeMotor.isAlive();
     inputs.topOuttakeIsAlive = topOuttakeMotor.isAlive();
+    if(Constants.debug)
+      inputs.debugTargetRPS = outtakeFlywheelSpeed.getDouble(0);
+    
   }
 
   @Override

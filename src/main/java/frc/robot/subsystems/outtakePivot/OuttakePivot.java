@@ -62,6 +62,8 @@ public class OuttakePivot extends SubsystemBase {
 
   public void pivot(double rotations) {
     if (Constants.outtakeEnabled && initialized) {
+      if(Constants.debug)
+        rotations = inputs.targetPivotPosition;
       io.setPivotTarget(rotations);
       pivotTarget = rotations;
       Logger.recordOutput("OuttakePivot/TargetRotations", rotations);

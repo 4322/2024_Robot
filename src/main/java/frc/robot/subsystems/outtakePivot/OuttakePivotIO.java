@@ -14,6 +14,7 @@ public interface OuttakePivotIO {
 
     public double pivotEncoderRotations = 0.0;
     public double pivotEncoderRotationsPerSec = 0.0;
+    public double targetPivotPosition;
   }
 
   public default void updateInputs(OuttakePivotIOInputs inputs) {}
