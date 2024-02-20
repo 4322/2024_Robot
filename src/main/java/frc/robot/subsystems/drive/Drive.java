@@ -76,7 +76,7 @@ public class Drive extends SubsystemBase {
   private GenericEntry odometryY;
   private GenericEntry odometryDegrees;
   private GenericEntry angularVel;
-
+  Timer disconnectTimer;
   private double lastClosedRampRate = DriveConstants.Drive.closedLoopRampSec;
   private double lastOpenRampRate = DriveConstants.Drive.openLoopRampSec;
 
@@ -191,7 +191,7 @@ public class Drive extends SubsystemBase {
                 kinematics, getRotation2d(), getModulePostitions(), new Pose2d());
         resetFieldCentric();
       }
-
+    disconnectTimer = new Timer();
       if (Constants.debug) {
         tab = Shuffleboard.getTab("Drivebase");
 
@@ -288,7 +288,18 @@ public class Drive extends SubsystemBase {
         gyro.updateInputs(gyroInputs);
         Logger.processInputs("Drive/Gyro", gyroInputs);
         if (!gyroInputs.connected) {
-          DriverStation.reportWarning("Gyro disconnected", false);
+          disconnectTimer.start();
+          if(disconnectTimer.hasElapsed(5))
+          {
+            DriverStation.reportWarning("Gyro disconnected", false); //it will spam it from now until the gyro reconnects
+          }
+        }
+        else{
+          if(disconnectTimer.hasElapsed(0.01)) //this makes sure that it only stops it if it's been running since there's no running check
+          {
+            disconnectTimer.stop();
+            disconnectTimer.reset();
+          }
         }
       }
       updateVelAcc();
