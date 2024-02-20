@@ -51,7 +51,7 @@ public class AutoAcquireNote extends Command {
       return;
     }
     double yNoteDistance =
-        Constants.LimelightConstants.intakeLimelightHeight * Math.tan(Math.toRadians(65 - ty));
+        Constants.LimelightConstants.intakeLimelightHeight * Math.tan(Math.toRadians(90.0 + Constants.LimelightConstants.intakeLimelightAngle - ty));
     double xNoteDistance = Math.tan(Math.toRadians(tx)) * yNoteDistance;
     double noteDistance =
         Math.sqrt(xNoteDistance * xNoteDistance + yNoteDistance * yNoteDistance)

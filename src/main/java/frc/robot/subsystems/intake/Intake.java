@@ -143,7 +143,7 @@ public class Intake extends SubsystemBase {
 
   public void intake() {
     if (Constants.intakeEnabled && initialized) {
-      io.setFeedingVoltage(IntakeConstants.Feeder.intakeFeedVoltage);
+      io.setFeedingVoltage(inputs.intakeFeederVoltage);
       Logger.recordOutput(IntakeConstants.Logging.feederKey + "IntakeStopped", false);
       isFeeding = true;
     }
@@ -151,7 +151,7 @@ public class Intake extends SubsystemBase {
 
   public void outtake() {
     if (Constants.intakeEnabled && initialized) {
-      io.setFeedingVoltage(IntakeConstants.Feeder.intakeEjectVoltage);
+      io.setFeedingVoltage(inputs.intakeEjectVoltage);
       Logger.recordOutput(IntakeConstants.Logging.feederKey + "IntakeStopped", false);
       isFeeding = true;
     }
@@ -188,22 +188,22 @@ public class Intake extends SubsystemBase {
 
   public void deploy() {
     if (Constants.intakeEnabled && initialized) {
-      io.setDeployTarget(IntakeConstants.Deploy.deployPositionRotations);
-      deployTarget = IntakeConstants.Deploy.deployPositionRotations;
+      io.setDeployTarget(inputs.deployPositionRotations);
+      deployTarget = inputs.deployPositionRotations;
       Logger.recordOutput(
           IntakeConstants.Logging.deployerKey + "DeployTargetRotations",
-          IntakeConstants.Deploy.deployPositionRotations);
+          inputs.deployPositionRotations);
       Logger.recordOutput(IntakeConstants.Logging.deployerKey + "DeployStopped", false);
     }
   }
 
   public void retract() {
     if (Constants.intakeEnabled && initialized) {
-      io.setDeployTarget(IntakeConstants.Deploy.retractPositionRotations);
-      deployTarget = IntakeConstants.Deploy.retractPositionRotations;
+      io.setDeployTarget(inputs.retractPositionRotations);
+      deployTarget = inputs.retractPositionRotations;
       Logger.recordOutput(
           IntakeConstants.Logging.deployerKey + "DeployTargetRotations",
-          IntakeConstants.Deploy.retractPositionRotations);
+          inputs.retractPositionRotations);
       Logger.recordOutput(IntakeConstants.Logging.deployerKey + "DeployStopped", false);
     }
   }
@@ -216,14 +216,14 @@ public class Intake extends SubsystemBase {
   public boolean isDeployed() {
     return OrangeMath.equalToEpsilon(
         inputs.deployRotations,
-        IntakeConstants.Deploy.deployPositionRotations,
+        inputs.deployPositionRotations,
         IntakeConstants.Deploy.toleranceRotations);
   }
 
   public boolean isRetracted() {
     return OrangeMath.equalToEpsilon(
         inputs.deployRotations,
-        IntakeConstants.Deploy.retractPositionRotations,
+        inputs.retractPositionRotations,
         IntakeConstants.Deploy.toleranceRotations);
   }
 

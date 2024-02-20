@@ -545,7 +545,7 @@ public class Drive extends SubsystemBase {
   public boolean isPseudoAutoRotateEnabled() {
     if (Constants.driveEnabled) {
       if (Constants.debug) {
-        return driveShuffleBoardInputs.psuedoAutoRotateEnabled;
+        return driveShuffleBoardInputs.pseudoAutoRotateEnabled;
       }
     }
     return Constants.psuedoAutoRotateEnabled;

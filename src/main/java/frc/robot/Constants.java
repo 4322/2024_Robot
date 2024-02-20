@@ -371,32 +371,18 @@ public final class Constants {
 
   public static final class LimelightConstants {
     public static final double visionOdometryTolerance = 1.0;
-    public static final double outtakeLimelightAngle = 0;
+    public static final double outtakeLimelightAngle = 25;
     public static final double outtakeLimelightHeight = OrangeMath.inchesToMeters(26.125);
     public static final double outtakeLimelightXOffsetMeters = 0.0;
     public static final double outtakeLimelightYOffsetMeters = 0.0;
     public static final String outtakeLimelightName = "limelight-outtake";
 
-    public static final double intakeLimelightAngle = 0;
+    public static final double intakeLimelightAngle = -25;
     public static final double intakeLimelightHeight = OrangeMath.inchesToMeters(46.3);
     public static final double intakeLimeLightXOffsetMeters = 0.0;
     public static final double intakeLimelightYOffsetMeters = 0.0;
     public static final String intakeLimelightName = "limelight-intake";
 
-    // Tape heights are 1 inch higher than described in manual to account for
-    // height to center of tape
-    public static final double middleTapeHeight = OrangeMath.inchesToMeters(23.125);
-    public static final double highTapeHeight = OrangeMath.inchesToMeters(42.875);
-
-    // AprilTag heights are 4 inches higher than described in manual to account
-    // for height to center of tag
-    public static final double gridAprilTagHeight = OrangeMath.inchesToMeters(18.25);
-    public static final double singleSubstationAprilTagHeight =
-        OrangeMath.inchesToMeters(51.5); // TODO: adjust for field (VPHS = 55.75)
-
-    // Threshold for limelight tape target height
-    // above = high tape, below = middle tape
-    public static final double tapeTargetHeightThresholdDeg = 0;
 
     // Target alignment values
     public static final double substationMinLargeTargetArea =
@@ -405,22 +391,11 @@ public final class Constants {
         -10.02; // account for limelight being to the left of actual robot center
     public static final double substationTargetToleranceDeg =
         17.5; // human player can drop game piece to the side
-    public static final double gridMinHighTargetArea = 0.025;
-    public static final double gridMaxHighTargetArea = 0.2;
-    // For a given lateral alignment error, the mid target will be further off-center in the
-    // limelight image.
-    // Therefore, the mid tolerance should be about double the high tolerance.
-    public static final double gridMidTargetToleranceDeg = 2.0;
-    public static final double gridHighTargetToleranceDeg = 1.0;
 
     // List of tape pipelines (should only be 1 for now)
-    public static final List<Integer> tapePipelines = List.of(0);
 
     // Map of pipelines and tag heights
-    public static final Map<Integer, Double> tagPipelinesHeights =
-        Map.ofEntries(
-            Map.entry(1, gridAprilTagHeight), Map.entry(2, singleSubstationAprilTagHeight));
-  }
+    }
 
   public static final class FieldConstants {
     public static double xSpeakerPosM;
