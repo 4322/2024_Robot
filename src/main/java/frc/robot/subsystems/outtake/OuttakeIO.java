@@ -8,7 +8,7 @@ public interface OuttakeIO {
     public double topCurrentAmps = 0.0;
     public double topTempC = 0.0;
     public double topRotationsPerSec = 0.0;
-
+    public double debugTargetRPS = 0.0;
     public double bottomCurrentAmps = 0.0;
     public double bottomTempC = 0.0;
     public double bottomRotationsPerSec = 0.0;

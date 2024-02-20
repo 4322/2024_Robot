@@ -27,7 +27,7 @@ public class OuttakePivot extends SubsystemBase {
   private OuttakePivot() {
     switch (Constants.currentMode) {
       case REAL:
-        if (Constants.outtakeEnabled) {
+        if (Constants.outtakePivotEnabled) {
           io = new OuttakePivotIOReal();
         }
         break;
@@ -49,19 +49,21 @@ public class OuttakePivot extends SubsystemBase {
 
   public void periodic() {
     // initialize motor internal encoder position until the intake isn't moving
-    if (Constants.outtakeEnabled && !initialized && !existenceTimer.hasElapsed(5) 
+    if (Constants.outtakePivotEnabled && !initialized && !existenceTimer.hasElapsed(5) 
           && RobotCoordinator.getInstance().getInitAbsEncoderPressed()) {
       existenceTimer.start();
       initialized = io.initPivot();
     }
-    if (Constants.outtakeEnabled && initialized) {
+    if (Constants.outtakePivotEnabled && initialized) {
       io.updateInputs(inputs);
       Logger.processInputs("OuttakePivot", inputs);
     }
   }
 
   public void pivot(double rotations) {
-    if (Constants.outtakeEnabled && initialized) {
+    if (Constants.outtakePivotEnabled && initialized) {
+      if(Constants.debug)
+        rotations = inputs.targetPivotPosition;
       io.setPivotTarget(rotations);
       pivotTarget = rotations;
       Logger.recordOutput("OuttakePivot/TargetRotations", rotations);
@@ -70,7 +72,7 @@ public class OuttakePivot extends SubsystemBase {
   }
 
   public void resetPivot() {
-    if (Constants.outtakeEnabled && initialized) {
+    if (Constants.outtakePivotEnabled && initialized) {
       io.setPivotTarget(Constants.OuttakeConstants.defaultPivotPosition);
       pivotTarget = Constants.OuttakeConstants.defaultPivotPosition;
       Logger.recordOutput(
@@ -80,21 +82,21 @@ public class OuttakePivot extends SubsystemBase {
   }
 
   public void stopPivot() {
-    if (Constants.outtakeEnabled && initialized) {
+    if (Constants.outtakePivotEnabled && initialized) {
       io.stopPivot();
       Logger.recordOutput("OuttakePivot/Stopped", true);
     }
   }
 
   public void setCoastMode() {
-    if (Constants.outtakeEnabled && initialized) {
+    if (Constants.outtakePivotEnabled && initialized) {
       io.setCoastMode();
       Logger.recordOutput("OuttakePivot/NeutralMode", "Coast");
     }
   }
 
   public void setBrakeMode() {
-    if (Constants.outtakeEnabled && initialized) {
+    if (Constants.outtakePivotEnabled && initialized) {
       io.setBrakeMode();
       Logger.recordOutput("OuttakePivot/NeutralMode", "Brake");
     }
