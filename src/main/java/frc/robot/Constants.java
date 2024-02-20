@@ -280,11 +280,12 @@ public final class Constants {
     public static final boolean enableFOC = true;
     public static final int positionVoltageSlot = 0;
     public static final boolean overrideBrakeDuringNeutral = false;
+    public static final double pivotClosedLoopSec = 0; 
     public static final boolean limitForwardMotion = true;
     public static final boolean limitReverseMotion = true;
+    public static final double forwardSoftLimitThresholdRotations = 99; //TODO
+    public static final double reverseSoftLimitThresholdRotations = 0;
 
-    public static final double pivotClosedLoopSec = 0;
-    public static final double peakPivotVoltage = 0;
     public static final NeutralModeValue pivotDefaultNeutralMode = NeutralModeValue.Coast;
     public static final double defaultPivotPosition = 0;
 
