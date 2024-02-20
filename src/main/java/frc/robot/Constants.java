@@ -392,7 +392,12 @@ public final class Constants {
     // List of tape pipelines (should only be 1 for now)
 
     // Map of pipelines and tag heights
-    }
+  }
+
+  public static final class LED {
+    public static final int totalLEDs = 0; // TODO: find umber of INDIVIDUAL LEDs mounted on robot
+    public static final int CANdleID = 3;
+  }
 
   public static final class FieldConstants {
     public static double xSpeakerPosM;

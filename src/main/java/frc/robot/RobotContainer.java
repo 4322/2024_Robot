@@ -173,7 +173,6 @@ public class RobotContainer {
     tunnel.setBrakeMode();
     disableTimer.stop();
     disableTimer.reset();
-    led.periodic();
   }
 
   public void disableSubsystems() {
