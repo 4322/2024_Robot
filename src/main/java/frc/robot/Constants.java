@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -140,6 +141,7 @@ public final class Constants {
 
     public static final double spinoutCenterPower = 1.0;
     public static final double spinoutCornerPower = 0.75;
+    public static final double encoderResolution = 0; //TODO
 
     public static final class Manual {
 
@@ -210,6 +212,14 @@ public final class Constants {
       public static final int stallLimit = 5; // TODO
 
       public static final double allowableClosedloopError = 0.35; // degrees
+      public static final double[] CANCoderOffsetRotations;
+      static {
+        CANCoderOffsetRotations = new double[4];
+        CANCoderOffsetRotations[WheelPosition.FRONT_RIGHT.wheelNumber] = 149.941;
+        CANCoderOffsetRotations[WheelPosition.FRONT_LEFT.wheelNumber] = 2.637 - 90;
+        CANCoderOffsetRotations[WheelPosition.BACK_RIGHT.wheelNumber] = 22.939 - 90;
+        CANCoderOffsetRotations[WheelPosition.BACK_LEFT.wheelNumber] = -72.773;
+      }
     }
 
     public static final class Drive {

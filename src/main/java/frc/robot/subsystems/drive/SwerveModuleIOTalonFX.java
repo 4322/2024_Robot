@@ -1,5 +1,8 @@
 package frc.robot.subsystems.drive;
 
+import com.ctre.phoenix.ErrorCode;
+import com.ctre.phoenix.sensors.CANCoderStatusFrame;
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
@@ -16,6 +19,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.WheelPosition;
@@ -66,7 +70,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
 
     configDrive(driveMotor, wheelPos);
 
-    configRotation(turningMotor);
+    configRotation(turningMotor, wheelPos);
   }
 
   private void configDrive(TalonFX talonFX, WheelPosition pos) {
@@ -102,7 +106,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
             Constants.controllerConfigTimeoutMs);
   }
 
-  private void configRotation(TalonFX talonFX) {
+  private void configRotation(TalonFX talonFX, WheelPosition wheelPos) {
     talonFX.getConfigurator().apply(new TalonFXConfiguration());
 
     Slot0Configs slot0Configs = new Slot0Configs();
@@ -131,7 +135,23 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     talonFX.getConfigurator().apply(closedLoopGeneralConfigs);
     talonFX.getConfigurator().apply(voltageConfigs);
     talonFX.getConfigurator().apply(motorOutputConfigs);
-    // need rapid position feedback for steering control
+        // need fast initial reading from the CANCoder
+    encoder.getPosition().setUpdateFrequency(OrangeMath.msAndHzConverter(Constants.controllerConfigTimeoutMs));
+    try {
+      Thread.sleep(50); // 5 status frames to be safe
+    } catch (InterruptedException e) {
+    }
+
+    // initialize internal Falcon encoder to absolute wheel position from CANCoder
+    double count = (encoder.getAbsolutePosition().getValueAsDouble()
+        - DriveConstants.Rotation.CANCoderOffsetRotations[wheelPos.wheelNumber]);
+    StatusCode error = talonFX.setPosition(count, Constants.controllerConfigTimeoutMs);
+    if (error != StatusCode.OK) {
+      DriverStation.reportError(
+          "Error " + error.value + " initializing Talon FX " + talonFX.getDeviceID() + " position ",
+          false);
+    }
+        // need rapid position feedback for steering control
     talonFX
         .getPosition()
         .setUpdateFrequency(
