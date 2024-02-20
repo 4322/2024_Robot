@@ -3,6 +3,7 @@ package frc.robot.subsystems.outtakePivot;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -24,10 +25,8 @@ public class OuttakePivotIOReal implements OuttakePivotIO {
   GenericEntry pivotPosition;
 
   public OuttakePivotIOReal() {
-    pivotMotor =
-        new TalonFX(
-            Constants.OuttakeConstants.pivotDeviceID, Constants.DriveConstants.Drive.canivoreName);
-    pivotEncoder = new Canandcoder(Constants.OuttakeConstants.pivotEncoderID);
+    pivotMotor = new TalonFX(OuttakeConstants.pivotDeviceID, Constants.DriveConstants.Drive.canivoreName);
+    pivotEncoder = new Canandcoder(OuttakeConstants.pivotEncoderID);
     configPivot();
     if (Constants.debug) {
       tab = Shuffleboard.getTab("Outtake");
@@ -41,18 +40,22 @@ public class OuttakePivotIOReal implements OuttakePivotIO {
     VoltageConfigs voltageConfigs = new VoltageConfigs();
     ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
     MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
+    SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
     slot0Configs.kP = Constants.OuttakeConstants.pivotkP;
-    slot0Configs.kI = Constants.OuttakeConstants.pivotkI;
-    slot0Configs.kD = Constants.OuttakeConstants.pivotkD;
+    slot0Configs.kI = OuttakeConstants.pivotkI;
+    slot0Configs.kD = OuttakeConstants.pivotkD;
     closedLoopRampsConfigs.VoltageClosedLoopRampPeriod =
-        Constants.OuttakeConstants.pivotClosedLoopSec;
-    voltageConfigs.PeakForwardVoltage = Constants.OuttakeConstants.peakPivotVoltage;
-    voltageConfigs.PeakReverseVoltage = -Constants.OuttakeConstants.peakPivotVoltage;
-    motorOutputConfigs.NeutralMode = Constants.OuttakeConstants.pivotDefaultNeutralMode;
+        OuttakeConstants.pivotClosedLoopSec;
+    motorOutputConfigs.NeutralMode = OuttakeConstants.pivotDefaultNeutralMode;
+    softwareLimitSwitchConfigs.ForwardSoftLimitEnable = OuttakeConstants.limitForwardMotion;
+    softwareLimitSwitchConfigs.ReverseSoftLimitEnable = OuttakeConstants.limitReverseMotion;
+    softwareLimitSwitchConfigs.ForwardSoftLimitThreshold = OuttakeConstants.forwardSoftLimitThresholdRotations;
+    softwareLimitSwitchConfigs.ReverseSoftLimitThreshold = OuttakeConstants.reverseSoftLimitThresholdRotations;
     pivotMotor.getConfigurator().apply(slot0Configs);
     pivotMotor.getConfigurator().apply(closedLoopRampsConfigs);
     pivotMotor.getConfigurator().apply(voltageConfigs);
     pivotMotor.getConfigurator().apply(motorOutputConfigs);
+    pivotMotor.getConfigurator().apply(softwareLimitSwitchConfigs);
   }
 
   @Override

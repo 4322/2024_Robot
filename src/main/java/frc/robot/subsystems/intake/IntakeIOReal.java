@@ -3,6 +3,7 @@ package frc.robot.subsystems.intake;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -15,6 +16,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.OuttakeConstants;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -106,6 +108,7 @@ public class IntakeIOReal implements IntakeIO {
     ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
     VoltageConfigs voltageConfigs = new VoltageConfigs();
     MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
+    SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
 
     slot0Configs.kP = IntakeConstants.DeployConfig.kP;
     slot0Configs.kD = IntakeConstants.DeployConfig.kD;
@@ -114,6 +117,10 @@ public class IntakeIOReal implements IntakeIO {
     voltageConfigs.PeakForwardVoltage = IntakeConstants.DeployConfig.maxVoltage;
     voltageConfigs.PeakReverseVoltage = -IntakeConstants.DeployConfig.maxVoltage;
     motorOutputConfigs.NeutralMode = IntakeConstants.DeployConfig.neutralMode;
+    softwareLimitSwitchConfigs.ForwardSoftLimitEnable = IntakeConstants.DeployConfig.limitForwardMotion;
+    softwareLimitSwitchConfigs.ReverseSoftLimitEnable = IntakeConstants.DeployConfig.limitReverseMotion;
+    softwareLimitSwitchConfigs.ForwardSoftLimitThreshold = IntakeConstants.DeployConfig.forwardSoftLimitThresholdRotations;
+    softwareLimitSwitchConfigs.ReverseSoftLimitThreshold = IntakeConstants.DeployConfig.reverseSoftLimitThresholdRotations;
 
     deploy.getConfigurator().apply(slot0Configs);
     deploy.getConfigurator().apply(closedLoopRampsConfigs);
