@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.Constants.OuttakeConstants;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -117,10 +116,14 @@ public class IntakeIOReal implements IntakeIO {
     voltageConfigs.PeakForwardVoltage = IntakeConstants.DeployConfig.maxVoltage;
     voltageConfigs.PeakReverseVoltage = -IntakeConstants.DeployConfig.maxVoltage;
     motorOutputConfigs.NeutralMode = IntakeConstants.DeployConfig.neutralMode;
-    softwareLimitSwitchConfigs.ForwardSoftLimitEnable = IntakeConstants.DeployConfig.limitForwardMotion;
-    softwareLimitSwitchConfigs.ReverseSoftLimitEnable = IntakeConstants.DeployConfig.limitReverseMotion;
-    softwareLimitSwitchConfigs.ForwardSoftLimitThreshold = IntakeConstants.DeployConfig.forwardSoftLimitThresholdRotations;
-    softwareLimitSwitchConfigs.ReverseSoftLimitThreshold = IntakeConstants.DeployConfig.reverseSoftLimitThresholdRotations;
+    softwareLimitSwitchConfigs.ForwardSoftLimitEnable =
+        IntakeConstants.DeployConfig.limitForwardMotion;
+    softwareLimitSwitchConfigs.ReverseSoftLimitEnable =
+        IntakeConstants.DeployConfig.limitReverseMotion;
+    softwareLimitSwitchConfigs.ForwardSoftLimitThreshold =
+        IntakeConstants.DeployConfig.forwardSoftLimitThresholdRotations;
+    softwareLimitSwitchConfigs.ReverseSoftLimitThreshold =
+        IntakeConstants.DeployConfig.reverseSoftLimitThresholdRotations;
 
     deploy.getConfigurator().apply(slot0Configs);
     deploy.getConfigurator().apply(closedLoopRampsConfigs);

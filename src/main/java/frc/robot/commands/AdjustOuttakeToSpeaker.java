@@ -21,8 +21,10 @@ public class AdjustOuttakeToSpeaker extends Command {
 
   @Override
   public void execute() {
-    if (RobotCoordinator.getInstance().onOurSideOfField() && RobotCoordinator.getInstance().canPivot()) {
-      FiringSolution firingSolution = FiringSolutionManager.getInstance()
+    if (RobotCoordinator.getInstance().onOurSideOfField()
+        && RobotCoordinator.getInstance().canPivot()) {
+      FiringSolution firingSolution =
+          FiringSolutionManager.getInstance()
               .calcSolution(
                   FiringSolutionHelper.getMag(
                       RobotCoordinator.getInstance().getRobotXPos(),
@@ -31,7 +33,7 @@ public class AdjustOuttakeToSpeaker extends Command {
                           RobotCoordinator.getInstance().getRobotXPos(),
                           RobotCoordinator.getInstance().getRobotYPos())
                       .getDegrees());
-      
+
       outtake.outtake(firingSolution.getFlywheelSpeed());
       // divide by 360 because pivot uses rotations instead of degrees
       outtake.pivot(firingSolution.getShotAngle() / 360);

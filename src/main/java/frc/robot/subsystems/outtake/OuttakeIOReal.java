@@ -11,14 +11,12 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandcoder.Canandcoder;
-
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants;
 import frc.robot.Constants.OuttakeConstants;
 import frc.utility.OrangeMath;
-
 import org.littletonrobotics.junction.Logger;
 
 public class OuttakeIOReal implements OuttakeIO {
@@ -40,9 +38,10 @@ public class OuttakeIOReal implements OuttakeIO {
         new TalonFX(
             Constants.OuttakeConstants.rightOuttakeDeviceID,
             Constants.DriveConstants.Drive.canivoreName);
-    pivotMotor = new TalonFX(OuttakeConstants.pivotDeviceID, Constants.DriveConstants.Drive.canivoreName);
+    pivotMotor =
+        new TalonFX(OuttakeConstants.pivotDeviceID, Constants.DriveConstants.Drive.canivoreName);
     pivotEncoder = new Canandcoder(OuttakeConstants.pivotEncoderID);
-    
+
     configOuttake(topOuttakeMotor);
     configOuttake(bottomOuttakeMotor);
     configPivot(pivotMotor);
@@ -54,10 +53,7 @@ public class OuttakeIOReal implements OuttakeIO {
               .withPosition(0, 0)
               .getEntry();
       pivotPosition =
-          tab.add("Pivot Position (Rotations)", 0)
-              .withSize(1, 1)
-              .withPosition(1, 0)
-              .getEntry();
+          tab.add("Pivot Position (Rotations)", 0).withSize(1, 1).withPosition(1, 0).getEntry();
     }
   }
 
@@ -88,13 +84,14 @@ public class OuttakeIOReal implements OuttakeIO {
     slot0Configs.kP = Constants.OuttakeConstants.pivotkP;
     slot0Configs.kI = OuttakeConstants.pivotkI;
     slot0Configs.kD = OuttakeConstants.pivotkD;
-    closedLoopRampsConfigs.VoltageClosedLoopRampPeriod =
-        OuttakeConstants.pivotClosedLoopSec;
+    closedLoopRampsConfigs.VoltageClosedLoopRampPeriod = OuttakeConstants.pivotClosedLoopSec;
     motorOutputConfigs.NeutralMode = OuttakeConstants.pivotDefaultNeutralMode;
     softwareLimitSwitchConfigs.ForwardSoftLimitEnable = OuttakeConstants.limitForwardMotion;
     softwareLimitSwitchConfigs.ReverseSoftLimitEnable = OuttakeConstants.limitReverseMotion;
-    softwareLimitSwitchConfigs.ForwardSoftLimitThreshold = OuttakeConstants.forwardSoftLimitThresholdRotations;
-    softwareLimitSwitchConfigs.ReverseSoftLimitThreshold = OuttakeConstants.reverseSoftLimitThresholdRotations;
+    softwareLimitSwitchConfigs.ForwardSoftLimitThreshold =
+        OuttakeConstants.forwardSoftLimitThresholdRotations;
+    softwareLimitSwitchConfigs.ReverseSoftLimitThreshold =
+        OuttakeConstants.reverseSoftLimitThresholdRotations;
     talon.getConfigurator().apply(slot0Configs);
     talon.getConfigurator().apply(closedLoopRampsConfigs);
     talon.getConfigurator().apply(voltageConfigs);

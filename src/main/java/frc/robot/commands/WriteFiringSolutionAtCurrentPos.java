@@ -27,7 +27,8 @@ public class WriteFiringSolutionAtCurrentPos extends InstantCommand {
   public void initialize() {
     if (Constants.inShotTuning) {
       Translation2d rawTranslation =
-          FiringSolutionHelper.getVectorToSpeaker(drive.getPose2d().getX(), drive.getPose2d().getY());
+          FiringSolutionHelper.getVectorToSpeaker(
+              drive.getPose2d().getX(), drive.getPose2d().getY());
       shotAngle = rawTranslation.getAngle().getDegrees();
       // Calculates magnitude from x and y vals
       shotMag =

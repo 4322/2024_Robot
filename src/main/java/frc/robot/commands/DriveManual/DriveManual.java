@@ -12,8 +12,8 @@ import frc.robot.RobotContainer;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualState;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.subsystems.drive.Drive;
-import frc.utility.OrangeMath;
 import frc.utility.FiringSolutionHelper;
+import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
 public class DriveManual extends Command {

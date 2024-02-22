@@ -72,7 +72,7 @@ public class ScoreCenterLine extends Command {
       case TopShoot:
       case MiddleShoot:
       case BottomShoot:
-      case EndPos:
+      case BottomEndPos:
         return true;
       default:
         return false;

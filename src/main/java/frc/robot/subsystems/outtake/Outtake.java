@@ -113,7 +113,6 @@ public class Outtake extends SubsystemBase {
     }
   }
 
-
   public void stopOuttake() {
     if (Constants.outtakeEnabled) {
       io.stopOuttake();
