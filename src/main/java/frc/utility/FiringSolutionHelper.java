@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.FieldConstants;
 
-public class PositionVector {
+public class FiringSolutionHelper {
   // 218.353069 inches
   private static double distance;
   private static double angleRadians;
