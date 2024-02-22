@@ -3,6 +3,7 @@ package frc.robot.subsystems.outtake;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.OuttakeConstants;
+import frc.robot.subsystems.RobotCoordinator;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -10,6 +11,9 @@ public class Outtake extends SubsystemBase {
   private OuttakeIO io;
   private OuttakeIOInputsAutoLogged inputs = new OuttakeIOInputsAutoLogged();
   private double targetRPS;
+  private Timer existenceTimer;
+  private double pivotTarget;
+  private boolean initialized;
 
   private static Outtake outtake;
 
@@ -35,13 +39,27 @@ public class Outtake extends SubsystemBase {
     if (io == null) {
       io = new OuttakeIO() {};
     }
+
+    existenceTimer = new Timer();
   }
 
   public double getTargetRPS() {
     return targetRPS;
   }
 
+  public double getTarget() {
+    return pivotTarget;
+  }
+
   public void periodic() {
+    // initialize motor internal encoder position until the intake isn't moving
+    if (Constants.outtakePivotEnabled
+        && !initialized
+        && !existenceTimer.hasElapsed(5)
+        && RobotCoordinator.getInstance().getInitAbsEncoderPressed()) {
+      existenceTimer.start();
+      initialized = io.initPivot();
+    }
     if (Constants.outtakeEnabled) {
       io.updateInputs(inputs);
       Logger.processInputs("Outtake", inputs);
@@ -66,6 +84,34 @@ public class Outtake extends SubsystemBase {
       Logger.recordOutput("Outtake/OuttakeStopped", false);
     }
   }
+
+  public void pivot(double rotations) {
+    if (Constants.outtakePivotEnabled && initialized) {
+      if (Constants.debug) rotations = inputs.targetPivotPosition;
+      io.setPivotTarget(rotations);
+      pivotTarget = rotations;
+      Logger.recordOutput("OuttakePivot/TargetRotations", rotations);
+      Logger.recordOutput("OuttakePivot/Stopped", false);
+    }
+  }
+
+  public void resetPivot() {
+    if (Constants.outtakePivotEnabled && initialized) {
+      io.setPivotTarget(Constants.OuttakeConstants.defaultPivotPosition);
+      pivotTarget = Constants.OuttakeConstants.defaultPivotPosition;
+      Logger.recordOutput(
+          "OuttakePivot/TargetRotations", Constants.OuttakeConstants.defaultPivotPosition);
+      Logger.recordOutput("OuttakePivot/Stopped", false);
+    }
+  }
+
+  public void stopPivot() {
+    if (Constants.outtakePivotEnabled && initialized) {
+      io.stopPivot();
+      Logger.recordOutput("OuttakePivot/Stopped", true);
+    }
+  }
+
 
   public void stopOuttake() {
     if (Constants.outtakeEnabled) {
@@ -95,5 +141,14 @@ public class Outtake extends SubsystemBase {
             inputs.topRotationsPerSec, targetRPS, OuttakeConstants.outtakeToleranceRPS)
         && OrangeMath.equalToEpsilon(
             inputs.bottomRotationsPerSec, targetRPS, OuttakeConstants.outtakeToleranceRPS));
+  }
+
+  public boolean isAtPosition() {
+    return OrangeMath.equalToEpsilon(
+        inputs.pivotRotations, pivotTarget, OuttakeConstants.pivotToleranceRotations);
+  }
+
+  public boolean isInitialized() {
+    return initialized;
   }
 }
