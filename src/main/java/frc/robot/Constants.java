@@ -220,7 +220,7 @@ public final class Constants {
       public static final double brakeModeDeadband = 0.01;
 
       public static final int currentLimit = 40;
-      public static final int secondaryCurrentLimit = 100;
+      public static final int secondaryCurrentLimit = 80;
 
       public static final double wheelDiameterInches = 3.9;
 
