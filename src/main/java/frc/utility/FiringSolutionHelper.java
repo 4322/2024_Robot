@@ -12,8 +12,8 @@ public class FiringSolutionHelper {
   private static double angleRadians;
   private static Rotation2d angle;
   private static Translation2d vector;
-  private static double xDistToTarget;
-  private static double yDistToTarget;
+  private static double xComponentToTarget;
+  private static double yComponentToTarget;
 
   public static Translation2d getVectorToSpeaker(
       double x, double y) { // Position of robot relative to origin ()
@@ -22,10 +22,10 @@ public class FiringSolutionHelper {
             ((x - FieldConstants.xSpeakerPosM) * (x - FieldConstants.xSpeakerPosM))
                 + ((y - FieldConstants.ySpeakerPosM) * (y - FieldConstants.ySpeakerPosM)));
 
-    xDistToTarget = Math.abs(x - FieldConstants.xSpeakerPosM);
-    yDistToTarget = Math.abs(y - FieldConstants.ySpeakerPosM);
+    xComponentToTarget = Math.abs(x - FieldConstants.xSpeakerPosM);
+    yComponentToTarget = y - FieldConstants.ySpeakerPosM;
 
-    angleRadians = Math.atan2(yDistToTarget, xDistToTarget);
+    angleRadians = Math.atan2(yComponentToTarget, xComponentToTarget);
 
     if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
       angleRadians = -angleRadians; // Flip by pi radian if red
@@ -47,12 +47,14 @@ public class FiringSolutionHelper {
     // negative on red
     if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
       return new Rotation2d(
-        -Math.atan2(
-            Math.abs(y - FieldConstants.ySpeakerPosM), Math.abs(x - FieldConstants.xSpeakerPosM)));
+          -Math.atan2(
+              Math.abs(y - FieldConstants.ySpeakerPosM),
+              Math.abs(x - FieldConstants.xSpeakerPosM)));
     } else {
       return new Rotation2d(
           Math.atan2(
-              Math.abs(y - FieldConstants.ySpeakerPosM), Math.abs(x - FieldConstants.xSpeakerPosM)));
+              Math.abs(y - FieldConstants.ySpeakerPosM),
+              Math.abs(x - FieldConstants.xSpeakerPosM)));
     }
   }
 }
