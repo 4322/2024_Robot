@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.outtake.Outtake;
@@ -20,9 +21,8 @@ public class AdjustOuttakeToSpeaker extends Command {
 
   @Override
   public void execute() {
-    if (RobotCoordinator.getInstance().onOurSideOfField()) {
-      outtake.outtake(
-          FiringSolutionManager.getInstance()
+    if (RobotCoordinator.getInstance().onOurSideOfField() && RobotCoordinator.getInstance().canPivot()) {
+      FiringSolution firingSolution = FiringSolutionManager.getInstance()
               .calcSolution(
                   PositionVector.getMag(
                       RobotCoordinator.getInstance().getRobotXPos(),
@@ -30,22 +30,11 @@ public class AdjustOuttakeToSpeaker extends Command {
                   PositionVector.getAngle(
                           RobotCoordinator.getInstance().getRobotXPos(),
                           RobotCoordinator.getInstance().getRobotYPos())
-                      .getDegrees())
-              .getFlywheelSpeed());
-    }
-
-    if (RobotCoordinator.getInstance().canPivot() && RobotCoordinator.getInstance().onOurSideOfField()) {
+                      .getDegrees());
+      
+      outtake.outtake(firingSolution.getFlywheelSpeed());
       // divide by 360 because pivot uses rotations instead of degrees
-      outtake.pivot(
-          FiringSolutionManager.getInstance()
-                  .calcSolution(
-                      PositionVector.getMag(
-                          RobotCoordinator.getInstance().getRobotXPos(), RobotCoordinator.getInstance().getRobotYPos()),
-                      PositionVector.getAngle(
-                              RobotCoordinator.getInstance().getRobotXPos(), RobotCoordinator.getInstance().getRobotYPos())
-                          .getDegrees())
-                  .getShotAngle()
-              / 360);
+      outtake.pivot(firingSolution.getShotAngle() / 360);
     }
   }
 
