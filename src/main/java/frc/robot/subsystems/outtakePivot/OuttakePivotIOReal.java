@@ -25,7 +25,8 @@ public class OuttakePivotIOReal implements OuttakePivotIO {
   GenericEntry pivotPosition;
 
   public OuttakePivotIOReal() {
-    pivotMotor = new TalonFX(OuttakeConstants.pivotDeviceID, Constants.DriveConstants.Drive.canivoreName);
+    pivotMotor =
+        new TalonFX(OuttakeConstants.pivotDeviceID, Constants.DriveConstants.Drive.canivoreName);
     pivotEncoder = new Canandcoder(OuttakeConstants.pivotEncoderID);
     configPivot();
     if (Constants.debug) {
@@ -44,13 +45,14 @@ public class OuttakePivotIOReal implements OuttakePivotIO {
     slot0Configs.kP = Constants.OuttakeConstants.pivotkP;
     slot0Configs.kI = OuttakeConstants.pivotkI;
     slot0Configs.kD = OuttakeConstants.pivotkD;
-    closedLoopRampsConfigs.VoltageClosedLoopRampPeriod =
-        OuttakeConstants.pivotClosedLoopSec;
+    closedLoopRampsConfigs.VoltageClosedLoopRampPeriod = OuttakeConstants.pivotClosedLoopSec;
     motorOutputConfigs.NeutralMode = OuttakeConstants.pivotDefaultNeutralMode;
     softwareLimitSwitchConfigs.ForwardSoftLimitEnable = OuttakeConstants.limitForwardMotion;
     softwareLimitSwitchConfigs.ReverseSoftLimitEnable = OuttakeConstants.limitReverseMotion;
-    softwareLimitSwitchConfigs.ForwardSoftLimitThreshold = OuttakeConstants.forwardSoftLimitThresholdRotations;
-    softwareLimitSwitchConfigs.ReverseSoftLimitThreshold = OuttakeConstants.reverseSoftLimitThresholdRotations;
+    softwareLimitSwitchConfigs.ForwardSoftLimitThreshold =
+        OuttakeConstants.forwardSoftLimitThresholdRotations;
+    softwareLimitSwitchConfigs.ReverseSoftLimitThreshold =
+        OuttakeConstants.reverseSoftLimitThresholdRotations;
     pivotMotor.getConfigurator().apply(slot0Configs);
     pivotMotor.getConfigurator().apply(closedLoopRampsConfigs);
     pivotMotor.getConfigurator().apply(voltageConfigs);

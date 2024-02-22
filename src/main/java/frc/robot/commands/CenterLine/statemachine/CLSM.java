@@ -20,7 +20,7 @@ public class CLSM {
     Note3,
     Note4,
     Note5,
-    EndPos,
+    BottomEndPos,
     Done
   }
 
@@ -52,7 +52,7 @@ public class CLSM {
     N4ToMS,
     N4ToBS,
     N5ToBS,
-    N5ToEndPos,
+    N5ToBottomEndPos,
     USToN1,
     USToN2,
     USToN3,
@@ -60,7 +60,7 @@ public class CLSM {
     MSToN4,
     BSToN4,
     BSToN5,
-    BSToEndPos,
+    BSToBottomEndPos,
     Done
   }
 
@@ -114,7 +114,9 @@ public class CLSM {
                 CLSMState.BottomShoot,
                 () -> setTravelState(TravelState.N5ToBS))
             .permit(
-                CLSMTrigger.NoNote, CLSMState.EndPos, () -> setTravelState(TravelState.N5ToEndPos));
+                CLSMTrigger.NoNote,
+                CLSMState.BottomEndPos,
+                () -> setTravelState(TravelState.N5ToBottomEndPos));
         config
             .configure(CLSMState.TopShoot)
             .permitIf(
@@ -151,11 +153,11 @@ public class CLSM {
                 () -> setTravelState(TravelState.BSToN5))
             .permitIf(
                 CLSMTrigger.Finished,
-                CLSMState.EndPos,
+                CLSMState.BottomEndPos,
                 () -> !noteStatus.note5Available,
-                () -> setTravelState(TravelState.BSToEndPos));
+                () -> setTravelState(TravelState.BSToBottomEndPos));
         config
-            .configure(CLSMState.EndPos)
+            .configure(CLSMState.BottomEndPos)
             .permit(CLSMTrigger.Finished, CLSMState.Done, () -> setTravelState(TravelState.Done));
         break;
       default: // empty config
