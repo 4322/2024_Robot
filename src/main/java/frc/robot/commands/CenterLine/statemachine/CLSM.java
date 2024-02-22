@@ -21,7 +21,7 @@ public class CLSM {
     Note4,
     Note5,
     BottomEndPos,
-    Done
+    Done // this doesn't correspond to a physical position
   }
 
   public enum CLSMTrigger {
