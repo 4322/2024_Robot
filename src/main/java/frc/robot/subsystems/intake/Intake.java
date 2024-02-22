@@ -1,38 +1,22 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.commands.AutoAcquireNote;
-import frc.robot.commands.XboxControllerRumble;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
 
-  public enum IntakeStates {
-    retracted,
-    deploying,
-    feeding,
-    noteObtained,
-    notePastIntake,
-    retracting;
-  }
-
   private IntakeIO io;
   private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
-  private IntakeStates intakeState = IntakeStates.retracted;
   private Timer existenceTimer;
   private boolean initialized;
   private double deployTarget = 99999; // set to very high value in case target not yet set
   private boolean isFeeding;
   private boolean deployRequested;
-
-  private AutoAcquireNote autoAcquireNote = new AutoAcquireNote();
-  private XboxControllerRumble xBoxRumble = new XboxControllerRumble();
 
   private static Intake intake;
 
@@ -76,70 +60,6 @@ public class Intake extends SubsystemBase {
     if (Constants.intakeEnabled) {
       io.updateInputs(inputs);
       Logger.processInputs(IntakeConstants.Logging.key, inputs);
-
-      switch (intakeState) {
-        case retracted:
-          if (coordinator.getIntakeButtonPressed()
-              && (coordinator.onOurSideOfField() || !coordinator.noteInRobot())) {
-            intakeState = IntakeStates.deploying;
-          }
-          break;
-        case deploying:
-          if (coordinator.canDeploy()) {
-            deploy();
-          }
-          if (!coordinator.getIntakeButtonPressed()) {
-            intakeState = IntakeStates.retracting;
-          } else if (isDeployed() && !coordinator.noteInRobot()) {
-            intakeState = IntakeStates.feeding;
-          } else if (coordinator.noteInRobot() && isDeployed()) {
-            intakeState = IntakeStates.notePastIntake;
-          }
-          break;
-        case feeding:
-          if (coordinator.isIntakeDeployed()) {
-            intake();
-          }
-          if (!coordinator.getIntakeButtonPressed()) {
-            intakeState = IntakeStates.retracting;
-          } else if (coordinator.noteInIntake()) {
-            intakeState = IntakeStates.noteObtained;
-          } else if (coordinator.getAutoIntakeButtonPressed() && coordinator.noteInVision()) {
-            if (!autoAcquireNote.isScheduled()) {
-              CommandScheduler.getInstance().schedule(autoAcquireNote);
-            }
-          }
-          break;
-        case noteObtained:
-          if (coordinator.isIntakeDeployed()) {
-            intake();
-          }
-          if (!coordinator.noteInIntake()) {
-            CommandScheduler.getInstance().schedule(xBoxRumble);
-            intakeState = IntakeStates.notePastIntake;
-          }
-          break;
-        case notePastIntake:
-          stopFeeder();
-          if (!coordinator.onOurSideOfField() || !coordinator.getIntakeButtonPressed()) {
-            intakeState = IntakeStates.retracting;
-          } else if (!coordinator.noteInRobot()) {
-            intakeState = IntakeStates.feeding;
-          }
-          break;
-        case retracting:
-          stopFeeder();
-          if (coordinator.canRetract()) {
-            retract();
-          }
-          if (coordinator.getIntakeButtonPressed()
-              && (coordinator.onOurSideOfField() || !coordinator.noteInRobot())) {
-            intakeState = IntakeStates.deploying;
-          } else if (coordinator.isIntakeRetracted()) {
-            intakeState = IntakeStates.retracted;
-          }
-          break;
-      }
     }
   }
 
@@ -246,13 +166,5 @@ public class Intake extends SubsystemBase {
 
   public boolean isFeeding() {
     return isFeeding;
-  }
-
-  public IntakeStates getState() {
-    return intakeState;
-  }
-
-  public void setState(IntakeStates newState) {
-    intakeState = newState;
   }
 }

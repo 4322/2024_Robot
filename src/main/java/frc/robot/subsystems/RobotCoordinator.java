@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.BeamBreakConstants;
+import frc.robot.commands.IntakeManual;
+import frc.robot.commands.IntakeManual.IntakeStates;
 import frc.robot.Robot;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
@@ -129,6 +131,14 @@ public class RobotCoordinator extends SubsystemBase {
 
   public boolean canDeploy() {
     return intake.isInitialized() && !intake.isDeployed();
+  }
+
+  public boolean intakeIsDeployed() {
+    return intake.isDeployed();
+  }
+
+  public IntakeStates getIntakeState() {
+    return IntakeManual.getIntakeState();
   }
 
   public boolean isInitialized() {

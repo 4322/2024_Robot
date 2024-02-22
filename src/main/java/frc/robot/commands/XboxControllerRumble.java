@@ -5,8 +5,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.RobotCoordinator;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.Intake.IntakeStates;
 
 public class XboxControllerRumble extends Command {
 
@@ -23,7 +21,7 @@ public class XboxControllerRumble extends Command {
   public void execute() {
     if (RobotCoordinator.getInstance().noteInFiringPosition()
         && !hasRumbled
-        && Intake.getInstance().getState() == IntakeStates.notePastIntake) {
+        && RobotCoordinator.getInstance().getIntakeState() == IntakeManual.IntakeStates.notePastIntake) {
       rumbleTimer.start();
       RobotContainer.xbox.getHID().setRumble(RumbleType.kBothRumble, 1);
     }
