@@ -14,7 +14,7 @@ public class Outtake extends SubsystemBase {
   private double targetRPS;
   private Timer existenceTimer;
   private double pivotTarget;
-  private boolean initialized;
+  private boolean pivotInitialized;
 
   private static Outtake outtake;
 
@@ -55,11 +55,11 @@ public class Outtake extends SubsystemBase {
   public void periodic() {
     // initialize motor internal encoder position until the intake isn't moving
     if (Constants.outtakePivotEnabled
-        && !initialized
+        && !pivotInitialized
         && !existenceTimer.hasElapsed(5)
         && RobotCoordinator.getInstance().getInitAbsEncoderPressed()) {
       existenceTimer.start();
-      initialized = io.initPivot();
+      pivotInitialized = io.initPivot();
     }
     if (Constants.outtakeEnabled) {
       io.updateInputs(inputs);
@@ -87,7 +87,7 @@ public class Outtake extends SubsystemBase {
   }
 
   public void pivot(double rotations) {
-    if (Constants.outtakePivotEnabled && initialized) {
+    if (Constants.outtakePivotEnabled && pivotInitialized) {
       if (Constants.debug) rotations = inputs.targetPivotPosition;
       io.setPivotTarget(rotations);
       pivotTarget = rotations;
@@ -97,7 +97,7 @@ public class Outtake extends SubsystemBase {
   }
 
   public void resetPivot() {
-    if (Constants.outtakePivotEnabled && initialized) {
+    if (Constants.outtakePivotEnabled && pivotInitialized) {
       io.setPivotTarget(Constants.OuttakeConstants.defaultPivotPosition);
       pivotTarget = Constants.OuttakeConstants.defaultPivotPosition;
       Logger.recordOutput(
@@ -107,7 +107,7 @@ public class Outtake extends SubsystemBase {
   }
 
   public void stopPivot() {
-    if (Constants.outtakePivotEnabled && initialized) {
+    if (Constants.outtakePivotEnabled && pivotInitialized) {
       io.stopPivot();
       Logger.recordOutput("Outtake/PivotStopped", true);
     }
@@ -144,12 +144,12 @@ public class Outtake extends SubsystemBase {
             inputs.bottomRotationsPerSec, targetRPS, OuttakeConstants.outtakeToleranceRPS));
   }
 
-  public boolean isAtPosition() {
+  public boolean pivotIsAtPosition() {
     return OrangeMath.equalToEpsilon(
         inputs.pivotRotations, pivotTarget, OuttakeConstants.pivotToleranceRotations);
   }
 
-  public boolean isInitialized() {
-    return initialized;
+  public boolean pivotIsInitialized() {
+    return pivotInitialized;
   }
 }

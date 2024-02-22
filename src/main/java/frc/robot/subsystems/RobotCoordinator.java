@@ -11,13 +11,11 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.outtake.Outtake;
-import frc.robot.subsystems.outtakePivot.OuttakePivot;
 import org.littletonrobotics.junction.Logger;
 
 public class RobotCoordinator extends SubsystemBase {
   private Intake intake;
   private Outtake outtake;
-  private OuttakePivot outtakePivot;
   private Drive drive;
 
   private static BeamBreakSensorIO noteTrackerSensorsIO;
@@ -42,7 +40,6 @@ public class RobotCoordinator extends SubsystemBase {
   private RobotCoordinator() {
     intake = Intake.getInstance();
     outtake = Outtake.getInstance();
-    outtakePivot = OuttakePivot.getInstance();
     drive = Drive.getInstance();
     switch (Constants.currentMode) {
       case REAL:
@@ -132,7 +129,7 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public boolean isInitialized() {
-    return intake.isInitialized() && outtakePivot.isInitialized();
+    return intake.isInitialized() && outtake.pivotIsInitialized();
   }
 
   public boolean canRetract() {
@@ -140,11 +137,11 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public boolean canShoot() {
-    return outtake.isFlyWheelUpToSpeed() && outtakePivot.isAtPosition() && noteInFiringPosition();
+    return outtake.isFlyWheelUpToSpeed() && outtake.pivotIsAtPosition() && noteInFiringPosition();
   }
 
   public boolean canPivot() {
-    return outtakePivot.isInitialized();
+    return outtake.pivotIsInitialized();
   }
 
   public boolean noteInFiringPosition() {
