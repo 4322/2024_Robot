@@ -41,17 +41,17 @@ public class CLSM {
     N4ToN3,
     N3ToN2,
     N2ToN1,
-    N1ToUS,
-    N2ToUS,
-    N3ToUS,
+    N1ToTS,
+    N2ToTS,
+    N3ToTS,
     N3ToMS,
     N4ToMS,
     N4ToBS,
     N5ToBS,
     N5ToBottomEndPos,
-    USToN1,
-    USToN2,
-    USToN3,
+    TSToN1,
+    TSToN2,
+    TSToN3,
     MSToN3,
     MSToN4,
     BSToN4,
@@ -82,12 +82,12 @@ public class CLSM {
         config
             .configure(CLSMState.Note1)
             .permit(
-                CLSMTrigger.HaveNote, CLSMState.TopShoot, () -> setTravelState(TravelState.N1ToUS))
+                CLSMTrigger.HaveNote, CLSMState.TopShoot, () -> setTravelState(TravelState.N1ToTS))
             .permit(CLSMTrigger.NoNote, CLSMState.Note2, () -> setTravelState(TravelState.N1ToN2));
         config
             .configure(CLSMState.Note2)
             .permit(
-                CLSMTrigger.HaveNote, CLSMState.TopShoot, () -> setTravelState(TravelState.N2ToUS))
+                CLSMTrigger.HaveNote, CLSMState.TopShoot, () -> setTravelState(TravelState.N2ToTS))
             .permit(CLSMTrigger.NoNote, CLSMState.Note3, () -> setTravelState(TravelState.N2ToN3));
         config
             .configure(CLSMState.Note3)
@@ -119,12 +119,12 @@ public class CLSM {
                 CLSMTrigger.Initialize,
                 CLSMState.Note1,
                 () -> noteStatus.note1Available,
-                () -> setTravelState(TravelState.USToN1))
+                () -> setTravelState(TravelState.TSToN1))
             .permitIf(
                 CLSMTrigger.Finished,
                 CLSMState.Note2,
                 () -> (noteStatus.note2Available && !noteStatus.note1Available),
-                () -> setTravelState(TravelState.USToN2))
+                () -> setTravelState(TravelState.TSToN2))
             .permitIf(
                 CLSMTrigger.Finished,
                 CLSMState.Note3,
@@ -132,7 +132,7 @@ public class CLSM {
                     (noteStatus.note3Available
                         && !noteStatus.note2Available
                         && !noteStatus.note1Available),
-                () -> setTravelState(TravelState.USToN3));
+                () -> setTravelState(TravelState.TSToN3));
         config
             .configure(CLSMState.MiddleShoot)
             .permitIf(
