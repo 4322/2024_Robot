@@ -13,7 +13,7 @@ import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualState;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.subsystems.drive.Drive;
 import frc.utility.OrangeMath;
-import frc.utility.PositionVector;
+import frc.utility.FiringSolutionHelper;
 import org.littletonrobotics.junction.Logger;
 
 public class DriveManual extends Command {
@@ -90,7 +90,7 @@ public class DriveManual extends Command {
       case SPEAKER_CENTRIC:
         Pose2d drivePose2D = drive.getPose2d();
         Translation2d speakerVec =
-            PositionVector.getVectorToSpeaker(drivePose2D.getX(), drivePose2D.getY());
+            FiringSolutionHelper.getVectorToSpeaker(drivePose2D.getX(), drivePose2D.getY());
         Logger.recordOutput("SpeakerCentricHeading", speakerVec.getAngle().getDegrees());
         drive.driveAutoRotate(driveX, driveY, speakerVec.getAngle().getDegrees());
         break;

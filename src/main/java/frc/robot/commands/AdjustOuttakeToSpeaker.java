@@ -5,7 +5,7 @@ import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.outtake.Outtake;
-import frc.utility.PositionVector;
+import frc.utility.FiringSolutionHelper;
 
 public class AdjustOuttakeToSpeaker extends Command {
   Outtake outtake;
@@ -24,10 +24,10 @@ public class AdjustOuttakeToSpeaker extends Command {
     if (RobotCoordinator.getInstance().onOurSideOfField() && RobotCoordinator.getInstance().canPivot()) {
       FiringSolution firingSolution = FiringSolutionManager.getInstance()
               .calcSolution(
-                  PositionVector.getMag(
+                  FiringSolutionHelper.getMag(
                       RobotCoordinator.getInstance().getRobotXPos(),
                       RobotCoordinator.getInstance().getRobotYPos()),
-                  PositionVector.getAngle(
+                  FiringSolutionHelper.getAngle(
                           RobotCoordinator.getInstance().getRobotXPos(),
                           RobotCoordinator.getInstance().getRobotYPos())
                       .getDegrees());
