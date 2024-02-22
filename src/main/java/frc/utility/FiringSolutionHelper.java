@@ -44,8 +44,15 @@ public class FiringSolutionHelper {
   }
 
   public static Rotation2d getAngle(double x, double y) {
-    return new Rotation2d(
-        Math.atan2(
+    // negative on red
+    if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
+      return new Rotation2d(
+        -Math.atan2(
             Math.abs(y - FieldConstants.ySpeakerPosM), Math.abs(x - FieldConstants.xSpeakerPosM)));
+    } else {
+      return new Rotation2d(
+          Math.atan2(
+              Math.abs(y - FieldConstants.ySpeakerPosM), Math.abs(x - FieldConstants.xSpeakerPosM)));
+    }
   }
 }
