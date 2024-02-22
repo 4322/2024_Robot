@@ -4,9 +4,14 @@ import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.configs.VoltageConfigs;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.reduxrobotics.sensors.canandcoder.Canandcoder;
+
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -74,7 +79,7 @@ public class OuttakeIOReal implements OuttakeIO {
     talon.getConfigurator().apply(openLoopRampsConfigs);
   }
 
-  private void configPivot() {
+  private void configPivot(TalonFX talon) {
     Slot0Configs slot0Configs = new Slot0Configs();
     VoltageConfigs voltageConfigs = new VoltageConfigs();
     ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
@@ -90,11 +95,11 @@ public class OuttakeIOReal implements OuttakeIO {
     softwareLimitSwitchConfigs.ReverseSoftLimitEnable = OuttakeConstants.limitReverseMotion;
     softwareLimitSwitchConfigs.ForwardSoftLimitThreshold = OuttakeConstants.forwardSoftLimitThresholdRotations;
     softwareLimitSwitchConfigs.ReverseSoftLimitThreshold = OuttakeConstants.reverseSoftLimitThresholdRotations;
-    pivotMotor.getConfigurator().apply(slot0Configs);
-    pivotMotor.getConfigurator().apply(closedLoopRampsConfigs);
-    pivotMotor.getConfigurator().apply(voltageConfigs);
-    pivotMotor.getConfigurator().apply(motorOutputConfigs);
-    pivotMotor.getConfigurator().apply(softwareLimitSwitchConfigs);
+    talon.getConfigurator().apply(slot0Configs);
+    talon.getConfigurator().apply(closedLoopRampsConfigs);
+    talon.getConfigurator().apply(voltageConfigs);
+    talon.getConfigurator().apply(motorOutputConfigs);
+    talon.getConfigurator().apply(softwareLimitSwitchConfigs);
   }
 
   @Override
@@ -164,6 +169,10 @@ public class OuttakeIOReal implements OuttakeIO {
   public void stopOuttake() {
     topOuttakeMotor.stopMotor();
     bottomOuttakeMotor.stopMotor();
+  }
+
+  @Override
+  public void stopPivot() {
     pivotMotor.stopMotor();
   }
 }

@@ -49,4 +49,7 @@ public interface OuttakeIO {
 
   public default void stopOuttake() {}
   ;
+
+  public default void stopPivot() {}
+  ;
 }
