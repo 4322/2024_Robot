@@ -18,18 +18,16 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
-import frc.robot.commands.PivotToAngle;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetRobotPose;
 import frc.robot.commands.Shoot;
-import frc.robot.commands.SpinUpFlywheels;
+import frc.robot.commands.AdjustOuttakeToSpeaker;
 import frc.robot.commands.TunnelFeed;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.outtake.Outtake;
-import frc.robot.subsystems.outtakePivot.OuttakePivot;
 import frc.robot.subsystems.tunnel.Tunnel;
 
 /**
@@ -52,7 +50,6 @@ public class RobotContainer {
   private final Drive drive = Drive.getInstance();
   private final Tunnel tunnel = Tunnel.getInstance();
   private final Outtake outtake = Outtake.getInstance();
-  private final OuttakePivot outtakePivot = OuttakePivot.getInstance();
 
   private final WriteFiringSolutionAtCurrentPos writeFiringSolution =
       new WriteFiringSolutionAtCurrentPos();
@@ -62,9 +59,7 @@ public class RobotContainer {
 
   private final TunnelFeed tunnelFeed = new TunnelFeed();
 
-  private final SpinUpFlywheels outtakeOut = new SpinUpFlywheels();
-
-  private final PivotToAngle pivotToAngle = new PivotToAngle();
+  private final AdjustOuttakeToSpeaker adjustOuttakeToSpeaker = new AdjustOuttakeToSpeaker();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -81,11 +76,7 @@ public class RobotContainer {
     }
 
     if (Constants.outtakeEnabled) {
-      outtake.setDefaultCommand(outtakeOut);
-    }
-
-    if (Constants.outtakePivotEnabled) {
-      outtakePivot.setDefaultCommand(pivotToAngle);
+      outtake.setDefaultCommand(adjustOuttakeToSpeaker);
     }
   }
   /**

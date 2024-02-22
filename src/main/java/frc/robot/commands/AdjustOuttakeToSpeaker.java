@@ -6,10 +6,10 @@ import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.utility.PositionVector;
 
-public class SpinUpFlywheels extends Command {
+public class AdjustOuttakeToSpeaker extends Command {
   Outtake outtake;
 
-  public SpinUpFlywheels() {
+  public AdjustOuttakeToSpeaker() {
     outtake = Outtake.getInstance();
 
     addRequirements(outtake);
@@ -33,6 +33,20 @@ public class SpinUpFlywheels extends Command {
                       .getDegrees())
               .getFlywheelSpeed());
     }
+
+    if (RobotCoordinator.getInstance().canPivot() && RobotCoordinator.getInstance().onOurSideOfField()) {
+      // divide by 360 because pivot uses rotations instead of degrees
+      outtake.pivot(
+          FiringSolutionManager.getInstance()
+                  .calcSolution(
+                      PositionVector.getMag(
+                          RobotCoordinator.getInstance().getRobotXPos(), RobotCoordinator.getInstance().getRobotYPos()),
+                      PositionVector.getAngle(
+                              RobotCoordinator.getInstance().getRobotXPos(), RobotCoordinator.getInstance().getRobotYPos())
+                          .getDegrees())
+                  .getShotAngle()
+              / 360);
+    }
   }
 
   @Override
@@ -43,5 +57,6 @@ public class SpinUpFlywheels extends Command {
   @Override
   public void end(boolean interrupted) {
     outtake.stopOuttake();
+    outtake.stopPivot();
   }
 }

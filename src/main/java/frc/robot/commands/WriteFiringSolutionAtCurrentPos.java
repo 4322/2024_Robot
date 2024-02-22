@@ -7,7 +7,6 @@ import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.outtake.Outtake;
-import frc.robot.subsystems.outtakePivot.OuttakePivot;
 import frc.utility.PositionVector;
 
 public class WriteFiringSolutionAtCurrentPos extends InstantCommand {
@@ -15,14 +14,12 @@ public class WriteFiringSolutionAtCurrentPos extends InstantCommand {
   private FiringSolutionManager firingSolutionManager;
   private Drive drive;
   private Outtake outtake;
-  private OuttakePivot outtakePivot;
   double shotAngle;
   double shotMag;
 
   public WriteFiringSolutionAtCurrentPos() {
     drive = Drive.getInstance();
     outtake = Outtake.getInstance();
-    outtakePivot = OuttakePivot.getInstance();
     firingSolutionManager = FiringSolutionManager.getInstance();
   }
 
@@ -38,7 +35,7 @@ public class WriteFiringSolutionAtCurrentPos extends InstantCommand {
               rawTranslation.getX() * rawTranslation.getX()
                   + rawTranslation.getY() * rawTranslation.getY());
       FiringSolution solution =
-          new FiringSolution(shotMag, shotAngle, outtake.getTargetRPS(), outtakePivot.getTarget());
+          new FiringSolution(shotMag, shotAngle, outtake.getTargetRPS(), outtake.getPivotTarget());
       firingSolutionManager.writeSolution(solution);
     }
   }
