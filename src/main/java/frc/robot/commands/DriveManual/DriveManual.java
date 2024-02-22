@@ -1,5 +1,7 @@
-package frc.robot.commands;
+package frc.robot.commands.DriveManual;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -8,8 +10,11 @@ import frc.robot.Constants.DriveConstants.Manual;
 import frc.robot.Constants.DriveInputScalingStrings;
 import frc.robot.Constants.RotateInputScalingStrings;
 import frc.robot.RobotContainer;
+import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualState;
+import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.subsystems.drive.Drive;
 import frc.utility.OrangeMath;
+import frc.utility.PositionVector;
 import org.littletonrobotics.junction.Logger;
 
 public class DriveManual extends Command {
@@ -19,28 +24,26 @@ public class DriveManual extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  private static boolean scoreAutoPoseActive;
-
-  private static boolean loadAutoPoseActive;
-  private static boolean loadAutoAlignPending;
-  private static boolean armAtLoadSingle;
   private final Drive drive;
-  private final AutoPose autoPose;
-  private Double targetHeadingDeg;
-  private boolean done;
+
+  private final DriveManualStateMachine stateMachine;
+
+  private double driveX = 0;
+  private double driveY = 0;
+  private double rotatePower = 0;
+
+  private double driveRawX;
+  private double driveRawY;
+  private double rotateRaw;
+  private double driveAngle;
+  private double driveAbsAngularVel;
+
+  private Double pseudoAutoRotateAngle;
+
   private Timer spinoutActivationTimer = new Timer();
   private Timer spinoutActivationTimer2 = new Timer();
   private LockedWheel lockedWheelState;
   private double initialSpinoutAngle;
-
-  public enum AutoPose {
-    none,
-    usePreset,
-    usePresetAuto,
-    usePresetManual,
-    usePresetNoArmMove,
-    loadSingleManual
-  }
 
   public enum LockedWheel {
     none,
@@ -51,26 +54,9 @@ public class DriveManual extends Command {
     frontRight;
   }
 
-  public static boolean isScoreAutoPoseActive() {
-    return scoreAutoPoseActive;
-  }
-
-  public static boolean isLoadAutoPoseActive() {
-    return loadAutoPoseActive;
-  }
-
-  public static boolean isLoadAutoAlignReady() {
-    return loadAutoAlignPending && armAtLoadSingle;
-  }
-
-  // prevent AutoAlignSubstation command from immediately restarting once complete
-  public static void loadAutoAlignDone() {
-    loadAutoAlignPending = false;
-  }
-
-  public DriveManual(Drive drivesubsystem, AutoPose autoPose) {
-    drive = drivesubsystem;
-    this.autoPose = autoPose;
+  public DriveManual() {
+    drive = Drive.getInstance();
+    stateMachine = new DriveManualStateMachine(DriveManualState.DEFAULT);
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drive);
@@ -79,55 +65,50 @@ public class DriveManual extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    drive.resetRotatePID();
 
-    // make command reusable
     spinoutActivationTimer.stop();
     spinoutActivationTimer2.stop();
     spinoutActivationTimer.reset();
     spinoutActivationTimer2.reset();
     lockedWheelState = LockedWheel.none;
-    done = false;
-
-    drive.resetRotatePID();
-    scoreAutoPoseActive = false;
-    loadAutoPoseActive = false;
-    loadAutoAlignPending = false;
-    armAtLoadSingle = false;
-
-    // set auto-rotate direction, if any
-    switch (autoPose) {
-      case none:
-        targetHeadingDeg = null;
-        break;
-      case loadSingleManual:
-        break;
-      case usePresetAuto:
-        // fall through
-      case usePreset:
-        autoRotateSetTarget(true);
-        break;
-      case usePresetManual:
-      case usePresetNoArmMove:
-        autoRotateSetTarget(false);
-        break;
-    }
-  }
-
-  // autoAlignMode is set to true when we want to invoke autoAlignment
-  private void autoRotateSetTarget(boolean autoAlignMode) {
-    targetHeadingDeg = 0.0;
   }
 
   @Override
   public void execute() {
+    updateDriveValues();
 
-    final double driveRawX;
-    final double driveRawY;
-    final double rotateRaw;
+    switch (stateMachine.getState()) {
+      case DEFAULT:
+        if (rotatePower != 0) {
+          doSpinout();
+        } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
+          drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
+        } else {
+          drive.drive(driveX, driveY, rotatePower);
+        }
+        break;
+      case SPEAKER_CENTRIC:
+        Pose2d drivePose2D = drive.getPose2d();
+        Translation2d speakerVec =
+            PositionVector.getVectorToSpeaker(drivePose2D.getX(), drivePose2D.getY());
+        Logger.recordOutput("SpeakerCentricHeading", speakerVec.getAngle().getDegrees());
+        drive.driveAutoRotate(driveX, driveY, speakerVec.getAngle().getDegrees());
+        break;
+    }
+  }
 
+  public void updateStateMachine(DriveManualTrigger trigger) {
+    stateMachine.fire(trigger);
+  }
+
+  private void updateDriveValues() {
     final double driveDeadband;
     final double rotateLeftDeadband;
     final double rotateRightDeadband;
+
+    driveAngle = drive.getAngle();
+    driveAbsAngularVel = Math.abs(drive.getAngularVelocity());
 
     // switch between joysticks and xbox which can reconfigure drive stick location
     switch (drive.getControlType()) {
@@ -184,18 +165,10 @@ public class DriveManual extends Command {
     // All variables in this program use WPI coordinates
     // All "theta" variables are in radians
 
-    // Dual driver inputs need to be processed in an additive manner
-    // instead of being averaged to avoid discontinuities.
-
-    // Cache hardware status for consistency in logic and convert
-    // joystick/Xbox coordinates to WPI coordinates.
-
     // Convert raw drive inputs to polar coordinates for more precise deadband
     // correction
     final double driveRawMag = OrangeMath.pythag(driveRawX, driveRawY);
     final double driveRawTheta = Math.atan2(driveRawY, driveRawX);
-
-    final double driveAngle = drive.getAngle();
 
     // Normalize the drive input over deadband in polar coordinates.
     double driveMag = 0;
@@ -224,11 +197,11 @@ public class DriveManual extends Command {
       }
     }
     // Convert back to cartesian coordinates
-    double driveX = Math.cos(driveRawTheta) * driveMag;
-    double driveY = Math.sin(driveRawTheta) * driveMag;
+    driveX = Math.cos(driveRawTheta) * driveMag;
+    driveY = Math.sin(driveRawTheta) * driveMag;
 
     // Normalize the rotation inputs over deadband.
-    double rotatePower = 0;
+    rotatePower = 0;
     if (rotateRaw > rotateLeftDeadband) {
       rotatePower = (rotateRaw - rotateLeftDeadband) / (1 - rotateLeftDeadband);
     } else if (rotateRaw < -rotateRightDeadband) {
@@ -252,43 +225,24 @@ public class DriveManual extends Command {
     }
     rotatePower = rotatePower * drive.getMaxManualRotationEntry();
 
-    // if the rotate stick isn't being used
-    if (rotatePower == 0) {
-      // if there is a set drive auto rotate
-      if (targetHeadingDeg != null) {
-        drive.driveAutoRotate(driveX, driveY, targetHeadingDeg);
-        return;
-      } else if (drive.isPseudoAutoRotateEnabled()
-          && Math.abs(drive.getAngularVelocity()) < Manual.inhibitPseudoAutoRotateAngularVelocity) {
-        // set pseudo auto rotate heading
-        targetHeadingDeg = driveAngle;
-        drive.driveAutoRotate(driveX, driveY, targetHeadingDeg);
-        return;
-      }
-    } else {
-      // rotate joystick is active
-      // check if we are in the default drive manual
-      if (autoPose == AutoPose.none) {
-        targetHeadingDeg = null; // unlock auto rotate heading
-      } else {
-        // restart default driveManual command
-        drive.drive(driveX, driveY, rotatePower);
-        done = true;
-        return;
-      }
+    if (stateMachine.getState() != DriveManualState.DEFAULT || rotatePower != 0) {
+      pseudoAutoRotateAngle = null;
+    } else if (rotatePower == 0
+        && pseudoAutoRotateAngle == null
+        && driveAbsAngularVel < Manual.inhibitPseudoAutoRotateAngularVelocity) {
+      pseudoAutoRotateAngle = drive.getAngle();
     }
+  }
 
-    // cache value for logic consistency
-    double absAngularVelocity = Math.abs(drive.getAngularVelocity());
-
+  private void doSpinout() {
     if (Math.abs(rotateRaw) >= Manual.spinoutRotateDeadBand) {
-      if (absAngularVelocity < Manual.spinoutMinAngularVelocity) {
+      if (driveAbsAngularVel < Manual.spinoutMinAngularVelocity) {
         spinoutActivationTimer.start();
       } else {
         spinoutActivationTimer.stop();
         spinoutActivationTimer.reset();
       }
-      if (absAngularVelocity < Manual.spinoutMinAngularVelocity2) {
+      if (driveAbsAngularVel < Manual.spinoutMinAngularVelocity2) {
         spinoutActivationTimer2.start();
       } else {
         spinoutActivationTimer2.stop();
@@ -385,11 +339,15 @@ public class DriveManual extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    if (interrupted) {
+      pseudoAutoRotateAngle = null;
+    }
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return done;
+    return false;
   }
 }

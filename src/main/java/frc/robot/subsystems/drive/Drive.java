@@ -19,8 +19,9 @@ import frc.robot.Constants;
 import frc.robot.Constants.ControllerTypeStrings;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.WheelPosition;
-import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
-import frc.robot.subsystems.drive.RobotChooser.RobotChooserInterface;
+import frc.robot.RobotChooser.RobotChooser;
+import frc.robot.RobotChooser.RobotChooserInterface;
+import frc.robot.subsystems.RobotCoordinator;
 import frc.utility.OrangeMath;
 import frc.utility.SnapshotTranslation2D;
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class Drive extends SubsystemBase {
           DriveConstants.frontRightWheelLocation, DriveConstants.frontLeftWheelLocation,
           DriveConstants.backLeftWheelLocation, DriveConstants.backRightWheelLocation);
 
-  private final SwerveDrivePoseEstimator poseEstimator;
+  private SwerveDrivePoseEstimator poseEstimator;
 
   private ShuffleboardTab tab;
 
@@ -75,17 +76,17 @@ public class Drive extends SubsystemBase {
   private GenericEntry odometryY;
   private GenericEntry odometryDegrees;
   private GenericEntry angularVel;
-
+  Timer disconnectTimer;
   private double lastClosedRampRate = DriveConstants.Drive.closedLoopRampSec;
   private double lastOpenRampRate = DriveConstants.Drive.openLoopRampSec;
 
-  private static Drive driveSubsystem = null;
+  private static Drive drive;
 
   public static Drive getInstance() {
-    if (driveSubsystem == null) {
-      driveSubsystem = new Drive();
+    if (drive == null) {
+      drive = new Drive();
     }
-    return driveSubsystem;
+    return drive;
   }
 
   private Drive() {
@@ -190,7 +191,7 @@ public class Drive extends SubsystemBase {
                 kinematics, getRotation2d(), getModulePostitions(), new Pose2d());
         resetFieldCentric();
       }
-
+      disconnectTimer = new Timer();
       if (Constants.debug) {
         tab = Shuffleboard.getTab("Drivebase");
 
@@ -287,13 +288,39 @@ public class Drive extends SubsystemBase {
         gyro.updateInputs(gyroInputs);
         Logger.processInputs("Drive/Gyro", gyroInputs);
         if (!gyroInputs.connected) {
-          DriverStation.reportError("Gyro disconnected", null);
+          disconnectTimer.start();
+          if (disconnectTimer.hasElapsed(5)) {
+            DriverStation.reportWarning(
+                "Gyro disconnected", false); // it will spam it from now until the gyro reconnects
+          }
+        } else {
+          if (disconnectTimer.hasElapsed(
+              0.01)) // this makes sure that it only stops it if it's been running since there's no
+          // running check
+          {
+            disconnectTimer.stop();
+            disconnectTimer.reset();
+          }
         }
       }
       updateVelAcc();
 
       if (Constants.gyroEnabled) {
         updateOdometry();
+      }
+
+      if (Constants.outtakeLimeLightEnabled) {
+        if (poseEstimator
+                .getEstimatedPosition()
+                .getTranslation()
+                .getDistance(
+                    RobotCoordinator.getInstance().getOuttakeLimelightPose2d().getTranslation())
+            < Constants.LimelightConstants.visionOdometryTolerance) {
+          updateVision(
+              RobotCoordinator.getInstance().getOuttakeLimelightPose2d(),
+              Timer.getFPGATimestamp()
+                  - RobotCoordinator.getInstance().getOuttakeLimelightLatency());
+        }
       }
 
       if (Constants.debug) {
@@ -457,7 +484,7 @@ public class Drive extends SubsystemBase {
   }
 
   public void updateVision(Pose2d pose, double timestampSeconds) {
-    if (Constants.gyroEnabled) {
+    if (Constants.intakeLimeLightEnabled) {
       poseEstimator.addVisionMeasurement(pose, timestampSeconds);
     }
   }
@@ -533,7 +560,7 @@ public class Drive extends SubsystemBase {
   public boolean isPseudoAutoRotateEnabled() {
     if (Constants.driveEnabled) {
       if (Constants.debug) {
-        return driveShuffleBoardInputs.psuedoAutoRotateEnabled;
+        return driveShuffleBoardInputs.pseudoAutoRotateEnabled;
       }
     }
     return Constants.psuedoAutoRotateEnabled;

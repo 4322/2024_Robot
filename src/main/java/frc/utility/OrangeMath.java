@@ -2,6 +2,10 @@ package frc.utility;
 
 public class OrangeMath {
 
+  public static boolean equalToEpsilon(double num1, double num2, double epsilon) {
+    return Math.abs(num1 - num2) < epsilon;
+  }
+
   public static boolean equalToTwoDecimal(double num1, double num2) {
     double epsilon = 0.01;
 

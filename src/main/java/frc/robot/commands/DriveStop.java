@@ -10,8 +10,8 @@ public class DriveStop extends InstantCommand {
 
   private final Drive drive;
 
-  public DriveStop(Drive drivesubsystem) {
-    drive = drivesubsystem;
+  public DriveStop() {
+    drive = Drive.getInstance();
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drive);
