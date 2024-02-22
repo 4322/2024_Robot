@@ -57,7 +57,7 @@ public class CLSM {
     BSToN4,
     BSToN5,
     BSToBottomEndPos,
-    Done
+    Done // this also doesn't correspond to a physical position
   }
 
   public CLSM(ScoringStrategy strategy) {
