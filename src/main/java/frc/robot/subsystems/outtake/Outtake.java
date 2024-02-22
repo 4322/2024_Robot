@@ -48,7 +48,7 @@ public class Outtake extends SubsystemBase {
     return targetRPS;
   }
 
-  public double getTarget() {
+  public double getPivotTarget() {
     return pivotTarget;
   }
 
