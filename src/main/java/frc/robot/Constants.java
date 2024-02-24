@@ -267,6 +267,11 @@ public final class Constants {
     public static final double autoFeedMoveSpeed = 1;
   }
 
+  public static final class EncoderInitializeConstants {
+    public static final double setRelativeRotations = 4322.0; // must be a very high number
+    public static final double relativeRotationsTolerance = 5.0;
+  }
+
   public static final class OuttakeConstants {
     public static final int leftOuttakeDeviceID = 5;
     public static final int rightOuttakeDeviceID = 4;

@@ -160,8 +160,8 @@ public class IntakeIOReal implements IntakeIO {
     inputs.deployTempC = deploy.getDeviceTemp().getValue();
     inputs.deployIsAlive = deploy.isAlive();
 
-    inputs.deployEncoderRotations = deployEncoder.getPosition();
-    inputs.deployEncoderRotationsPerSec = deployEncoder.getVelocity();
+    inputs.heliumRelativeRotations = deployEncoder.getPosition();
+    inputs.heliumAbsRotations = deployEncoder.getAbsPosition();
 
     inputs.deployAppliedControl = deploy.getAppliedControl().toString();
     if (Constants.debug) {
@@ -191,6 +191,9 @@ public class IntakeIOReal implements IntakeIO {
   public boolean initMotorPos() {
     deploy.setPosition(
         deployEncoder.getAbsPosition() * IntakeConstants.Deploy.encoderGearReduction);
+    // set only relative encoder rotations of Helium encoder to a very high number after initialized once
+    // relative encoder on Helium used only to check if we have already initialized after power cycle
+    deployEncoder.setPosition(Constants.EncoderInitializeConstants.setRelativeRotations);
     return OrangeMath.equalToTwoDecimal(deployEncoder.getVelocity(), 0);
   }
 

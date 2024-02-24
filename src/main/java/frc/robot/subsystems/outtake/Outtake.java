@@ -53,6 +53,14 @@ public class Outtake extends SubsystemBase {
   }
 
   public void periodic() {
+    // Check if encoders have already been initialized after power cycle
+    // If so, we don't need to reinitialize 
+    if (OrangeMath.equalToEpsilon(inputs.heliumRelativeRotations, 
+          Constants.EncoderInitializeConstants.setRelativeRotations,
+              Constants.EncoderInitializeConstants.relativeRotationsTolerance)) {
+                pivotInitialized = true;
+    }
+
     // initialize motor internal encoder position until the intake isn't moving
     if (Constants.outtakePivotEnabled
         && !pivotInitialized
