@@ -105,4 +105,8 @@ public class IntakeManual extends Command {
   public static IntakeStates getIntakeState() {
     return intakeState;
   }
+
+  public static void setIntakeState(IntakeStates newState) {
+    intakeState = newState;
+  }
 }

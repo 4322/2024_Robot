@@ -197,13 +197,11 @@ public class Robot extends LoggedRobot {
   public void simulationPeriodic() {}
 
   private void updateAllianceColor() {
-    if (allianceColor == Alliance.Red || allianceColor == Alliance.Blue) {
-      try {
-        allianceColor = DriverStation.getAlliance().get();
-      } catch (NoSuchElementException e) {
-        DriverStation.reportError("No Alliance Color", false);
-        allianceColor = null;
-      }
+    try {
+      allianceColor = DriverStation.getAlliance().get();
+    } catch (NoSuchElementException e) {
+      DriverStation.reportError("No Alliance Color", false);
+      allianceColor = null;
     }
   }
 

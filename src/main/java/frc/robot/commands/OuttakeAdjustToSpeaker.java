@@ -7,10 +7,10 @@ import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.utility.FiringSolutionHelper;
 
-public class AdjustOuttakeToSpeaker extends Command {
+public class OuttakeAdjustToSpeaker extends Command {
   Outtake outtake;
 
-  public AdjustOuttakeToSpeaker() {
+  public OuttakeAdjustToSpeaker() {
     outtake = Outtake.getInstance();
 
     addRequirements(outtake);
