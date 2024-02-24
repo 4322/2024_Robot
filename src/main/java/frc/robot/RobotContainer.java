@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.AdjustOuttakeToSpeaker;
+import frc.robot.commands.OuttakeAdjustToSpeaker;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
@@ -65,7 +65,7 @@ public class RobotContainer {
 
   private final TunnelFeed tunnelFeed = new TunnelFeed();
 
-  private final AdjustOuttakeToSpeaker adjustOuttakeToSpeaker = new AdjustOuttakeToSpeaker();
+  private final OuttakeAdjustToSpeaker adjustOuttakeToSpeaker = new OuttakeAdjustToSpeaker();
 
   private final IntakeManual intakeManual = new IntakeManual();
 
