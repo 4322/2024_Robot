@@ -167,6 +167,15 @@ public class RobotContainer {
       if (Constants.driveEnabled) {
         drive.setCoastMode(); // robot has stopped, safe to enter coast mode
       }
+      if (Constants.intakeEnabled) {
+        intake.setCoastMode();
+      }
+      if (Constants.outtakeEnabled) {
+        outtake.setCoastMode();
+      }
+      if (Constants.tunnelEnabled) {
+        tunnel.setCoastMode();
+      }
       disableTimer.stop();
       disableTimer.reset();
     }
@@ -183,6 +192,8 @@ public class RobotContainer {
   public void enableSubsystems() {
     drive.setBrakeMode();
     tunnel.setBrakeMode();
+    intake.setBrakeMode();
+    outtake.setBrakeMode();
     disableTimer.stop();
     disableTimer.reset();
   }
