@@ -19,14 +19,17 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.OuttakeAdjustToSpeaker;
+import frc.robot.commands.OuttakeStop;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.IntakeManual;
+import frc.robot.commands.IntakeStop;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetRobotPose;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.TunnelFeed;
+import frc.robot.commands.TunnelStop;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
@@ -61,13 +64,20 @@ public class RobotContainer {
       new WriteFiringSolutionAtCurrentPos();
 
   private final DriveManual driveManual = new DriveManual();
-  private final DriveStop driveStop = new DriveStop();
 
   private final TunnelFeed tunnelFeed = new TunnelFeed();
 
   private final OuttakeAdjustToSpeaker adjustOuttakeToSpeaker = new OuttakeAdjustToSpeaker();
 
   private final IntakeManual intakeManual = new IntakeManual();
+
+  private final DriveStop driveStop = new DriveStop();
+
+  private final IntakeStop intakeStop = new IntakeStop();
+
+  private final OuttakeStop outtakeStop = new OuttakeStop();
+
+  private final TunnelStop tunnelStop = new TunnelStop();
 
   private final SendableChooser<Command> autoChooser;
 
@@ -200,6 +210,9 @@ public class RobotContainer {
 
   public void disableSubsystems() {
     driveStop.schedule(); // interrupt all drive commands
+    intakeStop.schedule(); // interrupt all intake commands
+    outtakeStop.schedule(); // interrupt all outtake commands
+    tunnelStop.schedule(); // interrupt all tunnel commands
 
     disableTimer.reset();
     disableTimer.start();
