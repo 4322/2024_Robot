@@ -140,7 +140,7 @@ public class Drive extends SubsystemBase {
               gyro = new GyroIOPigeon();
               break;
             case NEMO:
-              gyro = new GyroIOPigeon(); // change to GyroIONavX when change on Nemo
+              gyro = new GyroIONavX(); // change to GyroIONavX when change on Nemo
               break;
           }
         }
