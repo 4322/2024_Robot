@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.CommandUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -205,7 +206,8 @@ public class RobotContainer {
     }
 
     return new SequentialCommandGroup(
-        getAutoInitialize(), pathPlannerManager.getAuto("TestPathFollowing"));
+        getAutoInitialize(),
+        CommandUtil.wrappedEventCommand(pathPlannerManager.getAuto("TestPathFollowing")));
   }
 
   // Command that should always start off every auto
