@@ -3,7 +3,6 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.CommandUtil;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -14,20 +13,11 @@ import frc.robot.RobotChooser.RobotChooser;
 import frc.robot.RobotChooser.RobotChooserInterface;
 import frc.robot.subsystems.drive.Drive;
 
-public class PathPlannerManager {
+class PathPlannerManager {
   private static RobotChooserInterface robotSpecificConstants =
       RobotChooser.getInstance().getConstants();
 
-  private static PathPlannerManager manager;
-
-  public static PathPlannerManager getInstance() {
-    if (manager == null) {
-      manager = new PathPlannerManager();
-    }
-    return manager;
-  }
-
-  private PathPlannerManager() {
+  public static void init(Drive driveSubsystem) {
     if (!AutoBuilder.isConfigured()) {
       HolonomicPathFollowerConfig holonomicConfig =
           new HolonomicPathFollowerConfig(
@@ -46,29 +36,25 @@ public class PathPlannerManager {
               new ReplanningConfig());
 
       AutoBuilder.configureHolonomic(
-          Drive.getInstance()::getPose2d,
-          Drive.getInstance()::resetOdometry,
-          Drive.getInstance()::getChassisSpeeds,
-          Drive.getInstance()::setModuleStatesFromChassisSpeeds,
+          driveSubsystem::getPose2d,
+          driveSubsystem::resetOdometry,
+          driveSubsystem::getChassisSpeeds,
+          driveSubsystem::setModuleStatesFromChassisSpeeds,
           holonomicConfig,
           Robot::isRed,
-          Drive.getInstance());
+          driveSubsystem);
     }
   }
 
-  public Command getAuto(String autoName) {
+  public static Command getAuto(String autoName) {
     return AutoBuilder.buildAuto(autoName);
   }
 
-  public SendableChooser<Command> getAutoChooser() {
+  public static SendableChooser<Command> getAutoChooser() {
     return AutoBuilder.buildAutoChooser();
   }
 
-  public Command followPath(PathPlannerPath path) {
-    return AutoBuilder.followPath(path);
-  }
-
-  public void addEvent(String eventName, Command command) {
+  public static void addEvent(String eventName, Command command) {
     NamedCommands.registerCommand(eventName, CommandUtil.wrappedEventCommand(command));
   }
 }
