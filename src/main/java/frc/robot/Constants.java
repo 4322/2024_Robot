@@ -112,6 +112,14 @@ public final class Constants {
 
   public static final class DriveConstants {
 
+    // robot radius
+    public static final double distWheelMetersR =
+        Math.sqrt(
+            (robotSpecificConstants.getDistWheelMetersX()
+                    * robotSpecificConstants.getDistWheelMetersX())
+                + (robotSpecificConstants.getDistWheelMetersY()
+                    * robotSpecificConstants.getDistWheelMetersY()));
+
     // wheel location constants
     public static final Translation2d frontLeftWheelLocation =
         new Translation2d(
@@ -164,13 +172,13 @@ public final class Constants {
     public static final class Auto {
 
       // Values for autonomous path finding
-      public static final double autoMaxSpeedMetersPerSecond =
-          0.75 * robotSpecificConstants.getMaxSpeedMetersPerSec();
+      public static final double autoMaxModuleSpeedMetersPerSecond =
+          robotSpecificConstants.getMaxSpeedMetersPerSec();
 
       // acceleration off the line is 109 rotations per sec^2
       // acceleration in the mid-range is 46.8 rotations per sec^2
       public static final double autoMaxAccelerationMetersPerSec2 =
-          0.75
+          0.5
               * OrangeMath.falconRotationsToMeters(
                   73,
                   OrangeMath.inchesToMeters(OrangeMath.getCircumference(Drive.wheelDiameterInches)),

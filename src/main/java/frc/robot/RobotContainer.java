@@ -4,12 +4,15 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.CommandUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -66,8 +69,15 @@ public class RobotContainer {
 
   private final IntakeManual intakeManual = new IntakeManual();
 
+  private final SendableChooser<Command> autoChooser;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    PathPlannerManager.init(drive);
+    autoChooser = PathPlannerManager.getAutoChooser();
+    Shuffleboard.getTab("Autos").add(autoChooser).withPosition(0, 0).withSize(5, 2);
+
     configureButtonBindings();
 
     FiringSolutionManager.getInstance().loadSolutions();
@@ -153,8 +163,6 @@ public class RobotContainer {
   }
 
   public void disabledPeriodic() {
-    // update logs
-
     if (disableTimer.hasElapsed(Constants.DriveConstants.disableBreakSec)) {
       if (Constants.driveEnabled) {
         drive.setCoastMode(); // robot has stopped, safe to enter coast mode
@@ -190,10 +198,10 @@ public class RobotContainer {
     if (Constants.Demo.inDemoMode) {
       return null;
     }
-    return null;
-  }
 
-  // AUTO COMMANDS
+    return new SequentialCommandGroup(
+        getAutoInitialize(), CommandUtil.wrappedEventCommand(autoChooser.getSelected()));
+  }
 
   // Command that should always start off every auto
   public Command getAutoInitialize() {
