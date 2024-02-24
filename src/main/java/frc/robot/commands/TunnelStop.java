@@ -1,22 +1,21 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.outtake.Outtake;
+import frc.robot.subsystems.tunnel.Tunnel;
 
-public class OuttakeStop extends InstantCommand {
-  private Outtake outtake;
+public class TunnelStop extends InstantCommand {
+  private Tunnel tunnel;
   
-  public OuttakeStop() {
-    outtake = Outtake.getInstance();
+  public TunnelStop() {
+    tunnel = Tunnel.getInstance();
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(outtake);
+    addRequirements(tunnel);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    outtake.stopOuttake();
-    outtake.stopPivot();
+    tunnel.stopTunnel();
   }
 
   // Called once the command ends or is interrupted.
