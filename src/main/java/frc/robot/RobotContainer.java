@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.CommandUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -19,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AdjustOuttakeToSpeaker;
+import frc.robot.commands.CenterLine.ScoreCenterLine;
+import frc.robot.commands.CenterLine.ScoreCenterLine.ScoringStrategy;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
@@ -57,6 +58,8 @@ public class RobotContainer {
   private final Outtake outtake = Outtake.getInstance();
   private final Intake intake = Intake.getInstance();
 
+  private final PathPlannerManager pathPlannerManager;
+
   private final WriteFiringSolutionAtCurrentPos writeFiringSolution =
       new WriteFiringSolutionAtCurrentPos();
 
@@ -73,9 +76,13 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    pathPlannerManager = new PathPlannerManager(drive);
 
-    PathPlannerManager.init(drive);
-    autoChooser = PathPlannerManager.getAutoChooser();
+    // register PathPlanner events here
+
+    pathPlannerManager.loadAutos();
+
+    autoChooser = new SendableChooser<>();
     Shuffleboard.getTab("Autos").add(autoChooser).withPosition(0, 0).withSize(5, 2);
 
     configureButtonBindings();
@@ -200,7 +207,7 @@ public class RobotContainer {
     }
 
     return new SequentialCommandGroup(
-        getAutoInitialize(), CommandUtil.wrappedEventCommand(autoChooser.getSelected()));
+        getAutoInitialize(), new ScoreCenterLine(pathPlannerManager, ScoringStrategy.OneToFive));
   }
 
   // Command that should always start off every auto

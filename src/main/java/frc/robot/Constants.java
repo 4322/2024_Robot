@@ -39,7 +39,7 @@ public final class Constants {
       RobotChooser.getInstance().getConstants();
   public static double noteRadiusInches = 7;
 
-  public static final boolean debug = false;
+  public static final boolean debug = true;
 
   public static final boolean driveEnabled = true;
   public static final boolean intakeEnabled = false;

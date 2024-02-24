@@ -6,18 +6,20 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.RobotChooser.RobotChooser;
 import frc.robot.RobotChooser.RobotChooserInterface;
 import frc.robot.subsystems.drive.Drive;
+import java.util.HashMap;
 
-class PathPlannerManager {
+public class PathPlannerManager {
   private static RobotChooserInterface robotSpecificConstants =
       RobotChooser.getInstance().getConstants();
 
-  public static void init(Drive driveSubsystem) {
+  private HashMap<String, Command> autos = new HashMap<>();
+
+  public PathPlannerManager(Drive driveSubsystem) {
     if (!AutoBuilder.isConfigured()) {
       HolonomicPathFollowerConfig holonomicConfig =
           new HolonomicPathFollowerConfig(
@@ -46,15 +48,17 @@ class PathPlannerManager {
     }
   }
 
-  public static Command getAuto(String autoName) {
-    return AutoBuilder.buildAuto(autoName);
+  public void loadAutos() {
+    for (String autoName : AutoBuilder.getAllAutoNames()) {
+      autos.put(autoName, AutoBuilder.buildAuto(autoName));
+    }
   }
 
-  public static SendableChooser<Command> getAutoChooser() {
-    return AutoBuilder.buildAutoChooser();
+  public Command getAuto(String autoName) {
+    return autos.get(autoName);
   }
 
-  public static void addEvent(String eventName, Command command) {
+  public void addEvent(String eventName, Command command) {
     NamedCommands.registerCommand(eventName, CommandUtil.wrappedEventCommand(command));
   }
 }

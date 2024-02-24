@@ -2,6 +2,7 @@ package frc.robot.commands.CenterLine;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.PathPlannerManager;
 import frc.robot.commands.CenterLine.environmentTracker.EnvironmentTracker;
 import frc.robot.commands.CenterLine.environmentTracker.NoteStatus;
 import frc.robot.commands.CenterLine.statemachine.CLSM;
@@ -17,6 +18,7 @@ public class ScoreCenterLine extends Command {
 
   private final CLSM machine;
   private final EnvironmentTracker tracker;
+  private final CommandBuilder builder;
 
   private Command travelCommand;
   private boolean isFinished = false;
@@ -26,10 +28,11 @@ public class ScoreCenterLine extends Command {
     DoNothing,
   }
 
-  public ScoreCenterLine(ScoringStrategy strategy) {
+  public ScoreCenterLine(PathPlannerManager pathPlannerManager, ScoringStrategy strategy) {
     drive = Drive.getInstance();
     machine = new CLSM(strategy);
     tracker = new EnvironmentTracker(new NoteStatus(true, true, true, true, true));
+    builder = new CommandBuilder(pathPlannerManager);
 
     travelCommand = Commands.none();
 
@@ -52,7 +55,7 @@ public class ScoreCenterLine extends Command {
       if (isNotNoteState(machine.getState())) {
         machine.fire(CLSMTrigger.Finished, tracker.getNoteStatus());
       } else {
-        if (coordinator.noteInFiringPosition()) {
+        if (true) {
           machine.fire(CLSMTrigger.HaveNote, tracker.getNoteStatus());
         } else {
           machine.fire(CLSMTrigger.NoNote, tracker.getNoteStatus());
@@ -61,7 +64,7 @@ public class ScoreCenterLine extends Command {
       if (machine.getState() == CLSMState.Done) {
         isFinished = true;
       } else {
-        travelCommand = CommandBuilder.buildCommand(machine.getTravelState());
+        travelCommand = builder.buildCommand(machine.getTravelState());
         travelCommand.schedule();
       }
     }
