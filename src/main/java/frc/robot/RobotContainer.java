@@ -71,18 +71,13 @@ public class RobotContainer {
 
   private final IntakeManual intakeManual = new IntakeManual();
 
-  private final SendableChooser<Command> autoChooser;
+  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     pathPlannerManager = new PathPlannerManager(drive);
 
     // register PathPlanner events here
-
-    pathPlannerManager.loadAutos();
-
-    autoChooser = new SendableChooser<>();
-    Shuffleboard.getTab("Autos").add(autoChooser).withPosition(0, 0).withSize(5, 2);
 
     configureButtonBindings();
 
@@ -176,6 +171,15 @@ public class RobotContainer {
       disableTimer.stop();
       disableTimer.reset();
     }
+
+    if (Robot.getAllianceColor() != null) {
+      pathPlannerManager.loadAutos();
+
+      // TODO: configure SendableChooser
+
+      Shuffleboard.getTab("Autos").add(autoChooser).withPosition(0, 0).withSize(5, 2);
+    }
+
     // pressed when intake and outtake are in starting config
     // can only be pressed once after bootup
     xbox.povLeft()
