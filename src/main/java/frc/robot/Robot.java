@@ -210,4 +210,11 @@ public class Robot extends LoggedRobot {
   public static Alliance getAllianceColor() {
     return allianceColor;
   }
+
+  public static boolean isRed() {
+    if (allianceColor == Alliance.Blue) {
+      return false;
+    }
+    return true;
+  }
 }

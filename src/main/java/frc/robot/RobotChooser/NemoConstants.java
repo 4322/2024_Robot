@@ -37,13 +37,13 @@ public class NemoConstants implements RobotChooserInterface {
     return 20;
   }
 
-  // full length of drivebase divided by 2 for distance between wheels
+  // measured distance between wheels (24 and 11/16 in)
   public double getDistWheelMetersX() {
-    return OrangeMath.inchesToMeters(29.5 / 2); // 29.5 in
+    return OrangeMath.inchesToMeters(24.6875 / 2);
   }
 
   public double getDistWheelMetersY() {
-    return OrangeMath.inchesToMeters(29.5 / 2); // 29.5 in
+    return OrangeMath.inchesToMeters(24.6875 / 2);
   }
 
   // top speed at full motor output is 91 rot/sec with voltage comp at 11.5 volts
@@ -114,6 +114,10 @@ public class NemoConstants implements RobotChooserInterface {
     return 0.0;
   }
 
+  public double getAutoTrajectoryXYkiZ() {
+    return 0.0;
+  }
+
   public double getAutoTrajectoryRotkP() {
     return 2.0;
   }
@@ -124,6 +128,10 @@ public class NemoConstants implements RobotChooserInterface {
 
   public double getAutoTrajectoryRotkD() {
     return 0.01;
+  }
+
+  public double getAutoTrajectoryRotkiZ() {
+    return 0.0;
   }
 
   @Override
