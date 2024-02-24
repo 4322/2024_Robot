@@ -4,12 +4,12 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.outtake.Outtake;
 
-public class SetOuttakeAdjust extends InstantCommand {
+public class AutoSetOuttakeAdjust extends InstantCommand {
   private Outtake outtake;
   private double flywheelSpeed;
   private double pivotAngle;
 
-  public SetOuttakeAdjust(double flywheelSpeed, double pivotAngle) {
+  public AutoSetOuttakeAdjust(double flywheelSpeed, double pivotAngle) {
     outtake = Outtake.getInstance();
     this.flywheelSpeed = flywheelSpeed;
     this.pivotAngle = pivotAngle;
@@ -18,10 +18,7 @@ public class SetOuttakeAdjust extends InstantCommand {
   }
 
   @Override
-  public void initialize() {}
-
-  @Override
-  public void execute() {
+  public void initialize() {
     if (RobotCoordinator.getInstance().canPivot()) {
       outtake.outtake(flywheelSpeed);
       outtake.pivot(pivotAngle);
@@ -29,13 +26,6 @@ public class SetOuttakeAdjust extends InstantCommand {
   }
 
   @Override
-  public boolean isFinished() {
-    return false;
-  }
-
-  @Override
   public void end(boolean interrupted) {
-    outtake.stopOuttake();
-    outtake.stopPivot();
   }
 }
