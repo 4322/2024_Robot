@@ -12,8 +12,8 @@ import frc.robot.Constants.ControllerTypeStrings;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriveInputScalingStrings;
 import frc.robot.Constants.RotateInputScalingStrings;
-import frc.robot.subsystems.drive.RobotChooser.RobotChooser;
-import frc.robot.subsystems.drive.RobotChooser.RobotChooserInterface;
+import frc.robot.RobotChooser.RobotChooser;
+import frc.robot.RobotChooser.RobotChooserInterface;
 
 public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
   private RobotChooserInterface robotSpecificConstants = RobotChooser.getInstance().getConstants();
@@ -191,8 +191,8 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
   @Override
   public void updateInputs(DriveShuffleBoardIOInputs inputs) {
     if (Constants.debug) {
-      inputs.psuedoAutoRotateEnabled =
-          psuedoAutoRotateCheckbox.getBoolean(Constants.psuedoAutoRotateEnabled);
+      inputs.pseudoAutoRotateEnabled =
+          pseudoAutoRotateCheckbox.getBoolean(Constants.psuedoAutoRotateEnabled);
       inputs.driveInputScaling = driveInputScaling.getSelected();
       inputs.driveControllerType = driveControlType.getSelected();
       inputs.rotateInputScaling = rotateInputScaling.getSelected();
