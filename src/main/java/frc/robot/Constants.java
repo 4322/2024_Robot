@@ -281,7 +281,7 @@ public final class Constants {
     public static final double openLoopRampSec = 0;
     public static final double closedLoopRampSec = 0;
     public static final int gearRatioMotorToWheel = 0;
-    public static final double gearReductionEncoderToMotor = (29.0 / 28.0) * 125.0;
+    public static final double gearReductionEncoderToMotor = (30.0 / 28.0) * 125.0;
     public static final double kS = 0;
     public static final double voltPerRPS =
         0; // since we likely aren't going to adjust the speed, it's likely safe to
