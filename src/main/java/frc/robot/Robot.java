@@ -199,9 +199,11 @@ public class Robot extends LoggedRobot {
   private void updateAllianceColor() {
     try {
       allianceColor = DriverStation.getAlliance().get();
-    } catch (Exception e) { 
+    } catch (NoSuchElementException e) {
       DriverStation.reportError("No Alliance Color", false);
       allianceColor = null;
+    } catch (Error e) {
+      DriverStation.reportError("Update Alliance Error", false);
     }
   }
 
