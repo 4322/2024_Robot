@@ -210,4 +210,8 @@ public class RobotCoordinator extends SubsystemBase {
   public double getOuttakeLimelightLatency() {
     return Limelight.getOuttakeInstance().getTotalLatency();
   }
+
+  public boolean pivotAtPosition() {
+    return outtake.pivotIsAtPosition();
+  }
 }

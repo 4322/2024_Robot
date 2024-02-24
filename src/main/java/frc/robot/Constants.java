@@ -305,6 +305,7 @@ public final class Constants {
 
     public static final NeutralModeValue pivotDefaultNeutralMode = NeutralModeValue.Coast;
     public static final double defaultPivotPosition = 0;
+    public static final double ejectOuttakeRPS = 0; // TODO
 
     public static final double topOuttakeRPS = 0;
     public static final double bottomOuttakeRPS = 0;

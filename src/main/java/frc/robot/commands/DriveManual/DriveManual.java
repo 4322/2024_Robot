@@ -123,9 +123,9 @@ public class DriveManual extends Command {
         break;
 
       case Constants.ControllerTypeStrings.xboxLeftDrive:
-        driveRawX = -RobotContainer.xbox.getLeftY();
-        driveRawY = -RobotContainer.xbox.getLeftX();
-        rotateRaw = -RobotContainer.xbox.getRightX();
+        driveRawX = -RobotContainer.driveXbox.getLeftY();
+        driveRawY = -RobotContainer.driveXbox.getLeftX();
+        rotateRaw = -RobotContainer.driveXbox.getRightX();
 
         driveDeadband = Manual.xboxDriveDeadband;
         rotateLeftDeadband = Manual.xboxRotateDeadband;
@@ -134,9 +134,9 @@ public class DriveManual extends Command {
         break;
 
       case Constants.ControllerTypeStrings.xboxRightDrive:
-        driveRawX = -RobotContainer.xbox.getRightY();
-        driveRawY = -RobotContainer.xbox.getRightX();
-        rotateRaw = -RobotContainer.xbox.getLeftX();
+        driveRawX = -RobotContainer.driveXbox.getRightY();
+        driveRawY = -RobotContainer.driveXbox.getRightX();
+        rotateRaw = -RobotContainer.driveXbox.getLeftX();
 
         driveDeadband = Manual.xboxDriveDeadband;
         rotateLeftDeadband = Manual.xboxRotateDeadband;
