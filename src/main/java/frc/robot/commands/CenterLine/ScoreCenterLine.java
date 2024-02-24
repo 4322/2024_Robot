@@ -10,13 +10,12 @@ import frc.robot.commands.CenterLine.statemachine.CLSM.CLSMState;
 import frc.robot.commands.CenterLine.statemachine.CLSM.CLSMTrigger;
 import frc.robot.commands.CenterLine.statemachine.CLSM.TravelState;
 import frc.robot.subsystems.RobotCoordinator;
-import frc.robot.subsystems.drive.Drive;
+import org.littletonrobotics.junction.Logger;
 
 public class ScoreCenterLine extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Drive drive;
-
   private final CLSM machine;
+
   private final EnvironmentTracker tracker;
   private final CommandBuilder builder;
 
@@ -29,7 +28,6 @@ public class ScoreCenterLine extends Command {
   }
 
   public ScoreCenterLine(PathPlannerManager pathPlannerManager, ScoringStrategy strategy) {
-    drive = Drive.getInstance();
     machine = new CLSM(strategy);
     tracker = new EnvironmentTracker(new NoteStatus(true, true, true, true, true));
     builder = new CommandBuilder(pathPlannerManager);
@@ -37,35 +35,41 @@ public class ScoreCenterLine extends Command {
     travelCommand = Commands.none();
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(drive);
+    addRequirements();
   }
 
   @Override
   public void initialize() {
     machine.fire(CLSMTrigger.Initialize, new NoteStatus(true, true, true, true, true));
-    travelCommand.schedule(); // "Finish" command
+    travelCommand = builder.buildCommand(machine.getTravelState());
+    travelCommand.schedule();
   }
 
   @Override
   public void execute() {
-
+    Logger.recordOutput("CenterLineFinished", false);
     RobotCoordinator coordinator = RobotCoordinator.getInstance();
-    if (travelCommand.isFinished()) {
-      tracker.update(machine.getState());
-      if (isNotNoteState(machine.getState())) {
-        machine.fire(CLSMTrigger.Finished, tracker.getNoteStatus());
-      } else {
-        if (true) {
-          machine.fire(CLSMTrigger.HaveNote, tracker.getNoteStatus());
+    Logger.recordOutput("TravelCommandScheduled", travelCommand.isScheduled());
+    if (travelCommand.isScheduled()) { // this needs to be checked before isFinished
+      Logger.recordOutput("TravelCommandFinished", travelCommand.isFinished());
+      if (travelCommand.isFinished()) {
+        tracker.update(machine.getState());
+        if (isNotNoteState(machine.getState())) {
+          machine.fire(CLSMTrigger.Finished, tracker.getNoteStatus());
         } else {
-          machine.fire(CLSMTrigger.NoNote, tracker.getNoteStatus());
+          if (true) {
+            machine.fire(CLSMTrigger.HaveNote, tracker.getNoteStatus());
+          } else {
+            machine.fire(CLSMTrigger.NoNote, tracker.getNoteStatus());
+          }
         }
-      }
-      if (machine.getState() == CLSMState.Done) {
-        isFinished = true;
-      } else {
-        travelCommand = builder.buildCommand(machine.getTravelState());
-        travelCommand.schedule();
+        if (machine.getState() == CLSMState.Done) {
+          isFinished = true;
+        } else {
+          travelCommand = builder.buildCommand(machine.getTravelState());
+          travelCommand.schedule();
+          return;
+        }
       }
     }
   }
@@ -95,7 +99,9 @@ public class ScoreCenterLine extends Command {
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    Logger.recordOutput("CenterLineFinished", true);
+  }
 
   @Override
   public boolean isFinished() {

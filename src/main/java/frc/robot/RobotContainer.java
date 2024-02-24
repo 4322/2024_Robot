@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
@@ -17,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.CenterLine.ScoreCenterLine;
+import frc.robot.commands.CenterLine.ScoreCenterLine.ScoringStrategy;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
@@ -30,8 +33,6 @@ import frc.robot.commands.Shoot;
 import frc.robot.commands.TunnelFeed;
 import frc.robot.commands.TunnelStop;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
-import frc.robot.commands.CenterLine.ScoreCenterLine;
-import frc.robot.commands.CenterLine.ScoreCenterLine.ScoringStrategy;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.drive.Drive;
@@ -238,6 +239,10 @@ public class RobotContainer {
 
     return new SequentialCommandGroup(
         getAutoInitialize(),
+        new SetRobotPose(
+            new Pose2d(
+                new Translation2d(6.115181446, 6.450208664), Rotation2d.fromRadians(0.1467992541)),
+            true),
         new ScoreCenterLine(pathPlannerManager, ScoringStrategy.OneToFive));
   }
 

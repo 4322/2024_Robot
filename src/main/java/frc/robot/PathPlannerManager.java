@@ -3,6 +3,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.CommandUtil;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -49,13 +50,13 @@ public class PathPlannerManager {
   }
 
   public void loadAutos() {
-    for (String autoName : AutoBuilder.getAllAutoNames()) {
-      autos.put(autoName, AutoBuilder.buildAuto(autoName));
-    }
+    // for (String autoName : AutoBuilder.getAllAutoNames()) {
+    //   autos.put(autoName, AutoBuilder.buildAuto(autoName));
+    // }
   }
 
   public Command getAuto(String autoName) {
-    return autos.get(autoName);
+    return AutoBuilder.followPath(PathPlannerPath.fromChoreoTrajectory(autoName));
   }
 
   public void addEvent(String eventName, Command command) {
