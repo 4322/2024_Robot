@@ -357,7 +357,7 @@ public final class Constants {
           false; // we want to brake if not moving
       public static final boolean limitForwardMotion = true;
       public static final boolean limitReverseMotion = true;
-      public static final double encoderGearReduction = 0.0; // TODO: should be a large number
+      public static final double encoderGearReduction = 60.0;
     }
 
     public static final class Logging {
