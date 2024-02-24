@@ -18,8 +18,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AdjustOuttakeToSpeaker;
-import frc.robot.commands.CenterLine.ScoreCenterLine;
-import frc.robot.commands.CenterLine.ScoreCenterLine.ScoringStrategy;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
@@ -207,7 +205,7 @@ public class RobotContainer {
     }
 
     return new SequentialCommandGroup(
-        getAutoInitialize(), new ScoreCenterLine(pathPlannerManager, ScoringStrategy.OneToFive));
+        getAutoInitialize(), pathPlannerManager.getAuto("TestPathFollowing"));
   }
 
   // Command that should always start off every auto
