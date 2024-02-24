@@ -131,7 +131,7 @@ public class RobotContainer {
     if (Constants.xboxEnabled) {
       driveXbox = new CommandXboxController(2);
       operatorXbox = new CommandXboxController(3);
-      driveXbox.x()
+      driveXbox.leftBumper()
           .onTrue(
               Commands.runOnce(
                   () -> {
