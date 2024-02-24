@@ -6,17 +6,17 @@ import frc.robot.subsystems.intake.Intake;
 
 public class AutoIntakeDeploy extends InstantCommand {
 
-    public AutoIntakeDeploy() {
-        addRequirements(Intake.getInstance());
-    }
+  public AutoIntakeDeploy() {
+    addRequirements(Intake.getInstance());
+  }
 
-    @Override
-    public void initialize() {
-        if (RobotCoordinator.getInstance().canDeploy()) {
-            Intake.getInstance().deploy();
-        }  
+  @Override
+  public void initialize() {
+    if (RobotCoordinator.getInstance().canDeploy()) {
+      Intake.getInstance().deploy();
     }
+  }
 
-    @Override
-    public void end(boolean interrupted) {}
+  @Override
+  public void end(boolean interrupted) {}
 }

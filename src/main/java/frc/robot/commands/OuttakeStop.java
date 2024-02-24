@@ -5,7 +5,7 @@ import frc.robot.subsystems.outtake.Outtake;
 
 public class OuttakeStop extends InstantCommand {
   private Outtake outtake;
-  
+
   public OuttakeStop() {
     outtake = Outtake.getInstance();
     // Use addRequirements() here to declare subsystem dependencies.

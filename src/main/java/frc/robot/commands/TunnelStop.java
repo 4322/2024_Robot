@@ -5,7 +5,7 @@ import frc.robot.subsystems.tunnel.Tunnel;
 
 public class TunnelStop extends InstantCommand {
   private Tunnel tunnel;
-  
+
   public TunnelStop() {
     tunnel = Tunnel.getInstance();
     // Use addRequirements() here to declare subsystem dependencies.
