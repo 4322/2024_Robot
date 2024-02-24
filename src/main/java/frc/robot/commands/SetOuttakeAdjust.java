@@ -1,14 +1,11 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.shooting.FiringSolution;
-import frc.robot.shooting.FiringSolutionManager;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.outtake.Outtake;
-import frc.utility.FiringSolutionHelper;
 
-public class SetOuttakeAdjust extends Command {
-  Outtake outtake;
+public class SetOuttakeAdjust extends InstantCommand {
+  private Outtake outtake;
   private double flywheelSpeed;
   private double pivotAngle;
 
