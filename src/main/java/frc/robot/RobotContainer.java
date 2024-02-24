@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.CommandUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -31,6 +30,8 @@ import frc.robot.commands.Shoot;
 import frc.robot.commands.TunnelFeed;
 import frc.robot.commands.TunnelStop;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
+import frc.robot.commands.CenterLine.ScoreCenterLine;
+import frc.robot.commands.CenterLine.ScoreCenterLine.ScoringStrategy;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.drive.Drive;
@@ -45,6 +46,7 @@ import frc.robot.subsystems.tunnel.Tunnel;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  private boolean autosLoaded = false;
   private Timer disableTimer = new Timer();
 
   // Define controllers
@@ -191,12 +193,13 @@ public class RobotContainer {
       disableTimer.reset();
     }
 
-    if (Robot.getAllianceColor() != null) {
+    if (Robot.getAllianceColor() != null && !autosLoaded) {
       pathPlannerManager.loadAutos();
 
       // TODO: configure SendableChooser
 
       Shuffleboard.getTab("Autos").add(autoChooser).withPosition(0, 0).withSize(5, 2);
+      autosLoaded = true;
     }
 
     // pressed when intake and outtake are in starting config
@@ -235,7 +238,7 @@ public class RobotContainer {
 
     return new SequentialCommandGroup(
         getAutoInitialize(),
-        CommandUtil.wrappedEventCommand(pathPlannerManager.getAuto("TestPathFollowing")));
+        new ScoreCenterLine(pathPlannerManager, ScoringStrategy.OneToFive));
   }
 
   // Command that should always start off every auto

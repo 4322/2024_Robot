@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import java.util.NoSuchElementException;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -199,7 +198,7 @@ public class Robot extends LoggedRobot {
   private void updateAllianceColor() {
     try {
       allianceColor = DriverStation.getAlliance().get();
-    } catch (Exception e) { 
+    } catch (Exception e) {
       DriverStation.reportError("No Alliance Color", false);
       allianceColor = null;
     }
