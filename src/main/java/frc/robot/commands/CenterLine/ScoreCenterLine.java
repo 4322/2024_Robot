@@ -17,6 +17,7 @@ public class ScoreCenterLine extends Command {
 
   private final CLSM machine;
   private final EnvironmentTracker tracker;
+  private final CommandBuilder commandBuilder;
 
   private Command travelCommand;
   private boolean isFinished = false;
@@ -30,6 +31,7 @@ public class ScoreCenterLine extends Command {
     drive = Drive.getInstance();
     machine = new CLSM(strategy);
     tracker = new EnvironmentTracker(new NoteStatus(true, true, true, true, true));
+    commandBuilder = new CommandBuilder();
 
     travelCommand = Commands.none();
 
@@ -61,7 +63,7 @@ public class ScoreCenterLine extends Command {
       if (machine.getState() == CLSMState.Done) {
         isFinished = true;
       } else {
-        travelCommand = CommandBuilder.buildCommand(machine.getTravelState());
+        travelCommand = commandBuilder.buildCommand(machine.getTravelState());
         travelCommand.schedule();
       }
     }
