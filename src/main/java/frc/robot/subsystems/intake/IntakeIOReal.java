@@ -94,9 +94,11 @@ public class IntakeIOReal implements IntakeIO {
     CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
 
     motorOutputConfigs.NeutralMode = IntakeConstants.IntakeConfig.neutralMode;
-    currentLimitsConfigs.StatorCurrentLimitEnable = Constants.IntakeConstants.IntakeConfig.statorEnabled;
+    currentLimitsConfigs.StatorCurrentLimitEnable =
+        Constants.IntakeConstants.IntakeConfig.statorEnabled;
     currentLimitsConfigs.StatorCurrentLimit = Constants.IntakeConstants.IntakeConfig.statorLimit;
-    currentLimitsConfigs.SupplyCurrentLimitEnable = Constants.IntakeConstants.IntakeConfig.supplyEnabled;
+    currentLimitsConfigs.SupplyCurrentLimitEnable =
+        Constants.IntakeConstants.IntakeConfig.supplyEnabled;
     currentLimitsConfigs.SupplyCurrentLimit = Constants.IntakeConstants.IntakeConfig.supplyLimit;
 
     intake.getConfigurator().apply(currentLimitsConfigs);
@@ -133,9 +135,11 @@ public class IntakeIOReal implements IntakeIO {
         IntakeConstants.DeployConfig.forwardSoftLimitThresholdRotations;
     softwareLimitSwitchConfigs.ReverseSoftLimitThreshold =
         IntakeConstants.DeployConfig.reverseSoftLimitThresholdRotations;
-    currentLimitsConfigs.StatorCurrentLimitEnable = Constants.IntakeConstants.DeployConfig.statorEnabled;
+    currentLimitsConfigs.StatorCurrentLimitEnable =
+        Constants.IntakeConstants.DeployConfig.statorEnabled;
     currentLimitsConfigs.StatorCurrentLimit = Constants.IntakeConstants.DeployConfig.statorLimit;
-    currentLimitsConfigs.SupplyCurrentLimitEnable = Constants.IntakeConstants.DeployConfig.supplyEnabled;
+    currentLimitsConfigs.SupplyCurrentLimitEnable =
+        Constants.IntakeConstants.DeployConfig.supplyEnabled;
     currentLimitsConfigs.SupplyCurrentLimit = Constants.IntakeConstants.DeployConfig.supplyLimit;
 
     deploy.getConfigurator().apply(currentLimitsConfigs);
