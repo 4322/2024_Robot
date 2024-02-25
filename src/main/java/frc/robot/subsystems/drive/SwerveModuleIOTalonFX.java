@@ -16,8 +16,8 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -127,15 +127,17 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     currentLimitsConfigs.SupplyCurrentLimitEnable = DriveConstants.Drive.supplyEnabled;
     currentLimitsConfigs.SupplyCurrentThreshold = DriveConstants.Drive.supplyThreshold;
     motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
+    // Invert the left side modules so we can zero all modules with the bevel gears facing outward.
+    // Without this code, all bevel gears would need to face right when the modules are zeroed.
+    boolean isLeftSide = (pos == WheelPosition.FRONT_LEFT) || (pos == WheelPosition.BACK_LEFT);
+    if (isLeftSide) {
+      motorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    }
     config.apply(slot0Configs);
     config.apply(closedLoopRampsConfigs);
     config.apply(openLoopRampsConfigs);
     config.apply(currentLimitsConfigs);
     config.apply(motorOutputConfigs);
-    // Invert the left side modules so we can zero all modules with the bevel gears facing outward.
-    // Without this code, all bevel gears would need to face right when the modules are zeroed.
-    boolean isLeftSide = (pos == WheelPosition.FRONT_LEFT) || (pos == WheelPosition.BACK_LEFT);
-    talonFX.setInverted(isLeftSide);
 
     // need rapid velocity feedback for control logic
     talonFX
@@ -164,8 +166,6 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs = new HardwareLimitSwitchConfigs();
     CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
 
-    talonFX.setInverted(true);
-
     slot0Configs.kP = robotSpecificConstants.getRotationkP();
     slot0Configs.kD = robotSpecificConstants.getRotationkD();
     closedLoopRampsConfigs.VoltageClosedLoopRampPeriod =
@@ -173,6 +173,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     closedLoopGeneralConfigs.ContinuousWrap = false;
     voltageConfigs.PeakForwardVoltage = DriveConstants.Rotation.maxPower;
     voltageConfigs.PeakReverseVoltage = -DriveConstants.Rotation.maxPower;
+    motorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
     motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
 
     hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
@@ -236,7 +237,9 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
         turningMotor.getDutyCycle().getValue() / 2 * turningMotor.getSupplyVoltage().getValue();
     inputs.turnCurrentAmps = turningMotor.getSupplyCurrent().getValue();
     inputs.turnDegrees = Units.rotationsToDegrees(turningMotor.getPosition().getValue());
-    inputs.wheelDegreesTo360 = MathUtil.inputModulus(inputs.turnDegrees / robotSpecificConstants.getRotationGearRatio(), 0, 360);
+    inputs.wheelDegreesTo360 =
+        MathUtil.inputModulus(
+            inputs.turnDegrees / robotSpecificConstants.getRotationGearRatio(), 0, 360);
     currentWheelDegrees = inputs.wheelDegreesTo360;
 
     inputs.calculatedFF = calcFeedForwardVoltsOverMetersPerSec;
@@ -351,18 +354,14 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
 
   @Override
   public void setBrakeMode() {
-    MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-    motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
-    driveMotor.getConfigurator().refresh(motorOutputConfigs);
-    turningMotor.getConfigurator().refresh(motorOutputConfigs);
+    driveMotor.setNeutralMode(NeutralModeValue.Brake);
+    turningMotor.setNeutralMode(NeutralModeValue.Brake);
   }
 
   @Override
   public void setCoastMode() {
-    MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-    motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
-    driveMotor.getConfigurator().refresh(motorOutputConfigs);
-    turningMotor.getConfigurator().refresh(motorOutputConfigs);
+    driveMotor.setNeutralMode(NeutralModeValue.Coast);
+    turningMotor.setNeutralMode(NeutralModeValue.Coast);
   }
 
   @Override
