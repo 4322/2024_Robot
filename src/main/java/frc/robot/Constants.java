@@ -39,7 +39,7 @@ public final class Constants {
       RobotChooser.getInstance().getConstants();
   public static double noteRadiusInches = 7;
 
-  public static final boolean debug = false;
+  public static final boolean debug = true;
 
   public static final boolean driveEnabled = true;
   public static final boolean intakeEnabled = false;
@@ -50,7 +50,7 @@ public final class Constants {
   public static final boolean sensorsEnabled = false;
   public static final boolean ledEnabled = false;
   public static final boolean joysticksEnabled = false;
-  public static final boolean xboxEnabled = false;
+  public static final boolean xboxEnabled = true;
 
   public static final boolean intakeLimeLightEnabled = false;
   public static final boolean outtakeLimeLightEnabled = false;
@@ -212,7 +212,7 @@ public final class Constants {
     public static final class Rotation {
 
       public static final double configCLosedLoopRamp = 0.08;
-      public static final double maxPower = 0.5; // reduce gear wear and overshoot
+      public static final double maxPower = 6; // reduce gear wear and overshoot
 
       public static final double configVoltageCompSaturation = 11.5;
 

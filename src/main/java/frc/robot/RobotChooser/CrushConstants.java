@@ -71,11 +71,11 @@ public class CrushConstants implements RobotChooserInterface {
 
   // For tuning, graph Duty Cycle Position in the REV Hardware Client
   public double getRotationkP() { // TODO
-    return 0.009;
+    return 2.0;
   }
 
   public double getRotationkD() { // TODO
-    return 0.0002;
+    return 0.0;
   }
 
   public double getGearRatio() {

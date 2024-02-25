@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -149,6 +150,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     VoltageConfigs voltageConfigs = new VoltageConfigs();
     MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
     CANcoderConfiguration canConfig = new CANcoderConfiguration();
+    HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs = new HardwareLimitSwitchConfigs();
 
     talonFX.setInverted(true);
 
@@ -156,11 +158,14 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     slot0Configs.kD = robotSpecificConstants.getRotationkD();
     closedLoopRampsConfigs.VoltageClosedLoopRampPeriod =
         DriveConstants.Rotation.configCLosedLoopRamp;
-    closedLoopGeneralConfigs.ContinuousWrap = true;
+    closedLoopGeneralConfigs.ContinuousWrap = false;
     voltageConfigs.PeakForwardVoltage = DriveConstants.Rotation.maxPower;
     voltageConfigs.PeakReverseVoltage = -DriveConstants.Rotation.maxPower;
     motorOutputConfigs.NeutralMode =
         NeutralModeValue.Coast; // Allow robot to be moved prior to enabling
+
+    hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
+    hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
 
     canConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
     encoder.getConfigurator().apply(canConfig);
@@ -169,6 +174,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     talonFX.getConfigurator().apply(closedLoopGeneralConfigs);
     talonFX.getConfigurator().apply(voltageConfigs);
     talonFX.getConfigurator().apply(motorOutputConfigs);
+    talonFX.getConfigurator().apply(hardwareLimitSwitchConfigs);
     // need fast initial reading from the CANCoder
     encoder
         .getPosition()
@@ -221,8 +227,10 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   // PID methods for turn motor
   @Override
   public void setTurnAngle(double desiredAngle) {
-    PositionVoltage positionVoltage = new PositionVoltage(desiredAngle);
-    turningMotor.setControl(positionVoltage);
+    turningMotor.setControl(
+        new PositionVoltage(desiredAngle / 360 * 21.0)
+            .withLimitForwardMotion(false)
+            .withLimitReverseMotion(false));
   }
 
   // set drive motor voltage based on desired wheel m/s
