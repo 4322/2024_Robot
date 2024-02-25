@@ -229,7 +229,8 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
         turningMotor.getDutyCycle().getValue() / 2 * turningMotor.getSupplyVoltage().getValue();
     inputs.turnCurrentAmps = turningMotor.getSupplyCurrent().getValue();
     inputs.turnDegrees = Units.rotationsToDegrees(turningMotor.getPosition().getValue());
-    inputs.wheelDegreesTo360 = currentWheelDegrees;
+    inputs.wheelDegreesTo360 = MathUtil.inputModulus(inputs.turnDegrees / robotSpecificConstants.getRotationGearRatio(), 0, 360);
+    currentWheelDegrees = inputs.wheelDegreesTo360;
 
     inputs.calculatedFF = calcFeedForwardVoltsOverMetersPerSec;
     inputs.calculatedVolts = desiredVolts;
@@ -241,7 +242,6 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   @Override
   public void setTurnAngle(double desiredAngle) {
     double currentRotPosition = turningMotor.getPosition().getValueAsDouble();
-    currentWheelDegrees = MathUtil.inputModulus(currentRotPosition * 360 / robotSpecificConstants.getRotationGearRatio() , 0, 360);
     // Calculates change in degrees and adds to current position after converting to encoder
     // rotations
     turningMotor.setControl(
