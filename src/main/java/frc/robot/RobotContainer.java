@@ -193,14 +193,17 @@ public class RobotContainer {
       disableTimer.stop();
       disableTimer.reset();
     }
-    // pressed when intake and outtake are in starting config
-    // can only be pressed once after bootup
-    driveXbox.povLeft()
-        .onTrue(
-            Commands.runOnce(
-                () -> {
-                  RobotCoordinator.getInstance().setInitAbsEncoderPressed(true);
-                }));
+
+    if (Constants.xboxEnabled) {
+      // pressed when intake and outtake are in starting config
+      // can only be pressed once after bootup
+      driveXbox.povLeft()
+          .onTrue(
+              Commands.runOnce(
+                  () -> {
+                    RobotCoordinator.getInstance().setInitAbsEncoderPressed(true);
+                  }));
+    }
   }
 
   public void enableSubsystems() {

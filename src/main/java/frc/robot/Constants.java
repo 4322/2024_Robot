@@ -31,7 +31,7 @@ public final class Constants {
     CRUSH
   }
 
-  public static final RobotType currentRobot = RobotType.NEMO;
+  public static final RobotType currentRobot = RobotType.CRUSH;
   public static final Mode currentMode = Mode.REAL;
 
   // Must be below currentRobot to initialize properly
@@ -49,7 +49,7 @@ public final class Constants {
   public static final boolean outtakePivotEnabled = false;
   public static final boolean sensorsEnabled = false;
   public static final boolean joysticksEnabled = false;
-  public static final boolean xboxEnabled = true;
+  public static final boolean xboxEnabled = false;
 
   public static final boolean intakeLimeLightEnabled = false;
   public static final boolean outtakeLimeLightEnabled = false;
