@@ -214,6 +214,8 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
 
     inputs.calculatedFF = calcFeedForwardVoltsOverMetersPerSec;
     inputs.calculatedVolts = desiredVolts;
+
+    inputs.absEncoderRotations = encoder.getAbsolutePosition().getValueAsDouble();
   }
 
   // PID methods for turn motor

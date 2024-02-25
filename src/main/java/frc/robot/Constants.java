@@ -224,10 +224,10 @@ public final class Constants {
 
       static {
         CANCoderOffsetRotations = new double[4];
-        CANCoderOffsetRotations[WheelPosition.FRONT_RIGHT.wheelNumber] = 149.941;
-        CANCoderOffsetRotations[WheelPosition.FRONT_LEFT.wheelNumber] = 2.637 - 90;
-        CANCoderOffsetRotations[WheelPosition.BACK_RIGHT.wheelNumber] = 22.939 - 90;
-        CANCoderOffsetRotations[WheelPosition.BACK_LEFT.wheelNumber] = -72.773;
+        CANCoderOffsetRotations[WheelPosition.FRONT_RIGHT.wheelNumber] = 0.695;
+        CANCoderOffsetRotations[WheelPosition.FRONT_LEFT.wheelNumber] = 0.526;
+        CANCoderOffsetRotations[WheelPosition.BACK_RIGHT.wheelNumber] = 0.670;
+        CANCoderOffsetRotations[WheelPosition.BACK_LEFT.wheelNumber] = 0.453;
       }
     }
 
