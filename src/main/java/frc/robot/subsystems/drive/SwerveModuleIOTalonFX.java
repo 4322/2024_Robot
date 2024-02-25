@@ -122,7 +122,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     currentLimitsConfigs.SupplyCurrentLimit = DriveConstants.Drive.supplyLimit;
     currentLimitsConfigs.SupplyCurrentLimitEnable = DriveConstants.Drive.supplyEnabled;
     currentLimitsConfigs.SupplyCurrentThreshold = DriveConstants.Drive.supplyThreshold;
-    motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
+    motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
     config.apply(slot0Configs);
     config.apply(closedLoopRampsConfigs);
     config.apply(openLoopRampsConfigs);
@@ -162,7 +162,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     voltageConfigs.PeakForwardVoltage = DriveConstants.Rotation.maxPower;
     voltageConfigs.PeakReverseVoltage = -DriveConstants.Rotation.maxPower;
     motorOutputConfigs.NeutralMode =
-        NeutralModeValue.Coast; // Allow robot to be moved prior to enabling
+        NeutralModeValue.Brake;
 
     hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
     hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
