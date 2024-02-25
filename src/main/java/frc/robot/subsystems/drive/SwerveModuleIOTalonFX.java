@@ -143,6 +143,13 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
         .setUpdateFrequency(
             OrangeMath.msAndHzConverter(CanBusUtil.nextFastStatusPeriodMs()),
             Constants.controllerConfigTimeoutMs);
+
+    // need rapid position feedback for accurate odometry
+    talonFX
+        .getPosition()
+        .setUpdateFrequency(
+            OrangeMath.msAndHzConverter(CanBusUtil.nextFastStatusPeriodMs()),
+            Constants.controllerConfigTimeoutMs);
   }
 
   private void configRotation(TalonFX talonFX, WheelPosition wheelPos) {
