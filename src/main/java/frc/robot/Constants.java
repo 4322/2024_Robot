@@ -343,9 +343,8 @@ public final class Constants {
       public static final double updateHz =
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
-      public static final double intakeFeedVoltage =
-          0.0; // TODO: set max voltage we want for feeding
-      public static final double intakeEjectVoltage = 0.0;
+      public static final double intakeFeedVoltage = 5.0;
+      public static final double intakeEjectVoltage = -5.0;
       public static final boolean supplyEnabled = true;
       public static final boolean statorEnabled = true;
       public static final double supplyLimit = 30;
@@ -413,8 +412,8 @@ public final class Constants {
     public static final double supplyLimit = 30;
     public static final double statorLimit = 45;
 
-    public static final double desiredVoltage = 0.0; // TODO
-    public static final double peakVoltage = 0.0; // TODO: shouldn't be greater than 12
+    public static final double desiredVoltage = 3.0;
+    public static final double peakVoltage = 6.0;
 
     public static final class Logging {
       public static final String key = "Tunnel/";
