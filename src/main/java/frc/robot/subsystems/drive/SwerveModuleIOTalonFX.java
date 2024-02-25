@@ -126,7 +126,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     currentLimitsConfigs.SupplyCurrentLimit = DriveConstants.Drive.supplyLimit;
     currentLimitsConfigs.SupplyCurrentLimitEnable = DriveConstants.Drive.supplyEnabled;
     currentLimitsConfigs.SupplyCurrentThreshold = DriveConstants.Drive.supplyThreshold;
-    motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
+    motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
     // Invert the left side modules so we can zero all modules with the bevel gears facing outward.
     // Without this code, all bevel gears would need to face right when the modules are zeroed.
     boolean isLeftSide = (pos == WheelPosition.FRONT_LEFT) || (pos == WheelPosition.BACK_LEFT);
@@ -174,7 +174,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     voltageConfigs.PeakForwardVoltage = DriveConstants.Rotation.maxPower;
     voltageConfigs.PeakReverseVoltage = -DriveConstants.Rotation.maxPower;
     motorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
-    motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
+    motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
 
     hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
     hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
