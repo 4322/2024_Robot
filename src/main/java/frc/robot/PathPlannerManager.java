@@ -12,15 +12,20 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.RobotChooser.RobotChooser;
 import frc.robot.RobotChooser.RobotChooserInterface;
 import frc.robot.subsystems.drive.Drive;
-import java.util.HashMap;
 
 public class PathPlannerManager {
+  private static PathPlannerManager manager;
   private static RobotChooserInterface robotSpecificConstants =
       RobotChooser.getInstance().getConstants();
 
-  private HashMap<String, Command> autos = new HashMap<>();
+  public static PathPlannerManager getInstance() {
+    if (manager == null) {
+      manager = new PathPlannerManager();
+    }
+    return manager;
+  }
 
-  public PathPlannerManager(Drive driveSubsystem) {
+  private PathPlannerManager() {
     if (!AutoBuilder.isConfigured()) {
       HolonomicPathFollowerConfig holonomicConfig =
           new HolonomicPathFollowerConfig(
@@ -39,27 +44,25 @@ public class PathPlannerManager {
               new ReplanningConfig());
 
       AutoBuilder.configureHolonomic(
-          driveSubsystem::getPose2d,
-          driveSubsystem::resetOdometry,
-          driveSubsystem::getChassisSpeeds,
-          driveSubsystem::setModuleStatesFromChassisSpeeds,
+          Drive.getInstance()::getPose2d,
+          Drive.getInstance()::resetOdometry,
+          Drive.getInstance()::getChassisSpeeds,
+          Drive.getInstance()::setModuleStatesFromChassisSpeeds,
           holonomicConfig,
           Robot::isRed,
-          driveSubsystem);
+          Drive.getInstance());
     }
-  }
-
-  public void loadAutos() {
-    // for (String autoName : AutoBuilder.getAllAutoNames()) {
-    //   autos.put(autoName, AutoBuilder.buildAuto(autoName));
-    // }
-  }
-
-  public Command getAuto(String autoName) {
-    return AutoBuilder.followPath(PathPlannerPath.fromChoreoTrajectory(autoName));
   }
 
   public void addEvent(String eventName, Command command) {
     NamedCommands.registerCommand(eventName, CommandUtil.wrappedEventCommand(command));
+  }
+
+  public Command buildAuto(String autoName) {
+    return AutoBuilder.buildAuto(autoName);
+  }
+
+  public Command followChoreoPath(String pathName) {
+    return AutoBuilder.followPath(PathPlannerPath.fromChoreoTrajectory(pathName));
   }
 }
