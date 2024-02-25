@@ -18,8 +18,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.CenterLine.ScoreCenterLine;
-import frc.robot.commands.CenterLine.ScoreCenterLine.ScoringStrategy;
+import frc.robot.centerline.CenterLineManager.ScoringStrategy;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
@@ -47,7 +46,6 @@ import frc.robot.subsystems.tunnel.Tunnel;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private boolean autosLoaded = false;
   private Timer disableTimer = new Timer();
 
   // Define controllers
@@ -62,8 +60,6 @@ public class RobotContainer {
   private final Tunnel tunnel = Tunnel.getInstance();
   private final Outtake outtake = Outtake.getInstance();
   private final Intake intake = Intake.getInstance();
-
-  private final PathPlannerManager pathPlannerManager;
 
   private final WriteFiringSolutionAtCurrentPos writeFiringSolution =
       new WriteFiringSolutionAtCurrentPos();
@@ -84,17 +80,17 @@ public class RobotContainer {
 
   private final TunnelStop tunnelStop = new TunnelStop();
 
-  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+  private final SendableChooser<Command> autoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    pathPlannerManager = new PathPlannerManager(drive);
-
-    // register PathPlanner events here
-
     configureButtonBindings();
 
+    // add PathPlannerEvents here
     FiringSolutionManager.getInstance().loadSolutions();
+
+    autoChooser = new SendableChooser<>();
+    Shuffleboard.getTab("Autos").add(autoChooser).withPosition(0, 0).withSize(5, 2);
 
     if (Constants.driveEnabled) {
       drive.setDefaultCommand(driveManual);
@@ -194,15 +190,6 @@ public class RobotContainer {
       disableTimer.reset();
     }
 
-    if (Robot.getAllianceColor() != null && !autosLoaded) {
-      pathPlannerManager.loadAutos();
-
-      // TODO: configure SendableChooser
-
-      Shuffleboard.getTab("Autos").add(autoChooser).withPosition(0, 0).withSize(5, 2);
-      autosLoaded = true;
-    }
-
     // pressed when intake and outtake are in starting config
     // can only be pressed once after bootup
     xbox.povLeft()
@@ -232,22 +219,22 @@ public class RobotContainer {
     disableTimer.start();
   }
 
-  public Command getAutonomousCommand() {
-    if (Constants.Demo.inDemoMode) {
-      return null;
-    }
-
+  // Command that should always start off every auto
+  public Command getAutoInitialize() {
     return new SequentialCommandGroup(
-        getAutoInitialize(),
+        new ResetFieldCentric(true),
         new SetRobotPose(
             new Pose2d(
                 new Translation2d(6.115181446, 6.450208664), Rotation2d.fromRadians(0.1467992541)),
-            true),
-        new ScoreCenterLine(pathPlannerManager, ScoringStrategy.OneToFive));
+            true));
   }
 
-  // Command that should always start off every auto
-  public Command getAutoInitialize() {
-    return new SequentialCommandGroup(new ResetFieldCentric(true));
+  // Command for the auto on our side of the field (PathPlanner Auto)
+  public Command getAutoOurSide() {
+    return Commands.none();
+  }
+
+  public ScoringStrategy getCenterLineStrategy() {
+    return ScoringStrategy.OneToFive;
   }
 }

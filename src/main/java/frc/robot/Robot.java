@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.centerline.CenterLineManager;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -35,6 +36,9 @@ public class Robot extends LoggedRobot {
   private RobotContainer m_robotContainer;
   private static Alliance allianceColor;
   Timer updateAllianceTimer;
+
+  private AutoPhases currentAutoPhase;
+  private CenterLineManager centerLineManager;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -145,22 +149,58 @@ public class Robot extends LoggedRobot {
     m_robotContainer.disabledPeriodic();
   }
 
+  private enum AutoPhases {
+    initialize,
+    ourSide,
+    centerLine,
+    done
+  }
+
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
     m_robotContainer.enableSubsystems();
 
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    centerLineManager = new CenterLineManager(m_robotContainer.getCenterLineStrategy());
 
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
+    m_autonomousCommand = m_robotContainer.getAutoInitialize();
+    m_autonomousCommand.schedule();
+    currentAutoPhase = AutoPhases.initialize;
   }
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+
+    if (Constants.Demo.inDemoMode) {
+      return;
+    }
+
+    if (m_autonomousCommand != null && !m_autonomousCommand.isScheduled()) {
+      switch (currentAutoPhase) {
+        case initialize:
+          m_autonomousCommand = m_robotContainer.getAutoOurSide();
+          m_autonomousCommand.schedule();
+          currentAutoPhase = AutoPhases.ourSide;
+          break;
+        case ourSide:
+          m_autonomousCommand = centerLineManager.getCommand();
+          m_autonomousCommand.schedule();
+          currentAutoPhase = AutoPhases.centerLine;
+          break;
+        case centerLine:
+          if (centerLineManager.isDone()) {
+            currentAutoPhase = AutoPhases.done;
+          } else {
+            m_autonomousCommand = centerLineManager.getCommand();
+            m_autonomousCommand.schedule();
+          }
+          break;
+        case done:
+          break;
+      }
+    }
+  }
 
   /** This function is called once when teleop is enabled. */
   @Override

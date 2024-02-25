@@ -1,9 +1,8 @@
-package frc.robot.commands.CenterLine.statemachine;
+package frc.robot.centerline;
 
 import com.github.oxo42.stateless4j.StateMachine;
 import com.github.oxo42.stateless4j.StateMachineConfig;
-import frc.robot.commands.CenterLine.ScoreCenterLine.ScoringStrategy;
-import frc.robot.commands.CenterLine.environmentTracker.NoteStatus;
+import frc.robot.centerline.CenterLineManager.ScoringStrategy;
 
 public class CLSM {
 
@@ -177,5 +176,17 @@ public class CLSM {
   public void fire(CLSMTrigger trigger, NoteStatus status) {
     noteStatus = status;
     stateMachine.fire(trigger);
+  }
+
+  public static boolean isDrivingOnlyState(CLSMState state) {
+    switch (state) {
+      case TopShoot:
+      case MiddleShoot:
+      case BottomShoot:
+      case BottomEndPos:
+        return true;
+      default:
+        return false;
+    }
   }
 }

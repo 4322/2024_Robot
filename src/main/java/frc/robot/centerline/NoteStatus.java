@@ -1,4 +1,4 @@
-package frc.robot.commands.CenterLine.environmentTracker;
+package frc.robot.centerline;
 
 public class NoteStatus {
   public final boolean note1Available;
