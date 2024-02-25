@@ -191,8 +191,10 @@ public class IntakeIOReal implements IntakeIO {
   public boolean initMotorPos() {
     deploy.setPosition(
         deployEncoder.getAbsPosition() * IntakeConstants.Deploy.encoderGearReduction);
-    // set only relative encoder rotations of Helium encoder to a very high number after initialized once
-    // relative encoder on Helium used only to check if we have already initialized after power cycle
+    // set only relative encoder rotations of Helium encoder to a very high number after initialized
+    // once
+    // relative encoder on Helium used only to check if we have already initialized after power
+    // cycle
     deployEncoder.setPosition(Constants.EncoderInitializeConstants.setRelativeRotations);
     return OrangeMath.equalToTwoDecimal(deployEncoder.getVelocity(), 0);
   }

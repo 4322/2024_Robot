@@ -131,7 +131,8 @@ public class RobotContainer {
     if (Constants.xboxEnabled) {
       driveXbox = new CommandXboxController(2);
       operatorXbox = new CommandXboxController(3);
-      driveXbox.leftBumper()
+      driveXbox
+          .leftBumper()
           .onTrue(
               Commands.runOnce(
                   () -> {
@@ -141,31 +142,36 @@ public class RobotContainer {
       driveXbox.povRight().onTrue(writeFiringSolution);
       // Reset the odometry for testing speaker-centric driving. This assumes robot is on the
       // very left on the front of the speaker, facing down-field (forward).
-      driveXbox.start()
+      driveXbox
+          .start()
           .onTrue(
               new SetRobotPose(
                   new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()), true));
       driveXbox.povDown().onTrue(driveStop);
-      driveXbox.rightTrigger()
+      driveXbox
+          .rightTrigger()
           .onTrue(
               Commands.runOnce(
                   () -> {
                     RobotCoordinator.getInstance().setIntakeButtonState(true);
                   }));
-      driveXbox.rightTrigger()
+      driveXbox
+          .rightTrigger()
           .onFalse(
               Commands.runOnce(
                   () -> {
                     RobotCoordinator.getInstance().setIntakeButtonState(false);
                   }));
-      driveXbox.rightBumper()
+      driveXbox
+          .rightBumper()
           .onTrue(
               Commands.runOnce(
                   () -> {
                     RobotCoordinator.getInstance().setAutoIntakeButtonPressed(true);
                   }));
 
-      driveXbox.rightBumper()
+      driveXbox
+          .rightBumper()
           .onFalse(
               Commands.runOnce(
                   () -> {
@@ -197,7 +203,8 @@ public class RobotContainer {
     if (Constants.xboxEnabled) {
       // pressed when intake and outtake are in starting config
       // can only be pressed once after bootup
-      driveXbox.povLeft()
+      driveXbox
+          .povLeft()
           .onTrue(
               Commands.runOnce(
                   () -> {

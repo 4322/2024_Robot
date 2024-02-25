@@ -120,8 +120,9 @@ public class OuttakeIOReal implements OuttakeIO {
     inputs.pivotIsAlive = pivotMotor.isAlive();
 
     inputs.heliumAbsRotations = pivotEncoder.getAbsPosition();
-    inputs.heliumRelativeRotations = pivotEncoder.getPosition(); // logged for checking if postion as been initialized
-    
+    inputs.heliumRelativeRotations =
+        pivotEncoder.getPosition(); // logged for checking if postion as been initialized
+
     if (Constants.debug) {
       inputs.debugTargetRPS = outtakeFlywheelSpeed.getDouble(0);
       inputs.targetPivotPosition = pivotPosition.getDouble(0);
@@ -138,8 +139,10 @@ public class OuttakeIOReal implements OuttakeIO {
   public boolean initPivot() {
     pivotMotor.setPosition(
         pivotEncoder.getAbsPosition() * OuttakeConstants.gearReductionEncoderToMotor);
-    // set only relative encoder rotations of Helium encoder to a very high number after initialized once
-    // relative encoder on Helium used only to check if we have already initialized after power cycle
+    // set only relative encoder rotations of Helium encoder to a very high number after initialized
+    // once
+    // relative encoder on Helium used only to check if we have already initialized after power
+    // cycle
     pivotEncoder.setPosition(Constants.EncoderInitializeConstants.setRelativeRotations);
     return OrangeMath.equalToTwoDecimal(pivotEncoder.getVelocity(), 0);
   }

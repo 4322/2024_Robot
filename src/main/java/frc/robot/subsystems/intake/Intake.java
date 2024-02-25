@@ -50,11 +50,12 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     RobotCoordinator coordinator = RobotCoordinator.getInstance();
     // Check if encoders have already been initialized after power cycle
-    // If so, we don't need to reinitialize 
-    if (OrangeMath.equalToEpsilon(inputs.heliumRelativeRotations, 
-          Constants.EncoderInitializeConstants.setRelativeRotations,
-              Constants.EncoderInitializeConstants.relativeRotationsTolerance)) {
-                initialized = true;
+    // If so, we don't need to reinitialize
+    if (OrangeMath.equalToEpsilon(
+        inputs.heliumRelativeRotations,
+        Constants.EncoderInitializeConstants.setRelativeRotations,
+        Constants.EncoderInitializeConstants.relativeRotationsTolerance)) {
+      initialized = true;
     }
 
     // initialize motor internal encoder position until the intake isn't moving

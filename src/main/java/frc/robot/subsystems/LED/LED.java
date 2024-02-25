@@ -52,7 +52,7 @@ public class LED extends SubsystemBase {
   @Override
   public void periodic() {
     // initial check
-    if (Constants.ledEnabled) {  
+    if (Constants.ledEnabled) {
       if (!RobotCoordinator.getInstance().getInitAbsEncoderPressed()
           && !RobotCoordinator.getInstance().isInitialized()) {
         setLEDState(LEDState.notInitialized);
