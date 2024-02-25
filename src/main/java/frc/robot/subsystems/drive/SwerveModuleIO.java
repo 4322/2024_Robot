@@ -18,6 +18,8 @@ public interface SwerveModuleIO {
     public double calculatedFF = 0.0;
     public double calculatedVolts;
 
+    public double wheelDegreesTo360 = 0.0; // CRUSH only
+
     public double absEncoderRotations = 0.0;
   }
 

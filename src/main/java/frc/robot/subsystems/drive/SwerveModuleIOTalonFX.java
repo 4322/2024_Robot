@@ -17,6 +17,8 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants;
@@ -42,6 +44,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
 
   private double calcFeedForwardVoltsOverMetersPerSec;
   private double desiredVolts;
+  private double currentWheelDegrees;
 
   public SwerveModuleIOTalonFX(WheelPosition wheelPos) {
     switch (wheelPos) {
@@ -226,6 +229,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
         turningMotor.getDutyCycle().getValue() / 2 * turningMotor.getSupplyVoltage().getValue();
     inputs.turnCurrentAmps = turningMotor.getSupplyCurrent().getValue();
     inputs.turnDegrees = Units.rotationsToDegrees(turningMotor.getPosition().getValue());
+    inputs.wheelDegreesTo360 = currentWheelDegrees;
 
     inputs.calculatedFF = calcFeedForwardVoltsOverMetersPerSec;
     inputs.calculatedVolts = desiredVolts;
@@ -237,13 +241,13 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   @Override
   public void setTurnAngle(double desiredAngle) {
     double currentRotPosition = turningMotor.getPosition().getValueAsDouble();
-    double currentBoundedDegrees = OrangeMath.boundDegrees(currentRotPosition * 360);
+    currentWheelDegrees = MathUtil.inputModulus(currentRotPosition * 360 / robotSpecificConstants.getRotationGearRatio() , 0, 360);
     // Calculates change in degrees and adds to current position after converting to encoder
     // rotations
     turningMotor.setControl(
         new PositionVoltage(
             currentRotPosition
-                + (OrangeMath.boundDegrees(desiredAngle - currentBoundedDegrees)
+                + (OrangeMath.boundDegrees(desiredAngle - currentWheelDegrees)
                     / 360.0
                     * robotSpecificConstants.getRotationGearRatio())));
   }
