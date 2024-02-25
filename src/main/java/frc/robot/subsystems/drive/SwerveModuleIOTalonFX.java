@@ -187,7 +187,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     // initialize internal Falcon encoder to absolute wheel position from CANCoder
     double count =
         (encoder.getAbsolutePosition().getValueAsDouble()
-            - DriveConstants.Rotation.CANCoderOffsetRotations[wheelPos.wheelNumber]);
+            - DriveConstants.Rotation.CANCoderOffsetRotations[wheelPos.wheelNumber]) * robotSpecificConstants.getRotationGearRatio();
     StatusCode error = talonFX.setPosition(count, Constants.controllerConfigTimeoutMs);
     if (error != StatusCode.OK) {
       DriverStation.reportError(
