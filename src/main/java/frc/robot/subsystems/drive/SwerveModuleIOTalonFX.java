@@ -161,8 +161,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     closedLoopGeneralConfigs.ContinuousWrap = false;
     voltageConfigs.PeakForwardVoltage = DriveConstants.Rotation.maxPower;
     voltageConfigs.PeakReverseVoltage = -DriveConstants.Rotation.maxPower;
-    motorOutputConfigs.NeutralMode =
-        NeutralModeValue.Brake;
+    motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
 
     hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
     hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
@@ -187,7 +186,8 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     // initialize internal Falcon encoder to absolute wheel position from CANCoder
     double count =
         (encoder.getAbsolutePosition().getValueAsDouble()
-            - DriveConstants.Rotation.CANCoderOffsetRotations[wheelPos.wheelNumber]) * robotSpecificConstants.getRotationGearRatio();
+                - DriveConstants.Rotation.CANCoderOffsetRotations[wheelPos.wheelNumber])
+            * robotSpecificConstants.getRotationGearRatio();
     StatusCode error = talonFX.setPosition(count, Constants.controllerConfigTimeoutMs);
     if (error != StatusCode.OK) {
       DriverStation.reportError(
@@ -229,10 +229,14 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   public void setTurnAngle(double desiredAngle) {
     double currentRotPosition = turningMotor.getPosition().getValueAsDouble();
     double currentBoundedDegrees = OrangeMath.boundDegrees(currentRotPosition * 360);
-    // Calculates change in degrees and adds to current position after converting to encoder rotations
+    // Calculates change in degrees and adds to current position after converting to encoder
+    // rotations
     turningMotor.setControl(
-        new PositionVoltage(currentRotPosition + (OrangeMath.boundDegrees(desiredAngle - currentBoundedDegrees) 
-                              / 360.0 * robotSpecificConstants.getRotationGearRatio())));
+        new PositionVoltage(
+            currentRotPosition
+                + (OrangeMath.boundDegrees(desiredAngle - currentBoundedDegrees)
+                    / 360.0
+                    * robotSpecificConstants.getRotationGearRatio())));
   }
 
   // set drive motor voltage based on desired wheel m/s
