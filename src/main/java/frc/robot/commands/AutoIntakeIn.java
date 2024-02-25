@@ -18,13 +18,12 @@ public class AutoIntakeIn extends Command {
   public void execute() {
     if (RobotCoordinator.getInstance().isIntakeDeployed()) {
       Intake.getInstance().intake();
-      Tunnel.getInstance().feed();
     }
   }
 
   @Override
   public boolean isFinished() {
-    return RobotCoordinator.getInstance().intakeIsFeeding() && RobotCoordinator.getInstance().noteInFiringPosition();
+    return RobotCoordinator.getInstance().intakeIsFeeding();
   }
 
   @Override
