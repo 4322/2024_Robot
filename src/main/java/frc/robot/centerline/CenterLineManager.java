@@ -13,6 +13,7 @@ public class CenterLineManager {
 
   public enum ScoringStrategy {
     OneToFive,
+    FiveToOne,
     DoNothing,
   }
 
