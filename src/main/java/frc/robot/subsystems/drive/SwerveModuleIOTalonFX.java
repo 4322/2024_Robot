@@ -227,10 +227,12 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   // PID methods for turn motor
   @Override
   public void setTurnAngle(double desiredAngle) {
+    double currentRotPosition = turningMotor.getPosition().getValueAsDouble();
+    double currentBoundedDegrees = OrangeMath.boundDegrees(currentRotPosition * 360);
+    // Calculates change in degrees and adds to current position after converting to encoder rotations
     turningMotor.setControl(
-        new PositionVoltage(desiredAngle / 360 * 21.0)
-            .withLimitForwardMotion(false)
-            .withLimitReverseMotion(false));
+        new PositionVoltage(currentRotPosition + (OrangeMath.boundDegrees(desiredAngle - currentBoundedDegrees) 
+                              / 360.0 * robotSpecificConstants.getRotationGearRatio())));
   }
 
   // set drive motor voltage based on desired wheel m/s

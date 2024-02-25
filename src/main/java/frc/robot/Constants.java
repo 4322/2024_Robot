@@ -183,7 +183,7 @@ public final class Constants {
               * OrangeMath.falconRotationsToMeters(
                   73,
                   OrangeMath.inchesToMeters(OrangeMath.getCircumference(Drive.wheelDiameterInches)),
-                  robotSpecificConstants.getGearRatio());
+                  robotSpecificConstants.getDriveGearRatio());
 
       public static final double minAutoRotateStoppedPower =
           robotSpecificConstants.getMinAutoRotateStoppedPower();

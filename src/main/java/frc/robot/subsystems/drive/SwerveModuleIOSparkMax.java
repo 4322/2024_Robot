@@ -85,7 +85,7 @@ public class SwerveModuleIOSparkMax implements SwerveModuleIO {
             Math.PI
                 * Constants.DriveConstants.Drive.wheelDiameterInches
                 * Constants.inchesToMeters
-                / robotSpecificConstants.getGearRatio()); // motor rotations to wheel meters
+                / robotSpecificConstants.getDriveGearRatio()); // motor rotations to wheel meters
     sparkMax
         .getEncoder()
         .setVelocityConversionFactor(
@@ -93,7 +93,7 @@ public class SwerveModuleIOSparkMax implements SwerveModuleIO {
                 * Constants.DriveConstants.Drive.wheelDiameterInches
                 * Constants.inchesToMeters
                 / 60
-                / robotSpecificConstants.getGearRatio()); // motor RPM to wheel m/s
+                / robotSpecificConstants.getDriveGearRatio()); // motor RPM to wheel m/s
 
     // Invert the left side modules so we can zero all modules with the bevel gears facing outward.
     // Without this code, all bevel gears would need to face right when the modules are zeroed.
