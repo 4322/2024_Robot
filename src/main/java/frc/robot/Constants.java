@@ -211,6 +211,11 @@ public final class Constants {
 
     public static final class Rotation {
 
+      public static final boolean supplyEnabled = true;
+      public static final boolean statorEnabled = true;
+      public static final double supplyLimit = 30;
+      public static final double statorLimit = 45;
+
       public static final double configCLosedLoopRamp = 0.08;
       public static final double maxPower = 6; // reduce gear wear and overshoot
 
@@ -260,6 +265,7 @@ public final class Constants {
       // when supply threshold is exceeded for the time, drop the current to the limit
       public static final double statorLimit = 60;
       public static final boolean supplyEnabled = true;
+      public static final boolean statorEnabled = true;
       public static final double supplyLimit = 40;
       public static final double supplyThreshold = 60;
       public static final double supplyTime = 2.0;
@@ -292,6 +298,12 @@ public final class Constants {
     public static final double voltPerRPS =
         0; // since we likely aren't going to adjust the speed, it's likely safe to
     // not interpolate
+    public static final boolean supplyEnabled = true;
+    public static final boolean statorEnabled = true;
+    public static final double pivotSupplyLimit = 30;
+    public static final double pivotStatorLimit = 45;
+    public static final double shooterSupplyLimit = 40;
+    public static final double shooterStatorLimit = 60;
 
     public static final double pivotkD = 0;
     public static final double pivotkI = 0;
@@ -334,6 +346,10 @@ public final class Constants {
       public static final double intakeFeedVoltage =
           0.0; // TODO: set max voltage we want for feeding
       public static final double intakeEjectVoltage = 0.0;
+      public static final boolean supplyEnabled = true;
+      public static final boolean statorEnabled = true;
+      public static final double supplyLimit = 30;
+      public static final double statorLimit = 45;
     }
 
     public static final class DeployConfig {
@@ -349,6 +365,10 @@ public final class Constants {
       public static final boolean limitReverseMotion = true;
       public static final double forwardSoftLimitThresholdRotations = 99; // TODO
       public static final double reverseSoftLimitThresholdRotations = 0;
+      public static final boolean supplyEnabled = true;
+      public static final boolean statorEnabled = true;
+      public static final double supplyLimit = 30;
+      public static final double statorLimit = 45;
     }
 
     public static final class Deploy {
@@ -388,6 +408,10 @@ public final class Constants {
 
   public static final class TunnelConstants {
     public static final int tunnelMotorID = 3;
+    public static final boolean supplyEnabled = true;
+    public static final boolean statorEnabled = true;
+    public static final double supplyLimit = 30;
+    public static final double statorLimit = 45;
 
     public static final double desiredVoltage = 0.0; // TODO
     public static final double peakVoltage = 0.0; // TODO: shouldn't be greater than 12

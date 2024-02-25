@@ -119,6 +119,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     closedLoopRampsConfigs.VoltageClosedLoopRampPeriod = DriveConstants.Drive.closedLoopRampSec;
     openLoopRampsConfigs.VoltageOpenLoopRampPeriod = DriveConstants.Drive.openLoopRampSec;
     currentLimitsConfigs.StatorCurrentLimit = DriveConstants.Drive.statorLimit;
+    currentLimitsConfigs.StatorCurrentLimitEnable = DriveConstants.Drive.statorEnabled;
     currentLimitsConfigs.SupplyCurrentLimit = DriveConstants.Drive.supplyLimit;
     currentLimitsConfigs.SupplyCurrentLimitEnable = DriveConstants.Drive.supplyEnabled;
     currentLimitsConfigs.SupplyCurrentThreshold = DriveConstants.Drive.supplyThreshold;
@@ -151,6 +152,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
     CANcoderConfiguration canConfig = new CANcoderConfiguration();
     HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs = new HardwareLimitSwitchConfigs();
+    CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
 
     talonFX.setInverted(true);
 
@@ -166,8 +168,15 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
     hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
 
+    currentLimitsConfigs.StatorCurrentLimitEnable = Constants.DriveConstants.Rotation.statorEnabled;
+    currentLimitsConfigs.StatorCurrentLimit = Constants.DriveConstants.Rotation.statorLimit;
+    currentLimitsConfigs.SupplyCurrentLimitEnable = Constants.DriveConstants.Rotation.supplyEnabled;
+    currentLimitsConfigs.SupplyCurrentLimit = Constants.DriveConstants.Rotation.supplyLimit;
+
     canConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+
     encoder.getConfigurator().apply(canConfig);
+    talonFX.getConfigurator().apply(currentLimitsConfigs);
     talonFX.getConfigurator().apply(slot0Configs);
     talonFX.getConfigurator().apply(closedLoopRampsConfigs);
     talonFX.getConfigurator().apply(closedLoopGeneralConfigs);

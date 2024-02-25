@@ -1,6 +1,7 @@
 package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -90,8 +91,15 @@ public class IntakeIOReal implements IntakeIO {
     intake.getConfigurator().apply(new TalonFXConfiguration());
 
     MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-    motorOutputConfigs.NeutralMode = IntakeConstants.IntakeConfig.neutralMode;
+    CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
 
+    motorOutputConfigs.NeutralMode = IntakeConstants.IntakeConfig.neutralMode;
+    currentLimitsConfigs.StatorCurrentLimitEnable = Constants.IntakeConstants.IntakeConfig.statorEnabled;
+    currentLimitsConfigs.StatorCurrentLimit = Constants.IntakeConstants.IntakeConfig.statorLimit;
+    currentLimitsConfigs.SupplyCurrentLimitEnable = Constants.IntakeConstants.IntakeConfig.supplyEnabled;
+    currentLimitsConfigs.SupplyCurrentLimit = Constants.IntakeConstants.IntakeConfig.supplyLimit;
+
+    intake.getConfigurator().apply(currentLimitsConfigs);
     intake.getConfigurator().apply(motorOutputConfigs);
 
     intake
@@ -108,6 +116,7 @@ public class IntakeIOReal implements IntakeIO {
     VoltageConfigs voltageConfigs = new VoltageConfigs();
     MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
     SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
+    CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
 
     slot0Configs.kP = IntakeConstants.DeployConfig.kP;
     slot0Configs.kD = IntakeConstants.DeployConfig.kD;
@@ -124,7 +133,12 @@ public class IntakeIOReal implements IntakeIO {
         IntakeConstants.DeployConfig.forwardSoftLimitThresholdRotations;
     softwareLimitSwitchConfigs.ReverseSoftLimitThreshold =
         IntakeConstants.DeployConfig.reverseSoftLimitThresholdRotations;
+    currentLimitsConfigs.StatorCurrentLimitEnable = Constants.IntakeConstants.DeployConfig.statorEnabled;
+    currentLimitsConfigs.StatorCurrentLimit = Constants.IntakeConstants.DeployConfig.statorLimit;
+    currentLimitsConfigs.SupplyCurrentLimitEnable = Constants.IntakeConstants.DeployConfig.supplyEnabled;
+    currentLimitsConfigs.SupplyCurrentLimit = Constants.IntakeConstants.DeployConfig.supplyLimit;
 
+    deploy.getConfigurator().apply(currentLimitsConfigs);
     deploy.getConfigurator().apply(slot0Configs);
     deploy.getConfigurator().apply(closedLoopRampsConfigs);
     deploy.getConfigurator().apply(voltageConfigs);
