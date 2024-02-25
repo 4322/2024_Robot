@@ -146,6 +146,10 @@ public class RobotCoordinator extends SubsystemBase {
     return !intake.isFeeding() && intake.isInitialized();
   }
 
+  public boolean intakeIsFeeding() {
+    return intake.isFeeding();
+  }
+
   public boolean canShoot() {
     return outtake.isFlyWheelUpToSpeed() && outtake.pivotIsAtPosition() && noteInFiringPosition();
   }
