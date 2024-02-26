@@ -16,9 +16,11 @@ import frc.robot.subsystems.outtake.Outtake;
 import org.littletonrobotics.junction.Logger;
 
 public class RobotCoordinator extends SubsystemBase {
-  private Intake intake;
-  private Outtake outtake;
-  private Drive drive;
+  private Intake intake = Intake.getInstance();
+  private Outtake outtake = Outtake.getInstance();
+  private Drive drive = Drive.getInstance();
+  private Limelight outtakeLimelight = Limelight.getOuttakeInstance();
+  private Limelight intakeLimelight = Limelight.getIntakeInstance();
 
   private static BeamBreakSensorIO noteTrackerSensorsIO;
   private static BeamBreakSensorIOInputsAutoLogged inputs = new BeamBreakSensorIOInputsAutoLogged();
@@ -40,9 +42,6 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   private RobotCoordinator() {
-    intake = Intake.getInstance();
-    outtake = Outtake.getInstance();
-    drive = Drive.getInstance();
     switch (Constants.currentMode) {
       case REAL:
         if (Constants.sensorsEnabled) {
@@ -196,23 +195,23 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public Double getNearestNoteTX() {
-    return Limelight.getIntakeInstance().getHorizontalDegToTarget();
+    return intakeLimelight.getHorizontalDegToTarget();
   }
 
   public Double getNearestNoteTY() {
-    return Limelight.getIntakeInstance().getVerticalDegToTarget();
+    return intakeLimelight.getVerticalDegToTarget();
   }
 
   public boolean noteInVision() {
-    return Limelight.getIntakeInstance().getTargetVisible();
+    return intakeLimelight.getTargetVisible();
   }
 
   public Pose2d getOuttakeLimelightPose2d() {
-    return Limelight.getOuttakeInstance().getAprilTagPose2d();
+    return outtakeLimelight.getAprilTagPose2d();
   }
 
   public double getOuttakeLimelightLatency() {
-    return Limelight.getOuttakeInstance().getTotalLatency();
+    return outtakeLimelight.getTotalLatency();
   }
 
   public boolean pivotAtPosition() {
