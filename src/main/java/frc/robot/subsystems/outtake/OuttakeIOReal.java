@@ -64,6 +64,7 @@ public class OuttakeIOReal implements OuttakeIO {
     OpenLoopRampsConfigs openLoopRampsConfigs = new OpenLoopRampsConfigs();
     CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
     HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs = new HardwareLimitSwitchConfigs();
+    MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
     Slot0Configs slot0Configs = new Slot0Configs();
     slot0Configs.kP = Constants.OuttakeConstants.kP;
     slot0Configs.kI = Constants.OuttakeConstants.kI;
@@ -78,6 +79,7 @@ public class OuttakeIOReal implements OuttakeIO {
     currentLimitsConfigs.StatorCurrentLimit = Constants.OuttakeConstants.shooterStatorLimit;
     currentLimitsConfigs.SupplyCurrentLimitEnable = Constants.OuttakeConstants.supplyEnabled;
     currentLimitsConfigs.SupplyCurrentLimit = Constants.OuttakeConstants.shooterSupplyLimit;
+    motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
 
     hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
     hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
@@ -112,7 +114,8 @@ public class OuttakeIOReal implements OuttakeIO {
     currentLimitsConfigs.StatorCurrentLimit = Constants.OuttakeConstants.pivotStatorLimit;
     currentLimitsConfigs.SupplyCurrentLimitEnable = Constants.OuttakeConstants.supplyEnabled;
     currentLimitsConfigs.SupplyCurrentLimit = Constants.OuttakeConstants.pivotSupplyLimit;
-    
+    motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
+
     hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
     hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
 
@@ -179,23 +182,22 @@ public class OuttakeIOReal implements OuttakeIO {
   }
 
   @Override
-  public void setBrakeMode() {
-    MotorOutputConfigs mOutputConfigs = new MotorOutputConfigs();
-    mOutputConfigs.NeutralMode = NeutralModeValue.Brake;
-    topOuttakeMotor.getConfigurator().refresh(mOutputConfigs);
-    bottomOuttakeMotor.getConfigurator().refresh(mOutputConfigs);
-    pivotMotor.getConfigurator().refresh(mOutputConfigs);
-    Logger.recordOutput("Outtake/Hardware/NeutralMode", "Brake");
+  public void setPivotBrakeMode() {
+    pivotMotor.setNeutralMode(NeutralModeValue.Brake);
+    Logger.recordOutput("Outtake/Hardware/PivotNeutralMode", "Brake");
   }
 
   @Override
-  public void setCoastMode() {
-    MotorOutputConfigs mOutputConfigs = new MotorOutputConfigs();
-    mOutputConfigs.NeutralMode = NeutralModeValue.Coast;
-    topOuttakeMotor.getConfigurator().refresh(mOutputConfigs);
-    bottomOuttakeMotor.getConfigurator().refresh(mOutputConfigs);
-    pivotMotor.getConfigurator().refresh(mOutputConfigs);
-    Logger.recordOutput("Outtake/Hardware/NeutralMode", "Coast");
+  public void setPivotCoastMode() {
+    pivotMotor.setNeutralMode(NeutralModeValue.Coast);
+    Logger.recordOutput("Outtake/Hardware/PivotNeutralMode", "Coast");
+  }
+
+  @Override
+  public void setFlywheelCoastMode() {
+    topOuttakeMotor.setNeutralMode(NeutralModeValue.Coast);
+    bottomOuttakeMotor.setNeutralMode(NeutralModeValue.Coast);
+    Logger.recordOutput("Outtake/Hardware/FlywheelNeutralMode", "Coast");
   }
 
   @Override

@@ -44,10 +44,13 @@ public interface OuttakeIO {
 
   public default void setPivotTarget(double rotations) {}
 
-  public default void setBrakeMode() {}
+  public default void setPivotBrakeMode() {}
   ;
 
-  public default void setCoastMode() {}
+  public default void setPivotCoastMode() {}
+  ;
+
+  public default void setFlywheelCoastMode() {}
   ;
 
   public default void stopOuttake() {}

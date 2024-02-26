@@ -70,7 +70,7 @@ public class Outtake extends SubsystemBase {
       existenceTimer.start();
       pivotInitialized = io.initPivot();
     }
-    if (Constants.outtakeEnabled) {
+    if (Constants.outtakeEnabled || Constants.outtakePivotEnabled) {
       io.updateInputs(inputs);
       Logger.processInputs("Outtake", inputs);
       Logger.recordOutput("Outtake/TopRotationsPerSecAbs", Math.abs(inputs.topRotationsPerSec));
@@ -131,17 +131,23 @@ public class Outtake extends SubsystemBase {
     }
   }
 
-  public void setCoastMode() {
+  public void setPivotCoastMode() {
     if (Constants.outtakeEnabled) {
-      io.setCoastMode();
+      io.setPivotCoastMode();
       Logger.recordOutput("Outtake/NeutralMode", "Coast");
     }
   }
 
-  public void setBrakeMode() {
+  public void setPivotBrakeMode() {
     if (Constants.outtakeEnabled) {
-      io.setBrakeMode();
+      io.setPivotBrakeMode();
       Logger.recordOutput("Outtake/NeutralMode", "Brake");
+    }
+  }
+
+  public void setFlywheelCoastMode() {
+    if (Constants.outtakePivotEnabled) {
+      io.setFlywheelCoastMode();
     }
   }
 
