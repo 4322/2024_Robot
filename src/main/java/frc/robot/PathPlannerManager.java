@@ -63,10 +63,6 @@ public class PathPlannerManager {
   }
 
   public Command followChoreoPath(String pathName) {
-    if (Robot.isRed()) {
-      return AutoBuilder.followPath(PathPlannerPath.fromChoreoTrajectory(pathName).flipPath());
-    } else {
-      return AutoBuilder.followPath(PathPlannerPath.fromChoreoTrajectory(pathName));
-    }
+    return AutoBuilder.followPath(PathPlannerPath.fromChoreoTrajectory(pathName));
   }
 }
