@@ -132,14 +132,14 @@ public class Outtake extends SubsystemBase {
   }
 
   public void setPivotCoastMode() {
-    if (Constants.outtakeEnabled) {
+    if (Constants.outtakePivotEnabled) {
       io.setPivotCoastMode();
       Logger.recordOutput("Outtake/NeutralMode", "Coast");
     }
   }
 
   public void setPivotBrakeMode() {
-    if (Constants.outtakeEnabled) {
+    if (Constants.outtakePivotEnabled) {
       io.setPivotBrakeMode();
       Logger.recordOutput("Outtake/NeutralMode", "Brake");
     }
