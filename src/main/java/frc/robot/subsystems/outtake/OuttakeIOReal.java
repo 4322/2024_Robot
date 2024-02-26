@@ -2,6 +2,7 @@ package frc.robot.subsystems.outtake;
 
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -62,6 +63,7 @@ public class OuttakeIOReal implements OuttakeIO {
     ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
     OpenLoopRampsConfigs openLoopRampsConfigs = new OpenLoopRampsConfigs();
     CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
+    HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs = new HardwareLimitSwitchConfigs();
     Slot0Configs slot0Configs = new Slot0Configs();
     slot0Configs.kP = Constants.OuttakeConstants.kP;
     slot0Configs.kI = Constants.OuttakeConstants.kI;
@@ -77,6 +79,10 @@ public class OuttakeIOReal implements OuttakeIO {
     currentLimitsConfigs.SupplyCurrentLimitEnable = Constants.OuttakeConstants.supplyEnabled;
     currentLimitsConfigs.SupplyCurrentLimit = Constants.OuttakeConstants.shooterSupplyLimit;
 
+    hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
+    hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
+
+    talon.getConfigurator().apply(hardwareLimitSwitchConfigs);
     talon.getConfigurator().apply(currentLimitsConfigs);
     talon.getConfigurator().apply(slot0Configs);
     talon.getConfigurator().apply(closedLoopRampsConfigs);
@@ -89,6 +95,7 @@ public class OuttakeIOReal implements OuttakeIO {
     ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
     MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
     SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
+    HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs = new HardwareLimitSwitchConfigs();
     CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
     slot0Configs.kP = Constants.OuttakeConstants.pivotkP;
     slot0Configs.kI = OuttakeConstants.pivotkI;
@@ -105,7 +112,11 @@ public class OuttakeIOReal implements OuttakeIO {
     currentLimitsConfigs.StatorCurrentLimit = Constants.OuttakeConstants.pivotStatorLimit;
     currentLimitsConfigs.SupplyCurrentLimitEnable = Constants.OuttakeConstants.supplyEnabled;
     currentLimitsConfigs.SupplyCurrentLimit = Constants.OuttakeConstants.pivotSupplyLimit;
+    
+    hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
+    hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
 
+    talon.getConfigurator().apply(hardwareLimitSwitchConfigs);
     talon.getConfigurator().apply(currentLimitsConfigs);
     talon.getConfigurator().apply(slot0Configs);
     talon.getConfigurator().apply(closedLoopRampsConfigs);

@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -92,6 +93,7 @@ public class IntakeIOReal implements IntakeIO {
 
     MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
     CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
+    HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs = new HardwareLimitSwitchConfigs();
 
     motorOutputConfigs.NeutralMode = IntakeConstants.IntakeConfig.neutralMode;
     currentLimitsConfigs.StatorCurrentLimitEnable =
@@ -101,6 +103,10 @@ public class IntakeIOReal implements IntakeIO {
         Constants.IntakeConstants.IntakeConfig.supplyEnabled;
     currentLimitsConfigs.SupplyCurrentLimit = Constants.IntakeConstants.IntakeConfig.supplyLimit;
 
+    hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
+    hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
+
+    intake.getConfigurator().apply(hardwareLimitSwitchConfigs);
     intake.getConfigurator().apply(currentLimitsConfigs);
     intake.getConfigurator().apply(motorOutputConfigs);
 
@@ -118,6 +124,7 @@ public class IntakeIOReal implements IntakeIO {
     VoltageConfigs voltageConfigs = new VoltageConfigs();
     MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
     SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
+    HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs = new HardwareLimitSwitchConfigs();
     CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
 
     slot0Configs.kP = IntakeConstants.DeployConfig.kP;
@@ -142,6 +149,10 @@ public class IntakeIOReal implements IntakeIO {
         Constants.IntakeConstants.DeployConfig.supplyEnabled;
     currentLimitsConfigs.SupplyCurrentLimit = Constants.IntakeConstants.DeployConfig.supplyLimit;
 
+    hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
+    hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
+
+    deploy.getConfigurator().apply(hardwareLimitSwitchConfigs);
     deploy.getConfigurator().apply(currentLimitsConfigs);
     deploy.getConfigurator().apply(slot0Configs);
     deploy.getConfigurator().apply(closedLoopRampsConfigs);
