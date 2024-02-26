@@ -522,7 +522,10 @@ public class Drive extends SubsystemBase {
   }
 
   public Pose2d getPose2d() {
-    return poseEstimator.getEstimatedPosition();
+    if (Constants.driveEnabled) {
+      return poseEstimator.getEstimatedPosition();
+    }
+    return new Pose2d();
   }
 
   public void setModuleStates(SwerveModuleState[] states) {
