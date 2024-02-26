@@ -173,9 +173,7 @@ public class CLSM {
         config
             .configure(CLSMState.Note3)
             .permit(
-                CLSMTrigger.HaveNote,
-                CLSMState.TopShoot,
-                () -> setTravelState(TravelState.N3ToTS))
+                CLSMTrigger.HaveNote, CLSMState.TopShoot, () -> setTravelState(TravelState.N3ToTS))
             .permit(CLSMTrigger.NoNote, CLSMState.Note2, () -> setTravelState(TravelState.N3ToN2));
         config
             .configure(CLSMState.Note2)
@@ -221,7 +219,11 @@ public class CLSM {
             .permitIf(
                 CLSMTrigger.Finished,
                 CLSMState.Done,
-                () -> !noteStatus.note1Available && !noteStatus.note2Available, // N1 not available implies N2 not available but this is more clear
+                () ->
+                    !noteStatus.note1Available
+                        && !noteStatus
+                            .note2Available, // N1 not available implies N2 not available but this
+                // is more clear
                 () -> setTravelState(TravelState.Done));
         break;
 

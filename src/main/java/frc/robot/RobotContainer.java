@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
@@ -19,11 +18,11 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.centerline.CenterLineManager.ScoringStrategy;
-import frc.robot.commands.DriveManual.DriveManual;
-import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.AutoIntakeDeploy;
 import frc.robot.commands.AutoIntakeIn;
 import frc.robot.commands.AutoSetOuttakeAdjust;
+import frc.robot.commands.DriveManual.DriveManual;
+import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.EjectThroughOuttake;
 import frc.robot.commands.IntakeManual;
@@ -85,7 +84,7 @@ public class RobotContainer {
 
   private final TunnelStop tunnelStop = new TunnelStop();
 
-  private final SendableChooser<Command> autoChooser;
+  private SendableChooser<String> autoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -96,7 +95,8 @@ public class RobotContainer {
     PathPlannerManager.getInstance().addEvent("Shoot", new Shoot());
 
     // TODO: update speeds and angles
-    PathPlannerManager.getInstance().addEvent("SetOuttakeSubwooferBase", new AutoSetOuttakeAdjust(0, 0));
+    PathPlannerManager.getInstance()
+        .addEvent("SetOuttakeSubwooferBase", new AutoSetOuttakeAdjust(0, 0));
     PathPlannerManager.getInstance().addEvent("SetOuttakeN6", new AutoSetOuttakeAdjust(0, 0));
     PathPlannerManager.getInstance().addEvent("SetOuttakeN7", new AutoSetOuttakeAdjust(0, 0));
     PathPlannerManager.getInstance().addEvent("SetOuttakeN8", new AutoSetOuttakeAdjust(0, 0));
@@ -104,10 +104,12 @@ public class RobotContainer {
     PathPlannerManager.getInstance().addEvent("SetOuttakeMS", new AutoSetOuttakeAdjust(0, 0));
     PathPlannerManager.getInstance().addEvent("SetOuttakeBS", new AutoSetOuttakeAdjust(0, 0));
 
-    FiringSolutionManager.getInstance().loadSolutions();
-
-    autoChooser = PathPlannerManager.getInstance().buildAutoChooser();
+    autoChooser = new SendableChooser<>();
+    autoChooser.setDefaultOption("None", "None"); // DO NOT REMOVE THIS EVER
+    autoChooser.addOption("3NoteToTopShoot", "3NoteToTopShoot");
     Shuffleboard.getTab("Autos").add(autoChooser).withPosition(0, 0).withSize(5, 2);
+
+    FiringSolutionManager.getInstance().loadSolutions();
 
     if (Constants.driveEnabled) {
       drive.setDefaultCommand(driveManual);
@@ -249,20 +251,19 @@ public class RobotContainer {
 
   // Command that should always start off every auto
   public Command getAutoInitialize() {
-    return new SequentialCommandGroup(
-        new ResetFieldCentric(true),
-        new SetRobotPose(
-            new Pose2d(
-                new Translation2d(6.115181446, 6.450208664), Rotation2d.fromRadians(0.1467992541)),
-            true));
+    return new SequentialCommandGroup(new ResetFieldCentric(true));
   }
 
   // Command for the auto on our side of the field (PathPlanner Auto)
   public Command getAutoOurSide() {
-    return autoChooser.getSelected();
+    if (autoChooser.getSelected() == "None") {
+      return Commands.none();
+    } else {
+      return PathPlannerManager.getInstance().buildAuto(autoChooser.getSelected());
+    }
   }
 
   public ScoringStrategy getCenterLineStrategy() {
-    return ScoringStrategy.OneToFive;
+    return ScoringStrategy.DoNothing;
   }
 }

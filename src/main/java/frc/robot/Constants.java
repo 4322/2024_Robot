@@ -31,7 +31,7 @@ public final class Constants {
     CRUSH
   }
 
-  public static final RobotType currentRobot = RobotType.CRUSH;
+  public static final RobotType currentRobot = RobotType.NEMO;
   public static final Mode currentMode = Mode.REAL;
 
   // Must be below currentRobot to initialize properly
