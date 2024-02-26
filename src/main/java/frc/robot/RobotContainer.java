@@ -27,6 +27,8 @@ import frc.robot.commands.IntakeStop;
 import frc.robot.commands.OuttakeAdjustToSpeaker;
 import frc.robot.commands.OuttakeStop;
 import frc.robot.commands.ResetFieldCentric;
+import frc.robot.commands.SetPivotsBrakeMode;
+import frc.robot.commands.SetPivotsCoastMode;
 import frc.robot.commands.SetRobotPose;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.TunnelFeed;
@@ -179,6 +181,8 @@ public class RobotContainer {
                   }));
       driveXbox.leftTrigger().whileTrue(new Shoot());
       operatorXbox.rightTrigger().whileTrue(new EjectThroughOuttake());
+      operatorXbox.start().onTrue(new SetPivotsCoastMode());
+      operatorXbox.back().onTrue(new SetPivotsBrakeMode());
     }
   }
 
@@ -210,10 +214,6 @@ public class RobotContainer {
                   () -> {
                     RobotCoordinator.getInstance().setInitAbsEncoderPressed(true);
                   }));
-      // set intake deployer and outtake pivot coast mode
-      operatorXbox.start().onTrue(Commands.runOnce(() -> {RobotCoordinator.getInstance().toggleCoastNeutralMode(true);})); 
-      // set intake deployer and outtake pivot brake mode
-      operatorXbox.back().onTrue(Commands.runOnce(() -> {RobotCoordinator.getInstance().toggleCoastNeutralMode(false);}));
     }
   }
 
@@ -224,7 +224,7 @@ public class RobotContainer {
     intake.setDeployerBrakeMode();
     outtake.setPivotBrakeMode();
     outtake.setFlywheelCoastMode(); // should always be in coast mode
-    
+
     disableTimer.stop();
     disableTimer.reset();
   }

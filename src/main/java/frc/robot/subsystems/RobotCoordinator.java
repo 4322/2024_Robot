@@ -101,17 +101,6 @@ public class RobotCoordinator extends SubsystemBase {
     return autoIntakeButtonPressed;
   }
 
-  public void toggleCoastNeutralMode(boolean coast) {
-    if (coast) {
-      intake.setDeployerCoastMode();
-      outtake.setPivotCoastMode();
-    }
-    else {
-      intake.setDeployerBrakeMode();
-      outtake.setPivotBrakeMode();
-    }
-  }
-
   public void setInitAbsEncoderPressed(boolean isPressed) {
     initAbsEncoderPressed = isPressed;
   }
