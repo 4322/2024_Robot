@@ -11,13 +11,13 @@ public class CenterLineManager {
 
   private boolean initialized = false;
 
-  public enum ScoringStrategy {
+  public enum CenterLineScoringStrategy {
     OneToFive,
     FiveToOne,
     DoNothing,
   }
 
-  public CenterLineManager(ScoringStrategy strategy) {
+  public CenterLineManager(CenterLineScoringStrategy strategy) {
     machine = new CLSM(strategy);
     tracker = new EnvironmentTracker(new NoteStatus(true, true, true, true, true));
   }

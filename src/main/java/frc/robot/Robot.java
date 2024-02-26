@@ -185,9 +185,13 @@ public class Robot extends LoggedRobot {
           currentAutoPhase = AutoPhases.ourSide;
           break;
         case ourSide:
-          m_autonomousCommand = centerLineManager.getCommand();
-          m_autonomousCommand.schedule();
-          currentAutoPhase = AutoPhases.centerLine;
+          if (centerLineManager.isDone()) {
+            currentAutoPhase = AutoPhases.done;
+          } else {
+            m_autonomousCommand = centerLineManager.getCommand();
+            m_autonomousCommand.schedule();
+            currentAutoPhase = AutoPhases.centerLine;
+          }
           break;
         case centerLine:
           if (centerLineManager.isDone()) {

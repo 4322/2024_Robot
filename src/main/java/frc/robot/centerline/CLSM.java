@@ -2,7 +2,7 @@ package frc.robot.centerline;
 
 import com.github.oxo42.stateless4j.StateMachine;
 import com.github.oxo42.stateless4j.StateMachineConfig;
-import frc.robot.centerline.CenterLineManager.ScoringStrategy;
+import frc.robot.centerline.CenterLineManager.CenterLineScoringStrategy;
 
 public class CLSM {
 
@@ -59,13 +59,13 @@ public class CLSM {
     Done // this also doesn't correspond to a physical position
   }
 
-  public CLSM(ScoringStrategy strategy) {
+  public CLSM(CenterLineScoringStrategy strategy) {
     stateMachine =
         new StateMachine<CLSMState, CLSMTrigger>(getInitialState(strategy), getConfig(strategy));
     noteStatus = new NoteStatus(true, true, true, true, true);
   }
 
-  private CLSMState getInitialState(ScoringStrategy strategy) {
+  private CLSMState getInitialState(CenterLineScoringStrategy strategy) {
     switch (strategy) {
       case OneToFive:
         return CLSMState.TopShoot;
@@ -74,7 +74,7 @@ public class CLSM {
     }
   }
 
-  private StateMachineConfig<CLSMState, CLSMTrigger> getConfig(ScoringStrategy strategy) {
+  private StateMachineConfig<CLSMState, CLSMTrigger> getConfig(CenterLineScoringStrategy strategy) {
     final StateMachineConfig<CLSMState, CLSMTrigger> config = new StateMachineConfig<>();
     switch (strategy) {
       case OneToFive:
@@ -226,7 +226,6 @@ public class CLSM {
                 // is more clear
                 () -> setTravelState(TravelState.Done));
         break;
-
       default: // empty config
         break;
     }

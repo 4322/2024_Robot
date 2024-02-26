@@ -17,7 +17,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.centerline.CenterLineManager.ScoringStrategy;
+import frc.robot.AutoHelper.Auto;
+import frc.robot.centerline.CenterLineManager.CenterLineScoringStrategy;
 import frc.robot.commands.AutoIntakeDeploy;
 import frc.robot.commands.AutoIntakeIn;
 import frc.robot.commands.AutoSetOuttakeAdjust;
@@ -84,7 +85,7 @@ public class RobotContainer {
 
   private final TunnelStop tunnelStop = new TunnelStop();
 
-  private SendableChooser<String> autoChooser;
+  private final SendableChooser<Auto> autoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -105,8 +106,7 @@ public class RobotContainer {
     PathPlannerManager.getInstance().addEvent("SetOuttakeBS", new AutoSetOuttakeAdjust(0, 0));
 
     autoChooser = new SendableChooser<>();
-    autoChooser.setDefaultOption("None", "None"); // DO NOT REMOVE THIS EVER
-    autoChooser.addOption("3NoteToTopShoot", "3NoteToTopShoot");
+    AutoHelper.configAutoChooser(autoChooser);
     Shuffleboard.getTab("Autos").add(autoChooser).withPosition(0, 0).withSize(5, 2);
 
     FiringSolutionManager.getInstance().loadSolutions();
@@ -256,14 +256,15 @@ public class RobotContainer {
 
   // Command for the auto on our side of the field (PathPlanner Auto)
   public Command getAutoOurSide() {
-    if (autoChooser.getSelected() == "None") {
+    final String autoName = AutoHelper.getPathPlannerAutoName(autoChooser.getSelected());
+    if (autoName == "None") {
       return Commands.none();
     } else {
-      return PathPlannerManager.getInstance().buildAuto(autoChooser.getSelected());
+      return PathPlannerManager.getInstance().buildAuto(autoName);
     }
   }
 
-  public ScoringStrategy getCenterLineStrategy() {
-    return ScoringStrategy.DoNothing;
+  public CenterLineScoringStrategy getCenterLineStrategy() {
+    return AutoHelper.getCenterLineScoringStrategy(autoChooser.getSelected());
   }
 }
