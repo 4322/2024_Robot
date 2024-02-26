@@ -3,10 +3,12 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.CommandUtil;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.RobotChooser.RobotChooser;
@@ -60,6 +62,10 @@ public class PathPlannerManager {
 
   public Command buildAuto(String autoName) {
     return AutoBuilder.buildAuto(autoName);
+  }
+
+  public SendableChooser<Command> buildAutoChooser() {
+    return AutoBuilder.buildAutoChooser();
   }
 
   public Command followChoreoPath(String pathName) {

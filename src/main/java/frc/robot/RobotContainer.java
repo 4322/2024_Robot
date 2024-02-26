@@ -21,6 +21,9 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.centerline.CenterLineManager.ScoringStrategy;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
+import frc.robot.commands.AutoIntakeDeploy;
+import frc.robot.commands.AutoIntakeIn;
+import frc.robot.commands.AutoSetOuttakeAdjust;
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.EjectThroughOuttake;
 import frc.robot.commands.IntakeManual;
@@ -88,10 +91,22 @@ public class RobotContainer {
   public RobotContainer() {
     configureButtonBindings();
 
-    // add PathPlannerEvents here
+    PathPlannerManager.getInstance().addEvent("AutoIntakeDeploy", new AutoIntakeDeploy());
+    PathPlannerManager.getInstance().addEvent("AutoIntakeIn", new AutoIntakeIn());
+    PathPlannerManager.getInstance().addEvent("Shoot", new Shoot());
+
+    // TODO: update speeds and angles
+    PathPlannerManager.getInstance().addEvent("SetOuttakeSubwooferBase", new AutoSetOuttakeAdjust(0, 0));
+    PathPlannerManager.getInstance().addEvent("SetOuttakeN6", new AutoSetOuttakeAdjust(0, 0));
+    PathPlannerManager.getInstance().addEvent("SetOuttakeN7", new AutoSetOuttakeAdjust(0, 0));
+    PathPlannerManager.getInstance().addEvent("SetOuttakeN8", new AutoSetOuttakeAdjust(0, 0));
+    PathPlannerManager.getInstance().addEvent("SetOuttakeTS", new AutoSetOuttakeAdjust(0, 0));
+    PathPlannerManager.getInstance().addEvent("SetOuttakeMS", new AutoSetOuttakeAdjust(0, 0));
+    PathPlannerManager.getInstance().addEvent("SetOuttakeBS", new AutoSetOuttakeAdjust(0, 0));
+
     FiringSolutionManager.getInstance().loadSolutions();
 
-    autoChooser = new SendableChooser<>();
+    autoChooser = PathPlannerManager.getInstance().buildAutoChooser();
     Shuffleboard.getTab("Autos").add(autoChooser).withPosition(0, 0).withSize(5, 2);
 
     if (Constants.driveEnabled) {
@@ -244,7 +259,7 @@ public class RobotContainer {
 
   // Command for the auto on our side of the field (PathPlanner Auto)
   public Command getAutoOurSide() {
-    return Commands.none();
+    return autoChooser.getSelected();
   }
 
   public ScoringStrategy getCenterLineStrategy() {
