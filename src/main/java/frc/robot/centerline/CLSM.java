@@ -32,7 +32,6 @@ public class CLSM {
 
   public enum TravelState {
     None,
-    N1ToBottomEndPos,
     N1ToN2,
     N2ToN3,
     N3ToN4,
@@ -49,7 +48,6 @@ public class CLSM {
     N4ToBS,
     N5ToBS,
     N5ToBottomEndPos,
-    TSToBottomEndPos,
     TSToN1,
     TSToN2,
     TSToN3,
