@@ -47,7 +47,7 @@ public class OuttakeIOReal implements OuttakeIO {
 
     configOuttake(leftOuttakeMotor);
     configOuttake(rightOuttakeMotor);
-    rightOuttakeMotor.setControl(new Follower(leftOuttakeMotor.getDeviceID(),true));
+    rightOuttakeMotor.setControl(new Follower(leftOuttakeMotor.getDeviceID(), true));
     configPivot(pivotMotor);
     if (Constants.debug) {
       tab = Shuffleboard.getTab("Outtake");

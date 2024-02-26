@@ -191,7 +191,7 @@ public class RobotContainer {
         intake.setCoastMode();
       }
       if (Constants.outtakeEnabled) {
-        outtake.setCoastMode();
+        outtake.setPivotCoastMode();
       }
       if (Constants.tunnelEnabled) {
         tunnel.setCoastMode();
@@ -217,7 +217,7 @@ public class RobotContainer {
     drive.setBrakeMode();
     tunnel.setBrakeMode();
     intake.setBrakeMode();
-    outtake.setBrakeMode();
+    outtake.setPivotBrakeMode();
     disableTimer.stop();
     disableTimer.reset();
   }
