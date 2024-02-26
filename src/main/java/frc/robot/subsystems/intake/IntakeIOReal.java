@@ -1,5 +1,6 @@
 package frc.robot.subsystems.intake;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
@@ -33,7 +34,6 @@ public class IntakeIOReal implements IntakeIO {
   GenericEntry retractPositionRotations;
   GenericEntry deployPosition;
   GenericEntry deployerRPS;
-  GenericEntry isCoasting;
   GenericEntry flywheelRPS;
 
   public IntakeIOReal() {
@@ -76,14 +76,6 @@ public class IntakeIOReal implements IntakeIO {
               .withSize(1, 1)
               .withPosition(2, 1)
               .getEntry();
-      isCoasting =
-          tab.add(
-                  "Are Intake Motors in Coast Mode? (Read Only)",
-                  IntakeConstants.IntakeConfig.neutralMode == NeutralModeValue.Coast)
-              .withWidget(BuiltInWidgets.kBooleanBox)
-              .withSize(3, 1)
-              .withPosition(1, 1)
-              .getEntry();
     }
   }
 
@@ -95,7 +87,7 @@ public class IntakeIOReal implements IntakeIO {
     CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
     HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs = new HardwareLimitSwitchConfigs();
 
-    motorOutputConfigs.NeutralMode = IntakeConstants.IntakeConfig.neutralMode;
+    motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
     currentLimitsConfigs.StatorCurrentLimitEnable =
         Constants.IntakeConstants.IntakeConfig.statorEnabled;
     currentLimitsConfigs.StatorCurrentLimit = Constants.IntakeConstants.IntakeConfig.statorLimit;
@@ -133,7 +125,7 @@ public class IntakeIOReal implements IntakeIO {
         IntakeConstants.DeployConfig.configCLosedLoopRamp;
     voltageConfigs.PeakForwardVoltage = IntakeConstants.DeployConfig.maxVoltage;
     voltageConfigs.PeakReverseVoltage = -IntakeConstants.DeployConfig.maxVoltage;
-    motorOutputConfigs.NeutralMode = IntakeConstants.DeployConfig.neutralMode;
+    motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
     softwareLimitSwitchConfigs.ForwardSoftLimitEnable =
         IntakeConstants.DeployConfig.limitForwardMotion;
     softwareLimitSwitchConfigs.ReverseSoftLimitEnable =
@@ -148,7 +140,6 @@ public class IntakeIOReal implements IntakeIO {
     currentLimitsConfigs.SupplyCurrentLimitEnable =
         Constants.IntakeConstants.DeployConfig.supplyEnabled;
     currentLimitsConfigs.SupplyCurrentLimit = Constants.IntakeConstants.DeployConfig.supplyLimit;
-    motorOutputConfigs.NeutralMode = Constants.IntakeConstants.DeployConfig.neutralMode;
 
     hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
     hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
@@ -259,9 +250,6 @@ public class IntakeIOReal implements IntakeIO {
   @Override
   public void setIntakeBrakeMode() {
     intake.setNeutralMode(NeutralModeValue.Brake);
-    if (Constants.debug) {
-      isCoasting.setBoolean(false);
-    }
     Logger.recordOutput(IntakeConstants.Logging.feederHardwareOutputsKey + "NeutralMode", "Brake");
   }
 
@@ -275,9 +263,6 @@ public class IntakeIOReal implements IntakeIO {
   @Override
   public void setIntakeCoastMode() {
     intake.setNeutralMode(NeutralModeValue.Coast);
-    if (Constants.debug) {
-      isCoasting.setBoolean(true);
-    }
     Logger.recordOutput(IntakeConstants.Logging.feederHardwareOutputsKey + "NeutralMode", "Coast");
   }
 

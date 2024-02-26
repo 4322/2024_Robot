@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -310,15 +309,12 @@ public final class Constants {
     // TODO: all parameters for position control PID
     public static final double maxVelRotationsPerSec = 0.0;
     public static final boolean enableFOC = true;
-    public static final int positionVoltageSlot = 0;
-    public static final boolean overrideBrakeDuringNeutral = false;
     public static final double pivotClosedLoopSec = 0;
     public static final boolean limitForwardMotion = true;
     public static final boolean limitReverseMotion = true;
     public static final double forwardSoftLimitThresholdRotations = 99; // TODO
     public static final double reverseSoftLimitThresholdRotations = 0;
 
-    public static final NeutralModeValue pivotDefaultNeutralMode = NeutralModeValue.Coast;
     public static final double defaultPivotPosition = 0;
     public static final double ejectOuttakeRPS = 0; // TODO
 
@@ -326,8 +322,6 @@ public final class Constants {
     public static final double bottomOuttakeRPS = 0;
     public static final double outtakeToleranceRPS = 0;
     public static final double pivotToleranceRotations = 0;
-
-    public static final double maxRPM = 0;
   }
 
   public static final class IntakeConstants {
@@ -336,7 +330,6 @@ public final class Constants {
     public static final int deployEncoderID = 9;
 
     public static final class IntakeConfig {
-      public static final NeutralModeValue neutralMode = NeutralModeValue.Brake;
       public static final double updateHz =
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
@@ -353,7 +346,6 @@ public final class Constants {
       public static final double kD = 0;
       public static final double configCLosedLoopRamp = 0;
       public static final double maxVoltage = 16;
-      public static final NeutralModeValue neutralMode = NeutralModeValue.Brake;
       public static final double updateHz =
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;

@@ -106,7 +106,6 @@ public class OuttakeIOReal implements OuttakeIO {
     slot0Configs.kI = OuttakeConstants.pivotkI;
     slot0Configs.kD = OuttakeConstants.pivotkD;
     closedLoopRampsConfigs.VoltageClosedLoopRampPeriod = OuttakeConstants.pivotClosedLoopSec;
-    motorOutputConfigs.NeutralMode = OuttakeConstants.pivotDefaultNeutralMode;
     softwareLimitSwitchConfigs.ForwardSoftLimitEnable = OuttakeConstants.limitForwardMotion;
     softwareLimitSwitchConfigs.ReverseSoftLimitEnable = OuttakeConstants.limitReverseMotion;
     softwareLimitSwitchConfigs.ForwardSoftLimitThreshold =
