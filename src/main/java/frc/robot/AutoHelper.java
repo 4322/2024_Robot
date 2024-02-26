@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.centerline.CenterLineManager.CenterLineScoringStrategy;
 
 public class AutoHelper {
-  
+
   public enum Auto {
     None,
     SmartSixNoteTop,
@@ -15,7 +15,7 @@ public class AutoHelper {
     for (Auto auto : Auto.values()) {
       if (auto != Auto.None) {
         chooser.addOption(auto.toString(), auto);
-      } 
+      }
     }
   }
 
@@ -36,5 +36,4 @@ public class AutoHelper {
         return CenterLineScoringStrategy.DoNothing;
     }
   }
-
 }

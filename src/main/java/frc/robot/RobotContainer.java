@@ -95,15 +95,22 @@ public class RobotContainer {
     PathPlannerManager.getInstance().addEvent("AutoIntakeIn", new AutoIntakeIn());
     PathPlannerManager.getInstance().addEvent("Shoot", new Shoot());
 
-    // TODO: update speeds and angles
     PathPlannerManager.getInstance()
-        .addEvent("SetOuttakeSubwooferBase", new AutoSetOuttakeAdjust(0, 0));
-    PathPlannerManager.getInstance().addEvent("SetOuttakeN6", new AutoSetOuttakeAdjust(0, 0));
-    PathPlannerManager.getInstance().addEvent("SetOuttakeN7", new AutoSetOuttakeAdjust(0, 0));
-    PathPlannerManager.getInstance().addEvent("SetOuttakeN8", new AutoSetOuttakeAdjust(0, 0));
-    PathPlannerManager.getInstance().addEvent("SetOuttakeTS", new AutoSetOuttakeAdjust(0, 0));
-    PathPlannerManager.getInstance().addEvent("SetOuttakeMS", new AutoSetOuttakeAdjust(0, 0));
-    PathPlannerManager.getInstance().addEvent("SetOuttakeBS", new AutoSetOuttakeAdjust(0, 0));
+        .addEvent(
+            "SetOuttakeSubwooferBase",
+            new AutoSetOuttakeAdjust(Constants.FiringSolutions.SubwooferBase));
+    PathPlannerManager.getInstance()
+        .addEvent("SetOuttakeN6", new AutoSetOuttakeAdjust(Constants.FiringSolutions.N6));
+    PathPlannerManager.getInstance()
+        .addEvent("SetOuttakeN7", new AutoSetOuttakeAdjust(Constants.FiringSolutions.N7));
+    PathPlannerManager.getInstance()
+        .addEvent("SetOuttakeN8", new AutoSetOuttakeAdjust(Constants.FiringSolutions.N8));
+    PathPlannerManager.getInstance()
+        .addEvent("SetOuttakeTS", new AutoSetOuttakeAdjust(Constants.FiringSolutions.TS));
+    PathPlannerManager.getInstance()
+        .addEvent("SetOuttakeMS", new AutoSetOuttakeAdjust(Constants.FiringSolutions.MS));
+    PathPlannerManager.getInstance()
+        .addEvent("SetOuttakeBS", new AutoSetOuttakeAdjust(Constants.FiringSolutions.BS));
 
     autoChooser = new SendableChooser<>();
     AutoHelper.configAutoChooser(autoChooser);

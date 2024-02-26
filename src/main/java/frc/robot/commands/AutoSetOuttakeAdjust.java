@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.shooting.FiringSolution;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.outtake.Outtake;
 
@@ -9,10 +10,10 @@ public class AutoSetOuttakeAdjust extends InstantCommand {
   private double flywheelSpeed;
   private double pivotAngle;
 
-  public AutoSetOuttakeAdjust(double flywheelSpeed, double pivotAngle) {
+  public AutoSetOuttakeAdjust(FiringSolution solution) {
     outtake = Outtake.getInstance();
-    this.flywheelSpeed = flywheelSpeed;
-    this.pivotAngle = pivotAngle;
+    this.flywheelSpeed = solution.getFlywheelSpeed();
+    this.pivotAngle = solution.getShotAngle();
 
     addRequirements(outtake);
   }

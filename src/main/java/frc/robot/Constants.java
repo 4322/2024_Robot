@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.RobotChooser.RobotChooser;
 import frc.robot.RobotChooser.RobotChooserInterface;
+import frc.robot.shooting.FiringSolution;
 import frc.utility.CanBusUtil;
 import frc.utility.OrangeMath;
 import java.util.Map;
@@ -495,6 +496,18 @@ public final class Constants {
     }
 
     public static final double xCenterLineM = 8.2955;
+  }
+
+  public static final class FiringSolutions {
+    // TODO: update speeds and angles
+    // shot mag/deg don't matter since these are used for setting speed/angle only
+    public static FiringSolution SubwooferBase = new FiringSolution(0, 0, 0, 0);
+    public static FiringSolution N6 = new FiringSolution(0, 0, 0, 0);
+    public static FiringSolution N7 = new FiringSolution(0, 0, 0, 0);
+    public static FiringSolution N8 = new FiringSolution(0, 0, 0, 0);
+    public static FiringSolution TS = new FiringSolution(0, 0, 0, 0);
+    public static FiringSolution MS = new FiringSolution(0, 0, 0, 0);
+    public static FiringSolution BS = new FiringSolution(0, 0, 0, 0);
   }
 
   public enum WheelPosition {
