@@ -31,7 +31,7 @@ public final class Constants {
     CRUSH
   }
 
-  public static final RobotType currentRobot = RobotType.NEMO;
+  public static final RobotType currentRobot = RobotType.CRUSH;
   public static final Mode currentMode = Mode.REAL;
 
   // Must be below currentRobot to initialize properly
@@ -48,6 +48,7 @@ public final class Constants {
   public static final boolean outtakeEnabled = false;
   public static final boolean outtakePivotEnabled = false;
   public static final boolean sensorsEnabled = false;
+  public static final boolean ledEnabled = false;
   public static final boolean joysticksEnabled = false;
   public static final boolean xboxEnabled = true;
 
@@ -183,7 +184,7 @@ public final class Constants {
               * OrangeMath.falconRotationsToMeters(
                   73,
                   OrangeMath.inchesToMeters(OrangeMath.getCircumference(Drive.wheelDiameterInches)),
-                  robotSpecificConstants.getGearRatio());
+                  robotSpecificConstants.getDriveGearRatio());
 
       public static final double minAutoRotateStoppedPower =
           robotSpecificConstants.getMinAutoRotateStoppedPower();
@@ -211,8 +212,13 @@ public final class Constants {
 
     public static final class Rotation {
 
+      public static final boolean supplyEnabled = true;
+      public static final boolean statorEnabled = true;
+      public static final double supplyLimit = 30;
+      public static final double statorLimit = 45;
+
       public static final double configCLosedLoopRamp = 0.08;
-      public static final double maxPower = 0.5; // reduce gear wear and overshoot
+      public static final double maxPower = 6; // reduce gear wear and overshoot
 
       public static final double configVoltageCompSaturation = 11.5;
 
@@ -224,10 +230,10 @@ public final class Constants {
 
       static {
         CANCoderOffsetRotations = new double[4];
-        CANCoderOffsetRotations[WheelPosition.FRONT_RIGHT.wheelNumber] = 149.941;
-        CANCoderOffsetRotations[WheelPosition.FRONT_LEFT.wheelNumber] = 2.637 - 90;
-        CANCoderOffsetRotations[WheelPosition.BACK_RIGHT.wheelNumber] = 22.939 - 90;
-        CANCoderOffsetRotations[WheelPosition.BACK_LEFT.wheelNumber] = -72.773;
+        CANCoderOffsetRotations[WheelPosition.FRONT_RIGHT.wheelNumber] = 0.695;
+        CANCoderOffsetRotations[WheelPosition.FRONT_LEFT.wheelNumber] = 0.526;
+        CANCoderOffsetRotations[WheelPosition.BACK_RIGHT.wheelNumber] = 0.670;
+        CANCoderOffsetRotations[WheelPosition.BACK_LEFT.wheelNumber] = 0.453;
       }
     }
 
@@ -260,12 +266,18 @@ public final class Constants {
       // when supply threshold is exceeded for the time, drop the current to the limit
       public static final double statorLimit = 60;
       public static final boolean supplyEnabled = true;
+      public static final boolean statorEnabled = true;
       public static final double supplyLimit = 40;
       public static final double supplyThreshold = 60;
       public static final double supplyTime = 2.0;
     }
 
     public static final double autoFeedMoveSpeed = 1;
+  }
+
+  public static final class EncoderInitializeConstants {
+    public static final double setRelativeRotations = 4322.0; // must be a very high number
+    public static final double relativeRotationsTolerance = 5.0;
   }
 
   public static final class OuttakeConstants {
@@ -282,11 +294,17 @@ public final class Constants {
     public static final double openLoopRampSec = 0;
     public static final double closedLoopRampSec = 0;
     public static final int gearRatioMotorToWheel = 0;
-    public static final double gearReductionEncoderToMotor = (29.0 / 28.0) * 125.0;
+    public static final double gearReductionEncoderToMotor = (30.0 / 28.0) * 125.0;
     public static final double kS = 0;
     public static final double voltPerRPS =
         0; // since we likely aren't going to adjust the speed, it's likely safe to
     // not interpolate
+    public static final boolean supplyEnabled = true;
+    public static final boolean statorEnabled = true;
+    public static final double pivotSupplyLimit = 30;
+    public static final double pivotStatorLimit = 45;
+    public static final double shooterSupplyLimit = 40;
+    public static final double shooterStatorLimit = 60;
 
     public static final double pivotkD = 0;
     public static final double pivotkI = 0;
@@ -306,6 +324,7 @@ public final class Constants {
 
     public static final NeutralModeValue pivotDefaultNeutralMode = NeutralModeValue.Coast;
     public static final double defaultPivotPosition = 0;
+    public static final double ejectOuttakeRPS = 0; // TODO
 
     public static final double topOuttakeRPS = 0;
     public static final double bottomOuttakeRPS = 0;
@@ -325,9 +344,12 @@ public final class Constants {
       public static final double updateHz =
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
-      public static final double intakeFeedVoltage =
-          0.0; // TODO: set max voltage we want for feeding
-      public static final double intakeEjectVoltage = 0.0;
+      public static final double intakeFeedVoltage = 5.0;
+      public static final double intakeEjectVoltage = -5.0;
+      public static final boolean supplyEnabled = true;
+      public static final boolean statorEnabled = true;
+      public static final double supplyLimit = 30;
+      public static final double statorLimit = 45;
     }
 
     public static final class DeployConfig {
@@ -343,6 +365,10 @@ public final class Constants {
       public static final boolean limitReverseMotion = true;
       public static final double forwardSoftLimitThresholdRotations = 99; // TODO
       public static final double reverseSoftLimitThresholdRotations = 0;
+      public static final boolean supplyEnabled = true;
+      public static final boolean statorEnabled = true;
+      public static final double supplyLimit = 30;
+      public static final double statorLimit = 45;
     }
 
     public static final class Deploy {
@@ -358,7 +384,7 @@ public final class Constants {
           false; // we want to brake if not moving
       public static final boolean limitForwardMotion = true;
       public static final boolean limitReverseMotion = true;
-      public static final double encoderGearReduction = 0.0; // TODO: should be a large number
+      public static final double encoderGearReduction = 60.0;
     }
 
     public static final class Logging {
@@ -382,9 +408,13 @@ public final class Constants {
 
   public static final class TunnelConstants {
     public static final int tunnelMotorID = 3;
+    public static final boolean supplyEnabled = true;
+    public static final boolean statorEnabled = true;
+    public static final double supplyLimit = 30;
+    public static final double statorLimit = 45;
 
-    public static final double desiredVoltage = 0.0; // TODO
-    public static final double peakVoltage = 0.0; // TODO: shouldn't be greater than 12
+    public static final double desiredVoltage = 3.0;
+    public static final double peakVoltage = 6.0;
 
     public static final class Logging {
       public static final String key = "Tunnel/";

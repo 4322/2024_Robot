@@ -73,8 +73,12 @@ public class NemoConstants implements RobotChooserInterface {
     return 0.0002;
   }
 
-  public double getGearRatio() {
+  public double getDriveGearRatio() {
     return 7.80; // drive gear ratio
+  }
+
+  public double getRotationGearRatio() {
+    return 1.0; // one to one
   }
 
   public double getDrivekSVolts() {

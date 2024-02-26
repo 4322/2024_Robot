@@ -24,7 +24,7 @@ public class XboxControllerRumble extends Command {
         && RobotCoordinator.getInstance().getIntakeState()
             == IntakeManual.IntakeStates.notePastIntake) {
       rumbleTimer.start();
-      RobotContainer.xbox.getHID().setRumble(RumbleType.kBothRumble, 1);
+      RobotContainer.driveXbox.getHID().setRumble(RumbleType.kBothRumble, 1);
     }
   }
 
@@ -36,7 +36,7 @@ public class XboxControllerRumble extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.xbox.getHID().setRumble(RumbleType.kBothRumble, 0);
+    RobotContainer.driveXbox.getHID().setRumble(RumbleType.kBothRumble, 0);
     rumbleTimer.stop();
     rumbleTimer.reset();
     hasRumbled = false;

@@ -105,12 +105,16 @@ public class SwerveModule {
   public void setCoastmode() {
     if (Constants.driveEnabled) {
       io.setCoastMode();
+      Logger.recordOutput(
+          "Drive/SwerveModule " + wheelPos.wheelNumber + "/SetNeutralMode", "Coast");
     }
   }
 
   public void setBrakeMode() {
     if (Constants.driveEnabled) {
       io.setBrakeMode();
+      Logger.recordOutput(
+          "Drive/SwerveModule " + wheelPos.wheelNumber + "/SetNeutralMode", "Brake");
     }
   }
 

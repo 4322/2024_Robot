@@ -22,6 +22,7 @@ import frc.robot.centerline.CenterLineManager.ScoringStrategy;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
+import frc.robot.commands.EjectThroughOuttake;
 import frc.robot.commands.IntakeManual;
 import frc.robot.commands.IntakeStop;
 import frc.robot.commands.OuttakeAdjustToSpeaker;
@@ -49,7 +50,8 @@ public class RobotContainer {
   private Timer disableTimer = new Timer();
 
   // Define controllers
-  public static CommandXboxController xbox;
+  public static CommandXboxController driveXbox;
+  public static CommandXboxController operatorXbox;
   public static Joystick driveStick;
   public static Joystick rotateStick;
 
@@ -127,48 +129,56 @@ public class RobotContainer {
     }
 
     if (Constants.xboxEnabled) {
-      xbox = new CommandXboxController(2);
-      xbox.x()
+      driveXbox = new CommandXboxController(2);
+      operatorXbox = new CommandXboxController(3);
+      driveXbox
+          .leftBumper()
           .onTrue(
               Commands.runOnce(
                   () -> {
                     driveManual.updateStateMachine(DriveManualTrigger.JOYSTICK_IN);
                   }));
-      xbox.povUp().onTrue(new ResetFieldCentric(true));
-      xbox.povRight().onTrue(writeFiringSolution);
+      driveXbox.povUp().onTrue(new ResetFieldCentric(true));
+      driveXbox.povRight().onTrue(writeFiringSolution);
       // Reset the odometry for testing speaker-centric driving. This assumes robot is on the
       // very left on the front of the speaker, facing down-field (forward).
-      xbox.start()
+      driveXbox
+          .start()
           .onTrue(
               new SetRobotPose(
                   new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()), true));
-      xbox.povDown().onTrue(driveStop);
-      xbox.rightTrigger()
+      driveXbox.povDown().onTrue(driveStop);
+      driveXbox
+          .rightTrigger()
           .onTrue(
               Commands.runOnce(
                   () -> {
                     RobotCoordinator.getInstance().setIntakeButtonState(true);
                   }));
-      xbox.rightTrigger()
+      driveXbox
+          .rightTrigger()
           .onFalse(
               Commands.runOnce(
                   () -> {
                     RobotCoordinator.getInstance().setIntakeButtonState(false);
                   }));
-      xbox.rightBumper()
+      driveXbox
+          .rightBumper()
           .onTrue(
               Commands.runOnce(
                   () -> {
                     RobotCoordinator.getInstance().setAutoIntakeButtonPressed(true);
                   }));
 
-      xbox.rightBumper()
+      driveXbox
+          .rightBumper()
           .onFalse(
               Commands.runOnce(
                   () -> {
                     RobotCoordinator.getInstance().setAutoIntakeButtonPressed(false);
                   }));
-      xbox.leftTrigger().whileTrue(new Shoot());
+      driveXbox.leftTrigger().whileTrue(new Shoot());
+      operatorXbox.rightTrigger().whileTrue(new EjectThroughOuttake());
     }
   }
 
@@ -190,14 +200,17 @@ public class RobotContainer {
       disableTimer.reset();
     }
 
-    // pressed when intake and outtake are in starting config
-    // can only be pressed once after bootup
-    xbox.povLeft()
-        .onTrue(
-            Commands.runOnce(
-                () -> {
-                  RobotCoordinator.getInstance().setInitAbsEncoderPressed(true);
-                }));
+    if (Constants.xboxEnabled) {
+      // pressed when intake and outtake are in starting config
+      // can only be pressed once after bootup
+      driveXbox
+          .povLeft()
+          .onTrue(
+              Commands.runOnce(
+                  () -> {
+                    RobotCoordinator.getInstance().setInitAbsEncoderPressed(true);
+                  }));
+    }
   }
 
   public void enableSubsystems() {

@@ -146,6 +146,10 @@ public class RobotCoordinator extends SubsystemBase {
     return !intake.isFeeding() && intake.isInitialized();
   }
 
+  public boolean intakeIsFeeding() {
+    return intake.isFeeding();
+  }
+
   public boolean canShoot() {
     return outtake.isFlyWheelUpToSpeed() && outtake.pivotIsAtPosition() && noteInFiringPosition();
   }
@@ -209,5 +213,9 @@ public class RobotCoordinator extends SubsystemBase {
 
   public double getOuttakeLimelightLatency() {
     return Limelight.getOuttakeInstance().getTotalLatency();
+  }
+
+  public boolean pivotAtPosition() {
+    return outtake.pivotIsAtPosition();
   }
 }

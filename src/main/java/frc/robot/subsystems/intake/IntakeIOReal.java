@@ -1,6 +1,7 @@
 package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -90,8 +91,17 @@ public class IntakeIOReal implements IntakeIO {
     intake.getConfigurator().apply(new TalonFXConfiguration());
 
     MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-    motorOutputConfigs.NeutralMode = IntakeConstants.IntakeConfig.neutralMode;
+    CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
 
+    motorOutputConfigs.NeutralMode = IntakeConstants.IntakeConfig.neutralMode;
+    currentLimitsConfigs.StatorCurrentLimitEnable =
+        Constants.IntakeConstants.IntakeConfig.statorEnabled;
+    currentLimitsConfigs.StatorCurrentLimit = Constants.IntakeConstants.IntakeConfig.statorLimit;
+    currentLimitsConfigs.SupplyCurrentLimitEnable =
+        Constants.IntakeConstants.IntakeConfig.supplyEnabled;
+    currentLimitsConfigs.SupplyCurrentLimit = Constants.IntakeConstants.IntakeConfig.supplyLimit;
+
+    intake.getConfigurator().apply(currentLimitsConfigs);
     intake.getConfigurator().apply(motorOutputConfigs);
 
     intake
@@ -108,6 +118,7 @@ public class IntakeIOReal implements IntakeIO {
     VoltageConfigs voltageConfigs = new VoltageConfigs();
     MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
     SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
+    CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
 
     slot0Configs.kP = IntakeConstants.DeployConfig.kP;
     slot0Configs.kD = IntakeConstants.DeployConfig.kD;
@@ -124,7 +135,14 @@ public class IntakeIOReal implements IntakeIO {
         IntakeConstants.DeployConfig.forwardSoftLimitThresholdRotations;
     softwareLimitSwitchConfigs.ReverseSoftLimitThreshold =
         IntakeConstants.DeployConfig.reverseSoftLimitThresholdRotations;
+    currentLimitsConfigs.StatorCurrentLimitEnable =
+        Constants.IntakeConstants.DeployConfig.statorEnabled;
+    currentLimitsConfigs.StatorCurrentLimit = Constants.IntakeConstants.DeployConfig.statorLimit;
+    currentLimitsConfigs.SupplyCurrentLimitEnable =
+        Constants.IntakeConstants.DeployConfig.supplyEnabled;
+    currentLimitsConfigs.SupplyCurrentLimit = Constants.IntakeConstants.DeployConfig.supplyLimit;
 
+    deploy.getConfigurator().apply(currentLimitsConfigs);
     deploy.getConfigurator().apply(slot0Configs);
     deploy.getConfigurator().apply(closedLoopRampsConfigs);
     deploy.getConfigurator().apply(voltageConfigs);
@@ -160,8 +178,8 @@ public class IntakeIOReal implements IntakeIO {
     inputs.deployTempC = deploy.getDeviceTemp().getValue();
     inputs.deployIsAlive = deploy.isAlive();
 
-    inputs.deployEncoderRotations = deployEncoder.getPosition();
-    inputs.deployEncoderRotationsPerSec = deployEncoder.getVelocity();
+    inputs.heliumRelativeRotations = deployEncoder.getPosition();
+    inputs.heliumAbsRotations = deployEncoder.getAbsPosition();
 
     inputs.deployAppliedControl = deploy.getAppliedControl().toString();
     if (Constants.debug) {
@@ -191,6 +209,11 @@ public class IntakeIOReal implements IntakeIO {
   public boolean initMotorPos() {
     deploy.setPosition(
         deployEncoder.getAbsPosition() * IntakeConstants.Deploy.encoderGearReduction);
+    // set only relative encoder rotations of Helium encoder to a very high number after initialized
+    // once
+    // relative encoder on Helium used only to check if we have already initialized after power
+    // cycle
+    deployEncoder.setPosition(Constants.EncoderInitializeConstants.setRelativeRotations);
     return OrangeMath.equalToTwoDecimal(deployEncoder.getVelocity(), 0);
   }
 

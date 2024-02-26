@@ -1,6 +1,7 @@
 package frc.robot.subsystems.outtake;
 
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -60,6 +61,7 @@ public class OuttakeIOReal implements OuttakeIO {
   private void configOuttake(TalonFX talon) {
     ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
     OpenLoopRampsConfigs openLoopRampsConfigs = new OpenLoopRampsConfigs();
+    CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
     Slot0Configs slot0Configs = new Slot0Configs();
     slot0Configs.kP = Constants.OuttakeConstants.kP;
     slot0Configs.kI = Constants.OuttakeConstants.kI;
@@ -70,6 +72,12 @@ public class OuttakeIOReal implements OuttakeIO {
     openLoopRampsConfigs.VoltageOpenLoopRampPeriod = Constants.OuttakeConstants.openLoopRampSec;
     // bottomOuttakeMotor.setControl(new
     // Follower(topOuttakeMotor.getDeviceID(),true));
+    currentLimitsConfigs.StatorCurrentLimitEnable = Constants.OuttakeConstants.statorEnabled;
+    currentLimitsConfigs.StatorCurrentLimit = Constants.OuttakeConstants.shooterStatorLimit;
+    currentLimitsConfigs.SupplyCurrentLimitEnable = Constants.OuttakeConstants.supplyEnabled;
+    currentLimitsConfigs.SupplyCurrentLimit = Constants.OuttakeConstants.shooterSupplyLimit;
+
+    talon.getConfigurator().apply(currentLimitsConfigs);
     talon.getConfigurator().apply(slot0Configs);
     talon.getConfigurator().apply(closedLoopRampsConfigs);
     talon.getConfigurator().apply(openLoopRampsConfigs);
@@ -81,6 +89,7 @@ public class OuttakeIOReal implements OuttakeIO {
     ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
     MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
     SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
+    CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
     slot0Configs.kP = Constants.OuttakeConstants.pivotkP;
     slot0Configs.kI = OuttakeConstants.pivotkI;
     slot0Configs.kD = OuttakeConstants.pivotkD;
@@ -92,6 +101,12 @@ public class OuttakeIOReal implements OuttakeIO {
         OuttakeConstants.forwardSoftLimitThresholdRotations;
     softwareLimitSwitchConfigs.ReverseSoftLimitThreshold =
         OuttakeConstants.reverseSoftLimitThresholdRotations;
+    currentLimitsConfigs.StatorCurrentLimitEnable = Constants.OuttakeConstants.statorEnabled;
+    currentLimitsConfigs.StatorCurrentLimit = Constants.OuttakeConstants.pivotStatorLimit;
+    currentLimitsConfigs.SupplyCurrentLimitEnable = Constants.OuttakeConstants.supplyEnabled;
+    currentLimitsConfigs.SupplyCurrentLimit = Constants.OuttakeConstants.pivotSupplyLimit;
+
+    talon.getConfigurator().apply(currentLimitsConfigs);
     talon.getConfigurator().apply(slot0Configs);
     talon.getConfigurator().apply(closedLoopRampsConfigs);
     talon.getConfigurator().apply(voltageConfigs);
@@ -118,6 +133,11 @@ public class OuttakeIOReal implements OuttakeIO {
     inputs.pivotCurrentAmps = pivotMotor.getSupplyCurrent().getValue();
     inputs.pivotTempC = pivotMotor.getDeviceTemp().getValue();
     inputs.pivotIsAlive = pivotMotor.isAlive();
+
+    inputs.heliumAbsRotations = pivotEncoder.getAbsPosition();
+    inputs.heliumRelativeRotations =
+        pivotEncoder.getPosition(); // logged for checking if postion as been initialized
+
     if (Constants.debug) {
       inputs.debugTargetRPS = outtakeFlywheelSpeed.getDouble(0);
       inputs.targetPivotPosition = pivotPosition.getDouble(0);
@@ -134,6 +154,11 @@ public class OuttakeIOReal implements OuttakeIO {
   public boolean initPivot() {
     pivotMotor.setPosition(
         pivotEncoder.getAbsPosition() * OuttakeConstants.gearReductionEncoderToMotor);
+    // set only relative encoder rotations of Helium encoder to a very high number after initialized
+    // once
+    // relative encoder on Helium used only to check if we have already initialized after power
+    // cycle
+    pivotEncoder.setPosition(Constants.EncoderInitializeConstants.setRelativeRotations);
     return OrangeMath.equalToTwoDecimal(pivotEncoder.getVelocity(), 0);
   }
 
