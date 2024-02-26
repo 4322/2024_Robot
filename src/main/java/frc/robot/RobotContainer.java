@@ -62,7 +62,7 @@ public class RobotContainer {
 
   // Need to instantiate RobotCoordinator first due to a bug in the WPI command library.
   // If it gets instantiated from a subsystem periodic method, we get a concurrency
-  // exception in the command scheduler. 
+  // exception in the command scheduler.
   private final RobotCoordinator robotCoordinator = RobotCoordinator.getInstance();
   private final Drive drive = Drive.getInstance();
   private final Tunnel tunnel = Tunnel.getInstance();
