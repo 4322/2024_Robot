@@ -73,9 +73,9 @@ public class Outtake extends SubsystemBase {
     if (Constants.outtakeEnabled || Constants.outtakePivotEnabled) {
       io.updateInputs(inputs);
       Logger.processInputs("Outtake", inputs);
-      Logger.recordOutput("Outtake/TopRotationsPerSecAbs", Math.abs(inputs.topRotationsPerSec));
+      Logger.recordOutput("Outtake/TopRotationsPerSecAbs", Math.abs(inputs.leftRotationsPerSec));
       Logger.recordOutput(
-          "Outtake/BottomRotationsPerSecAbs", Math.abs(inputs.bottomRotationsPerSec));
+          "Outtake/BottomRotationsPerSecAbs", Math.abs(inputs.rightRotationsPerSec));
     }
   }
 
@@ -145,17 +145,11 @@ public class Outtake extends SubsystemBase {
     }
   }
 
-  public void setFlywheelCoastMode() {
-    if (Constants.outtakePivotEnabled) {
-      io.setFlywheelCoastMode();
-    }
-  }
-
   public boolean isFlyWheelUpToSpeed() {
     return (OrangeMath.equalToEpsilon(
-            inputs.topRotationsPerSec, targetRPS, OuttakeConstants.outtakeToleranceRPS)
+            inputs.leftRotationsPerSec, targetRPS, OuttakeConstants.outtakeToleranceRPS)
         && OrangeMath.equalToEpsilon(
-            inputs.bottomRotationsPerSec, targetRPS, OuttakeConstants.outtakeToleranceRPS));
+            inputs.rightRotationsPerSec, targetRPS, OuttakeConstants.outtakeToleranceRPS));
   }
 
   public boolean pivotIsAtPosition() {
