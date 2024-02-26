@@ -223,9 +223,6 @@ public class CLSM {
                 CLSMState.Done,
                 () -> !noteStatus.note1Available && !noteStatus.note2Available, // N1 not available implies N2 not available but this is more clear
                 () -> setTravelState(TravelState.Done));
-        config
-            .configure(CLSMState.BottomEndPos)
-            .permit(CLSMTrigger.Finished, CLSMState.Done, () -> setTravelState(TravelState.Done));
         break;
 
       default: // empty config
