@@ -12,6 +12,7 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandcoder.Canandcoder;
 import edu.wpi.first.networktables.GenericEntry;
@@ -79,6 +80,7 @@ public class OuttakeIOReal implements OuttakeIO {
     currentLimitsConfigs.StatorCurrentLimit = Constants.OuttakeConstants.shooterStatorLimit;
     currentLimitsConfigs.SupplyCurrentLimitEnable = Constants.OuttakeConstants.supplyEnabled;
     currentLimitsConfigs.SupplyCurrentLimit = Constants.OuttakeConstants.shooterSupplyLimit;
+    motorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
     motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
 
     hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
@@ -89,6 +91,7 @@ public class OuttakeIOReal implements OuttakeIO {
     talon.getConfigurator().apply(slot0Configs);
     talon.getConfigurator().apply(closedLoopRampsConfigs);
     talon.getConfigurator().apply(openLoopRampsConfigs);
+    talon.getConfigurator().apply(motorOutputConfigs);
   }
 
   private void configPivot(TalonFX talon) {
