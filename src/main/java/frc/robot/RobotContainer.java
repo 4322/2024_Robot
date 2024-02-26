@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.AtHome;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
@@ -183,6 +184,7 @@ public class RobotContainer {
       operatorXbox.rightTrigger().whileTrue(new EjectThroughOuttake());
       operatorXbox.start().onTrue(new SetPivotsCoastMode());
       operatorXbox.back().onTrue(new SetPivotsBrakeMode());
+      driveXbox.povLeft().onTrue(new AtHome());
     }
   }
 
@@ -191,26 +193,8 @@ public class RobotContainer {
       if (Constants.driveEnabled) {
         drive.setCoastMode(); // robot has stopped, safe to enter coast mode
       }
-      if (Constants.intakeEnabled) {
-        intake.setIntakeCoastMode();
-      }
-      if (Constants.tunnelEnabled) {
-        tunnel.setCoastMode();
-      }
       disableTimer.stop();
       disableTimer.reset();
-    }
-
-    if (Constants.xboxEnabled) {
-      // pressed when intake and outtake are in starting config
-      // can only be pressed once after bootup
-      driveXbox
-          .povLeft()
-          .onTrue(
-              Commands.runOnce(
-                  () -> {
-                    RobotCoordinator.getInstance().setInitAbsEncoderPressed(true);
-                  }));
     }
   }
 
@@ -226,6 +210,9 @@ public class RobotContainer {
   }
 
   public void disableSubsystems() {
+    tunnel.setCoastMode();
+    intake.setIntakeCoastMode();
+
     driveStop.schedule(); // interrupt all drive commands
     intakeStop.schedule(); // interrupt all intake commands
     outtakeStop.schedule(); // interrupt all outtake commands

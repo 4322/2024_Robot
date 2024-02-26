@@ -269,7 +269,7 @@ public class IntakeIOReal implements IntakeIO {
   public void setDeployerBrakeMode() {
     deploy.setNeutralMode(NeutralModeValue.Brake);
     Logger.recordOutput(
-      IntakeConstants.Logging.deployerHardwareOutputsKey + "NeutralMode", "Brake");
+        IntakeConstants.Logging.deployerHardwareOutputsKey + "NeutralMode", "Brake");
   }
 
   @Override
@@ -285,7 +285,7 @@ public class IntakeIOReal implements IntakeIO {
   public void setDeployerCoastMode() {
     deploy.setNeutralMode(NeutralModeValue.Coast);
     Logger.recordOutput(
-      IntakeConstants.Logging.deployerHardwareOutputsKey + "NeutralMode", "Coast");
+        IntakeConstants.Logging.deployerHardwareOutputsKey + "NeutralMode", "Coast");
   }
 
   @Override
