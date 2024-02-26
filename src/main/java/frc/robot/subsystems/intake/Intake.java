@@ -13,7 +13,7 @@ public class Intake extends SubsystemBase {
   private IntakeIO io;
   private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
   private Timer existenceTimer;
-  private boolean initialized;
+  private boolean deployInitialized;
   private double deployTarget = 99999; // set to very high value in case target not yet set
   private boolean isFeeding;
   private boolean deployRequested;
@@ -55,25 +55,25 @@ public class Intake extends SubsystemBase {
         inputs.heliumRelativeRotations,
         Constants.EncoderInitializeConstants.setRelativeRotations,
         Constants.EncoderInitializeConstants.relativeRotationsTolerance)) {
-      initialized = true;
+      deployInitialized = true;
     }
 
     // initialize motor internal encoder position until the intake isn't moving
-    if (Constants.intakeEnabled
-        && !initialized
+    if (Constants.intakeDeployerEnabled
+        && !deployInitialized
         && !existenceTimer.hasElapsed(5)
         && coordinator.getInitAbsEncoderPressed()) {
       existenceTimer.start();
-      initialized = io.initMotorPos();
+      deployInitialized = io.initMotorPos();
     }
-    if (Constants.intakeEnabled) {
+    if (Constants.intakeEnabled || Constants.intakeDeployerEnabled) {
       io.updateInputs(inputs);
       Logger.processInputs(IntakeConstants.Logging.key, inputs);
     }
   }
 
   public void intake() {
-    if (Constants.intakeEnabled && initialized) {
+    if (Constants.intakeEnabled && deployInitialized) {
       io.setFeedingVoltage(inputs.intakeFeederVoltage);
       Logger.recordOutput(IntakeConstants.Logging.feederKey + "IntakeStopped", false);
       isFeeding = true;
@@ -81,29 +81,43 @@ public class Intake extends SubsystemBase {
   }
 
   public void outtake() {
-    if (Constants.intakeEnabled && initialized) {
+    if (Constants.intakeEnabled && deployInitialized) {
       io.setFeedingVoltage(inputs.intakeEjectVoltage);
       Logger.recordOutput(IntakeConstants.Logging.feederKey + "IntakeStopped", false);
       isFeeding = true;
     }
   }
 
-  public void setBrakeMode() {
-    if (Constants.intakeEnabled && initialized) {
-      io.setBrakeMode();
-      Logger.recordOutput(IntakeConstants.Logging.key + "TargetBrakeMode", "Brake");
+  public void setIntakeBrakeMode() {
+    if (Constants.intakeEnabled) {
+      io.setIntakeBrakeMode();
+      Logger.recordOutput(IntakeConstants.Logging.key + "IntakeTargetBrakeMode", "Brake");
     }
   }
 
-  public void setCoastMode() {
-    if (Constants.intakeEnabled && initialized) {
-      io.setCoastMode();
-      Logger.recordOutput(IntakeConstants.Logging.key + "TargetBrakeMode", "Coast");
+  public void setDeployerBrakeMode() {
+    if (Constants.intakeDeployerEnabled) {
+      io.setDeployerBrakeMode();
+      Logger.recordOutput(IntakeConstants.Logging.key + "DeployerTargetBrakeMode", "Brake");
+    }
+  }
+
+  public void setIntakeCoastMode() {
+    if (Constants.intakeEnabled) {
+      io.setIntakeCoastMode();
+      Logger.recordOutput(IntakeConstants.Logging.key + "IntakeTargetBrakeMode", "Coast");
+    }
+  }
+
+  public void setDeployerCoastMode() {
+    if (Constants.intakeDeployerEnabled) {
+      io.setDeployerCoastMode();
+      Logger.recordOutput(IntakeConstants.Logging.key + "DeployerTargetBrakeMode", "Coast");
     }
   }
 
   public void stopFeeder() {
-    if (Constants.intakeEnabled && initialized) {
+    if (Constants.intakeEnabled && deployInitialized) {
       io.stopFeeder();
       Logger.recordOutput(IntakeConstants.Logging.key + "IntakeStopped", true);
       isFeeding = false;
@@ -111,7 +125,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void stopDeployer() {
-    if (Constants.intakeEnabled && initialized) {
+    if (Constants.intakeDeployerEnabled && deployInitialized) {
       io.stopFeeder();
       Logger.recordOutput(IntakeConstants.Logging.deployerKey + "DeployStopped", true);
       deployRequested = false;
@@ -119,7 +133,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void deploy() {
-    if (Constants.intakeEnabled && initialized) {
+    if (Constants.intakeDeployerEnabled && deployInitialized) {
       io.setDeployTarget(inputs.deployPositionRotations);
       deployTarget = inputs.deployPositionRotations;
       Logger.recordOutput(
@@ -131,7 +145,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void retract() {
-    if (Constants.intakeEnabled && initialized) {
+    if (Constants.intakeDeployerEnabled && deployInitialized) {
       io.setDeployTarget(inputs.retractPositionRotations);
       deployTarget = inputs.retractPositionRotations;
       Logger.recordOutput(
@@ -169,8 +183,8 @@ public class Intake extends SubsystemBase {
         IntakeConstants.Deploy.toleranceRotations);
   }
 
-  public boolean isInitialized() {
-    return initialized;
+  public boolean isDeployInitialized() {
+    return deployInitialized;
   }
 
   public boolean isFeeding() {

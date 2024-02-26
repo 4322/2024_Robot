@@ -42,10 +42,11 @@ public final class Constants {
   public static final boolean debug = true;
 
   public static final boolean driveEnabled = true;
-  public static final boolean intakeEnabled = false;
+  public static final boolean intakeEnabled = true;
+  public static final boolean intakeDeployerEnabled = false;
   public static final boolean gyroEnabled = true;
-  public static final boolean tunnelEnabled = false;
-  public static final boolean outtakeEnabled = false;
+  public static final boolean tunnelEnabled = true;
+  public static final boolean outtakeEnabled = true;
   public static final boolean outtakePivotEnabled = false;
   public static final boolean sensorsEnabled = false;
   public static final boolean ledEnabled = false;
@@ -339,7 +340,7 @@ public final class Constants {
     public static final int deployEncoderID = 9;
 
     public static final class IntakeConfig {
-      public static final NeutralModeValue neutralMode = NeutralModeValue.Coast;
+      public static final NeutralModeValue neutralMode = NeutralModeValue.Brake;
       public static final double updateHz =
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;

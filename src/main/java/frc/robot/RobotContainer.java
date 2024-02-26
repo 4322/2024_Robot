@@ -188,10 +188,10 @@ public class RobotContainer {
         drive.setCoastMode(); // robot has stopped, safe to enter coast mode
       }
       if (Constants.intakeEnabled) {
-        intake.setCoastMode();
+        intake.setIntakeCoastMode();
       }
       if (Constants.outtakeEnabled) {
-        outtake.setCoastMode();
+        outtake.setFlywheelCoastMode();
       }
       if (Constants.tunnelEnabled) {
         tunnel.setCoastMode();
@@ -210,14 +210,21 @@ public class RobotContainer {
                   () -> {
                     RobotCoordinator.getInstance().setInitAbsEncoderPressed(true);
                   }));
+      // set intake deployer and outtake pivot coast mode
+      operatorXbox.start().onTrue(Commands.runOnce(() -> {RobotCoordinator.getInstance().toggleCoastNeutralMode(true);})); 
+      // set intake deployer and outtake pivot brake mode
+      operatorXbox.back().onTrue(Commands.runOnce(() -> {RobotCoordinator.getInstance().toggleCoastNeutralMode(false);}));
     }
   }
 
   public void enableSubsystems() {
     drive.setBrakeMode();
     tunnel.setBrakeMode();
-    intake.setBrakeMode();
-    outtake.setBrakeMode();
+    intake.setIntakeBrakeMode();
+    intake.setDeployerBrakeMode();
+    outtake.setPivotBrakeMode();
+    outtake.setFlywheelCoastMode(); // should always be in coast mode
+    
     disableTimer.stop();
     disableTimer.reset();
   }

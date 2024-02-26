@@ -148,6 +148,7 @@ public class IntakeIOReal implements IntakeIO {
     currentLimitsConfigs.SupplyCurrentLimitEnable =
         Constants.IntakeConstants.DeployConfig.supplyEnabled;
     currentLimitsConfigs.SupplyCurrentLimit = Constants.IntakeConstants.DeployConfig.supplyLimit;
+    motorOutputConfigs.NeutralMode = Constants.IntakeConstants.DeployConfig.neutralMode;
 
     hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
     hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
@@ -256,31 +257,35 @@ public class IntakeIOReal implements IntakeIO {
   }
 
   @Override
-  public void setBrakeMode() {
-    MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-    motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
-    intake.getConfigurator().refresh(motorOutputConfigs);
-    deploy.getConfigurator().refresh(motorOutputConfigs);
+  public void setIntakeBrakeMode() {
+    intake.setNeutralMode(NeutralModeValue.Brake);
     if (Constants.debug) {
       isCoasting.setBoolean(false);
     }
     Logger.recordOutput(IntakeConstants.Logging.feederHardwareOutputsKey + "NeutralMode", "Brake");
-    Logger.recordOutput(
-        IntakeConstants.Logging.deployerHardwareOutputsKey + "NeutralMode", "Brake");
   }
 
   @Override
-  public void setCoastMode() {
-    MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-    motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
-    intake.getConfigurator().refresh(motorOutputConfigs);
-    deploy.getConfigurator().refresh(motorOutputConfigs);
+  public void setDeployerBrakeMode() {
+    deploy.setNeutralMode(NeutralModeValue.Brake);
+    Logger.recordOutput(
+      IntakeConstants.Logging.deployerHardwareOutputsKey + "NeutralMode", "Brake");
+  }
+
+  @Override
+  public void setIntakeCoastMode() {
+    intake.setNeutralMode(NeutralModeValue.Coast);
     if (Constants.debug) {
       isCoasting.setBoolean(true);
     }
     Logger.recordOutput(IntakeConstants.Logging.feederHardwareOutputsKey + "NeutralMode", "Coast");
+  }
+
+  @Override
+  public void setDeployerCoastMode() {
+    deploy.setNeutralMode(NeutralModeValue.Coast);
     Logger.recordOutput(
-        IntakeConstants.Logging.deployerHardwareOutputsKey + "NeutralMode", "Coast");
+      IntakeConstants.Logging.deployerHardwareOutputsKey + "NeutralMode", "Coast");
   }
 
   @Override

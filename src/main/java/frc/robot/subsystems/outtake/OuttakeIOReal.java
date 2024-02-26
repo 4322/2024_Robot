@@ -114,7 +114,7 @@ public class OuttakeIOReal implements OuttakeIO {
     currentLimitsConfigs.StatorCurrentLimit = Constants.OuttakeConstants.pivotStatorLimit;
     currentLimitsConfigs.SupplyCurrentLimitEnable = Constants.OuttakeConstants.supplyEnabled;
     currentLimitsConfigs.SupplyCurrentLimit = Constants.OuttakeConstants.pivotSupplyLimit;
-    motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
+    motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
 
     hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
     hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
@@ -190,6 +190,12 @@ public class OuttakeIOReal implements OuttakeIO {
   public void setPivotCoastMode() {
     pivotMotor.setNeutralMode(NeutralModeValue.Coast);
     Logger.recordOutput("Outtake/Hardware/PivotNeutralMode", "Coast");
+  }
+
+  @Override
+  public void setFlywheelCoastMode() {
+    rightOuttakeMotor.setNeutralMode(NeutralModeValue.Coast);
+    Logger.recordOutput("Outtake/Hardware/FlywheelNeutralMode", "Coast");
   }
 
   @Override

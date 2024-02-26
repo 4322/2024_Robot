@@ -101,6 +101,17 @@ public class RobotCoordinator extends SubsystemBase {
     return autoIntakeButtonPressed;
   }
 
+  public void toggleCoastNeutralMode(boolean coast) {
+    if (coast) {
+      intake.setDeployerCoastMode();
+      outtake.setPivotCoastMode();
+    }
+    else {
+      intake.setDeployerBrakeMode();
+      outtake.setPivotBrakeMode();
+    }
+  }
+
   public void setInitAbsEncoderPressed(boolean isPressed) {
     initAbsEncoderPressed = isPressed;
   }
@@ -127,7 +138,7 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public boolean canDeploy() {
-    return intake.isInitialized() && !intake.isDeployed();
+    return intake.isDeployInitialized() && !intake.isDeployed();
   }
 
   public boolean intakeIsDeployed() {
@@ -139,11 +150,11 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public boolean isInitialized() {
-    return intake.isInitialized() && outtake.pivotIsInitialized();
+    return intake.isDeployInitialized() && outtake.pivotIsInitialized();
   }
 
   public boolean canRetract() {
-    return !intake.isFeeding() && intake.isInitialized();
+    return !intake.isFeeding() && intake.isDeployInitialized();
   }
 
   public boolean intakeIsFeeding() {

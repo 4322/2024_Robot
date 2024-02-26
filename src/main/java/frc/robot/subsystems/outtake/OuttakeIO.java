@@ -50,6 +50,9 @@ public interface OuttakeIO {
   public default void setPivotCoastMode() {}
   ;
 
+  public default void setFlywheelCoastMode() {}
+  ;
+
   public default void stopOuttake() {}
   ;
 
