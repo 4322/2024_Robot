@@ -145,12 +145,6 @@ public class Outtake extends SubsystemBase {
     }
   }
 
-  public void setFlywheelCoastMode() {
-    if (Constants.outtakePivotEnabled) {
-      io.setFlywheelCoastMode();
-    }
-  }
-
   public boolean isFlyWheelUpToSpeed() {
     return (OrangeMath.equalToEpsilon(
             inputs.leftRotationsPerSec, targetRPS, OuttakeConstants.outtakeToleranceRPS)

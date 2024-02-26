@@ -194,9 +194,6 @@ public class RobotContainer {
       if (Constants.intakeEnabled) {
         intake.setIntakeCoastMode();
       }
-      if (Constants.outtakeEnabled) {
-        outtake.setFlywheelCoastMode();
-      }
       if (Constants.tunnelEnabled) {
         tunnel.setCoastMode();
       }
@@ -223,7 +220,6 @@ public class RobotContainer {
     intake.setIntakeBrakeMode();
     intake.setDeployerBrakeMode();
     outtake.setPivotBrakeMode();
-    outtake.setFlywheelCoastMode(); // should always be in coast mode
 
     disableTimer.stop();
     disableTimer.reset();

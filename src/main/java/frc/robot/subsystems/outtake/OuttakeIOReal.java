@@ -196,12 +196,6 @@ public class OuttakeIOReal implements OuttakeIO {
   }
 
   @Override
-  public void setFlywheelCoastMode() {
-    rightOuttakeMotor.setNeutralMode(NeutralModeValue.Coast);
-    Logger.recordOutput("Outtake/Hardware/FlywheelNeutralMode", "Coast");
-  }
-
-  @Override
   public void stopOuttake() {
     rightOuttakeMotor.stopMotor();
   }
