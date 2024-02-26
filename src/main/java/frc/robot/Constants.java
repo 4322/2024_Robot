@@ -145,12 +145,8 @@ public final class Constants {
     public static final double stoppedVelocityThresholdMetersPerSec = 0.1524;
     public static final double movingVelocityThresholdMetersPerSec = 0.4572;
 
-    public static final double drivePolarDeadband = 0.06;
-    public static final double twistDeadband = 0.08;
-
     public static final double spinoutCenterPower = 1.0;
     public static final double spinoutCornerPower = 0.75;
-    public static final double encoderResolution = 0; // TODO
 
     public static final class Manual {
 
@@ -158,7 +154,7 @@ public final class Constants {
       public static final double joystickRotateLeftDeadband = 0.52; // don't go below 0.2
       public static final double joystickRotateRightDeadband = 0.35; // don't go below 0.2
 
-      public static final double xboxDriveDeadband = 0.1;
+      public static final double xboxDriveDeadband = 0.17; // was 0.1 with a better controller
       public static final double xboxRotateDeadband = 0.2;
       public static final double maxManualRotation = 0.34;
       public static final double inhibitPseudoAutoRotateAngularVelocity = 0.05;
