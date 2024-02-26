@@ -28,6 +28,6 @@ public class AutoIntakeIn extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    Tunnel.getInstance().stopTunnel();
+
   }
 }
