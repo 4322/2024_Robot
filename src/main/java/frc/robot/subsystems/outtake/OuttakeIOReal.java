@@ -110,6 +110,8 @@ public class OuttakeIOReal implements OuttakeIO {
     slot0Configs.kP = Constants.OuttakeConstants.pivotkP;
     slot0Configs.kI = OuttakeConstants.pivotkI;
     slot0Configs.kD = OuttakeConstants.pivotkD;
+    voltageConfigs.PeakForwardVoltage = OuttakeConstants.pivotPeakForwardVoltage;
+    voltageConfigs.PeakReverseVoltage = OuttakeConstants.pivotPeakReverseVoltage;
     closedLoopRampsConfigs.VoltageClosedLoopRampPeriod = OuttakeConstants.pivotClosedLoopSec;
     softwareLimitSwitchConfigs.ForwardSoftLimitEnable = OuttakeConstants.limitForwardMotion;
     softwareLimitSwitchConfigs.ReverseSoftLimitEnable = OuttakeConstants.limitReverseMotion;
@@ -122,6 +124,7 @@ public class OuttakeIOReal implements OuttakeIO {
     currentLimitsConfigs.SupplyCurrentLimitEnable = Constants.OuttakeConstants.supplyEnabled;
     currentLimitsConfigs.SupplyCurrentLimit = Constants.OuttakeConstants.pivotSupplyLimit;
     motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
+    motorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
 
     hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
     hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
@@ -133,6 +136,16 @@ public class OuttakeIOReal implements OuttakeIO {
     talon.getConfigurator().apply(voltageConfigs);
     talon.getConfigurator().apply(motorOutputConfigs);
     talon.getConfigurator().apply(softwareLimitSwitchConfigs);
+
+    // zero helium abs encoder on the stop bar
+    // 60 degree shooting angle abs position is about 0.72 rotations
+    // the encoder wraps at about 78 degrees
+    Canandcoder.Settings settings = new Canandcoder.Settings();
+    settings.setInvertDirection(true);
+    settings.setPositionFramePeriod(0.010);
+    settings.setVelocityFramePeriod(0.050);
+    settings.setStatusFramePeriod(1.0);
+    pivotEncoder.setSettings(settings, 0.050);
   }
 
   @Override

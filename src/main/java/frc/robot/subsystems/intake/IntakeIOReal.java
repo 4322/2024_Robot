@@ -10,6 +10,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandcoder.Canandcoder;
 import edu.wpi.first.networktables.GenericEntry;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.IntakeConstants.DeployConfig;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -121,9 +123,8 @@ public class IntakeIOReal implements IntakeIO {
     slot0Configs.kD = IntakeConstants.DeployConfig.kD;
     closedLoopRampsConfigs.VoltageClosedLoopRampPeriod =
         IntakeConstants.DeployConfig.configCLosedLoopRamp;
-    voltageConfigs.PeakForwardVoltage = IntakeConstants.DeployConfig.maxVoltage;
-    voltageConfigs.PeakReverseVoltage = -IntakeConstants.DeployConfig.maxVoltage;
     motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
+    motorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
     softwareLimitSwitchConfigs.ForwardSoftLimitEnable =
         IntakeConstants.DeployConfig.limitForwardMotion;
     softwareLimitSwitchConfigs.ReverseSoftLimitEnable =
@@ -138,6 +139,8 @@ public class IntakeIOReal implements IntakeIO {
     currentLimitsConfigs.SupplyCurrentLimitEnable =
         Constants.IntakeConstants.DeployConfig.supplyEnabled;
     currentLimitsConfigs.SupplyCurrentLimit = Constants.IntakeConstants.DeployConfig.supplyLimit;
+    voltageConfigs.PeakForwardVoltage = DeployConfig.deployPeakForwardVoltage;
+    voltageConfigs.PeakReverseVoltage = DeployConfig.deployPeakReverseVoltage;
 
     hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
     hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
@@ -154,6 +157,15 @@ public class IntakeIOReal implements IntakeIO {
         .getPosition()
         .setUpdateFrequency(
             IntakeConstants.DeployConfig.updateHz, IntakeConstants.DeployConfig.timeoutMs);
+
+    // zero helium abs encoder on the floor
+    // fully retracted abs position is 0.6 rotations
+    Canandcoder.Settings settings = new Canandcoder.Settings();
+    settings.setInvertDirection(true);
+    settings.setPositionFramePeriod(0.010);
+    settings.setVelocityFramePeriod(0.050);
+    settings.setStatusFramePeriod(1.0);
+    deployEncoder.setSettings(settings, 0.050);
   }
 
   public void updateShuffleboard() {

@@ -296,26 +296,28 @@ public final class Constants {
     // not interpolate
     public static final boolean supplyEnabled = true;
     public static final boolean statorEnabled = true;
-    public static final double pivotSupplyLimit = 30;
-    public static final double pivotStatorLimit = 45;
     public static final double shooterSupplyLimit = 40;
     public static final double shooterStatorLimit = 80;
     public static final double shooterSupplyCurrentThreshold = 50;
     public static final double shooterSupplyTimeThreshold = 1.5;
 
+    public static final double pivotSupplyLimit = 30;
+    public static final double pivotStatorLimit = 45;
+
     public static final double pivotkD = 0;
     public static final double pivotkI = 0;
-    public static final double pivotkP = 0;
+    public static final double pivotkP = 3.0;
     public static final double pivotkFF = 0;
 
-    // TODO: all parameters for position control PID
     public static final double maxVelRotationsPerSec = 0.0;
-    public static final boolean enableFOC = true;
-    public static final double pivotClosedLoopSec = 0;
+    public static final boolean enableFOC = false;
+    public static final double pivotClosedLoopSec = 0.1;
     public static final boolean limitForwardMotion = true;
     public static final boolean limitReverseMotion = true;
     public static final double forwardSoftLimitThresholdRotations = 99; // TODO
     public static final double reverseSoftLimitThresholdRotations = 0;
+    public static final double pivotPeakForwardVoltage = 10;
+    public static final double pivotPeakReverseVoltage = -10;
 
     public static final double defaultPivotPosition = 0;
     public static final double ejectOuttakeRPS = 0; // TODO
@@ -347,7 +349,6 @@ public final class Constants {
       public static final double kP = 0;
       public static final double kD = 0;
       public static final double configCLosedLoopRamp = 0;
-      public static final double maxVoltage = 16;
       public static final double updateHz =
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
@@ -355,6 +356,9 @@ public final class Constants {
       public static final boolean limitReverseMotion = true;
       public static final double forwardSoftLimitThresholdRotations = 99; // TODO
       public static final double reverseSoftLimitThresholdRotations = 0;
+      public static final double deployPeakForwardVoltage = 7;
+      public static final double deployPeakReverseVoltage = -7;
+
       public static final boolean supplyEnabled = true;
       public static final boolean statorEnabled = true;
       public static final double supplyLimit = 30;
@@ -366,7 +370,7 @@ public final class Constants {
       public static final double retractPositionRotations = 0;
       public static final double toleranceRotations = 0;
       public static final double maxVelRotationsPerSec = 0;
-      public static final boolean enableFOC = true;
+      public static final boolean enableFOC = false;
       public static final double FF = 0;
       public static final int positionVoltageSlot =
           0; // TODO: check if this can be 0 if PID is also 0
