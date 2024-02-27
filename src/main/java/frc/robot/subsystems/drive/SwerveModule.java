@@ -34,7 +34,7 @@ public class SwerveModule {
   }
 
   public double getInternalRotationDegrees() {
-    return OrangeMath.boundDegrees(inputs.turnDegrees);
+    return OrangeMath.boundDegrees(inputs.wheelDegreesTo360);
   }
 
   public double getDistanceMeters() {
@@ -64,12 +64,12 @@ public class SwerveModule {
   public SwerveModuleState getState() {
     return new SwerveModuleState(
         getVelocityMetersPerSec() * Constants.feetToMeters,
-        Rotation2d.fromDegrees(inputs.turnDegrees));
+        Rotation2d.fromDegrees(inputs.wheelDegreesTo360));
   }
 
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
-        getDistanceMeters(), Rotation2d.fromDegrees(inputs.turnDegrees));
+        getDistanceMeters(), Rotation2d.fromDegrees(inputs.wheelDegreesTo360));
   }
 
   public void setDesiredState(SwerveModuleState desiredState) {
@@ -77,7 +77,8 @@ public class SwerveModule {
 
       // Optimize the reference state to avoid spinning further than 90 degrees
       SwerveModuleState state =
-          SwerveModuleState.optimize(desiredState, Rotation2d.fromDegrees(inputs.turnDegrees));
+          SwerveModuleState.optimize(
+              desiredState, Rotation2d.fromDegrees(inputs.wheelDegreesTo360));
 
       optWheelMetersPerSec = state.speedMetersPerSecond;
 
@@ -129,7 +130,7 @@ public class SwerveModule {
   public void stop() {
     if (Constants.driveEnabled) {
       if (!Constants.steeringTuningMode) {
-        optWheelMetersPerSec = 0;
+        optWheelMetersPerSec = 0.0;
         Logger.recordOutput(
             "Drive/SwerveModule " + wheelPos.wheelNumber + "/SetOptWheelMetersPerSec",
             optWheelMetersPerSec);
