@@ -281,16 +281,16 @@ public final class Constants {
     public static final int pivotDeviceID = 6;
     public static final int pivotEncoderID = 8;
 
-    public static final double kP = 0;
-    public static final double kI = 0;
-    public static final double kD = 0;
-    public static final double kF = 0;
+    public static final double kP = 0.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+    public static final double kF = 0.124;
+    public static final double kS = 0.35;
 
     public static final double openLoopRampSec = 0;
     public static final double closedLoopRampSec = 0;
     public static final int gearRatioMotorToWheel = 0;
     public static final double gearReductionEncoderToMotor = (30.0 / 28.0) * 125.0;
-    public static final double kS = 0;
     public static final double voltPerRPS =
         0; // since we likely aren't going to adjust the speed, it's likely safe to
     // not interpolate
@@ -299,7 +299,9 @@ public final class Constants {
     public static final double pivotSupplyLimit = 30;
     public static final double pivotStatorLimit = 45;
     public static final double shooterSupplyLimit = 40;
-    public static final double shooterStatorLimit = 60;
+    public static final double shooterStatorLimit = 80;
+    public static final double shooterSupplyCurrentThreshold = 50;
+    public static final double shooterSupplyTimeThreshold = 1.5;
 
     public static final double pivotkD = 0;
     public static final double pivotkI = 0;

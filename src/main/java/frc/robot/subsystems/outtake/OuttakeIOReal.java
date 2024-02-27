@@ -73,6 +73,7 @@ public class OuttakeIOReal implements OuttakeIO {
     slot0Configs.kI = Constants.OuttakeConstants.kI;
     slot0Configs.kD = Constants.OuttakeConstants.kD;
     slot0Configs.kV = Constants.OuttakeConstants.kF;
+    slot0Configs.kS = Constants.OuttakeConstants.kS;
     closedLoopRampsConfigs.VoltageClosedLoopRampPeriod =
         Constants.OuttakeConstants.closedLoopRampSec;
     openLoopRampsConfigs.VoltageOpenLoopRampPeriod = Constants.OuttakeConstants.openLoopRampSec;
@@ -80,6 +81,8 @@ public class OuttakeIOReal implements OuttakeIO {
     currentLimitsConfigs.StatorCurrentLimit = Constants.OuttakeConstants.shooterStatorLimit;
     currentLimitsConfigs.SupplyCurrentLimitEnable = Constants.OuttakeConstants.supplyEnabled;
     currentLimitsConfigs.SupplyCurrentLimit = Constants.OuttakeConstants.shooterSupplyLimit;
+    currentLimitsConfigs.SupplyCurrentThreshold = Constants.OuttakeConstants.shooterSupplyCurrentThreshold;
+    currentLimitsConfigs.SupplyTimeThreshold = Constants.OuttakeConstants.shooterSupplyTimeThreshold;
     motorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
     motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
 
