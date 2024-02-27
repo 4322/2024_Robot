@@ -130,7 +130,7 @@ public class SwerveModule {
   public void stop() {
     if (Constants.driveEnabled) {
       if (!Constants.steeringTuningMode) {
-        optWheelMetersPerSec = 0;
+        optWheelMetersPerSec = 0.0;
         Logger.recordOutput(
             "Drive/SwerveModule " + wheelPos.wheelNumber + "/SetOptWheelMetersPerSec",
             optWheelMetersPerSec);
