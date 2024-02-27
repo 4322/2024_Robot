@@ -81,8 +81,10 @@ public class OuttakeIOReal implements OuttakeIO {
     currentLimitsConfigs.StatorCurrentLimit = Constants.OuttakeConstants.shooterStatorLimit;
     currentLimitsConfigs.SupplyCurrentLimitEnable = Constants.OuttakeConstants.supplyEnabled;
     currentLimitsConfigs.SupplyCurrentLimit = Constants.OuttakeConstants.shooterSupplyLimit;
-    currentLimitsConfigs.SupplyCurrentThreshold = Constants.OuttakeConstants.shooterSupplyCurrentThreshold;
-    currentLimitsConfigs.SupplyTimeThreshold = Constants.OuttakeConstants.shooterSupplyTimeThreshold;
+    currentLimitsConfigs.SupplyCurrentThreshold =
+        Constants.OuttakeConstants.shooterSupplyCurrentThreshold;
+    currentLimitsConfigs.SupplyTimeThreshold =
+        Constants.OuttakeConstants.shooterSupplyTimeThreshold;
     motorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
     motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
 
