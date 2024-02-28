@@ -224,19 +224,19 @@ public class IntakeIOReal implements IntakeIO {
 
   @Override
   public boolean initMotorPos() {
-    if (heliumAbsoluteRotations > Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
-       // Assume that abs position higher than maxValue is below the 
-       // hard stop zero point of shooter/deployer
-       // If so, assume that position is 0 for motor internal encoder
+    if (heliumAbsoluteRotations
+        > Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
+      // Assume that abs position higher than maxValue is below the
+      // hard stop zero point of shooter/deployer
+      // If so, assume that position is 0 for motor internal encoder
       deploy.setPosition(0);
-    }
-    else {
-      deploy.setPosition(
-        heliumAbsoluteRotations * IntakeConstants.Deploy.encoderGearReduction);
+    } else {
+      deploy.setPosition(heliumAbsoluteRotations * IntakeConstants.Deploy.encoderGearReduction);
     }
 
     if (OrangeMath.equalToTwoDecimal(deployEncoder.getVelocity(), 0)) {
-      // Set only relative encoder rotations of Helium encoder to a very high number after initialized
+      // Set only relative encoder rotations of Helium encoder to a very high number after
+      // initialized
       // once
       // Relative encoder on Helium used only to check if we have already initialized after power
       // cycle

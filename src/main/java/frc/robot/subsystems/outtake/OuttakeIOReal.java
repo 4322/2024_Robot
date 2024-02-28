@@ -189,19 +189,20 @@ public class OuttakeIOReal implements OuttakeIO {
 
   @Override
   public boolean initPivot() {
-    if (heliumAbsoluteRotations > Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
-       // Assume that abs position higher than maxValue is below the 
-       // hard stop zero point of shooter/deployer
-       // If so, assume that position is 0 for motor internal encoder
+    if (heliumAbsoluteRotations
+        > Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
+      // Assume that abs position higher than maxValue is below the
+      // hard stop zero point of shooter/deployer
+      // If so, assume that position is 0 for motor internal encoder
       pivotMotor.setPosition(0);
-    }
-    else {
+    } else {
       pivotMotor.setPosition(
-        heliumAbsoluteRotations * OuttakeConstants.gearReductionEncoderToMotor);
+          heliumAbsoluteRotations * OuttakeConstants.gearReductionEncoderToMotor);
     }
 
     if (OrangeMath.equalToTwoDecimal(pivotEncoder.getVelocity(), 0)) {
-      // Set only relative encoder rotations of Helium encoder to a very high number after initialized
+      // Set only relative encoder rotations of Helium encoder to a very high number after
+      // initialized
       // once
       // Relative encoder on Helium used only to check if we have already initialized after power
       // cycles

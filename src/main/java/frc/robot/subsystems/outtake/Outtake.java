@@ -55,10 +55,12 @@ public class Outtake extends SubsystemBase {
   public void periodic() {
     // Check if encoders have already been initialized after power cycle
     // If so, we don't need to reinitialize
-    if (OrangeMath.equalToEpsilon(
-        inputs.heliumRelativeRotations,
-        Constants.EncoderInitializeConstants.initializedRotationsFlag,
-        Constants.EncoderInitializeConstants.initializedRotationsTolerance)) {
+    if (Constants.outtakePivotEnabled
+        && !pivotInitialized
+        && OrangeMath.equalToEpsilon(
+            inputs.heliumRelativeRotations,
+            Constants.EncoderInitializeConstants.initializedRotationsFlag,
+            Constants.EncoderInitializeConstants.initializedRotationsTolerance)) {
       pivotInitialized = true;
     }
 
