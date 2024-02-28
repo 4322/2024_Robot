@@ -153,6 +153,7 @@ public class IntakeIOReal implements IntakeIO {
     deploy.getConfigurator().apply(closedLoopRampsConfigs);
     deploy.getConfigurator().apply(voltageConfigs);
     deploy.getConfigurator().apply(motorOutputConfigs);
+    deploy.getConfigurator().apply(softwareLimitSwitchConfigs);
 
     // don't need rapid position update
     deploy

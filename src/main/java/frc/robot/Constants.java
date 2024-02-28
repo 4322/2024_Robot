@@ -361,10 +361,13 @@ public final class Constants {
       public static final double timeoutMs = 50;
       public static final boolean limitForwardMotion = true;
       public static final boolean limitReverseMotion = true;
-      public static final double forwardSoftLimitThresholdRotations = 0.0; // TODO
-      public static final double reverseSoftLimitThresholdRotations = 0.0; // TODO
-      public static final double deployPeakForwardVoltage = 7;
-      public static final double deployPeakReverseVoltage = -7;
+      // floor is 0 motor rotations
+      // inside frame perimeter is 24.2 motor rotations
+      // upper hardstop is 26.4 motor rotations
+      public static final double forwardSoftLimitThresholdRotations = 26.0;
+      public static final double reverseSoftLimitThresholdRotations = 6.0;  // don't slam into the floor
+      public static final double deployPeakForwardVoltage = 2.5;  // anything higher will slip the belt
+      public static final double deployPeakReverseVoltage = -2.5;
 
       public static final boolean supplyEnabled = true;
       public static final boolean statorEnabled = true;
