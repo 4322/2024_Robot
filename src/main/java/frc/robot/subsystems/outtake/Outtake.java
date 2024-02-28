@@ -97,22 +97,24 @@ public class Outtake extends SubsystemBase {
     }
   }
 
-  public void pivot(double rotations) {
+  public void pivot(double pivotPositionDegrees) {
     if (Constants.outtakePivotEnabled && pivotInitialized) {
-      if (Constants.debug) rotations = inputs.targetPivotPosition;
-      io.setPivotTarget(rotations);
-      pivotTarget = rotations;
-      Logger.recordOutput("Outtake/PivotTargetRotations", rotations);
+      if (Constants.debug) {
+        pivotPositionDegrees = inputs.targetPivotPositionDegrees;
+      }
+      io.setPivotTarget(pivotPositionDegrees / 360 - inputs.pivotRotations);
+      pivotTarget = pivotPositionDegrees / 360;
+      Logger.recordOutput("Outtake/PivotTargetRotations", pivotPositionDegrees);
       Logger.recordOutput("Outtake/PivotStopped", false);
     }
   }
 
   public void resetPivot() {
     if (Constants.outtakePivotEnabled && pivotInitialized) {
-      io.setPivotTarget(Constants.OuttakeConstants.defaultPivotPosition);
-      pivotTarget = Constants.OuttakeConstants.defaultPivotPosition;
+      io.setPivotTarget(Constants.OuttakeConstants.defaultPivotPositionDegrees);
+      pivotTarget = Constants.OuttakeConstants.defaultPivotPositionDegrees;
       Logger.recordOutput(
-          "Outtake/PivotTargetRotations", Constants.OuttakeConstants.defaultPivotPosition);
+          "Outtake/PivotTargetRotations", Constants.OuttakeConstants.defaultPivotPositionDegrees);
       Logger.recordOutput("Outtake/PivotStopped", false);
     }
   }

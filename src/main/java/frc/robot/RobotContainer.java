@@ -27,6 +27,7 @@ import frc.robot.commands.IntakeManual;
 import frc.robot.commands.IntakeStop;
 import frc.robot.commands.OuttakeAdjustToSpeaker;
 import frc.robot.commands.OuttakeStop;
+import frc.robot.commands.OuttakeSubwoofer;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetPivotsBrakeMode;
 import frc.robot.commands.SetPivotsCoastMode;
@@ -188,6 +189,7 @@ public class RobotContainer {
       operatorXbox.rightTrigger().whileTrue(new EjectThroughOuttake());
       operatorXbox.start().onTrue(new SetPivotsCoastMode());
       operatorXbox.back().onTrue(new SetPivotsBrakeMode());
+      operatorXbox.a().onTrue(new OuttakeSubwoofer());
       driveXbox.povLeft().onTrue(new AtHome());
     }
   }
