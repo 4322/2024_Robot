@@ -35,7 +35,10 @@ public class UpdateOdometry extends Command {
                 .getTranslation()
                 .getDistance(limelightPose.getTranslation())
             < LimelightConstants.visionOdometryTolerance) {
-      Drive.getInstance().updateOdometryVision(limelightPose, Timer.getFPGATimestamp() - Limelight.getOuttakeInstance().getTotalLatency());
+      Drive.getInstance()
+          .updateOdometryVision(
+              limelightPose,
+              Timer.getFPGATimestamp() - Limelight.getOuttakeInstance().getTotalLatency());
       updateTimer.reset();
     }
   }

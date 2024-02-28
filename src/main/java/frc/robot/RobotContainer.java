@@ -218,11 +218,15 @@ public class RobotContainer {
       operatorXbox.rightTrigger().whileTrue(new EjectThroughOuttake());
       operatorXbox.start().onTrue(new SetPivotsCoastMode());
       operatorXbox.back().onTrue(new SetPivotsBrakeMode());
-      operatorXbox.a().onTrue(new AutoSetOuttakeAdjust(new FiringSolution(
-        OuttakeConstants.subwooferShotMag,
-        OuttakeConstants.subwooferShotDeg,
-        OuttakeConstants.subwooferOuttakeRPS,
-        OuttakeConstants.subwooferPivotPositionRotations)));
+      operatorXbox
+          .a()
+          .onTrue(
+              new AutoSetOuttakeAdjust(
+                  new FiringSolution(
+                      OuttakeConstants.subwooferShotMag,
+                      OuttakeConstants.subwooferShotDeg,
+                      OuttakeConstants.subwooferOuttakeRPS,
+                      OuttakeConstants.subwooferPivotPositionRotations)));
       driveXbox.povLeft().onTrue(new AtHome());
     }
   }
