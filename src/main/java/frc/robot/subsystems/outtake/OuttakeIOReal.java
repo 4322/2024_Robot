@@ -191,7 +191,7 @@ public class OuttakeIOReal implements OuttakeIO {
     // once
     // relative encoder on Helium used only to check if we have already initialized after power
     // cycle
-    pivotEncoder.setPosition(Constants.EncoderInitializeConstants.setRelativeRotations);
+    pivotEncoder.setPosition(Constants.EncoderInitializeConstants.initializedRotationsFlag);
     return OrangeMath.equalToTwoDecimal(pivotEncoder.getVelocity(), 0);
   }
 

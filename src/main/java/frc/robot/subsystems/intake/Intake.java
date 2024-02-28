@@ -53,8 +53,8 @@ public class Intake extends SubsystemBase {
     // If so, we don't need to reinitialize
     if (OrangeMath.equalToEpsilon(
         inputs.heliumRelativeRotations,
-        Constants.EncoderInitializeConstants.setRelativeRotations,
-        Constants.EncoderInitializeConstants.relativeRotationsTolerance)) {
+        Constants.EncoderInitializeConstants.initializedRotationsFlag,
+        Constants.EncoderInitializeConstants.initializedRotationsTolerance)) {
       deployInitialized = true;
     }
 

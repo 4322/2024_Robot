@@ -226,7 +226,7 @@ public class IntakeIOReal implements IntakeIO {
     // once
     // relative encoder on Helium used only to check if we have already initialized after power
     // cycle
-    deployEncoder.setPosition(Constants.EncoderInitializeConstants.setRelativeRotations);
+    deployEncoder.setPosition(Constants.EncoderInitializeConstants.initializedRotationsFlag);
     return OrangeMath.equalToTwoDecimal(deployEncoder.getVelocity(), 0);
   }
 
