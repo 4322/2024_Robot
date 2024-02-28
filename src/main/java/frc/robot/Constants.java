@@ -31,7 +31,7 @@ public final class Constants {
     CRUSH
   }
 
-  public static final RobotType currentRobot = RobotType.NEMO;
+  public static final RobotType currentRobot = RobotType.CRUSH;
   public static final Mode currentMode = Mode.REAL;
 
   // Must be below currentRobot to initialize properly
@@ -383,7 +383,7 @@ public final class Constants {
           false; // we want to brake if not moving
       public static final boolean limitForwardMotion = true;
       public static final boolean limitReverseMotion = true;
-      public static final double encoderGearReduction = (31.0 / 30.0) * 60.0;
+      public static final double encoderGearReduction = (32.0 / 30.0) * 60.0;
     }
 
     public static final class Logging {
