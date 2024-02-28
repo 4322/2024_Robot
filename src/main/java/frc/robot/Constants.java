@@ -427,15 +427,15 @@ public final class Constants {
     public static final double visionOdometryTolerance = 1.0;
     public static final double odometryUpdatePeriodSeconds = 0.2;
     public static final double outtakeLimelightAngle = 25;
-    public static final double outtakeLimelightHeight = OrangeMath.inchesToMeters(26.125);
+    public static final double outtakeLimelightHeight = OrangeMath.inchesToMeters(26.231);
     public static final double outtakeLimelightXOffsetMeters = 0.0;
-    public static final double outtakeLimelightYOffsetMeters = 0.0;
+    public static final double outtakeLimelightYOffsetMeters = OrangeMath.inchesToMeters(-3.387);
     public static final String outtakeLimelightName = "limelight-shooter";
 
     public static final double intakeLimelightAngle = -25;
-    public static final double intakeLimelightHeight = OrangeMath.inchesToMeters(46.3);
+    public static final double intakeLimelightHeight = OrangeMath.inchesToMeters(25.237216);
     public static final double intakeLimeLightXOffsetMeters = 0.0;
-    public static final double intakeLimelightYOffsetMeters = 0.0;
+    public static final double intakeLimelightYOffsetMeters = OrangeMath.inchesToMeters(7.835154);
     public static final String intakeLimelightName = "limelight-note";
 
     // Target alignment values
