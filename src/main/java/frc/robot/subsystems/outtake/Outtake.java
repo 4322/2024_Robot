@@ -164,4 +164,9 @@ public class Outtake extends SubsystemBase {
   public boolean pivotIsInitialized() {
     return pivotInitialized;
   }
+
+  public boolean safeToPivot() {
+    return (inputs.pivotRotations < OuttakeConstants.reverseSoftLimitThresholdRotations 
+      && inputs.pivotRotations > OuttakeConstants.forwardSoftLimitThresholdRotations);
+  }
 }

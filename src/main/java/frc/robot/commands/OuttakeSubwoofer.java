@@ -22,7 +22,7 @@ public class OuttakeSubwoofer extends Command {
 
   @Override
   public void execute() {
-    if (RobotCoordinator.getInstance().onOurSideOfField()) {
+    if (RobotCoordinator.getInstance().onOurSideOfField() && outtake.safeToPivot()) {
       outtake.outtake(OuttakeConstants.subwooferOuttakeRPS);
       outtake.pivot(OuttakeConstants.subwooferPivotPositionDegrees);
     }
