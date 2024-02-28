@@ -380,7 +380,7 @@ public final class Constants {
           false; // we want to brake if not moving
       public static final boolean limitForwardMotion = true;
       public static final boolean limitReverseMotion = true;
-      public static final double encoderGearReduction = 60.0;
+      public static final double encoderGearReduction = (31.0 / 30.0) * 60.0;
     }
 
     public static final class Logging {
