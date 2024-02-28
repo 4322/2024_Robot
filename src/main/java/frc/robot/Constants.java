@@ -275,8 +275,7 @@ public final class Constants {
   public static final class EncoderInitializeConstants {
     public static final double initializedRotationsFlag = 4322.0; // must be a very high number
     public static final double initializedRotationsTolerance = 5.0;
-    public static final double absEncoderMaxZeroingThreshold =
-        0.95;
+    public static final double absEncoderMaxZeroingThreshold = 0.95;
   }
 
   public static final class OuttakeConstants {
