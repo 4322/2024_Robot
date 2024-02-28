@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.AutoHelper.Auto;
+import frc.robot.Constants.OuttakeConstants;
 import frc.robot.centerline.CenterLineManager.CenterLineScoringStrategy;
 import frc.robot.commands.AtHome;
 import frc.robot.commands.AutoIntakeDeploy;
@@ -42,6 +43,7 @@ import frc.robot.commands.TunnelFeed;
 import frc.robot.commands.TunnelStop;
 import frc.robot.commands.UpdateOdometry;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
+import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.drive.Drive;
@@ -217,7 +219,11 @@ public class RobotContainer {
       operatorXbox.rightTrigger().whileTrue(new EjectThroughOuttake());
       operatorXbox.start().onTrue(new SetPivotsCoastMode());
       operatorXbox.back().onTrue(new SetPivotsBrakeMode());
-      operatorXbox.a().onTrue(new OuttakeSubwoofer());
+      operatorXbox.a().onTrue(new AutoSetOuttakeAdjust(new FiringSolution(
+        OuttakeConstants.subwooferShotMag,
+        OuttakeConstants.subwooferShotDeg,
+        OuttakeConstants.subwooferOuttakeRPS,
+        OuttakeConstants.subwooferPivotPositionRotations)));
       driveXbox.povLeft().onTrue(new AtHome());
     }
   }

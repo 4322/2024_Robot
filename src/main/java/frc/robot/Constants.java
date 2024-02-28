@@ -323,9 +323,11 @@ public final class Constants {
     public static final double pivotPeakReverseVoltage = -10;
 
     public static final double defaultPivotPositionRotations = 0;
-    public static final double ejectOuttakeRPS = 0; // TODO
-    public static final double subwooferPivotPositionRotations = 0;
-    public static final double subwooferOuttakeRPS = 0;
+    public static final double ejectOuttakeRPS = 0.0; // TODO
+    public static final double subwooferShotMag = 0.0;
+    public static final double subwooferShotDeg = 0.0;
+    public static final double subwooferPivotPositionRotations = 0.0;
+    public static final double subwooferOuttakeRPS = 0.0;
 
     public static final double topOuttakeRPS = 0;
     public static final double bottomOuttakeRPS = 0;
