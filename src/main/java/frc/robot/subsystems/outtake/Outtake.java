@@ -95,12 +95,14 @@ public class Outtake extends SubsystemBase {
     }
   }
 
-  public void pivot(double rotations) {
+  public void pivot(double pivotPositionDegrees) {
     if (Constants.outtakePivotEnabled && pivotInitialized) {
-      if (Constants.debug) rotations = inputs.targetPivotPosition;
-      io.setPivotTarget(rotations);
-      pivotTarget = rotations;
-      Logger.recordOutput("Outtake/PivotTargetRotations", rotations);
+      if (Constants.debug) {
+        pivotPositionDegrees = inputs.targetPivotPositionDegrees;
+      }
+      io.setPivotTarget(pivotPositionDegrees / 360 - inputs.pivotRotations);
+      pivotTarget = pivotPositionDegrees / 360;
+      Logger.recordOutput("Outtake/PivotTargetRotations", pivotPositionDegrees);
       Logger.recordOutput("Outtake/PivotStopped", false);
     }
   }

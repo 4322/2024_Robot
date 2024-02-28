@@ -174,7 +174,7 @@ public class OuttakeIOReal implements OuttakeIO {
 
     if (Constants.debug) {
       inputs.debugTargetRPS = outtakeFlywheelSpeed.getDouble(0);
-      inputs.targetPivotPosition = pivotPosition.getDouble(0);
+      inputs.targetPivotPositionDegrees = pivotPosition.getDouble(0);
     }
   }
 
