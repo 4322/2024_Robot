@@ -102,7 +102,7 @@ public class Outtake extends SubsystemBase {
       if (Constants.debug) {
         pivotPositionDegrees = inputs.targetPivotPositionDegrees;
       }
-      io.setPivotTarget(pivotPositionDegrees / 360 - inputs.pivotRotations);
+      io.setPivotTarget(pivotPositionDegrees / 360);
       pivotTarget = pivotPositionDegrees / 360;
       Logger.recordOutput("Outtake/PivotTargetRotations", pivotPositionDegrees);
       Logger.recordOutput("Outtake/PivotStopped", false);
