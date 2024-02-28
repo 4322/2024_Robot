@@ -319,8 +319,10 @@ public final class Constants {
     public static final double pivotPeakForwardVoltage = 10;
     public static final double pivotPeakReverseVoltage = -10;
 
-    public static final double defaultPivotPosition = 0;
+    public static final double defaultPivotPositionDegrees = 0;
     public static final double ejectOuttakeRPS = 0; // TODO
+    public static final double subwooferPivotPositionDegrees = 0;
+    public static final double subwooferOuttakeRPS = 0;
 
     public static final double topOuttakeRPS = 0;
     public static final double bottomOuttakeRPS = 0;

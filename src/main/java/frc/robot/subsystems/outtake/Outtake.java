@@ -109,10 +109,10 @@ public class Outtake extends SubsystemBase {
 
   public void resetPivot() {
     if (Constants.outtakePivotEnabled && pivotInitialized) {
-      io.setPivotTarget(Constants.OuttakeConstants.defaultPivotPosition);
-      pivotTarget = Constants.OuttakeConstants.defaultPivotPosition;
+      io.setPivotTarget(Constants.OuttakeConstants.defaultPivotPositionDegrees);
+      pivotTarget = Constants.OuttakeConstants.defaultPivotPositionDegrees;
       Logger.recordOutput(
-          "Outtake/PivotTargetRotations", Constants.OuttakeConstants.defaultPivotPosition);
+          "Outtake/PivotTargetRotations", Constants.OuttakeConstants.defaultPivotPositionDegrees);
       Logger.recordOutput("Outtake/PivotStopped", false);
     }
   }
