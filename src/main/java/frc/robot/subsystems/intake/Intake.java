@@ -51,10 +51,12 @@ public class Intake extends SubsystemBase {
     RobotCoordinator coordinator = RobotCoordinator.getInstance();
     // Check if encoders have already been initialized after power cycle
     // If so, we don't need to reinitialize
-    if (OrangeMath.equalToEpsilon(
-        inputs.heliumRelativeRotations,
-        Constants.EncoderInitializeConstants.initializedRotationsFlag,
-        Constants.EncoderInitializeConstants.initializedRotationsTolerance)) {
+    if (Constants.intakeDeployerEnabled
+        && !deployInitialized
+        && OrangeMath.equalToEpsilon(
+            inputs.heliumRelativeRotations,
+            Constants.EncoderInitializeConstants.initializedRotationsFlag,
+            Constants.EncoderInitializeConstants.initializedRotationsTolerance)) {
       deployInitialized = true;
     }
 

@@ -36,6 +36,8 @@ public class IntakeIOReal implements IntakeIO {
   GenericEntry deployerRPS;
   GenericEntry flywheelRPS;
 
+  private double heliumAbsoluteRotations;
+
   public IntakeIOReal() {
     intake =
         new TalonFX(IntakeConstants.intakeMotorID, Constants.DriveConstants.Drive.canivoreName);
@@ -211,6 +213,8 @@ public class IntakeIOReal implements IntakeIO {
       inputs.deployPositionRotations = IntakeConstants.Deploy.deployPositionRotations;
       inputs.retractPositionRotations = IntakeConstants.Deploy.retractPositionRotations;
     }
+
+    heliumAbsoluteRotations = inputs.heliumAbsRotations;
   }
 
   @Override
@@ -220,14 +224,27 @@ public class IntakeIOReal implements IntakeIO {
 
   @Override
   public boolean initMotorPos() {
-    deploy.setPosition(
-        deployEncoder.getAbsPosition() * IntakeConstants.Deploy.encoderGearReduction);
-    // set only relative encoder rotations of Helium encoder to a very high number after initialized
-    // once
-    // relative encoder on Helium used only to check if we have already initialized after power
-    // cycle
-    deployEncoder.setPosition(Constants.EncoderInitializeConstants.initializedRotationsFlag);
-    return OrangeMath.equalToTwoDecimal(deployEncoder.getVelocity(), 0);
+    if (heliumAbsoluteRotations
+        > Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
+      // Assume that abs position higher than maxValue is below the
+      // hard stop zero point of shooter/deployer
+      // If so, assume that position is 0 for motor internal encoder
+      deploy.setPosition(0);
+    } else {
+      deploy.setPosition(heliumAbsoluteRotations * IntakeConstants.Deploy.encoderGearReduction);
+    }
+
+    if (OrangeMath.equalToTwoDecimal(deployEncoder.getVelocity(), 0)) {
+      // Set only relative encoder rotations of Helium encoder to a very high number after
+      // initialized
+      // once
+      // Relative encoder on Helium used only to check if we have already initialized after power
+      // cycle
+      deployEncoder.setPosition(Constants.EncoderInitializeConstants.initializedRotationsFlag);
+      return true;
+    }
+
+    return false;
   }
 
   @Override

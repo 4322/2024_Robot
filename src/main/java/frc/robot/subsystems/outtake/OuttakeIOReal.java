@@ -33,6 +33,8 @@ public class OuttakeIOReal implements OuttakeIO {
   GenericEntry outtakeFlywheelSpeed;
   GenericEntry pivotPosition;
 
+  private double heliumAbsoluteRotations;
+
   public OuttakeIOReal() {
     leftOuttakeMotor =
         new TalonFX(
@@ -176,6 +178,8 @@ public class OuttakeIOReal implements OuttakeIO {
       inputs.debugTargetRPS = outtakeFlywheelSpeed.getDouble(0);
       inputs.targetPivotPositionDegrees = pivotPosition.getDouble(0);
     }
+
+    heliumAbsoluteRotations = inputs.heliumAbsRotations;
   }
 
   @Override
@@ -185,14 +189,27 @@ public class OuttakeIOReal implements OuttakeIO {
 
   @Override
   public boolean initPivot() {
-    pivotMotor.setPosition(
-        pivotEncoder.getAbsPosition() * OuttakeConstants.gearReductionEncoderToMotor);
-    // set only relative encoder rotations of Helium encoder to a very high number after initialized
-    // once
-    // relative encoder on Helium used only to check if we have already initialized after power
-    // cycle
-    pivotEncoder.setPosition(Constants.EncoderInitializeConstants.initializedRotationsFlag);
-    return OrangeMath.equalToTwoDecimal(pivotEncoder.getVelocity(), 0);
+    if (heliumAbsoluteRotations
+        > Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
+      // Assume that abs position higher than maxValue is below the
+      // hard stop zero point of shooter/deployer
+      // If so, assume that position is 0 for motor internal encoder
+      pivotMotor.setPosition(0);
+    } else {
+      pivotMotor.setPosition(
+          heliumAbsoluteRotations * OuttakeConstants.gearReductionEncoderToMotor);
+    }
+
+    if (OrangeMath.equalToTwoDecimal(pivotEncoder.getVelocity(), 0)) {
+      // Set only relative encoder rotations of Helium encoder to a very high number after
+      // initialized
+      // once
+      // Relative encoder on Helium used only to check if we have already initialized after power
+      // cycles
+      pivotEncoder.setPosition(Constants.EncoderInitializeConstants.initializedRotationsFlag);
+      return true;
+    }
+    return false;
   }
 
   @Override
