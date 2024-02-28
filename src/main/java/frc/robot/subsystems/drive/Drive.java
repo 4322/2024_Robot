@@ -315,7 +315,7 @@ public class Drive extends SubsystemBase {
         Pose2d pose = RobotCoordinator.getInstance().getOuttakeLimelightPose2d();
         if (poseEstimator.getEstimatedPosition().getTranslation().getDistance(pose.getTranslation())
             < Constants.LimelightConstants.visionOdometryTolerance) {
-          updateVision(
+          updateOdometryVision(
               pose,
               Timer.getFPGATimestamp()
                   - RobotCoordinator.getInstance().getOuttakeLimelightLatency());
@@ -482,7 +482,7 @@ public class Drive extends SubsystemBase {
     }
   }
 
-  public void updateVision(Pose2d pose, double timestampSeconds) {
+  public void updateOdometryVision(Pose2d pose, double timestampSeconds) {
     if (Constants.intakeLimeLightEnabled) {
       poseEstimator.addVisionMeasurement(pose, timestampSeconds);
     }

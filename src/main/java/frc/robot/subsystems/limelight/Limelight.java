@@ -292,7 +292,9 @@ public class Limelight extends SubsystemBase {
     return distanceY;
   }
 
-  public void updatePoseEstimatorWithVisionBotPose() {}
+  public Pose2d getBotpose() {
+    return LimelightHelpers.getBotPose2d(name);
+  }
 
   public void activateRetroReflective() {
     switchPipeline(0);
