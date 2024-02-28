@@ -361,8 +361,8 @@ public final class Constants {
       public static final double timeoutMs = 50;
       public static final boolean limitForwardMotion = true;
       public static final boolean limitReverseMotion = true;
-      public static final double forwardSoftLimitThresholdRotations = 99; // TODO
-      public static final double reverseSoftLimitThresholdRotations = 0;
+      public static final double forwardSoftLimitThresholdRotations = 0.0; // TODO
+      public static final double reverseSoftLimitThresholdRotations = 0.0; // TODO
       public static final double deployPeakForwardVoltage = 7;
       public static final double deployPeakReverseVoltage = -7;
 
@@ -373,9 +373,9 @@ public final class Constants {
     }
 
     public static final class Deploy {
-      public static final double deployPositionRotations = 0;
-      public static final double retractPositionRotations = 0;
-      public static final double toleranceRotations = 0;
+      public static final double deployPositionRotations = 0.0;
+      public static final double retractPositionRotations = 36.0;
+      public static final double toleranceRotations = 0; // TODO
       public static final double maxVelRotationsPerSec = 0;
       public static final boolean enableFOC = false;
       public static final double FF = 0;
@@ -385,7 +385,7 @@ public final class Constants {
           false; // we want to brake if not moving
       public static final boolean limitForwardMotion = true;
       public static final boolean limitReverseMotion = true;
-      public static final double encoderGearReduction = (32.0 / 30.0) * 60.0;
+      public static final double encoderGearReduction = 60.0;
     }
 
     public static final class Logging {
