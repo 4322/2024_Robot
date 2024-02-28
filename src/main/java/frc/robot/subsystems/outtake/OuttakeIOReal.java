@@ -197,14 +197,18 @@ public class OuttakeIOReal implements OuttakeIO {
     }
     else {
       pivotMotor.setPosition(
-        pivotEncoder.getAbsPosition() * OuttakeConstants.gearReductionEncoderToMotor);
+        heliumAbsoluteRotations * OuttakeConstants.gearReductionEncoderToMotor);
     }
-    // Set only relative encoder rotations of Helium encoder to a very high number after initialized
-    // once
-    // Relative encoder on Helium used only to check if we have already initialized after power
-    // cycle
-    pivotEncoder.setPosition(Constants.EncoderInitializeConstants.initializedRotationsFlag);
-    return OrangeMath.equalToTwoDecimal(pivotEncoder.getVelocity(), 0);
+
+    if (OrangeMath.equalToTwoDecimal(pivotEncoder.getVelocity(), 0)) {
+      // Set only relative encoder rotations of Helium encoder to a very high number after initialized
+      // once
+      // Relative encoder on Helium used only to check if we have already initialized after power
+      // cycles
+      pivotEncoder.setPosition(Constants.EncoderInitializeConstants.initializedRotationsFlag);
+      return true;
+    }
+    return false;
   }
 
   @Override
