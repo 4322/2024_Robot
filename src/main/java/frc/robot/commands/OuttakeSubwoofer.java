@@ -24,14 +24,13 @@ public class OuttakeSubwoofer extends Command {
   public void execute() {
     if (RobotCoordinator.getInstance().onOurSideOfField() && outtake.safeToPivot()) {
       outtake.outtake(OuttakeConstants.subwooferOuttakeRPS);
-      outtake.pivot(OuttakeConstants.subwooferPivotPositionDegrees);
+      outtake.pivot(OuttakeConstants.subwooferPivotPositionRotations);
     }
   }
 
   @Override
   public boolean isFinished() {
-    return (!RobotCoordinator.getInstance().onOurSideOfField() ||
-      RobotCoordinator.getInstance().noteIsShot());
+    return !RobotCoordinator.getInstance().onOurSideOfField();
   }
 
   @Override
