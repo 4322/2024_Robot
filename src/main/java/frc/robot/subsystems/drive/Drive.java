@@ -312,14 +312,11 @@ public class Drive extends SubsystemBase {
       }
 
       if (Constants.outtakeLimeLightEnabled) {
-        if (poseEstimator
-                .getEstimatedPosition()
-                .getTranslation()
-                .getDistance(
-                    RobotCoordinator.getInstance().getOuttakeLimelightPose2d().getTranslation())
+        Pose2d pose = RobotCoordinator.getInstance().getOuttakeLimelightPose2d();
+        if (poseEstimator.getEstimatedPosition().getTranslation().getDistance(pose.getTranslation())
             < Constants.LimelightConstants.visionOdometryTolerance) {
           updateVision(
-              RobotCoordinator.getInstance().getOuttakeLimelightPose2d(),
+              pose,
               Timer.getFPGATimestamp()
                   - RobotCoordinator.getInstance().getOuttakeLimelightLatency());
         }
@@ -522,7 +519,10 @@ public class Drive extends SubsystemBase {
   }
 
   public Pose2d getPose2d() {
-    return poseEstimator.getEstimatedPosition();
+    if (Constants.driveEnabled) {
+      return poseEstimator.getEstimatedPosition();
+    }
+    return new Pose2d();
   }
 
   public void setModuleStates(SwerveModuleState[] states) {

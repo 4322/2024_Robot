@@ -22,6 +22,7 @@ import frc.robot.centerline.CenterLineManager.CenterLineScoringStrategy;
 import frc.robot.commands.AutoIntakeDeploy;
 import frc.robot.commands.AutoIntakeIn;
 import frc.robot.commands.AutoSetOuttakeAdjust;
+import frc.robot.commands.AtHome;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
@@ -30,7 +31,10 @@ import frc.robot.commands.IntakeManual;
 import frc.robot.commands.IntakeStop;
 import frc.robot.commands.OuttakeAdjustToSpeaker;
 import frc.robot.commands.OuttakeStop;
+import frc.robot.commands.OuttakeSubwoofer;
 import frc.robot.commands.ResetFieldCentric;
+import frc.robot.commands.SetPivotsBrakeMode;
+import frc.robot.commands.SetPivotsCoastMode;
 import frc.robot.commands.SetRobotPose;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.TunnelFeed;
@@ -61,6 +65,10 @@ public class RobotContainer {
   private JoystickButton driveButtonSeven;
   private JoystickButton driveButtonTwelve;
 
+  // Need to instantiate RobotCoordinator first due to a bug in the WPI command library.
+  // If it gets instantiated from a subsystem periodic method, we get a concurrency
+  // exception in the command scheduler.
+  private final RobotCoordinator robotCoordinator = RobotCoordinator.getInstance();
   private final Drive drive = Drive.getInstance();
   private final Tunnel tunnel = Tunnel.getInstance();
   private final Outtake outtake = Outtake.getInstance();
@@ -203,6 +211,10 @@ public class RobotContainer {
                   }));
       driveXbox.leftTrigger().whileTrue(new Shoot());
       operatorXbox.rightTrigger().whileTrue(new EjectThroughOuttake());
+      operatorXbox.start().onTrue(new SetPivotsCoastMode());
+      operatorXbox.back().onTrue(new SetPivotsBrakeMode());
+      operatorXbox.a().onTrue(new OuttakeSubwoofer());
+      driveXbox.povLeft().onTrue(new AtHome());
     }
   }
 
@@ -211,42 +223,26 @@ public class RobotContainer {
       if (Constants.driveEnabled) {
         drive.setCoastMode(); // robot has stopped, safe to enter coast mode
       }
-      if (Constants.intakeEnabled) {
-        intake.setCoastMode();
-      }
-      if (Constants.outtakeEnabled) {
-        outtake.setCoastMode();
-      }
-      if (Constants.tunnelEnabled) {
-        tunnel.setCoastMode();
-      }
       disableTimer.stop();
       disableTimer.reset();
-    }
-
-    if (Constants.xboxEnabled) {
-      // pressed when intake and outtake are in starting config
-      // can only be pressed once after bootup
-      driveXbox
-          .povLeft()
-          .onTrue(
-              Commands.runOnce(
-                  () -> {
-                    RobotCoordinator.getInstance().setInitAbsEncoderPressed(true);
-                  }));
     }
   }
 
   public void enableSubsystems() {
     drive.setBrakeMode();
     tunnel.setBrakeMode();
-    intake.setBrakeMode();
-    outtake.setBrakeMode();
+    intake.setIntakeBrakeMode();
+    intake.setDeployerBrakeMode();
+    outtake.setPivotBrakeMode();
+
     disableTimer.stop();
     disableTimer.reset();
   }
 
   public void disableSubsystems() {
+    tunnel.setCoastMode();
+    intake.setIntakeCoastMode();
+
     driveStop.schedule(); // interrupt all drive commands
     intakeStop.schedule(); // interrupt all intake commands
     outtakeStop.schedule(); // interrupt all outtake commands

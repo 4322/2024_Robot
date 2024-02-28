@@ -45,6 +45,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   private double calcFeedForwardVoltsOverMetersPerSec;
   private double desiredVolts;
   private double currentWheelDegrees;
+  private double currentMotorRotations;
 
   public SwerveModuleIOTalonFX(WheelPosition wheelPos) {
     switch (wheelPos) {
@@ -237,29 +238,31 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
         turningMotor.getDutyCycle().getValue() / 2 * turningMotor.getSupplyVoltage().getValue();
     inputs.turnCurrentAmps = turningMotor.getSupplyCurrent().getValue();
     inputs.turnDegrees = Units.rotationsToDegrees(turningMotor.getPosition().getValue());
+    inputs.turnRotations = turningMotor.getPosition().getValue();
     inputs.wheelDegreesTo360 =
         MathUtil.inputModulus(
             inputs.turnDegrees / robotSpecificConstants.getRotationGearRatio(), 0, 360);
-    currentWheelDegrees = inputs.wheelDegreesTo360;
 
     inputs.calculatedFF = calcFeedForwardVoltsOverMetersPerSec;
     inputs.calculatedVolts = desiredVolts;
 
     inputs.absEncoderRotations = encoder.getAbsolutePosition().getValueAsDouble();
+
+    currentMotorRotations = inputs.turnRotations;
+    currentWheelDegrees = inputs.wheelDegreesTo360;
   }
 
   // PID methods for turn motor
   @Override
   public void setTurnAngle(double desiredAngle) {
-    double currentRotPosition = turningMotor.getPosition().getValueAsDouble();
     // Calculates change in degrees and adds to current position after converting to encoder
     // rotations
     turningMotor.setControl(
         new PositionVoltage(
-            currentRotPosition
-                + (OrangeMath.boundDegrees(desiredAngle - currentWheelDegrees)
+            currentMotorRotations
+                + (OrangeMath.boundDegrees(desiredAngle - currentWheelDegrees))
                     / 360.0
-                    * robotSpecificConstants.getRotationGearRatio())));
+                    * robotSpecificConstants.getRotationGearRatio()));
   }
 
   // set drive motor voltage based on desired wheel m/s

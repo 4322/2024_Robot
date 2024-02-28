@@ -70,7 +70,7 @@ public class Tunnel extends SubsystemBase {
   public void stopTunnel() {
     if (Constants.tunnelEnabled) {
       io.stopTunnel();
-      Logger.recordOutput(TunnelConstants.Logging.key + "TunnelTargetVelocityRPS", 0);
+      Logger.recordOutput(TunnelConstants.Logging.key + "TunnelTargetVelocityRPS", 0.0);
       Logger.recordOutput(TunnelConstants.Logging.key + "TunnelStopped", true);
     }
   }

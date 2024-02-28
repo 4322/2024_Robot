@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -43,18 +42,19 @@ public final class Constants {
   public static final boolean debug = true;
 
   public static final boolean driveEnabled = true;
-  public static final boolean intakeEnabled = false;
+  public static final boolean intakeEnabled = true;
+  public static final boolean intakeDeployerEnabled = true;
   public static final boolean gyroEnabled = true;
-  public static final boolean tunnelEnabled = false;
-  public static final boolean outtakeEnabled = false;
-  public static final boolean outtakePivotEnabled = false;
-  public static final boolean sensorsEnabled = false;
-  public static final boolean ledEnabled = false;
+  public static final boolean tunnelEnabled = true;
+  public static final boolean outtakeEnabled = true;
+  public static final boolean outtakePivotEnabled = true;
+  public static final boolean sensorsEnabled = true;
+  public static final boolean ledEnabled = true;
   public static final boolean joysticksEnabled = false;
   public static final boolean xboxEnabled = true;
 
-  public static final boolean intakeLimeLightEnabled = false;
-  public static final boolean outtakeLimeLightEnabled = false;
+  public static final boolean intakeLimeLightEnabled = true;
+  public static final boolean outtakeLimeLightEnabled = true;
 
   public static final boolean spinoutCenterEnabled = true; // center rotate burst of power
   public static final boolean spinoutCornerEnabled = true;
@@ -146,12 +146,8 @@ public final class Constants {
     public static final double stoppedVelocityThresholdMetersPerSec = 0.1524;
     public static final double movingVelocityThresholdMetersPerSec = 0.4572;
 
-    public static final double drivePolarDeadband = 0.06;
-    public static final double twistDeadband = 0.08;
-
     public static final double spinoutCenterPower = 1.0;
     public static final double spinoutCornerPower = 0.75;
-    public static final double encoderResolution = 0; // TODO
 
     public static final class Manual {
 
@@ -159,7 +155,7 @@ public final class Constants {
       public static final double joystickRotateLeftDeadband = 0.52; // don't go below 0.2
       public static final double joystickRotateRightDeadband = 0.35; // don't go below 0.2
 
-      public static final double xboxDriveDeadband = 0.1;
+      public static final double xboxDriveDeadband = 0.17; // was 0.1 with a better controller
       public static final double xboxRotateDeadband = 0.2;
       public static final double maxManualRotation = 0.34;
       public static final double inhibitPseudoAutoRotateAngularVelocity = 0.05;
@@ -231,10 +227,10 @@ public final class Constants {
 
       static {
         CANCoderOffsetRotations = new double[4];
-        CANCoderOffsetRotations[WheelPosition.FRONT_RIGHT.wheelNumber] = 0.695;
-        CANCoderOffsetRotations[WheelPosition.FRONT_LEFT.wheelNumber] = 0.526;
-        CANCoderOffsetRotations[WheelPosition.BACK_RIGHT.wheelNumber] = 0.670;
-        CANCoderOffsetRotations[WheelPosition.BACK_LEFT.wheelNumber] = 0.453;
+        CANCoderOffsetRotations[WheelPosition.FRONT_RIGHT.wheelNumber] = 0.689453125;
+        CANCoderOffsetRotations[WheelPosition.FRONT_LEFT.wheelNumber] = 0.530517578125;
+        CANCoderOffsetRotations[WheelPosition.BACK_RIGHT.wheelNumber] = 0.668212890625 - 0.25;
+        CANCoderOffsetRotations[WheelPosition.BACK_LEFT.wheelNumber] = 0.462158203125 + 0.25;
       }
     }
 
@@ -277,8 +273,10 @@ public final class Constants {
   }
 
   public static final class EncoderInitializeConstants {
-    public static final double setRelativeRotations = 4322.0; // must be a very high number
-    public static final double relativeRotationsTolerance = 5.0;
+    public static final double initializedRotationsFlag = 4322.0; // must be a very high number
+    public static final double initializedRotationsTolerance = 5.0;
+    public static final double absEncoderMaxZeroingThreshold =
+        0.95;
   }
 
   public static final class OuttakeConstants {
@@ -287,52 +285,53 @@ public final class Constants {
     public static final int pivotDeviceID = 6;
     public static final int pivotEncoderID = 8;
 
-    public static final double kP = 0;
-    public static final double kI = 0;
-    public static final double kD = 0;
-    public static final double kF = 0;
+    public static final double kP = 0.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+    public static final double kF = 0.124;
+    public static final double kS = 0.35;
 
     public static final double openLoopRampSec = 0;
     public static final double closedLoopRampSec = 0;
     public static final int gearRatioMotorToWheel = 0;
     public static final double gearReductionEncoderToMotor = (30.0 / 28.0) * 125.0;
-    public static final double kS = 0;
     public static final double voltPerRPS =
         0; // since we likely aren't going to adjust the speed, it's likely safe to
     // not interpolate
     public static final boolean supplyEnabled = true;
     public static final boolean statorEnabled = true;
+    public static final double shooterSupplyLimit = 40;
+    public static final double shooterStatorLimit = 80;
+    public static final double shooterSupplyCurrentThreshold = 50;
+    public static final double shooterSupplyTimeThreshold = 1.5;
+
     public static final double pivotSupplyLimit = 30;
     public static final double pivotStatorLimit = 45;
-    public static final double shooterSupplyLimit = 40;
-    public static final double shooterStatorLimit = 60;
 
     public static final double pivotkD = 0;
     public static final double pivotkI = 0;
-    public static final double pivotkP = 0;
+    public static final double pivotkP = 3.0;
     public static final double pivotkFF = 0;
 
-    // TODO: all parameters for position control PID
     public static final double maxVelRotationsPerSec = 0.0;
-    public static final boolean enableFOC = true;
-    public static final int positionVoltageSlot = 0;
-    public static final boolean overrideBrakeDuringNeutral = false;
-    public static final double pivotClosedLoopSec = 0;
+    public static final boolean enableFOC = false;
+    public static final double pivotClosedLoopSec = 0.1;
     public static final boolean limitForwardMotion = true;
     public static final boolean limitReverseMotion = true;
     public static final double forwardSoftLimitThresholdRotations = 99; // TODO
     public static final double reverseSoftLimitThresholdRotations = 0;
+    public static final double pivotPeakForwardVoltage = 10;
+    public static final double pivotPeakReverseVoltage = -10;
 
-    public static final NeutralModeValue pivotDefaultNeutralMode = NeutralModeValue.Coast;
-    public static final double defaultPivotPosition = 0;
+    public static final double defaultPivotPositionDegrees = 0;
     public static final double ejectOuttakeRPS = 0; // TODO
+    public static final double subwooferPivotPositionDegrees = 0;
+    public static final double subwooferOuttakeRPS = 0;
 
     public static final double topOuttakeRPS = 0;
     public static final double bottomOuttakeRPS = 0;
     public static final double outtakeToleranceRPS = 0;
     public static final double pivotToleranceRotations = 0;
-
-    public static final double maxRPM = 0;
   }
 
   public static final class IntakeConstants {
@@ -341,11 +340,10 @@ public final class Constants {
     public static final int deployEncoderID = 9;
 
     public static final class IntakeConfig {
-      public static final NeutralModeValue neutralMode = NeutralModeValue.Coast;
       public static final double updateHz =
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
-      public static final double intakeFeedVoltage = 5.0;
+      public static final double intakeFeedVoltage = 11.0;
       public static final double intakeEjectVoltage = -5.0;
       public static final boolean supplyEnabled = true;
       public static final boolean statorEnabled = true;
@@ -357,8 +355,6 @@ public final class Constants {
       public static final double kP = 0;
       public static final double kD = 0;
       public static final double configCLosedLoopRamp = 0;
-      public static final double maxVoltage = 16;
-      public static final NeutralModeValue neutralMode = NeutralModeValue.Brake;
       public static final double updateHz =
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
@@ -366,6 +362,9 @@ public final class Constants {
       public static final boolean limitReverseMotion = true;
       public static final double forwardSoftLimitThresholdRotations = 99; // TODO
       public static final double reverseSoftLimitThresholdRotations = 0;
+      public static final double deployPeakForwardVoltage = 7;
+      public static final double deployPeakReverseVoltage = -7;
+
       public static final boolean supplyEnabled = true;
       public static final boolean statorEnabled = true;
       public static final double supplyLimit = 30;
@@ -377,7 +376,7 @@ public final class Constants {
       public static final double retractPositionRotations = 0;
       public static final double toleranceRotations = 0;
       public static final double maxVelRotationsPerSec = 0;
-      public static final boolean enableFOC = true;
+      public static final boolean enableFOC = false;
       public static final double FF = 0;
       public static final int positionVoltageSlot =
           0; // TODO: check if this can be 0 if PID is also 0
@@ -385,7 +384,7 @@ public final class Constants {
           false; // we want to brake if not moving
       public static final boolean limitForwardMotion = true;
       public static final boolean limitReverseMotion = true;
-      public static final double encoderGearReduction = 60.0;
+      public static final double encoderGearReduction = (31.0 / 30.0) * 60.0;
     }
 
     public static final class Logging {
@@ -398,8 +397,8 @@ public final class Constants {
   }
 
   public static final class BeamBreakConstants {
-    public static final int tunnelBeamBreakID = 0; // TODO
-    public static final int intakeBeamBreakID = 0; // TODO
+    public static final int tunnelBeamBreakID = 6;
+    public static final int intakeBeamBreakID = 5;
 
     public static final class Logging {
       public static final String key = "Sensors/";
@@ -429,13 +428,13 @@ public final class Constants {
     public static final double outtakeLimelightHeight = OrangeMath.inchesToMeters(26.125);
     public static final double outtakeLimelightXOffsetMeters = 0.0;
     public static final double outtakeLimelightYOffsetMeters = 0.0;
-    public static final String outtakeLimelightName = "limelight-outtake";
+    public static final String outtakeLimelightName = "limelight-shooter";
 
     public static final double intakeLimelightAngle = -25;
     public static final double intakeLimelightHeight = OrangeMath.inchesToMeters(46.3);
     public static final double intakeLimeLightXOffsetMeters = 0.0;
     public static final double intakeLimelightYOffsetMeters = 0.0;
-    public static final String intakeLimelightName = "limelight-intake";
+    public static final String intakeLimelightName = "limelight-note";
 
     // Target alignment values
     public static final double substationMinLargeTargetArea =

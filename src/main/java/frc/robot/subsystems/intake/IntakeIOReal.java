@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -9,14 +10,15 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandcoder.Canandcoder;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.IntakeConstants.DeployConfig;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -32,8 +34,9 @@ public class IntakeIOReal implements IntakeIO {
   GenericEntry retractPositionRotations;
   GenericEntry deployPosition;
   GenericEntry deployerRPS;
-  GenericEntry isCoasting;
   GenericEntry flywheelRPS;
+
+  private double heliumAbsoluteRotations;
 
   public IntakeIOReal() {
     intake =
@@ -75,14 +78,6 @@ public class IntakeIOReal implements IntakeIO {
               .withSize(1, 1)
               .withPosition(2, 1)
               .getEntry();
-      isCoasting =
-          tab.add(
-                  "Are Intake Motors in Coast Mode? (Read Only)",
-                  IntakeConstants.IntakeConfig.neutralMode == NeutralModeValue.Coast)
-              .withWidget(BuiltInWidgets.kBooleanBox)
-              .withSize(3, 1)
-              .withPosition(1, 1)
-              .getEntry();
     }
   }
 
@@ -92,8 +87,9 @@ public class IntakeIOReal implements IntakeIO {
 
     MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
     CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
+    HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs = new HardwareLimitSwitchConfigs();
 
-    motorOutputConfigs.NeutralMode = IntakeConstants.IntakeConfig.neutralMode;
+    motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
     currentLimitsConfigs.StatorCurrentLimitEnable =
         Constants.IntakeConstants.IntakeConfig.statorEnabled;
     currentLimitsConfigs.StatorCurrentLimit = Constants.IntakeConstants.IntakeConfig.statorLimit;
@@ -101,6 +97,10 @@ public class IntakeIOReal implements IntakeIO {
         Constants.IntakeConstants.IntakeConfig.supplyEnabled;
     currentLimitsConfigs.SupplyCurrentLimit = Constants.IntakeConstants.IntakeConfig.supplyLimit;
 
+    hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
+    hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
+
+    intake.getConfigurator().apply(hardwareLimitSwitchConfigs);
     intake.getConfigurator().apply(currentLimitsConfigs);
     intake.getConfigurator().apply(motorOutputConfigs);
 
@@ -118,15 +118,15 @@ public class IntakeIOReal implements IntakeIO {
     VoltageConfigs voltageConfigs = new VoltageConfigs();
     MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
     SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
+    HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs = new HardwareLimitSwitchConfigs();
     CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
 
     slot0Configs.kP = IntakeConstants.DeployConfig.kP;
     slot0Configs.kD = IntakeConstants.DeployConfig.kD;
     closedLoopRampsConfigs.VoltageClosedLoopRampPeriod =
         IntakeConstants.DeployConfig.configCLosedLoopRamp;
-    voltageConfigs.PeakForwardVoltage = IntakeConstants.DeployConfig.maxVoltage;
-    voltageConfigs.PeakReverseVoltage = -IntakeConstants.DeployConfig.maxVoltage;
-    motorOutputConfigs.NeutralMode = IntakeConstants.DeployConfig.neutralMode;
+    motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
+    motorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
     softwareLimitSwitchConfigs.ForwardSoftLimitEnable =
         IntakeConstants.DeployConfig.limitForwardMotion;
     softwareLimitSwitchConfigs.ReverseSoftLimitEnable =
@@ -141,7 +141,13 @@ public class IntakeIOReal implements IntakeIO {
     currentLimitsConfigs.SupplyCurrentLimitEnable =
         Constants.IntakeConstants.DeployConfig.supplyEnabled;
     currentLimitsConfigs.SupplyCurrentLimit = Constants.IntakeConstants.DeployConfig.supplyLimit;
+    voltageConfigs.PeakForwardVoltage = DeployConfig.deployPeakForwardVoltage;
+    voltageConfigs.PeakReverseVoltage = DeployConfig.deployPeakReverseVoltage;
 
+    hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
+    hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
+
+    deploy.getConfigurator().apply(hardwareLimitSwitchConfigs);
     deploy.getConfigurator().apply(currentLimitsConfigs);
     deploy.getConfigurator().apply(slot0Configs);
     deploy.getConfigurator().apply(closedLoopRampsConfigs);
@@ -153,6 +159,15 @@ public class IntakeIOReal implements IntakeIO {
         .getPosition()
         .setUpdateFrequency(
             IntakeConstants.DeployConfig.updateHz, IntakeConstants.DeployConfig.timeoutMs);
+
+    // zero helium abs encoder on the floor
+    // fully retracted abs position is 0.6 rotations
+    Canandcoder.Settings settings = new Canandcoder.Settings();
+    settings.setInvertDirection(true);
+    settings.setPositionFramePeriod(0.010);
+    settings.setVelocityFramePeriod(0.050);
+    settings.setStatusFramePeriod(1.0);
+    deployEncoder.setSettings(settings, 0.050);
   }
 
   public void updateShuffleboard() {
@@ -198,6 +213,8 @@ public class IntakeIOReal implements IntakeIO {
       inputs.deployPositionRotations = IntakeConstants.Deploy.deployPositionRotations;
       inputs.retractPositionRotations = IntakeConstants.Deploy.retractPositionRotations;
     }
+
+    heliumAbsoluteRotations = inputs.heliumAbsRotations;
   }
 
   @Override
@@ -207,14 +224,27 @@ public class IntakeIOReal implements IntakeIO {
 
   @Override
   public boolean initMotorPos() {
-    deploy.setPosition(
-        deployEncoder.getAbsPosition() * IntakeConstants.Deploy.encoderGearReduction);
-    // set only relative encoder rotations of Helium encoder to a very high number after initialized
-    // once
-    // relative encoder on Helium used only to check if we have already initialized after power
-    // cycle
-    deployEncoder.setPosition(Constants.EncoderInitializeConstants.setRelativeRotations);
-    return OrangeMath.equalToTwoDecimal(deployEncoder.getVelocity(), 0);
+    if (heliumAbsoluteRotations
+        > Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
+      // Assume that abs position higher than maxValue is below the
+      // hard stop zero point of shooter/deployer
+      // If so, assume that position is 0 for motor internal encoder
+      deploy.setPosition(0);
+    } else {
+      deploy.setPosition(heliumAbsoluteRotations * IntakeConstants.Deploy.encoderGearReduction);
+    }
+
+    if (OrangeMath.equalToTwoDecimal(deployEncoder.getVelocity(), 0)) {
+      // Set only relative encoder rotations of Helium encoder to a very high number after
+      // initialized
+      // once
+      // Relative encoder on Helium used only to check if we have already initialized after power
+      // cycle
+      deployEncoder.setPosition(Constants.EncoderInitializeConstants.initializedRotationsFlag);
+      return true;
+    }
+
+    return false;
   }
 
   @Override
@@ -245,29 +275,27 @@ public class IntakeIOReal implements IntakeIO {
   }
 
   @Override
-  public void setBrakeMode() {
-    MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-    motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
-    intake.getConfigurator().refresh(motorOutputConfigs);
-    deploy.getConfigurator().refresh(motorOutputConfigs);
-    if (Constants.debug) {
-      isCoasting.setBoolean(false);
-    }
+  public void setIntakeBrakeMode() {
+    intake.setNeutralMode(NeutralModeValue.Brake);
     Logger.recordOutput(IntakeConstants.Logging.feederHardwareOutputsKey + "NeutralMode", "Brake");
+  }
+
+  @Override
+  public void setDeployerBrakeMode() {
+    deploy.setNeutralMode(NeutralModeValue.Brake);
     Logger.recordOutput(
         IntakeConstants.Logging.deployerHardwareOutputsKey + "NeutralMode", "Brake");
   }
 
   @Override
-  public void setCoastMode() {
-    MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-    motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
-    intake.getConfigurator().refresh(motorOutputConfigs);
-    deploy.getConfigurator().refresh(motorOutputConfigs);
-    if (Constants.debug) {
-      isCoasting.setBoolean(true);
-    }
+  public void setIntakeCoastMode() {
+    intake.setNeutralMode(NeutralModeValue.Coast);
     Logger.recordOutput(IntakeConstants.Logging.feederHardwareOutputsKey + "NeutralMode", "Coast");
+  }
+
+  @Override
+  public void setDeployerCoastMode() {
+    deploy.setNeutralMode(NeutralModeValue.Coast);
     Logger.recordOutput(
         IntakeConstants.Logging.deployerHardwareOutputsKey + "NeutralMode", "Coast");
   }
