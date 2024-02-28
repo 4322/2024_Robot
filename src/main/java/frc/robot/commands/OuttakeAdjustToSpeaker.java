@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.OuttakeConstants;
 import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
@@ -37,13 +38,15 @@ public class OuttakeAdjustToSpeaker extends Command {
 
       outtake.outtake(firingSolution.getFlywheelSpeed());
       // divide by 360 because pivot uses rotations instead of degrees
-      outtake.pivot(firingSolution.getShotAngle() / 360);
+      outtake.pivot(
+          firingSolution.getShotAngle() / 360 * OuttakeConstants.gearReductionEncoderToMotor);
     }
   }
 
   @Override
   public boolean isFinished() {
-    return !RobotCoordinator.getInstance().onOurSideOfField();
+    return !RobotCoordinator.getInstance().onOurSideOfField()
+        || !RobotCoordinator.getInstance().noteInRobot();
   }
 
   @Override
