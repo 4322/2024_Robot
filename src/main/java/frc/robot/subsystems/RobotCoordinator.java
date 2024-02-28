@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -204,14 +203,6 @@ public class RobotCoordinator extends SubsystemBase {
 
   public boolean noteInVision() {
     return intakeLimelight.getTargetVisible();
-  }
-
-  public Pose2d getOuttakeLimelightPose2d() {
-    return outtakeLimelight.getAprilTagPose2d();
-  }
-
-  public double getOuttakeLimelightLatency() {
-    return outtakeLimelight.getTotalLatency();
   }
 
   public boolean pivotAtPosition() {

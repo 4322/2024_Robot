@@ -73,8 +73,8 @@ class RegisterIO implements IIOProvider {
         disconnectTimer.start();
         if (disconnectTimer.hasElapsed(5)) {
           System.out.printf(
-            "Changing NavX update rate from %d to %d",
-            board_state.update_rate_hz, this.update_rate_hz);
+              "Changing NavX update rate from %d to %d",
+              board_state.update_rate_hz, this.update_rate_hz);
           System.out.println();
           setUpdateRateHz(this.update_rate_hz);
         }
