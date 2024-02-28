@@ -38,13 +38,15 @@ public class OuttakeAdjustToSpeaker extends Command {
 
       outtake.outtake(firingSolution.getFlywheelSpeed());
       // divide by 360 because pivot uses rotations instead of degrees
-      outtake.pivot(firingSolution.getShotAngle() / 360 * OuttakeConstants.gearReductionEncoderToMotor);
+      outtake.pivot(
+          firingSolution.getShotAngle() / 360 * OuttakeConstants.gearReductionEncoderToMotor);
     }
   }
 
   @Override
   public boolean isFinished() {
-    return !RobotCoordinator.getInstance().onOurSideOfField() || !RobotCoordinator.getInstance().noteInRobot();
+    return !RobotCoordinator.getInstance().onOurSideOfField()
+        || !RobotCoordinator.getInstance().noteInRobot();
   }
 
   @Override
