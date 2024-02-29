@@ -105,7 +105,7 @@ public class Outtake extends SubsystemBase {
   }
 
   public void pivot(double rotations) {
-    if (Constants.outtakePivotEnabled && pivotInitialized) {
+    if (Constants.outtakePivotEnabled && pivotInitialized && safeToPivot()) {
       if (Constants.outtakeTuningMode) {
         rotations = inputs.targetPivotPosition;
       }
@@ -173,8 +173,8 @@ public class Outtake extends SubsystemBase {
   }
 
   public boolean safeToPivot() {
-    return (inputs.pivotRotations < OuttakeConstants.reverseSoftLimitThresholdRotations
-        && inputs.pivotRotations > OuttakeConstants.forwardSoftLimitThresholdRotations);
+    return (inputs.pivotRotations > OuttakeConstants.reverseSoftLimitThresholdRotations
+        && inputs.pivotRotations < OuttakeConstants.forwardSoftLimitThresholdRotations);
   }
 
   public boolean getDebugOverrideEnabled() {
