@@ -23,8 +23,7 @@ public class OuttakeAdjustToSpeaker extends Command {
   @Override
   public void execute() {
     if (RobotCoordinator.getInstance().onOurSideOfField()
-        && RobotCoordinator.getInstance().canPivot()
-        && outtake.safeToPivot()) {
+        && RobotCoordinator.getInstance().canPivot()) {
       FiringSolution firingSolution =
           FiringSolutionManager.getInstance()
               .calcSolution(
