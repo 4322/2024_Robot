@@ -1,7 +1,6 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,7 +15,7 @@ public class Intake extends SubsystemBase {
   private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
   TrapezoidProfile.State m_goal;
   ShuffleboardTab tab;
-  
+
   private boolean isFeeding;
   private double deployVolts;
   private double deployKp;
@@ -54,12 +53,10 @@ public class Intake extends SubsystemBase {
     state = IntakeDeployState.Unknown;
 
     if (io == null) {
-      io = new IntakeIO() {
-      };
+      io = new IntakeIO() {};
     }
     if (Constants.debug) {
       tab = Shuffleboard.getTab("intake");
-      
     }
   }
 
@@ -70,17 +67,16 @@ public class Intake extends SubsystemBase {
       Logger.processInputs(IntakeConstants.Logging.key, inputs);
     }
     if (Constants.intakeDeployerEnabled) {
-     
-      if(inputs.deployKp != deployKp)
-      {
+
+      if (inputs.deployKp != deployKp) {
         deployKp = inputs.deployKp;
         io.setDeployKp(deployKp);
       }
-      switch (state) { 
+      switch (state) {
         case Unknown:
           break;
         case Deploying:
-          if (inputs.heliumRotations < inputs.slowPos) {
+          if (inputs.heliumAbsRotations < inputs.slowPos) {
             deployVolts = IntakeConstants.Deploy.slowDeployVolts;
           } else {
             deployVolts = IntakeConstants.Deploy.fastDeployVolts;
@@ -91,7 +87,8 @@ public class Intake extends SubsystemBase {
           }
           break;
         case Retracting:
-           if (inputs.heliumRotations > (IntakeConstants.Deploy.retractTargetPosition - inputs.slowPos)) {
+          if (inputs.heliumAbsRotations
+              > (IntakeConstants.Deploy.retractTargetPosition - inputs.slowPos)) {
             deployVolts = IntakeConstants.Deploy.slowDeployVolts;
           } else {
             deployVolts = IntakeConstants.Deploy.fastDeployVolts;
@@ -105,11 +102,14 @@ public class Intake extends SubsystemBase {
           deployVolts = 0;
           break;
         case Retracted:
-          if (!OrangeMath.equalToEpsilon(inputs.heliumRotations, IntakeConstants.Deploy.retractTargetPosition,
-              IntakeConstants.Deploy.deployFallTolerance)) //if intake has drooped too far while driving
+          if (!OrangeMath.equalToEpsilon(
+              inputs.heliumAbsRotations,
+              IntakeConstants.Deploy.retractTargetPosition,
+              IntakeConstants.Deploy
+                  .deployFallTolerance)) // if intake has drooped too far while driving
           {
             setDeployerCoastMode();
-            state = IntakeDeployState.Retracting; //retract so it goes up to position
+            state = IntakeDeployState.Retracting; // retract so it goes up to position
           }
           break;
         default:
@@ -174,16 +174,11 @@ public class Intake extends SubsystemBase {
     if (Constants.intakeDeployerEnabled) {
       io.stopDeployer();
       Logger.recordOutput(IntakeConstants.Logging.deployerKey + "DeployStopped", true);
-      if(isDeployed())
-      {
+      if (isDeployed()) {
         state = IntakeDeployState.Deployed;
-      }
-      else if(isRetracted())
-      {
+      } else if (isRetracted()) {
         state = IntakeDeployState.Retracted;
-      }
-      else
-      {
+      } else {
         state = IntakeDeployState.Unknown;
         deployVolts = 0;
       }
@@ -220,7 +215,7 @@ public class Intake extends SubsystemBase {
 
   public boolean isDeployed() {
     return OrangeMath.equalToEpsilon(
-        inputs.heliumRotations,
+        inputs.heliumAbsRotations,
         IntakeConstants.Deploy.deployTargetPosition,
         IntakeConstants.Deploy.atTargetTolerance);
   }
@@ -230,12 +225,12 @@ public class Intake extends SubsystemBase {
   }
 
   public double getDeployRotations() {
-    return inputs.heliumRotations;
+    return inputs.heliumAbsRotations;
   }
 
   public boolean isRetracted() {
     return OrangeMath.equalToEpsilon(
-        inputs.heliumRotations,
+        inputs.heliumAbsRotations,
         IntakeConstants.Deploy.retractTargetPosition,
         IntakeConstants.Deploy.atTargetTolerance);
   }

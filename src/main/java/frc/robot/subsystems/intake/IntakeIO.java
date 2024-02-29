@@ -22,7 +22,7 @@ public interface IntakeIO {
     public double deployTempC = 0.0;
     public boolean deployIsAlive = false;
 
-    public double heliumRotations = 0.0;
+    public double heliumAbsRotations = 0.0;
     public double heliumRPS = 0.0;
 
     public String deployAppliedControl = "";
@@ -39,8 +39,9 @@ public interface IntakeIO {
   }
 
   public default void setDeployVoltage(double voltage) {}
-  public default void setDeployKp(double kP)
-  {}
+
+  public default void setDeployKp(double kP) {}
+
   public default void setIntakeBrakeMode() {}
 
   public default void setIntakeCoastMode() {}

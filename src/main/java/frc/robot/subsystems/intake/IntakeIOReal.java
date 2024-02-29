@@ -34,6 +34,7 @@ public class IntakeIOReal implements IntakeIO {
   GenericEntry kP;
   GenericEntry slowPos;
   GenericEntry deployerRPS;
+
   public IntakeIOReal() {
     intake =
         new TalonFX(IntakeConstants.intakeMotorID, Constants.DriveConstants.Drive.canivoreName);
@@ -57,15 +58,17 @@ public class IntakeIOReal implements IntakeIO {
               .getEntry();
       flywheelRPS = tab.add("Intake flywheel RPS", 0).withSize(1, 1).withPosition(2, 0).getEntry();
       deployPosition = tab.add("Deployer position", 0).withSize(1, 1).withPosition(1, 1).getEntry();
-      kP = tab.add("deployer kP", Constants.IntakeConstants.deployKp)
-          .withPosition(2, 1)
-          .withSize(1, 1).getEntry();
-      slowPos = tab.add("deployer slowing position", Constants.IntakeConstants.slowPos)
-          .withPosition(3, 1)
-          .withSize(1, 1).getEntry();
-      deployerRPS = tab.add("deployer RPS", 0)
-          .withPosition(0, 2)
-          .withSize(1, 1).getEntry();
+      kP =
+          tab.add("deployer kP", Constants.IntakeConstants.deployKp)
+              .withPosition(2, 1)
+              .withSize(1, 1)
+              .getEntry();
+      slowPos =
+          tab.add("deployer slowing position", Constants.IntakeConstants.slowPos)
+              .withPosition(3, 1)
+              .withSize(1, 1)
+              .getEntry();
+      deployerRPS = tab.add("deployer RPS", 0).withPosition(0, 2).withSize(1, 1).getEntry();
     }
   }
 
@@ -177,10 +180,14 @@ public class IntakeIOReal implements IntakeIO {
     inputs.deployTempC = deploy.getDeviceTemp().getValue();
     inputs.deployIsAlive = deploy.isAlive();
 
-    inputs.heliumRotations = deployEncoder.getAbsPosition();
+    inputs.heliumAbsRotations = deployEncoder.getAbsPosition();
     inputs.heliumRPS = deployEncoder.getVelocity();
 
     inputs.deployAppliedControl = deploy.getAppliedControl().toString();
+
+    if (inputs.heliumAbsRotations > Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
+      inputs.heliumAbsRotations = 0;
+    }
 
     if (Constants.debug) {
       inputs.intakeFeederVoltage =
@@ -244,12 +251,10 @@ public class IntakeIOReal implements IntakeIO {
     deploy.stopMotor();
   }
 
-  @Override 
-  public void setDeployKp(double kP)
-  {
+  @Override
+  public void setDeployKp(double kP) {
     Slot0Configs configs = new Slot0Configs();
     configs.kP = kP;
     deploy.getConfigurator().refresh(configs);
   }
 }
-  
