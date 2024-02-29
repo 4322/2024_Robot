@@ -29,6 +29,9 @@ public interface OuttakeIO {
 
     public double heliumAbsRotations = 0.0;
     public double heliumRelativeRotations = 0.0;
+
+    public boolean debugOuttakeEnabled = false;
+    public boolean debugPivotEnabled = false;
   }
 
   public default void updateInputs(OuttakeIOInputs inputs) {}
