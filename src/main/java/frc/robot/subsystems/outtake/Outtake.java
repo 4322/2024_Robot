@@ -15,6 +15,8 @@ public class Outtake extends SubsystemBase {
   private Timer existenceTimer;
   private double pivotTarget;
   private boolean pivotInitialized;
+  private boolean debugOuttakeEnabled;
+  private boolean debugPivotEnabled;
 
   private static Outtake outtake;
 
@@ -53,6 +55,13 @@ public class Outtake extends SubsystemBase {
   }
 
   public void periodic() {
+    if (Constants.outtakeTuningMode) {
+      debugOuttakeEnabled = inputs.debugOuttakeEnabled;
+      debugPivotEnabled = inputs.debugPivotEnabled;
+    } else {
+      debugOuttakeEnabled = Constants.outtakeEnabled;
+      debugPivotEnabled = Constants.outtakePivotEnabled;
+    }
     // Check if encoders have already been initialized after power cycle
     // If so, we don't need to reinitialize
     if (Constants.outtakePivotEnabled
@@ -72,7 +81,7 @@ public class Outtake extends SubsystemBase {
       existenceTimer.start();
       pivotInitialized = io.initPivot();
     }
-    if (Constants.outtakeEnabled || Constants.outtakePivotEnabled) {
+    if ((Constants.outtakeEnabled && debugOuttakeEnabled) || (Constants.outtakePivotEnabled && debugPivotEnabled)) {
       io.updateInputs(inputs);
       Logger.processInputs("Outtake", inputs);
       Logger.recordOutput("Outtake/TopRotationsPerSecAbs", Math.abs(inputs.leftRotationsPerSec));
@@ -80,10 +89,10 @@ public class Outtake extends SubsystemBase {
           "Outtake/BottomRotationsPerSecAbs", Math.abs(inputs.rightRotationsPerSec));
     }
     if (Constants.outtakeTuningMode) {
-      if (Constants.outtakeEnabled) {
+      if (Constants.outtakeEnabled && debugOuttakeEnabled) {
         outtake(inputs.debugTargetRPS);
       }
-      if (Constants.outtakePivotEnabled) {
+      if (Constants.outtakePivotEnabled && debugPivotEnabled) {
         pivot(inputs.targetPivotPosition);
       }
     }
@@ -96,7 +105,7 @@ public class Outtake extends SubsystemBase {
       }
       this.targetRPS = targetRPS;
       io.setOuttakeRPS(
-          Constants.OuttakeConstants.topOuttakeRPS, Constants.OuttakeConstants.bottomOuttakeRPS);
+          this.targetRPS, this.targetRPS);
       Logger.recordOutput(
           "Outtake/TopOuttakeTargetSpeedRPS", Constants.OuttakeConstants.topOuttakeRPS);
       Logger.recordOutput(
@@ -106,7 +115,7 @@ public class Outtake extends SubsystemBase {
   }
 
   public void pivot(double rotations) {
-    if (Constants.outtakePivotEnabled && pivotInitialized) {
+    if (Constants.outtakePivotEnabled && pivotInitialized && debugPivotEnabled) {
       if (Constants.outtakeTuningMode) {
         rotations = inputs.targetPivotPosition;
       }
@@ -118,7 +127,7 @@ public class Outtake extends SubsystemBase {
   }
 
   public void resetPivot() {
-    if (Constants.outtakePivotEnabled && pivotInitialized) {
+    if (Constants.outtakePivotEnabled && pivotInitialized && debugPivotEnabled) {
       io.setPivotTarget(Constants.OuttakeConstants.defaultPivotPositionRotations);
       pivotTarget = Constants.OuttakeConstants.defaultPivotPositionRotations;
       Logger.recordOutput(
@@ -128,30 +137,30 @@ public class Outtake extends SubsystemBase {
   }
 
   public void stopPivot() {
-    if (Constants.outtakePivotEnabled && pivotInitialized) {
+    if (Constants.outtakePivotEnabled && pivotInitialized && debugPivotEnabled) {
       io.stopPivot();
       Logger.recordOutput("Outtake/PivotStopped", true);
     }
   }
 
   public void stopOuttake() {
-    if (Constants.outtakeEnabled) {
+    if (Constants.outtakeEnabled && debugOuttakeEnabled) {
       io.stopOuttake();
-      Logger.recordOutput("Outtake/TopOuttakeTargetSpeedRPS", 0);
-      Logger.recordOutput("Outtake/BottomOuttakeTargetSpeedRPS", 0);
+      Logger.recordOutput("Outtake/TopOuttakeTargetSpeedRPS", 0.0);
+      Logger.recordOutput("Outtake/BottomOuttakeTargetSpeedRPS", 0.0);
       Logger.recordOutput("Outtake/OuttakeStopped", true);
     }
   }
 
   public void setPivotCoastMode() {
-    if (Constants.outtakePivotEnabled) {
+    if (Constants.outtakePivotEnabled && debugPivotEnabled) {
       io.setPivotCoastMode();
       Logger.recordOutput("Outtake/NeutralMode", "Coast");
     }
   }
 
   public void setPivotBrakeMode() {
-    if (Constants.outtakePivotEnabled) {
+    if (Constants.outtakePivotEnabled && debugPivotEnabled) {
       io.setPivotBrakeMode();
       Logger.recordOutput("Outtake/NeutralMode", "Brake");
     }

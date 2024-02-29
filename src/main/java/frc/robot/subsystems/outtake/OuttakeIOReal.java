@@ -32,6 +32,8 @@ public class OuttakeIOReal implements OuttakeIO {
   ShuffleboardTab tab;
   GenericEntry outtakeFlywheelSpeed;
   GenericEntry pivotPosition;
+  GenericEntry outtakeOn;
+  GenericEntry pivotOn;
 
   private double heliumAbsoluteRotations;
 
@@ -61,6 +63,10 @@ public class OuttakeIOReal implements OuttakeIO {
               .getEntry();
       pivotPosition =
           tab.add("Pivot Position (Rotations)", 0).withSize(1, 1).withPosition(1, 0).getEntry();
+      outtakeOn = 
+          tab.add("Outtake On", false).withSize(1, 1).withPosition(0, 2).getEntry();
+      pivotOn =
+          tab.add("Pivot On", false).withSize(1,1).withPosition(1, 1).getEntry();
     }
   }
 
@@ -163,7 +169,7 @@ public class OuttakeIOReal implements OuttakeIO {
     inputs.rightOuttakeIsAlive = rightOuttakeMotor.isAlive();
 
     inputs.pivotRotations = pivotMotor.getPosition().getValue();
-    inputs.pivotRotationsPerSec = pivotMotor.getVelocity().getValue() / 60;
+    inputs.pivotRotationsPerSec = pivotMotor.getVelocity().getValue();
     inputs.pivotAppliedVolts =
         pivotMotor.getDutyCycle().getValue() / 2 * pivotMotor.getSupplyVoltage().getValue();
     inputs.pivotCurrentAmps = pivotMotor.getSupplyCurrent().getValue();
@@ -177,6 +183,8 @@ public class OuttakeIOReal implements OuttakeIO {
     if (Constants.outtakeTuningMode) {
       inputs.debugTargetRPS = outtakeFlywheelSpeed.getDouble(0);
       inputs.targetPivotPosition = pivotPosition.getDouble(0);
+      inputs.debugOuttakeEnabled = outtakeOn.getBoolean(false);
+      inputs.debugPivotEnabled = pivotOn.getBoolean(false);
     }
 
     heliumAbsoluteRotations = inputs.heliumAbsRotations;

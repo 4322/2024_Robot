@@ -148,11 +148,6 @@ public class IntakeIOReal implements IntakeIO {
     deployEncoder.setSettings(settings, 0.050);
   }
 
-  public void updateShuffleboard() {
-    flywheelRPS.setDouble(intake.getVelocity().getValue() / 60);
-    deployPosition.setDouble(deploy.getPosition().getValue());
-  }
-
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
     inputs.intakeRotations = intake.getPosition().getValue();
@@ -164,15 +159,15 @@ public class IntakeIOReal implements IntakeIO {
     inputs.intakeIsAlive = intake.isAlive();
     inputs.intakeSpeedPct = intake.get();
     inputs.deployRotations = deploy.getPosition().getValue();
-    inputs.deployRotationsPerSec = deploy.getVelocity().getValue() / 60;
+    inputs.deployRotationsPerSec = deploy.getVelocity().getValue();
     inputs.deployAppliedVolts =
         deploy.getDutyCycle().getValue() / 2 * deploy.getSupplyVoltage().getValue();
     inputs.deployCurrentAmps = deploy.getSupplyCurrent().getValue();
     inputs.deployTempC = deploy.getDeviceTemp().getValue();
     inputs.deployIsAlive = deploy.isAlive();
 
-    inputs.heliumAbsRotations = deployEncoder.getAbsPosition();
-    inputs.heliumAbsoluteRPS = deployEncoder.getVelocity();
+    inputs.heliumRotations = deployEncoder.getAbsPosition();
+    inputs.heliumRPS = deployEncoder.getVelocity();
 
     inputs.deployAppliedControl = deploy.getAppliedControl().toString();
 
@@ -181,7 +176,6 @@ public class IntakeIOReal implements IntakeIO {
           intakeFeederVoltage.getDouble(IntakeConstants.IntakeConfig.intakeFeedVoltage);
       inputs.intakeEjectVoltage =
           intakeEjectVoltage.getDouble(IntakeConstants.IntakeConfig.intakeEjectVoltage);
-      updateShuffleboard();
     } else {
       inputs.intakeFeederVoltage = IntakeConstants.IntakeConfig.intakeFeedVoltage;
       inputs.intakeEjectVoltage = IntakeConstants.IntakeConfig.intakeEjectVoltage;
@@ -195,7 +189,7 @@ public class IntakeIOReal implements IntakeIO {
 
   @Override
   public void setDeployVoltage(double voltage) {
-    deploy.setControl(new VoltageOut(voltage).withOverrideBrakeDurNeutral(false));
+    deploy.setControl(new VoltageOut(voltage));
   }
 
   @Override

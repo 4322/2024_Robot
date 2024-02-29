@@ -1,6 +1,10 @@
 package frc.robot.subsystems.intake;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
@@ -15,11 +19,23 @@ public class Intake extends SubsystemBase {
   private Timer existenceTimer;
   private boolean deployInitialized;
   private double deployTarget = 99999; // set to very high value in case target not yet set
+  TrapezoidProfile.State m_goal;
+  ShuffleboardTab tab;
+  GenericEntry kP;
+  GenericEntry slowPos;
+  GenericEntry deployerRPS;
   private boolean isFeeding;
   private boolean deployRequested;
-
+  double deployVolts;
   private static Intake intake;
-
+  public enum IntakeDeployState {
+    Unknown,
+    Deployed,
+    Deploying,
+    Retracting,
+    Retracted
+  }
+  IntakeDeployState state;
   public static Intake getInstance() {
     if (intake == null) {
       intake = new Intake();
@@ -39,11 +55,25 @@ public class Intake extends SubsystemBase {
       case REPLAY:
         break;
     }
+    state = IntakeDeployState.Unknown;
 
     if (io == null) {
       io = new IntakeIO() {};
     }
     existenceTimer = new Timer();
+    if(Constants.debug)
+    {
+      tab = Shuffleboard.getTab("intake");
+      kP = tab.add("deployer kP",Constants.IntakeConstants.deployKp)
+        .withPosition(3, 1)
+        .withSize(1, 1).getEntry();
+      slowPos = tab.add("deployer slowing position", Constants.IntakeConstants.slowPos)
+        .withPosition(0,2)
+        .withSize(1,1).getEntry();
+      deployerRPS = tab.add("deployer RPS",0)
+        .withPosition(1, 2)
+        .withSize(1, 1).getEntry();
+    }
   }
 
   @Override
@@ -53,6 +83,47 @@ public class Intake extends SubsystemBase {
     if (Constants.intakeEnabled || Constants.intakeDeployerEnabled) {
       io.updateInputs(inputs);
       Logger.processInputs(IntakeConstants.Logging.key, inputs);
+    }
+    if(Constants.intakeDeployerEnabled)
+    {
+      switch(state)
+      {
+        case Unknown:
+          break;
+        case Deploying:
+          if(inputs.heliumRotations < slowPos.getDouble(IntakeConstants.slowPos))
+          {
+            deployVolts = IntakeConstants.Deploy.slowDeployVolts;
+          }
+          else
+          {
+            deployVolts = IntakeConstants.Deploy.fastDeployVolts;
+          }
+          if(isDeployed())
+          {
+            state = IntakeDeployState.Deployed;
+          }
+          break;
+        case Retracting:
+          
+          if(isRetracted())
+          {
+            setDeployerBrakeMode();
+            state = IntakeDeployState.Retracted;
+          }
+          break;
+        case Deployed:
+          deployVolts = 0;
+          break;
+        case Retracted:
+          if(!OrangeMath.equalToEpsilon(inputs.deployRotations, IntakeConstants.Deploy.retractTargetPosition, IntakeConstants.Deploy.retractTolerance))
+          { 
+            state = IntakeDeployState.Retracting;
+          }
+          break;
+        default:
+          break;
+      }
     }
   }
 
@@ -110,7 +181,7 @@ public class Intake extends SubsystemBase {
 
   public void stopDeployer() {
     if (Constants.intakeDeployerEnabled && deployInitialized) {
-      io.stopFeeder();
+      io.stopDeployer();
       Logger.recordOutput(IntakeConstants.Logging.deployerKey + "DeployStopped", true);
       deployRequested = false;
     }
@@ -118,7 +189,12 @@ public class Intake extends SubsystemBase {
 
   public void deploy() {
     if (Constants.intakeDeployerEnabled && deployInitialized) {
-      io.setDeployVoltage(inputs.deployPositionRotations);
+      if(state != IntakeDeployState.Deploying)
+      {
+        setDeployerCoastMode();
+      }
+      state = IntakeDeployState.Deploying;
+      io.setDeployVoltage(deployVolts);
       deployTarget = inputs.deployPositionRotations;
       Logger.recordOutput(
           IntakeConstants.Logging.deployerKey + "DeployTargetRotations",
@@ -130,7 +206,12 @@ public class Intake extends SubsystemBase {
 
   public void retract() {
     if (Constants.intakeDeployerEnabled && deployInitialized) {
-      io.setDeployVoltage(inputs.retractPositionRotations);
+      if(state != IntakeDeployState.Retracting)
+      {
+        setDeployerCoastMode();
+      }
+      state = IntakeDeployState.Retracting;
+      io.setDeployVoltage(deployVolts);
       deployTarget = inputs.retractPositionRotations;
       Logger.recordOutput(
           IntakeConstants.Logging.deployerKey + "DeployTargetRotations",
@@ -140,15 +221,11 @@ public class Intake extends SubsystemBase {
     }
   }
 
-  public boolean isAtPosition() {
-    return OrangeMath.equalToEpsilon(
-        inputs.deployRotations, deployTarget, IntakeConstants.Deploy.toleranceRotations);
-  }
 
   public boolean isDeployed() {
     return OrangeMath.equalToEpsilon(
         inputs.deployRotations,
-        inputs.deployPositionRotations,
+        IntakeConstants.Deploy.deployTargetPosition,
         IntakeConstants.Deploy.toleranceRotations);
   }
 

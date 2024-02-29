@@ -24,8 +24,8 @@ public interface IntakeIO {
     public double deployTempC = 0.0;
     public boolean deployIsAlive = false;
 
-    public double heliumAbsRotations = 0.0;
-    public double heliumAbsoluteRPS = 0.0;
+    public double heliumRotations = 0.0;
+    public double heliumRPS = 0.0;
 
     public String deployAppliedControl = "";
   }
