@@ -281,7 +281,17 @@ public class RobotContainer {
 
   // Command that should always start off every auto
   public Command getAutoInitialize() {
-    return new SequentialCommandGroup(new ResetFieldCentric(true));
+    final String autoName = AutoHelper.getPathPlannerAutoName(autoChooser.getSelected());
+    if (autoName == "None") {
+      return new SequentialCommandGroup(new ResetFieldCentric(true));
+    } else {
+      return new SequentialCommandGroup(
+          new ResetFieldCentric(
+              true,
+              PathPlannerManager.getInstance()
+                  .getStartingPoseFromAutoFile(autoName)
+                  .getRotation()));
+    }
   }
 
   // Command for the auto on our side of the field (PathPlanner Auto)
