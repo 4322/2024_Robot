@@ -97,7 +97,7 @@ public class LED extends SubsystemBase {
         case deployingIntake:
           io.configBrightness(
               RobotCoordinator.getInstance().getDeployRotations()
-                  / Constants.IntakeConstants.Deploy.deployPositionRotations);
+                  / Constants.IntakeConstants.Deploy.deployPositionRotations); // TODO
           io.setLED(255, 0, 0, 0, Constants.LED.totalLEDs);
           break;
         case noteInRobot:
