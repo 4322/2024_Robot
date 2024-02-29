@@ -49,25 +49,7 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     RobotCoordinator coordinator = RobotCoordinator.getInstance();
-    // Check if encoders have already been initialized after power cycle
-    // If so, we don't need to reinitialize
-    if (Constants.intakeDeployerEnabled
-        && !deployInitialized
-        && OrangeMath.equalToEpsilon(
-            inputs.heliumRelativeRotations,
-            Constants.EncoderInitializeConstants.initializedRotationsFlag,
-            Constants.EncoderInitializeConstants.initializedRotationsTolerance)) {
-      deployInitialized = true;
-    }
 
-    // initialize motor internal encoder position until the intake isn't moving
-    if (Constants.intakeDeployerEnabled
-        && !deployInitialized
-        && !existenceTimer.hasElapsed(5)
-        && coordinator.getInitAbsEncoderPressed()) {
-      existenceTimer.start();
-      deployInitialized = io.initMotorPos();
-    }
     if (Constants.intakeEnabled || Constants.intakeDeployerEnabled) {
       io.updateInputs(inputs);
       Logger.processInputs(IntakeConstants.Logging.key, inputs);
@@ -136,7 +118,7 @@ public class Intake extends SubsystemBase {
 
   public void deploy() {
     if (Constants.intakeDeployerEnabled && deployInitialized) {
-      io.setDeployTarget(inputs.deployPositionRotations);
+      io.setDeployVoltage(inputs.deployPositionRotations);
       deployTarget = inputs.deployPositionRotations;
       Logger.recordOutput(
           IntakeConstants.Logging.deployerKey + "DeployTargetRotations",
@@ -148,7 +130,7 @@ public class Intake extends SubsystemBase {
 
   public void retract() {
     if (Constants.intakeDeployerEnabled && deployInitialized) {
-      io.setDeployTarget(inputs.retractPositionRotations);
+      io.setDeployVoltage(inputs.retractPositionRotations);
       deployTarget = inputs.retractPositionRotations;
       Logger.recordOutput(
           IntakeConstants.Logging.deployerKey + "DeployTargetRotations",

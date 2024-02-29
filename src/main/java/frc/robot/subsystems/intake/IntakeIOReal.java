@@ -8,7 +8,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.VoltageConfigs;
-import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakeConstants.DeployConfig;
-import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
 public class IntakeIOReal implements IntakeIO {
@@ -30,13 +29,8 @@ public class IntakeIOReal implements IntakeIO {
   ShuffleboardTab tab;
   GenericEntry intakeFeederVoltage;
   GenericEntry intakeEjectVoltage;
-  GenericEntry deployPositionRotations;
-  GenericEntry retractPositionRotations;
   GenericEntry deployPosition;
-  GenericEntry deployerRPS;
   GenericEntry flywheelRPS;
-
-  private double heliumAbsoluteRotations;
 
   public IntakeIOReal() {
     intake =
@@ -60,24 +54,7 @@ public class IntakeIOReal implements IntakeIO {
               .withPosition(1, 0)
               .getEntry();
       flywheelRPS = tab.add("Intake flywheel RPS", 0).withSize(1, 1).withPosition(2, 0).getEntry();
-      deployPositionRotations =
-          tab.add("Deployer Target (Rotations)", 99999)
-              .withSize(1, 1)
-              .withPosition(3, 0)
-              .getEntry();
-      retractPositionRotations =
-          tab.add(
-                  "Retract Deployer Target (Rotations)",
-                  IntakeConstants.Deploy.retractPositionRotations)
-              .withSize(1, 1)
-              .withPosition(0, 1)
-              .getEntry();
       deployPosition = tab.add("Deployer position", 0).withSize(1, 1).withPosition(1, 1).getEntry();
-      deployerRPS =
-          tab.add("Max Deployer RPS", IntakeConstants.Deploy.maxVelRotationsPerSec)
-              .withSize(1, 1)
-              .withPosition(2, 1)
-              .getEntry();
     }
   }
 
@@ -166,7 +143,7 @@ public class IntakeIOReal implements IntakeIO {
     Canandcoder.Settings settings = new Canandcoder.Settings();
     settings.setInvertDirection(true);
     settings.setPositionFramePeriod(0.010);
-    settings.setVelocityFramePeriod(0.050);
+    settings.setVelocityFramePeriod(0.010);
     settings.setStatusFramePeriod(1.0);
     deployEncoder.setSettings(settings, 0.050);
   }
@@ -194,28 +171,21 @@ public class IntakeIOReal implements IntakeIO {
     inputs.deployTempC = deploy.getDeviceTemp().getValue();
     inputs.deployIsAlive = deploy.isAlive();
 
-    inputs.heliumRelativeRotations = deployEncoder.getPosition();
     inputs.heliumAbsRotations = deployEncoder.getAbsPosition();
+    inputs.heliumAbsoluteRPS = deployEncoder.getVelocity();
 
     inputs.deployAppliedControl = deploy.getAppliedControl().toString();
+
     if (Constants.debug) {
       inputs.intakeFeederVoltage =
           intakeFeederVoltage.getDouble(IntakeConstants.IntakeConfig.intakeFeedVoltage);
       inputs.intakeEjectVoltage =
           intakeEjectVoltage.getDouble(IntakeConstants.IntakeConfig.intakeEjectVoltage);
-      inputs.deployPositionRotations =
-          deployPositionRotations.getDouble(IntakeConstants.Deploy.deployPositionRotations);
-      inputs.retractPositionRotations =
-          retractPositionRotations.getDouble(IntakeConstants.Deploy.retractPositionRotations);
       updateShuffleboard();
     } else {
       inputs.intakeFeederVoltage = IntakeConstants.IntakeConfig.intakeFeedVoltage;
       inputs.intakeEjectVoltage = IntakeConstants.IntakeConfig.intakeEjectVoltage;
-      inputs.deployPositionRotations = IntakeConstants.Deploy.deployPositionRotations;
-      inputs.retractPositionRotations = IntakeConstants.Deploy.retractPositionRotations;
     }
-
-    heliumAbsoluteRotations = inputs.heliumAbsRotations;
   }
 
   @Override
@@ -224,55 +194,8 @@ public class IntakeIOReal implements IntakeIO {
   }
 
   @Override
-  public boolean initMotorPos() {
-    if (heliumAbsoluteRotations
-        > Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
-      // Assume that abs position higher than maxValue is below the
-      // hard stop zero point of shooter/deployer
-      // If so, assume that position is 0 for motor internal encoder
-      deploy.setPosition(0);
-    } else {
-      deploy.setPosition(heliumAbsoluteRotations * IntakeConstants.Deploy.encoderGearReduction);
-    }
-
-    if (OrangeMath.equalToTwoDecimal(deployEncoder.getVelocity(), 0)) {
-      // Set only relative encoder rotations of Helium encoder to a very high number after
-      // initialized
-      // once
-      // Relative encoder on Helium used only to check if we have already initialized after power
-      // cycle
-      deployEncoder.setPosition(Constants.EncoderInitializeConstants.initializedRotationsFlag);
-      return true;
-    }
-
-    return false;
-  }
-
-  @Override
-  public void setDeployTarget(double rotations) {
-    if (Constants.debug) {
-      deploy.setControl(
-          new PositionVoltage(
-              rotations,
-              deployerRPS.getDouble(IntakeConstants.Deploy.maxVelRotationsPerSec),
-              IntakeConstants.Deploy.enableFOC,
-              IntakeConstants.Deploy.FF,
-              IntakeConstants.Deploy.positionVoltageSlot,
-              IntakeConstants.Deploy.overrideBrakeDuringNeutral,
-              IntakeConstants.Deploy.limitForwardMotion,
-              IntakeConstants.Deploy.limitReverseMotion));
-    } else {
-      deploy.setControl(
-          new PositionVoltage(
-              rotations,
-              IntakeConstants.Deploy.maxVelRotationsPerSec,
-              IntakeConstants.Deploy.enableFOC,
-              IntakeConstants.Deploy.FF,
-              IntakeConstants.Deploy.positionVoltageSlot,
-              IntakeConstants.Deploy.overrideBrakeDuringNeutral,
-              IntakeConstants.Deploy.limitForwardMotion,
-              IntakeConstants.Deploy.limitReverseMotion));
-    }
+  public void setDeployVoltage(double voltage) {
+    deploy.setControl(new VoltageOut(voltage).withOverrideBrakeDurNeutral(false));
   }
 
   @Override

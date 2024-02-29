@@ -25,7 +25,7 @@ public interface IntakeIO {
     public boolean deployIsAlive = false;
 
     public double heliumAbsRotations = 0.0;
-    public double heliumRelativeRotations = 0.0;
+    public double heliumAbsoluteRPS = 0.0;
 
     public String deployAppliedControl = "";
   }
@@ -38,7 +38,7 @@ public interface IntakeIO {
     return false;
   }
 
-  public default void setDeployTarget(double rotations) {}
+  public default void setDeployVoltage(double voltage) {}
 
   public default void setIntakeBrakeMode() {}
 
