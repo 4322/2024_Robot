@@ -16,7 +16,8 @@ public class FiringSolution extends GenericFiringSolution {
     this.shotRotations = 0;
   }
 
-  public FiringSolution(double shotMag, double shotDeg, double flywheelSpeed, double shotRotations) {
+  public FiringSolution(
+      double shotMag, double shotDeg, double flywheelSpeed, double shotRotations) {
     this.shotMag = shotMag;
     this.shotDeg = shotDeg;
     this.flywheelSpeed = flywheelSpeed;
