@@ -79,14 +79,11 @@ public class Outtake extends SubsystemBase {
       Logger.recordOutput(
           "Outtake/BottomRotationsPerSecAbs", Math.abs(inputs.rightRotationsPerSec));
     }
-    if(Constants.outtakeTuningMode)
-    {
-      if(Constants.outtakeEnabled)
-      {
+    if (Constants.outtakeTuningMode) {
+      if (Constants.outtakeEnabled) {
         outtake(inputs.debugTargetRPS);
       }
-      if(Constants.outtakePivotEnabled)
-      {
+      if (Constants.outtakePivotEnabled) {
         pivot(inputs.targetPivotPosition);
       }
     }

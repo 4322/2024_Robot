@@ -92,6 +92,7 @@ public final class Constants {
   public static final boolean driveTuningMode = false;
   public static final boolean steeringTuningMode = false;
   public static final boolean outtakeTuningMode = true;
+
   public enum DriveDegradedMode {
     normal,
     sideMotorsOnly,
@@ -112,7 +113,6 @@ public final class Constants {
   public static final int controllerConfigTimeoutMs = 50;
   public static final boolean inShotTuning = false;
   public static final double fieldWidthMeters = 8;
-
 
   public static final class DriveConstants {
 
