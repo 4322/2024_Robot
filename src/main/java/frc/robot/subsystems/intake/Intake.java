@@ -2,13 +2,11 @@ package frc.robot.subsystems.intake;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.subsystems.RobotCoordinator;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -16,9 +14,6 @@ public class Intake extends SubsystemBase {
 
   private IntakeIO io;
   private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
-  private Timer existenceTimer;
-  private boolean deployInitialized;
-  private double deployTarget;
   TrapezoidProfile.State m_goal;
   ShuffleboardTab tab;
   GenericEntry kP;
@@ -64,7 +59,6 @@ public class Intake extends SubsystemBase {
       io = new IntakeIO() {
       };
     }
-    existenceTimer = new Timer();
     if (Constants.debug) {
       tab = Shuffleboard.getTab("intake");
       kP = tab.add("deployer kP", Constants.IntakeConstants.deployKp)
@@ -81,8 +75,6 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    RobotCoordinator coordinator = RobotCoordinator.getInstance();
-
     if (Constants.intakeEnabled || Constants.intakeDeployerEnabled) {
       io.updateInputs(inputs);
       Logger.processInputs(IntakeConstants.Logging.key, inputs);
@@ -219,7 +211,6 @@ public class Intake extends SubsystemBase {
       }
       state = IntakeDeployState.Deploying;
       io.setDeployVoltage(deployVolts);
-      deployTarget = IntakeConstants.Deploy.deployTargetPosition;
       Logger.recordOutput(
           IntakeConstants.Logging.deployerKey + "DeployTargetRotations",
           IntakeConstants.Deploy.deployTargetPosition);
@@ -234,7 +225,6 @@ public class Intake extends SubsystemBase {
       }
       state = IntakeDeployState.Retracting;
       io.setDeployVoltage(deployVolts);
-      deployTarget = IntakeConstants.Deploy.retractTargetPosition;
       Logger.recordOutput(
           IntakeConstants.Logging.deployerKey + "DeployTargetRotations",
           IntakeConstants.Deploy.retractTargetPosition);
