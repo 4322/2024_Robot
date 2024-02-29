@@ -52,7 +52,7 @@ public class OuttakeIOReal implements OuttakeIO {
     configOuttake(rightOuttakeMotor);
     rightOuttakeMotor.setControl(new Follower(leftOuttakeMotor.getDeviceID(), true));
     configPivot(pivotMotor);
-    if (Constants.debug) {
+    if (Constants.outtakeTuningMode) {
       tab = Shuffleboard.getTab("Outtake");
       outtakeFlywheelSpeed =
           tab.add("Desired Flywheel Velocity (RPS)", 0)
@@ -174,9 +174,9 @@ public class OuttakeIOReal implements OuttakeIO {
     inputs.heliumRelativeRotations =
         pivotEncoder.getPosition(); // logged for checking if postion as been initialized
 
-    if (Constants.debug) {
+    if (Constants.outtakeTuningMode) {
       inputs.debugTargetRPS = outtakeFlywheelSpeed.getDouble(0);
-      inputs.targetPivotPositionDegrees = pivotPosition.getDouble(0);
+      inputs.targetPivotPosition = pivotPosition.getDouble(0);
     }
 
     heliumAbsoluteRotations = inputs.heliumAbsRotations;

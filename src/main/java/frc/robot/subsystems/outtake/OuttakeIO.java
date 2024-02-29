@@ -21,7 +21,7 @@ public interface OuttakeIO {
 
     public double pivotEncoderRotations = 0.0;
     public double pivotEncoderRotationsPerSec = 0.0;
-    public double targetPivotPositionDegrees;
+    public double targetPivotPosition;
 
     public boolean leftOuttakeIsAlive = false;
     public boolean rightOuttakeIsAlive = false;

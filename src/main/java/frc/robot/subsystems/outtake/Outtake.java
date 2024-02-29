@@ -79,11 +79,22 @@ public class Outtake extends SubsystemBase {
       Logger.recordOutput(
           "Outtake/BottomRotationsPerSecAbs", Math.abs(inputs.rightRotationsPerSec));
     }
+    if(Constants.outtakeTuningMode)
+    {
+      if(Constants.outtakeEnabled)
+      {
+        outtake(inputs.debugTargetRPS);
+      }
+      if(Constants.outtakePivotEnabled)
+      {
+        pivot(inputs.targetPivotPosition);
+      }
+    }
   }
 
   public void outtake(double targetRPS) {
     if (Constants.outtakeEnabled) {
-      if (Constants.debug) {
+      if (Constants.outtakeTuningMode) {
         targetRPS = inputs.debugTargetRPS;
       }
       this.targetRPS = targetRPS;
@@ -99,8 +110,8 @@ public class Outtake extends SubsystemBase {
 
   public void pivot(double rotations) {
     if (Constants.outtakePivotEnabled && pivotInitialized) {
-      if (Constants.debug) {
-        rotations = inputs.targetPivotPositionDegrees;
+      if (Constants.outtakeTuningMode) {
+        rotations = inputs.targetPivotPosition;
       }
       io.setPivotTarget(rotations);
       pivotTarget = rotations;
