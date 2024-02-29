@@ -25,7 +25,7 @@ public interface IntakeIO {
     public boolean deployIsAlive = false;
 
     public double heliumAbsRotations = 0.0;
-    public double heliumAbsoluteRPS = 0.0;
+    public double heliumRPS = 0.0;
 
     public String deployAppliedControl = "";
   }
