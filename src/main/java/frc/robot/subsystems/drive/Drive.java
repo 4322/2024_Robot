@@ -362,7 +362,7 @@ public class Drive extends SubsystemBase {
 
   public void resetFieldCentric(double degrees) {
     if (Constants.driveEnabled && Constants.gyroEnabled && gyro != null) {
-      gyro.resetWithOffset(pitchOffset);
+      gyro.resetWithOffset(degrees);
     }
   }
 
