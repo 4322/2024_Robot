@@ -28,6 +28,7 @@ public class Intake extends SubsystemBase {
   private boolean deployRequested;
   double deployVolts;
   private static Intake intake;
+
   public enum IntakeDeployState {
     Unknown,
     Deployed,
@@ -35,7 +36,9 @@ public class Intake extends SubsystemBase {
     Retracting,
     Retracted
   }
+
   IntakeDeployState state;
+
   public static Intake getInstance() {
     if (intake == null) {
       intake = new Intake();
@@ -61,18 +64,19 @@ public class Intake extends SubsystemBase {
       io = new IntakeIO() {};
     }
     existenceTimer = new Timer();
-    if(Constants.debug)
-    {
+    if (Constants.debug) {
       tab = Shuffleboard.getTab("intake");
-      kP = tab.add("deployer kP",Constants.IntakeConstants.deployKp)
-        .withPosition(3, 1)
-        .withSize(1, 1).getEntry();
-      slowPos = tab.add("deployer slowing position", Constants.IntakeConstants.slowPos)
-        .withPosition(0,2)
-        .withSize(1,1).getEntry();
-      deployerRPS = tab.add("deployer RPS",0)
-        .withPosition(1, 2)
-        .withSize(1, 1).getEntry();
+      kP =
+          tab.add("deployer kP", Constants.IntakeConstants.deployKp)
+              .withPosition(3, 1)
+              .withSize(1, 1)
+              .getEntry();
+      slowPos =
+          tab.add("deployer slowing position", Constants.IntakeConstants.slowPos)
+              .withPosition(0, 2)
+              .withSize(1, 1)
+              .getEntry();
+      deployerRPS = tab.add("deployer RPS", 0).withPosition(1, 2).withSize(1, 1).getEntry();
     }
   }
 
@@ -84,30 +88,22 @@ public class Intake extends SubsystemBase {
       io.updateInputs(inputs);
       Logger.processInputs(IntakeConstants.Logging.key, inputs);
     }
-    if(Constants.intakeDeployerEnabled)
-    {
-      switch(state)
-      {
+    if (Constants.intakeDeployerEnabled) {
+      switch (state) {
         case Unknown:
           break;
         case Deploying:
-          if(inputs.heliumRotations < slowPos.getDouble(IntakeConstants.slowPos))
-          {
+          if (inputs.heliumRotations < slowPos.getDouble(IntakeConstants.slowPos)) {
             deployVolts = IntakeConstants.Deploy.slowDeployVolts;
-          }
-          else
-          {
+          } else {
             deployVolts = IntakeConstants.Deploy.fastDeployVolts;
           }
-          if(isDeployed())
-          {
+          if (isDeployed()) {
             state = IntakeDeployState.Deployed;
           }
           break;
         case Retracting:
-          
-          if(isRetracted())
-          {
+          if (isRetracted()) {
             setDeployerBrakeMode();
             state = IntakeDeployState.Retracted;
           }
@@ -116,8 +112,10 @@ public class Intake extends SubsystemBase {
           deployVolts = 0;
           break;
         case Retracted:
-          if(!OrangeMath.equalToEpsilon(inputs.deployRotations, IntakeConstants.Deploy.retractTargetPosition, IntakeConstants.Deploy.retractTolerance))
-          { 
+          if (!OrangeMath.equalToEpsilon(
+              inputs.deployRotations,
+              IntakeConstants.Deploy.retractTargetPosition,
+              IntakeConstants.Deploy.retractTolerance)) {
             state = IntakeDeployState.Retracting;
           }
           break;
@@ -189,8 +187,7 @@ public class Intake extends SubsystemBase {
 
   public void deploy() {
     if (Constants.intakeDeployerEnabled && deployInitialized) {
-      if(state != IntakeDeployState.Deploying)
-      {
+      if (state != IntakeDeployState.Deploying) {
         setDeployerCoastMode();
       }
       state = IntakeDeployState.Deploying;
@@ -206,8 +203,7 @@ public class Intake extends SubsystemBase {
 
   public void retract() {
     if (Constants.intakeDeployerEnabled && deployInitialized) {
-      if(state != IntakeDeployState.Retracting)
-      {
+      if (state != IntakeDeployState.Retracting) {
         setDeployerCoastMode();
       }
       state = IntakeDeployState.Retracting;
@@ -220,7 +216,6 @@ public class Intake extends SubsystemBase {
       deployRequested = false;
     }
   }
-
 
   public boolean isDeployed() {
     return OrangeMath.equalToEpsilon(
