@@ -105,7 +105,7 @@ public class Outtake extends SubsystemBase {
   }
 
   public void pivot(double rotations) {
-    if (Constants.outtakePivotEnabled && pivotInitialized) {
+    if (Constants.outtakePivotEnabled && pivotInitialized && safeToPivot()) {
       if (Constants.outtakeTuningMode) {
         rotations = inputs.targetPivotPosition;
       }
