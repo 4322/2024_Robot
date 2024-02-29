@@ -425,7 +425,7 @@ public final class Constants {
     public static final double supplyLimit = 30;
     public static final double statorLimit = 45;
 
-    public static final double desiredVoltage = 3.0;
+    public static final double desiredVoltage = 4.0;
     public static final double peakVoltage = 6.0;
 
     public static final class Logging {
