@@ -208,4 +208,8 @@ public class RobotCoordinator extends SubsystemBase {
   public boolean pivotAtPosition() {
     return outtake.pivotIsAtPosition();
   }
+
+  public boolean debugOuttakeOverride() {
+    return outtake.getDebugOverrideEnabled();
+  }
 }

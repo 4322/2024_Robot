@@ -79,7 +79,7 @@ public class Outtake extends SubsystemBase {
       Logger.recordOutput(
           "Outtake/BottomRotationsPerSecAbs", Math.abs(inputs.rightRotationsPerSec));
     }
-    if (Constants.outtakeTuningMode) {
+    if (Constants.outtakeTuningMode && inputs.debugOverrideEnable) {
       if (Constants.outtakeEnabled) {
         outtake(inputs.debugTargetRPS);
       }
@@ -175,5 +175,9 @@ public class Outtake extends SubsystemBase {
   public boolean safeToPivot() {
     return (inputs.pivotRotations < OuttakeConstants.reverseSoftLimitThresholdRotations
         && inputs.pivotRotations > OuttakeConstants.forwardSoftLimitThresholdRotations);
+  }
+
+  public boolean getDebugOverrideEnabled() {
+    return inputs.debugOverrideEnable;
   }
 }
