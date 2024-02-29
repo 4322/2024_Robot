@@ -269,13 +269,14 @@ public class RobotContainer {
   public Command getAutoInitialize() {
     final String autoName = AutoHelper.getPathPlannerAutoName(autoChooser.getSelected());
     if (autoName == "None") {
-      return new SequentialCommandGroup(
-        new ResetFieldCentric(true)
-      );
+      return new SequentialCommandGroup(new ResetFieldCentric(true));
     } else {
       return new SequentialCommandGroup(
-        new ResetFieldCentric(true, PathPlannerManager.getInstance().getStartingPoseFromAutoFile(autoName).getRotation())
-      );
+          new ResetFieldCentric(
+              true,
+              PathPlannerManager.getInstance()
+                  .getStartingPoseFromAutoFile(autoName)
+                  .getRotation()));
     }
   }
 
