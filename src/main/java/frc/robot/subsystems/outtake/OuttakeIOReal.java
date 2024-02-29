@@ -63,10 +63,8 @@ public class OuttakeIOReal implements OuttakeIO {
               .getEntry();
       pivotPosition =
           tab.add("Pivot Position (Rotations)", 0).withSize(1, 1).withPosition(1, 0).getEntry();
-      outtakeOn = 
-          tab.add("Outtake On", false).withSize(1, 1).withPosition(0, 2).getEntry();
-      pivotOn =
-          tab.add("Pivot On", false).withSize(1,1).withPosition(1, 1).getEntry();
+      outtakeOn = tab.add("Outtake On", false).withSize(1, 1).withPosition(0, 2).getEntry();
+      pivotOn = tab.add("Pivot On", false).withSize(1, 1).withPosition(1, 1).getEntry();
     }
   }
 
@@ -181,8 +179,8 @@ public class OuttakeIOReal implements OuttakeIO {
         pivotEncoder.getPosition(); // logged for checking if postion as been initialized
 
     if (Constants.outtakeTuningMode) {
-      inputs.debugTargetRPS = outtakeFlywheelSpeed.getDouble(0.0);
-      inputs.targetPivotPosition = pivotPosition.getDouble(0.0);
+      inputs.debugTargetRPS = outtakeFlywheelSpeed.getDouble(0);
+      inputs.targetPivotPosition = pivotPosition.getDouble(0);
     }
 
     heliumAbsoluteRotations = inputs.heliumAbsRotations;

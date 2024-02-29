@@ -13,6 +13,7 @@ public class AtHome extends InstantCommand {
   public void initialize() {
     if (DriverStation.isDisabled()) {
       RobotCoordinator.getInstance().setInitAbsEncoderPressed(true);
+      DriverStation.reportWarning("Initialized motor positions", false);
     }
   }
 

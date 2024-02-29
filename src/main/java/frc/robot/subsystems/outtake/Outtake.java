@@ -72,7 +72,7 @@ public class Outtake extends SubsystemBase {
       existenceTimer.start();
       pivotInitialized = io.initPivot();
     }
-    if (Constants.outtakeEnabled || Constants.outtakePivotEnabled) {
+    if ((Constants.outtakeEnabled) || (Constants.outtakePivotEnabled)) {
       io.updateInputs(inputs);
       Logger.processInputs("Outtake", inputs);
       Logger.recordOutput("Outtake/TopRotationsPerSecAbs", Math.abs(inputs.leftRotationsPerSec));
@@ -95,8 +95,7 @@ public class Outtake extends SubsystemBase {
         targetRPS = inputs.debugTargetRPS;
       }
       this.targetRPS = targetRPS;
-      io.setOuttakeRPS(
-          this.targetRPS, this.targetRPS);
+      io.setOuttakeRPS(this.targetRPS, this.targetRPS);
       Logger.recordOutput(
           "Outtake/TopOuttakeTargetSpeedRPS", Constants.OuttakeConstants.topOuttakeRPS);
       Logger.recordOutput(

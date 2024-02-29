@@ -87,7 +87,12 @@ public class Intake extends SubsystemBase {
       io.updateInputs(inputs);
       Logger.processInputs(IntakeConstants.Logging.key, inputs);
     }
+    if(Constants.debug)
+    {
+       deployerRPS.setDouble(inputs.deployRotationsPerSec);
+    }
     if (Constants.intakeDeployerEnabled) {
+     
       if(kP.getDouble(IntakeConstants.deployKp) != deployKp)
       {
         deployKp = kP.getDouble(IntakeConstants.deployKp);

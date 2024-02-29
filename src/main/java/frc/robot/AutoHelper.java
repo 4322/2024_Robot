@@ -8,6 +8,7 @@ public class AutoHelper {
   public enum Auto {
     None,
     SmartSixNoteTop,
+    ThreeNote
   }
 
   public static void configAutoChooser(SendableChooser<Auto> chooser) {
@@ -23,6 +24,8 @@ public class AutoHelper {
     switch (auto) {
       case SmartSixNoteTop:
         return "3NoteToTopShoot";
+      case ThreeNote:
+        return "3Note";
       default:
         return "None";
     }
@@ -32,6 +35,7 @@ public class AutoHelper {
     switch (auto) {
       case SmartSixNoteTop:
         return CenterLineScoringStrategy.OneToFive;
+      case ThreeNote:
       default:
         return CenterLineScoringStrategy.DoNothing;
     }

@@ -137,9 +137,9 @@ public class RobotContainer {
       tunnel.setDefaultCommand(tunnelFeed);
     }
 
-    if (Constants.outtakeEnabled) {
-      outtake.setDefaultCommand(adjustOuttakeToSpeaker);
-    }
+    // if (Constants.outtakeEnabled) {
+    //   outtake.setDefaultCommand(adjustOuttakeToSpeaker);
+    // }
 
     if (Constants.intakeEnabled) {
       intake.setDefaultCommand(intakeManual);
@@ -228,6 +228,20 @@ public class RobotContainer {
                       OuttakeConstants.subwooferOuttakeRPS,
                       OuttakeConstants.subwooferPivotPositionRotations)));
       driveXbox.povLeft().onTrue(new AtHome());
+      driveXbox
+          .b()
+          .whileTrue(
+              Commands.runOnce(
+                  () -> {
+                    Intake.getInstance().intake();
+                  }));
+      driveXbox
+          .y()
+          .whileTrue(
+              Commands.runOnce(
+                  () -> {
+                    tunnel.feed();
+                  }));
     }
   }
 
@@ -267,7 +281,17 @@ public class RobotContainer {
 
   // Command that should always start off every auto
   public Command getAutoInitialize() {
-    return new SequentialCommandGroup(new ResetFieldCentric(true));
+    final String autoName = AutoHelper.getPathPlannerAutoName(autoChooser.getSelected());
+    if (autoName == "None") {
+      return new SequentialCommandGroup(new ResetFieldCentric(true));
+    } else {
+      return new SequentialCommandGroup(
+          new ResetFieldCentric(
+              true,
+              PathPlannerManager.getInstance()
+                  .getStartingPoseFromAutoFile(autoName)
+                  .getRotation()));
+    }
   }
 
   // Command for the auto on our side of the field (PathPlanner Auto)
