@@ -14,7 +14,7 @@ public class AutoSetOuttakeAdjust extends InstantCommand {
   public AutoSetOuttakeAdjust(FiringSolution solution) {
     outtake = Outtake.getInstance();
     this.flywheelSpeed = solution.getFlywheelSpeed();
-    this.pivotAngle = solution.getShotAngle();
+    this.pivotAngle = solution.getShotRotations();
 
     addRequirements(outtake);
   }

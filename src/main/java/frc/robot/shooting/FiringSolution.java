@@ -7,41 +7,41 @@ public class FiringSolution extends GenericFiringSolution {
   private double shotMag;
   private double shotDeg; // angle from head-on to target (top-down to field)
   private double flywheelSpeed;
-  private double shotAngle; // angle at which we should shoot (robot side view)
+  private double shotRotations; // angle at which we should shoot (robot side view)
 
   private FiringSolution() {
     this.shotMag = 0;
     this.shotDeg = 0;
     this.flywheelSpeed = 0;
-    this.shotAngle = 0;
+    this.shotRotations = 0;
   }
 
-  public FiringSolution(double shotMag, double shotDeg, double flywheelSpeed, double shotAngle) {
+  public FiringSolution(double shotMag, double shotDeg, double flywheelSpeed, double shotRotations) {
     this.shotMag = shotMag;
     this.shotDeg = shotDeg;
     this.flywheelSpeed = flywheelSpeed;
-    this.shotAngle = shotAngle;
+    this.shotRotations = shotRotations;
   }
 
   protected FiringSolution(double shotMag, double shotDeg, ArrayList<Double> componentList) {
     this.shotMag = shotMag;
     this.shotDeg = shotDeg;
     this.flywheelSpeed = componentList.get(0);
-    this.shotAngle = componentList.get(1);
+    this.shotRotations = componentList.get(1);
   }
 
   protected FiringSolution(double shotMag, double shotDeg) {
     this.shotMag = shotMag;
     this.shotDeg = shotDeg;
     this.flywheelSpeed = 0;
-    this.shotAngle = 0;
+    this.shotRotations = 0;
   }
 
   @Override
   protected ArrayList<Double> toComponentList() {
     ArrayList<Double> list = new ArrayList<>();
     list.add(flywheelSpeed);
-    list.add(shotAngle);
+    list.add(shotRotations);
     return list;
   }
 
@@ -59,7 +59,7 @@ public class FiringSolution extends GenericFiringSolution {
     return flywheelSpeed;
   }
 
-  public double getShotAngle() {
-    return shotAngle;
+  public double getShotRotations() {
+    return shotRotations;
   }
 }
