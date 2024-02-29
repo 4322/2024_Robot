@@ -4,5 +4,11 @@
     "shotDeg": 0.0,
     "flywheelSpeed": 110,
     "shotRotations": 40
+  },
+  {
+    "shotMag": 8.3,
+    "shotDeg": 0.0,
+    "flywheelSpeed": 95,
+    "shotRotations": 15
   }
 ]
