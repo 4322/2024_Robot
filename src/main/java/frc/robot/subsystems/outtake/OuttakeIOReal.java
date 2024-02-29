@@ -62,8 +62,8 @@ public class OuttakeIOReal implements OuttakeIO {
               .getEntry();
       pivotPosition =
           tab.add("Pivot Position (Rotations)", 0).withSize(1, 1).withPosition(1, 0).getEntry();
-      debugOverrideEnable = 
-          tab.add("debugOverride", false).withSize(1, 1).withPosition(1,1).getEntry();
+      debugOverrideEnable =
+          tab.add("debugOverride", false).withSize(1, 1).withPosition(1, 1).getEntry();
     }
   }
 

@@ -1,9 +1,9 @@
 package frc.robot.subsystems.intake;
 
-import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -30,7 +30,8 @@ public class IntakeIOReal implements IntakeIO {
   GenericEntry intakeFeederVoltage;
   GenericEntry intakeEjectVoltage;
   GenericEntry deployPosition;
-  GenericEntry flywheelRPS;
+  GenericEntry intakeRPS;
+  GenericEntry deployMaxRotationsPerSec;
   GenericEntry kP;
   GenericEntry slowPos;
   GenericEntry deployerRPS;
@@ -56,19 +57,20 @@ public class IntakeIOReal implements IntakeIO {
               .withSize(1, 1)
               .withPosition(1, 0)
               .getEntry();
-      flywheelRPS = tab.add("Intake flywheel RPS", 0).withSize(1, 1).withPosition(2, 0).getEntry();
-      deployPosition = tab.add("Deployer position", 0).withSize(1, 1).withPosition(1, 1).getEntry();
-      kP =
-          tab.add("deployer kP", Constants.IntakeConstants.deployKp)
-              .withPosition(2, 1)
+      intakeRPS = tab.add("Intake RPS", 0).withSize(1, 1).withPosition(2, 0).getEntry();
+      deployPosition = tab.add("Deployer position", 0).withSize(1, 1).withPosition(0, 1).getEntry();
+      deployerRPS = tab.add("Deployer RPS", 0).withPosition(1, 1).withSize(1, 1).getEntry();
+      deployMaxRotationsPerSec =
+          tab.add("Deployer Max RPS", DeployConfig.maxRotationsPerSec)
+              .withPosition(0, 2)
               .withSize(1, 1)
               .getEntry();
+      kP = tab.add("Deployer kP", DeployConfig.kP).withPosition(1, 2).withSize(1, 1).getEntry();
       slowPos =
-          tab.add("deployer slowing position", Constants.IntakeConstants.slowPos)
-              .withPosition(3, 1)
+          tab.add("Deployer slowing position", DeployConfig.slowPos)
+              .withPosition(2, 2)
               .withSize(1, 1)
               .getEntry();
-      deployerRPS = tab.add("deployer RPS", 0).withPosition(0, 2).withSize(1, 1).getEntry();
     }
   }
 
@@ -105,35 +107,22 @@ public class IntakeIOReal implements IntakeIO {
     deploy.getConfigurator().apply(new TalonFXConfiguration());
 
     Slot0Configs slot0Configs = new Slot0Configs();
-    ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
+    OpenLoopRampsConfigs openLoopRampsConfigs = new OpenLoopRampsConfigs();
     VoltageConfigs voltageConfigs = new VoltageConfigs();
     MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
     SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
     HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs = new HardwareLimitSwitchConfigs();
     CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
 
-    slot0Configs.kP = IntakeConstants.DeployConfig.kP;
-    slot0Configs.kD = IntakeConstants.DeployConfig.kD;
-    closedLoopRampsConfigs.VoltageClosedLoopRampPeriod =
-        IntakeConstants.DeployConfig.configCLosedLoopRamp;
+    openLoopRampsConfigs.VoltageOpenLoopRampPeriod = DeployConfig.openLoopRamp;
     motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
     motorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
-    softwareLimitSwitchConfigs.ForwardSoftLimitEnable =
-        IntakeConstants.DeployConfig.limitForwardMotion;
-    softwareLimitSwitchConfigs.ReverseSoftLimitEnable =
-        IntakeConstants.DeployConfig.limitReverseMotion;
-    softwareLimitSwitchConfigs.ForwardSoftLimitThreshold =
-        IntakeConstants.DeployConfig.forwardSoftLimitThresholdRotations;
-    softwareLimitSwitchConfigs.ReverseSoftLimitThreshold =
-        IntakeConstants.DeployConfig.reverseSoftLimitThresholdRotations;
-    currentLimitsConfigs.StatorCurrentLimitEnable =
-        Constants.IntakeConstants.DeployConfig.statorEnabled;
-    currentLimitsConfigs.StatorCurrentLimit = Constants.IntakeConstants.DeployConfig.statorLimit;
-    currentLimitsConfigs.SupplyCurrentLimitEnable =
-        Constants.IntakeConstants.DeployConfig.supplyEnabled;
-    currentLimitsConfigs.SupplyCurrentLimit = Constants.IntakeConstants.DeployConfig.supplyLimit;
-    voltageConfigs.PeakForwardVoltage = DeployConfig.deployPeakForwardVoltage;
-    voltageConfigs.PeakReverseVoltage = DeployConfig.deployPeakReverseVoltage;
+    currentLimitsConfigs.StatorCurrentLimitEnable = DeployConfig.statorEnabled;
+    currentLimitsConfigs.StatorCurrentLimit = DeployConfig.statorLimit;
+    currentLimitsConfigs.SupplyCurrentLimitEnable = DeployConfig.supplyEnabled;
+    currentLimitsConfigs.SupplyCurrentLimit = DeployConfig.supplyLimit;
+    voltageConfigs.PeakForwardVoltage = DeployConfig.peakForwardVoltage;
+    voltageConfigs.PeakReverseVoltage = DeployConfig.peakReverseVoltage;
 
     hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
     hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
@@ -141,16 +130,13 @@ public class IntakeIOReal implements IntakeIO {
     deploy.getConfigurator().apply(hardwareLimitSwitchConfigs);
     deploy.getConfigurator().apply(currentLimitsConfigs);
     deploy.getConfigurator().apply(slot0Configs);
-    deploy.getConfigurator().apply(closedLoopRampsConfigs);
+    deploy.getConfigurator().apply(openLoopRampsConfigs);
     deploy.getConfigurator().apply(voltageConfigs);
     deploy.getConfigurator().apply(motorOutputConfigs);
     deploy.getConfigurator().apply(softwareLimitSwitchConfigs);
 
-    // don't need rapid position update
-    deploy
-        .getPosition()
-        .setUpdateFrequency(
-            IntakeConstants.DeployConfig.updateHz, IntakeConstants.DeployConfig.timeoutMs);
+    // don't need rapid position update because we use the abs encoder
+    deploy.getPosition().setUpdateFrequency(DeployConfig.updateHz, DeployConfig.timeoutMs);
 
     // zero helium abs encoder on the floor
     // fully retracted abs position is 0.6 rotations
@@ -195,14 +181,17 @@ public class IntakeIOReal implements IntakeIO {
           intakeFeederVoltage.getDouble(IntakeConstants.IntakeConfig.intakeFeedVoltage);
       inputs.intakeEjectVoltage =
           intakeEjectVoltage.getDouble(IntakeConstants.IntakeConfig.intakeEjectVoltage);
-      deployerRPS.setDouble(deploy.getPosition().getValue());
-      inputs.deployKp = kP.getDouble(IntakeConstants.deployKp);
-      inputs.slowPos = slowPos.getDouble(IntakeConstants.slowPos);
+      inputs.deployMaxRotationsPerSec =
+          deployMaxRotationsPerSec.getDouble(DeployConfig.maxRotationsPerSec);
+      inputs.deployKp = kP.getDouble(DeployConfig.kP);
+      inputs.slowPos = slowPos.getDouble(DeployConfig.slowPos);
+      deployerRPS.setDouble(inputs.heliumRPS);
     } else {
-      inputs.deployKp = IntakeConstants.deployKp;
       inputs.intakeFeederVoltage = IntakeConstants.IntakeConfig.intakeFeedVoltage;
       inputs.intakeEjectVoltage = IntakeConstants.IntakeConfig.intakeEjectVoltage;
-      inputs.slowPos = IntakeConstants.slowPos;
+      inputs.deployMaxRotationsPerSec = DeployConfig.maxRotationsPerSec;
+      inputs.deployKp = DeployConfig.kP;
+      inputs.slowPos = DeployConfig.slowPos;
     }
   }
 

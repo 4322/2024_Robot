@@ -43,7 +43,7 @@ public final class Constants {
 
   public static final boolean driveEnabled = true;
   public static final boolean intakeEnabled = true;
-  public static final boolean intakeDeployerEnabled = false;
+  public static final boolean intakeDeployerEnabled = true;
   public static final boolean gyroEnabled = true;
   public static final boolean tunnelEnabled = true;
   public static final boolean outtakeEnabled = true;
@@ -340,8 +340,6 @@ public final class Constants {
     public static final int intakeMotorID = 7;
     public static final int deployMotorID = 2;
     public static final int deployEncoderID = 9;
-    public static final double deployKp = 2;
-    public static final double slowPos = 0;
 
     public static final class IntakeConfig {
       public static final double updateHz =
@@ -356,47 +354,26 @@ public final class Constants {
     }
 
     public static final class DeployConfig {
-      public static final double kP = 0;
-      public static final double kD = 0;
-      public static final double configCLosedLoopRamp = 0;
+      public static final double kP = 8.0;
+      public static final double slowPos = 0.3;
+      public static final double openLoopRamp = 0;
       public static final double updateHz =
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
-      public static final boolean limitForwardMotion = true;
-      public static final boolean limitReverseMotion = true;
-      // floor is 0 motor rotations
-      // inside frame perimeter is 24.2 motor rotations
-      // upper hardstop is 26.4 motor rotations
-      public static final double forwardSoftLimitThresholdRotations = 26.0;
-      public static final double reverseSoftLimitThresholdRotations =
-          6.0; // don't slam into the floor
-      public static final double deployPeakForwardVoltage =
-          2.5; // anything higher will slip the belt
-      public static final double deployPeakReverseVoltage = -2.5;
+
+      public static final double peakForwardVoltage = 2.5; // anything higher will slip the belt
+      public static final double peakReverseVoltage = -2.5;
 
       public static final boolean supplyEnabled = true;
       public static final boolean statorEnabled = true;
       public static final double supplyLimit = 30;
       public static final double statorLimit = 45;
-    }
 
-    public static final class Deploy {
       public static final double deployTargetPosition = 0.0;
-      public static final double retractTargetPosition = 36.0;
-      public static final double atTargetTolerance = 0.05; // TODO
-      public static final double maxVelRotationsPerSec = 0;
-      public static final boolean enableFOC = false;
-      public static final double FF = 0;
-      public static final int positionVoltageSlot =
-          0; // TODO: check if this can be 0 if PID is also 0
-      public static final boolean overrideBrakeDuringNeutral =
-          false; // we want to brake if not moving
-      public static final boolean limitForwardMotion = true;
-      public static final boolean limitReverseMotion = true;
-      public static final double encoderGearReduction = 60.0;
-      public static final double deployFallTolerance = 0.5; // TODO
-      public static final double slowDeployVolts = 1.25; // TODO
-      public static final double fastDeployVolts = 2.5;
+      public static final double retractTargetPosition = 0.6;
+      public static final double atTargetTolerance = 0.03;
+      public static final double deployFallTolerance = 0.08;
+      public static final double maxRotationsPerSec = 0.2;
     }
 
     public static final class Logging {

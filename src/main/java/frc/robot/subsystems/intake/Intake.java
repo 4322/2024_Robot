@@ -1,11 +1,9 @@
 package frc.robot.subsystems.intake;
 
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.IntakeConstants.DeployConfig;
 import frc.utility.OrangeMath;
 import frc.utility.OrangePIDController;
 import org.littletonrobotics.junction.Logger;
@@ -14,11 +12,10 @@ public class Intake extends SubsystemBase {
 
   private IntakeIO io;
   private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
-  TrapezoidProfile.State m_goal;
-  ShuffleboardTab tab;
 
   private boolean isFeeding;
-  private double deployVolts;
+  private boolean isDeployerInCoastMode;
+  private double desiredVolts;
   private static Intake intake;
 
   public enum IntakeDeployState {
@@ -58,9 +55,6 @@ public class Intake extends SubsystemBase {
     if (io == null) {
       io = new IntakeIO() {};
     }
-    if (Constants.debug) {
-      tab = Shuffleboard.getTab("intake");
-    }
   }
 
   @Override
@@ -73,84 +67,71 @@ public class Intake extends SubsystemBase {
       if (inputs.deployKp != deployController.getKp()) {
         deployController.setKp(inputs.deployKp);
       }
+      double desiredRPS;
       switch (state) {
         case Unknown:
           break;
         case Deploying:
-          if (inputs.heliumAbsRotations < inputs.slowPos) {
-            deployVolts = IntakeConstants.Deploy.fastDeployVolts;
-          } else if (deployVolts == IntakeConstants.Deploy.fastDeployVolts) {
-            deployVolts =
-                deployController.calculate(
-                    IntakeConstants.Deploy.slowDeployVolts,
-                    inputs.deployRotationsPerSec,
-                    inputs.deployMaxRotationsPerSec
-                        * Math.abs(
-                            (inputs.heliumAbsRotations - inputs.slowPos)
-                                / (IntakeConstants.Deploy.retractTargetPosition - inputs.slowPos)));
+          if (inputs.heliumAbsRotations > inputs.slowPos) {
+            // cruise phase
+            desiredRPS = -inputs.deployMaxRotationsPerSec;
           } else {
-            deployVolts =
-                deployController.calculate(
-                    deployVolts,
-                    inputs.deployRotationsPerSec,
-                    inputs.deployMaxRotationsPerSec
-                        * Math.abs(
-                            (inputs.heliumAbsRotations - inputs.slowPos)
-                                / (IntakeConstants.Deploy.retractTargetPosition - inputs.slowPos)));
+            // ramp down
+            desiredRPS =
+                -inputs.heliumAbsRotations / inputs.slowPos * inputs.deployMaxRotationsPerSec;
           }
-          if (isDeployed()) {
-            setDeployerBrakeMode();
+          desiredVolts = deployController.calculate(desiredVolts, inputs.heliumRPS, desiredRPS);
+          if (desiredVolts < DeployConfig.peakReverseVoltage) {
+            desiredVolts = DeployConfig.peakReverseVoltage;
+          } else if (desiredVolts > DeployConfig.peakForwardVoltage) {
+            desiredVolts = DeployConfig.peakForwardVoltage;
+          }
+          if (isDeployFinished()) {
             state = IntakeDeployState.Deployed;
+            stopDeployer();
           } else {
-            io.setDeployVoltage(deployVolts);
+            io.setDeployVoltage(desiredVolts);
+            Logger.recordOutput(IntakeConstants.Logging.deployerKey + "desiredRPS", desiredRPS);
+            Logger.recordOutput(IntakeConstants.Logging.deployerKey + "desiredVolts", desiredVolts);
           }
           break;
         case Retracting:
           if (inputs.heliumAbsRotations
-              > (IntakeConstants.Deploy.retractTargetPosition - inputs.slowPos)) {
-            deployVolts = -IntakeConstants.Deploy.fastDeployVolts;
-          } else if (deployVolts == -IntakeConstants.Deploy.fastDeployVolts) {
-            deployVolts =
-                deployController.calculate(
-                    -IntakeConstants.Deploy.slowDeployVolts,
-                    -inputs.deployRotationsPerSec,
-                    -inputs.deployMaxRotationsPerSec
-                        * Math.abs(
-                            (IntakeConstants.Deploy.retractTargetPosition
-                                    - inputs.heliumAbsRotations
-                                    - inputs.slowPos)
-                                / (IntakeConstants.Deploy.retractTargetPosition - inputs.slowPos)));
+              < (IntakeConstants.DeployConfig.retractTargetPosition - inputs.slowPos)) {
+            // cruise phase
+            desiredRPS = inputs.deployMaxRotationsPerSec;
           } else {
-            deployVolts =
-                deployController.calculate(
-                    deployVolts,
-                    -inputs.deployRotationsPerSec,
-                    -inputs.deployMaxRotationsPerSec
-                        * Math.abs(
-                            (IntakeConstants.Deploy.retractTargetPosition
-                                    - inputs.heliumAbsRotations
-                                    - inputs.slowPos)
-                                / (IntakeConstants.Deploy.retractTargetPosition - inputs.slowPos)));
+            // ramp down
+            desiredRPS =
+                (IntakeConstants.DeployConfig.retractTargetPosition - inputs.heliumAbsRotations)
+                    / inputs.slowPos
+                    * inputs.deployMaxRotationsPerSec;
           }
-          if (isRetracted()) {
-            setDeployerBrakeMode();
+          desiredVolts = deployController.calculate(desiredVolts, inputs.heliumRPS, desiredRPS);
+          if (desiredVolts < DeployConfig.peakReverseVoltage) {
+            desiredVolts = DeployConfig.peakReverseVoltage;
+          } else if (desiredVolts > DeployConfig.peakForwardVoltage) {
+            desiredVolts = DeployConfig.peakForwardVoltage;
+          }
+          if (isRetractFinished()) {
             state = IntakeDeployState.Retracted;
+            stopDeployer();
           } else {
-            io.setDeployVoltage(deployVolts);
+            io.setDeployVoltage(desiredVolts);
+            Logger.recordOutput(IntakeConstants.Logging.deployerKey + "desiredRPS", desiredRPS);
+            Logger.recordOutput(IntakeConstants.Logging.deployerKey + "desiredVolts", desiredVolts);
           }
           break;
         case Deployed:
-          deployVolts = 0;
           break;
         case Retracted:
           if (!OrangeMath.equalToEpsilon(
               inputs.heliumAbsRotations,
-              IntakeConstants.Deploy.retractTargetPosition,
-              IntakeConstants.Deploy
+              IntakeConstants.DeployConfig.retractTargetPosition,
+              IntakeConstants.DeployConfig
                   .deployFallTolerance)) // if intake has drooped too far while driving
           {
-            setDeployerCoastMode();
-            state = IntakeDeployState.Retracting; // retract so it goes up to position
+            retract(); // move it back into position
           }
           break;
         default:
@@ -162,7 +143,7 @@ public class Intake extends SubsystemBase {
   public void intake() {
     if (Constants.intakeEnabled) {
       io.setFeedingVoltage(inputs.intakeFeederVoltage);
-      Logger.recordOutput(IntakeConstants.Logging.feederKey + "IntakeStopped", false);
+      Logger.recordOutput(IntakeConstants.Logging.feederKey + "State", "Intaking");
       isFeeding = true;
     }
   }
@@ -170,7 +151,7 @@ public class Intake extends SubsystemBase {
   public void outtake() {
     if (Constants.intakeEnabled) {
       io.setFeedingVoltage(inputs.intakeEjectVoltage);
-      Logger.recordOutput(IntakeConstants.Logging.feederKey + "IntakeStopped", false);
+      Logger.recordOutput(IntakeConstants.Logging.feederKey + "State", "Outtaking");
       isFeeding = true;
     }
   }
@@ -178,87 +159,89 @@ public class Intake extends SubsystemBase {
   public void setIntakeBrakeMode() {
     if (Constants.intakeEnabled) {
       io.setIntakeBrakeMode();
-      Logger.recordOutput(IntakeConstants.Logging.key + "IntakeTargetBrakeMode", "Brake");
+      Logger.recordOutput(IntakeConstants.Logging.feederKey + "NeutralMode", "Brake");
     }
   }
 
   public void setDeployerBrakeMode() {
     if (Constants.intakeDeployerEnabled) {
       io.setDeployerBrakeMode();
-      Logger.recordOutput(IntakeConstants.Logging.key + "DeployerTargetBrakeMode", "Brake");
+      isDeployerInCoastMode = false;
+      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "NeutralMode", "Brake");
     }
   }
 
   public void setIntakeCoastMode() {
     if (Constants.intakeEnabled) {
       io.setIntakeCoastMode();
-      Logger.recordOutput(IntakeConstants.Logging.key + "IntakeTargetBrakeMode", "Coast");
+      Logger.recordOutput(IntakeConstants.Logging.feederKey + "NeutralMode", "Coast");
     }
   }
 
   public void setDeployerCoastMode() {
     if (Constants.intakeDeployerEnabled) {
       io.setDeployerCoastMode();
-      Logger.recordOutput(IntakeConstants.Logging.key + "DeployerTargetBrakeMode", "Coast");
+      isDeployerInCoastMode = true;
+      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "NeutralMode", "Coast");
     }
   }
 
   public void stopFeeder() {
     if (Constants.intakeEnabled) {
       io.stopFeeder();
-      Logger.recordOutput(IntakeConstants.Logging.key + "IntakeStopped", true);
+      Logger.recordOutput(IntakeConstants.Logging.feederKey + "State", "Stopped");
       isFeeding = false;
     }
   }
 
   public void stopDeployer() {
     if (Constants.intakeDeployerEnabled) {
-      io.stopDeployer();
-      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "DeployStopped", true);
-      if (isDeployed()) {
-        state = IntakeDeployState.Deployed;
-      } else if (isRetracted()) {
-        state = IntakeDeployState.Retracted;
-      } else {
-        state = IntakeDeployState.Unknown;
-        deployVolts = 0;
+      if (isDeployerInCoastMode) {
+        setDeployerBrakeMode();
       }
+      io.stopDeployer();
+      if ((state == IntakeDeployState.Deploying) || (state == IntakeDeployState.Retracting)) {
+        state = IntakeDeployState.Unknown;
+      }
+      desiredVolts = 0;
+      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "desiredVolts", desiredVolts);
+      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "State", "Stopped");
     }
   }
 
   public void deploy() {
     if (Constants.intakeDeployerEnabled) {
-      if (state != IntakeDeployState.Deploying) {
+      if (!isDeployerInCoastMode) {
         setDeployerCoastMode();
       }
       state = IntakeDeployState.Deploying;
-      io.setDeployVoltage(deployVolts);
-      Logger.recordOutput(
-          IntakeConstants.Logging.deployerKey + "DeployTargetRotations",
-          IntakeConstants.Deploy.deployTargetPosition);
-      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "DeployStopped", false);
+      desiredVolts = 0;
+      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "desiredVolts", desiredVolts);
+      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "State", "Deploying");
     }
   }
 
   public void retract() {
     if (Constants.intakeDeployerEnabled) {
-      if (state != IntakeDeployState.Retracting) {
+      if (!isDeployerInCoastMode) {
         setDeployerCoastMode();
       }
       state = IntakeDeployState.Retracting;
-      io.setDeployVoltage(deployVolts);
-      Logger.recordOutput(
-          IntakeConstants.Logging.deployerKey + "DeployTargetRotations",
-          IntakeConstants.Deploy.retractTargetPosition);
-      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "DeployStopped", false);
+      desiredVolts = 0;
+      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "desiredVolts", desiredVolts);
+      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "State", "Retracting");
     }
   }
 
   public boolean isDeployed() {
+    return (state == IntakeDeployState.Deployed) || !Constants.intakeDeployerEnabled;
+  }
+
+  private boolean isDeployFinished() {
     return OrangeMath.equalToEpsilon(
         inputs.heliumAbsRotations,
-        IntakeConstants.Deploy.deployTargetPosition,
-        IntakeConstants.Deploy.atTargetTolerance);
+        IntakeConstants.DeployConfig.deployTargetPosition,
+        IntakeConstants.DeployConfig.atTargetTolerance);
   }
 
   public boolean isDeploying() {
@@ -270,10 +253,14 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean isRetracted() {
+    return (state == IntakeDeployState.Retracted) && Constants.intakeDeployerEnabled;
+  }
+
+  private boolean isRetractFinished() {
     return OrangeMath.equalToEpsilon(
         inputs.heliumAbsRotations,
-        IntakeConstants.Deploy.retractTargetPosition,
-        IntakeConstants.Deploy.atTargetTolerance);
+        IntakeConstants.DeployConfig.retractTargetPosition,
+        IntakeConstants.DeployConfig.atTargetTolerance);
   }
 
   public boolean isFeeding() {

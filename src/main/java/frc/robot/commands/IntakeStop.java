@@ -28,4 +28,9 @@ public class IntakeStop extends InstantCommand {
       IntakeManual.setIntakeState(IntakeStates.noteObtained);
     }
   }
+
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
+  }
 }

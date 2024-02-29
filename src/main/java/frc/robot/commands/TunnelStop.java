@@ -21,4 +21,9 @@ public class TunnelStop extends InstantCommand {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}
+
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
+  }
 }
