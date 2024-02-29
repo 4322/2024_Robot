@@ -204,7 +204,7 @@ public class OuttakeIOReal implements OuttakeIO {
           heliumAbsoluteRotations * OuttakeConstants.gearReductionEncoderToMotor);
     }
 
-    if (OrangeMath.equalToTwoDecimal(pivotEncoder.getVelocity(), 0)) {
+    if (OrangeMath.equalToEpsilon(pivotEncoder.getVelocity(), 0.0, 0.1)) {
       // Set only relative encoder rotations of Helium encoder to a very high number after
       // initialized
       // once
