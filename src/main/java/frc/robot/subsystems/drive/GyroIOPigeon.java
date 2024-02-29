@@ -53,7 +53,7 @@ public class GyroIOPigeon implements GyroIO {
   }
 
   @Override
-  public void resetWithOffset(double offsetDeg) {
-    gyro.setYaw(offsetDeg);
+  public void reset() {
+    gyro.reset();
   }
 }
