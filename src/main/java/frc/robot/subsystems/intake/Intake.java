@@ -16,9 +16,7 @@ public class Intake extends SubsystemBase {
   private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
   TrapezoidProfile.State m_goal;
   ShuffleboardTab tab;
-  GenericEntry kP;
-  GenericEntry slowPos;
-  GenericEntry deployerRPS;
+  
   private boolean isFeeding;
   private double deployVolts;
   private double deployKp;
@@ -61,15 +59,7 @@ public class Intake extends SubsystemBase {
     }
     if (Constants.debug) {
       tab = Shuffleboard.getTab("intake");
-      kP = tab.add("deployer kP", Constants.IntakeConstants.deployKp)
-          .withPosition(3, 1)
-          .withSize(1, 1).getEntry();
-      slowPos = tab.add("deployer slowing position", Constants.IntakeConstants.slowPos)
-          .withPosition(0, 2)
-          .withSize(1, 1).getEntry();
-      deployerRPS = tab.add("deployer RPS", 0)
-          .withPosition(1, 2)
-          .withSize(1, 1).getEntry();
+      
     }
   }
 
@@ -79,22 +69,18 @@ public class Intake extends SubsystemBase {
       io.updateInputs(inputs);
       Logger.processInputs(IntakeConstants.Logging.key, inputs);
     }
-    if(Constants.debug)
-    {
-       deployerRPS.setDouble(inputs.deployRotationsPerSec);
-    }
     if (Constants.intakeDeployerEnabled) {
      
-      if(kP.getDouble(IntakeConstants.deployKp) != deployKp)
+      if(inputs.deployKp != deployKp)
       {
-        deployKp = kP.getDouble(IntakeConstants.deployKp);
+        deployKp = inputs.deployKp;
         io.setDeployKp(deployKp);
       }
       switch (state) { 
         case Unknown:
           break;
         case Deploying:
-          if (inputs.heliumRotations < slowPos.getDouble(IntakeConstants.slowPos)) {
+          if (inputs.heliumRotations < inputs.slowPos) {
             deployVolts = IntakeConstants.Deploy.slowDeployVolts;
           } else {
             deployVolts = IntakeConstants.Deploy.fastDeployVolts;
@@ -105,7 +91,7 @@ public class Intake extends SubsystemBase {
           }
           break;
         case Retracting:
-           if (inputs.heliumRotations > (IntakeConstants.Deploy.retractTargetPosition - slowPos.getDouble(IntakeConstants.slowPos))) {
+           if (inputs.heliumRotations > (IntakeConstants.Deploy.retractTargetPosition - inputs.slowPos)) {
             deployVolts = IntakeConstants.Deploy.slowDeployVolts;
           } else {
             deployVolts = IntakeConstants.Deploy.fastDeployVolts;

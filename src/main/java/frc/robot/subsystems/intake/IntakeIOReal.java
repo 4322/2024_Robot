@@ -31,7 +31,9 @@ public class IntakeIOReal implements IntakeIO {
   GenericEntry intakeEjectVoltage;
   GenericEntry deployPosition;
   GenericEntry flywheelRPS;
-
+  GenericEntry kP;
+  GenericEntry slowPos;
+  GenericEntry deployerRPS;
   public IntakeIOReal() {
     intake =
         new TalonFX(IntakeConstants.intakeMotorID, Constants.DriveConstants.Drive.canivoreName);
@@ -55,6 +57,15 @@ public class IntakeIOReal implements IntakeIO {
               .getEntry();
       flywheelRPS = tab.add("Intake flywheel RPS", 0).withSize(1, 1).withPosition(2, 0).getEntry();
       deployPosition = tab.add("Deployer position", 0).withSize(1, 1).withPosition(1, 1).getEntry();
+      kP = tab.add("deployer kP", Constants.IntakeConstants.deployKp)
+          .withPosition(2, 1)
+          .withSize(1, 1).getEntry();
+      slowPos = tab.add("deployer slowing position", Constants.IntakeConstants.slowPos)
+          .withPosition(3, 1)
+          .withSize(1, 1).getEntry();
+      deployerRPS = tab.add("deployer RPS", 0)
+          .withPosition(0, 2)
+          .withSize(1, 1).getEntry();
     }
   }
 
@@ -176,9 +187,14 @@ public class IntakeIOReal implements IntakeIO {
           intakeFeederVoltage.getDouble(IntakeConstants.IntakeConfig.intakeFeedVoltage);
       inputs.intakeEjectVoltage =
           intakeEjectVoltage.getDouble(IntakeConstants.IntakeConfig.intakeEjectVoltage);
+      deployerRPS.setDouble(deploy.getPosition().getValue());
+      inputs.deployKp = kP.getDouble(IntakeConstants.deployKp);
+      inputs.slowPos = slowPos.getDouble(IntakeConstants.slowPos);
     } else {
+      inputs.deployKp = IntakeConstants.deployKp;
       inputs.intakeFeederVoltage = IntakeConstants.IntakeConfig.intakeFeedVoltage;
       inputs.intakeEjectVoltage = IntakeConstants.IntakeConfig.intakeEjectVoltage;
+      inputs.slowPos = IntakeConstants.slowPos;
     }
   }
 

@@ -26,6 +26,8 @@ public interface IntakeIO {
     public double heliumRPS = 0.0;
 
     public String deployAppliedControl = "";
+    public double deployKp;
+    public double slowPos;
   }
 
   public default void updateInputs(IntakeIOInputs inputs) {}
