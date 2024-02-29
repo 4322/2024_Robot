@@ -113,8 +113,8 @@ public class Intake extends SubsystemBase {
             deployVolts =
                 deployController.calculate(
                     -IntakeConstants.Deploy.slowDeployVolts,
-                    inputs.deployRotationsPerSec,
-                    inputs.deployMaxRotationsPerSec
+                    -inputs.deployRotationsPerSec,
+                    -inputs.deployMaxRotationsPerSec
                         * Math.abs(
                             (IntakeConstants.Deploy.retractTargetPosition
                                     - inputs.heliumAbsRotations
@@ -124,8 +124,8 @@ public class Intake extends SubsystemBase {
             deployVolts =
                 deployController.calculate(
                     deployVolts,
-                    inputs.deployRotationsPerSec,
-                    inputs.deployMaxRotationsPerSec
+                    -inputs.deployRotationsPerSec,
+                    -inputs.deployMaxRotationsPerSec
                         * Math.abs(
                             (IntakeConstants.Deploy.retractTargetPosition
                                     - inputs.heliumAbsRotations
