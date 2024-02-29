@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.RobotChooser.RobotChooser;
@@ -43,7 +44,7 @@ public final class Constants {
 
   public static final boolean driveEnabled = true;
   public static final boolean intakeEnabled = true;
-  public static final boolean intakeDeployerEnabled = true;
+  public static final boolean intakeDeployerEnabled = false;
   public static final boolean gyroEnabled = true;
   public static final boolean tunnelEnabled = true;
   public static final boolean outtakeEnabled = true;
@@ -340,6 +341,8 @@ public final class Constants {
     public static final int intakeMotorID = 7;
     public static final int deployMotorID = 2;
     public static final int deployEncoderID = 9;
+    public static final double deployKp = 2;
+    public static final double slowPos = 0;
 
     public static final class IntakeConfig {
       public static final double updateHz =
@@ -379,8 +382,8 @@ public final class Constants {
     }
 
     public static final class Deploy {
-      public static final double deployPositionRotations = 0.0;
-      public static final double retractPositionRotations = 36.0;
+      public static final double deployTargetPosition = 0.0;
+      public static final double retractTargetPosition = 36.0;
       public static final double toleranceRotations = 0; // TODO
       public static final double maxVelRotationsPerSec = 0;
       public static final boolean enableFOC = false;
@@ -392,6 +395,9 @@ public final class Constants {
       public static final boolean limitForwardMotion = true;
       public static final boolean limitReverseMotion = true;
       public static final double encoderGearReduction = 60.0;
+      public static final double retractTolerance = 0;
+      public static final double slowDeployVolts = 0;
+    public static final double fastDeployVolts = 0;
     }
 
     public static final class Logging {

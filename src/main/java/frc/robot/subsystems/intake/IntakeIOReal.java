@@ -166,7 +166,7 @@ public class IntakeIOReal implements IntakeIO {
     inputs.deployTempC = deploy.getDeviceTemp().getValue();
     inputs.deployIsAlive = deploy.isAlive();
 
-    inputs.heliumAbsRotations = deployEncoder.getAbsPosition();
+    inputs.heliumRotations = deployEncoder.getAbsPosition();
     inputs.heliumRPS = deployEncoder.getVelocity();
 
     inputs.deployAppliedControl = deploy.getAppliedControl().toString();
