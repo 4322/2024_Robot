@@ -181,8 +181,6 @@ public class OuttakeIOReal implements OuttakeIO {
     if (Constants.outtakeTuningMode) {
       inputs.debugTargetRPS = outtakeFlywheelSpeed.getDouble(0);
       inputs.targetPivotPosition = pivotPosition.getDouble(0);
-      inputs.debugOuttakeEnabled = outtakeOn.getBoolean(false);
-      inputs.debugPivotEnabled = pivotOn.getBoolean(false);
     }
 
     heliumAbsoluteRotations = inputs.heliumAbsRotations;
