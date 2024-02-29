@@ -2,13 +2,11 @@ package frc.robot.subsystems.intake;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.subsystems.RobotCoordinator;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -16,17 +14,12 @@ public class Intake extends SubsystemBase {
 
   private IntakeIO io;
   private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
-  private Timer existenceTimer;
-  private boolean deployInitialized;
-  private double deployTarget = 99999; // set to very high value in case target not yet set
   TrapezoidProfile.State m_goal;
   ShuffleboardTab tab;
-  GenericEntry kP;
-  GenericEntry slowPos;
-  GenericEntry deployerRPS;
+  
   private boolean isFeeding;
-  private boolean deployRequested;
-  double deployVolts;
+  private double deployVolts;
+  private double deployKp;
   private static Intake intake;
 
   public enum IntakeDeployState {
@@ -61,48 +54,48 @@ public class Intake extends SubsystemBase {
     state = IntakeDeployState.Unknown;
 
     if (io == null) {
-      io = new IntakeIO() {};
+      io = new IntakeIO() {
+      };
     }
-    existenceTimer = new Timer();
     if (Constants.debug) {
       tab = Shuffleboard.getTab("intake");
-      kP =
-          tab.add("deployer kP", Constants.IntakeConstants.deployKp)
-              .withPosition(3, 1)
-              .withSize(1, 1)
-              .getEntry();
-      slowPos =
-          tab.add("deployer slowing position", Constants.IntakeConstants.slowPos)
-              .withPosition(0, 2)
-              .withSize(1, 1)
-              .getEntry();
-      deployerRPS = tab.add("deployer RPS", 0).withPosition(1, 2).withSize(1, 1).getEntry();
+      
     }
   }
 
   @Override
   public void periodic() {
-    RobotCoordinator coordinator = RobotCoordinator.getInstance();
-
     if (Constants.intakeEnabled || Constants.intakeDeployerEnabled) {
       io.updateInputs(inputs);
       Logger.processInputs(IntakeConstants.Logging.key, inputs);
     }
     if (Constants.intakeDeployerEnabled) {
-      switch (state) {
+     
+      if(inputs.deployKp != deployKp)
+      {
+        deployKp = inputs.deployKp;
+        io.setDeployKp(deployKp);
+      }
+      switch (state) { 
         case Unknown:
           break;
         case Deploying:
-          if (inputs.heliumRotations < slowPos.getDouble(IntakeConstants.slowPos)) {
+          if (inputs.heliumRotations < inputs.slowPos) {
             deployVolts = IntakeConstants.Deploy.slowDeployVolts;
           } else {
             deployVolts = IntakeConstants.Deploy.fastDeployVolts;
           }
           if (isDeployed()) {
+            setDeployerBrakeMode();
             state = IntakeDeployState.Deployed;
           }
           break;
         case Retracting:
+           if (inputs.heliumRotations > (IntakeConstants.Deploy.retractTargetPosition - inputs.slowPos)) {
+            deployVolts = IntakeConstants.Deploy.slowDeployVolts;
+          } else {
+            deployVolts = IntakeConstants.Deploy.fastDeployVolts;
+          }
           if (isRetracted()) {
             setDeployerBrakeMode();
             state = IntakeDeployState.Retracted;
@@ -112,11 +105,11 @@ public class Intake extends SubsystemBase {
           deployVolts = 0;
           break;
         case Retracted:
-          if (!OrangeMath.equalToEpsilon(
-              inputs.deployRotations,
-              IntakeConstants.Deploy.retractTargetPosition,
-              IntakeConstants.Deploy.retractTolerance)) {
-            state = IntakeDeployState.Retracting;
+          if (!OrangeMath.equalToEpsilon(inputs.heliumRotations, IntakeConstants.Deploy.retractTargetPosition,
+              IntakeConstants.Deploy.deployFallTolerance)) //if intake has drooped too far while driving
+          {
+            setDeployerCoastMode();
+            state = IntakeDeployState.Retracting; //retract so it goes up to position
           }
           break;
         default:
@@ -126,7 +119,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void intake() {
-    if (Constants.intakeEnabled && deployInitialized) {
+    if (Constants.intakeEnabled) {
       io.setFeedingVoltage(inputs.intakeFeederVoltage);
       Logger.recordOutput(IntakeConstants.Logging.feederKey + "IntakeStopped", false);
       isFeeding = true;
@@ -134,7 +127,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void outtake() {
-    if (Constants.intakeEnabled && deployInitialized) {
+    if (Constants.intakeEnabled) {
       io.setFeedingVoltage(inputs.intakeEjectVoltage);
       Logger.recordOutput(IntakeConstants.Logging.feederKey + "IntakeStopped", false);
       isFeeding = true;
@@ -170,7 +163,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void stopFeeder() {
-    if (Constants.intakeEnabled && deployInitialized) {
+    if (Constants.intakeEnabled) {
       io.stopFeeder();
       Logger.recordOutput(IntakeConstants.Logging.key + "IntakeStopped", true);
       isFeeding = false;
@@ -178,69 +171,73 @@ public class Intake extends SubsystemBase {
   }
 
   public void stopDeployer() {
-    if (Constants.intakeDeployerEnabled && deployInitialized) {
+    if (Constants.intakeDeployerEnabled) {
       io.stopDeployer();
       Logger.recordOutput(IntakeConstants.Logging.deployerKey + "DeployStopped", true);
-      deployRequested = false;
+      if(isDeployed())
+      {
+        state = IntakeDeployState.Deployed;
+      }
+      else if(isRetracted())
+      {
+        state = IntakeDeployState.Retracted;
+      }
+      else
+      {
+        state = IntakeDeployState.Unknown;
+        deployVolts = 0;
+      }
     }
   }
 
   public void deploy() {
-    if (Constants.intakeDeployerEnabled && deployInitialized) {
+    if (Constants.intakeDeployerEnabled) {
       if (state != IntakeDeployState.Deploying) {
         setDeployerCoastMode();
       }
       state = IntakeDeployState.Deploying;
       io.setDeployVoltage(deployVolts);
-      deployTarget = inputs.deployPositionRotations;
       Logger.recordOutput(
           IntakeConstants.Logging.deployerKey + "DeployTargetRotations",
-          inputs.deployPositionRotations);
+          IntakeConstants.Deploy.deployTargetPosition);
       Logger.recordOutput(IntakeConstants.Logging.deployerKey + "DeployStopped", false);
-      deployRequested = true;
     }
   }
 
   public void retract() {
-    if (Constants.intakeDeployerEnabled && deployInitialized) {
+    if (Constants.intakeDeployerEnabled) {
       if (state != IntakeDeployState.Retracting) {
         setDeployerCoastMode();
       }
       state = IntakeDeployState.Retracting;
       io.setDeployVoltage(deployVolts);
-      deployTarget = inputs.retractPositionRotations;
       Logger.recordOutput(
           IntakeConstants.Logging.deployerKey + "DeployTargetRotations",
-          inputs.retractPositionRotations);
+          IntakeConstants.Deploy.retractTargetPosition);
       Logger.recordOutput(IntakeConstants.Logging.deployerKey + "DeployStopped", false);
-      deployRequested = false;
     }
   }
 
   public boolean isDeployed() {
     return OrangeMath.equalToEpsilon(
-        inputs.deployRotations,
+        inputs.heliumRotations,
         IntakeConstants.Deploy.deployTargetPosition,
-        IntakeConstants.Deploy.toleranceRotations);
+        IntakeConstants.Deploy.atTargetTolerance);
   }
 
   public boolean isDeploying() {
-    return deployRequested && !isDeployed();
+    return state == IntakeDeployState.Deploying;
   }
 
   public double getDeployRotations() {
-    return inputs.deployRotations;
+    return inputs.heliumRotations;
   }
 
   public boolean isRetracted() {
     return OrangeMath.equalToEpsilon(
-        inputs.deployRotations,
-        inputs.retractPositionRotations,
-        IntakeConstants.Deploy.toleranceRotations);
-  }
-
-  public boolean isDeployInitialized() {
-    return deployInitialized;
+        inputs.heliumRotations,
+        IntakeConstants.Deploy.retractTargetPosition,
+        IntakeConstants.Deploy.atTargetTolerance);
   }
 
   public boolean isFeeding() {

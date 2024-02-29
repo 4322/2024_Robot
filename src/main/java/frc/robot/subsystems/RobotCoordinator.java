@@ -125,7 +125,7 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public boolean canDeploy() {
-    return intake.isDeployInitialized() && !intake.isDeployed();
+    return !intake.isDeployed();
   }
 
   public boolean intakeIsDeployed() {
@@ -137,11 +137,11 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public boolean isInitialized() {
-    return intake.isDeployInitialized() && outtake.pivotIsInitialized();
+    return outtake.pivotIsInitialized();
   }
 
   public boolean canRetract() {
-    return !intake.isFeeding() && intake.isDeployInitialized();
+    return !intake.isFeeding();
   }
 
   public boolean intakeIsFeeding() {
