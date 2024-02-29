@@ -384,7 +384,7 @@ public final class Constants {
     public static final class Deploy {
       public static final double deployTargetPosition = 0.0;
       public static final double retractTargetPosition = 36.0;
-      public static final double toleranceRotations = 0; // TODO
+      public static final double atTargetTolerance = 0.05; // TODO
       public static final double maxVelRotationsPerSec = 0;
       public static final boolean enableFOC = false;
       public static final double FF = 0;
@@ -395,9 +395,9 @@ public final class Constants {
       public static final boolean limitForwardMotion = true;
       public static final boolean limitReverseMotion = true;
       public static final double encoderGearReduction = 60.0;
-      public static final double retractTolerance = 0;
-      public static final double slowDeployVolts = 0;
-    public static final double fastDeployVolts = 0;
+      public static final double deployFallTolerance = 0.5; //TODO
+      public static final double slowDeployVolts = 1.25; //TODO
+    public static final double fastDeployVolts = 2.5;
     }
 
     public static final class Logging {

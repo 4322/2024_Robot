@@ -227,4 +227,13 @@ public class IntakeIOReal implements IntakeIO {
   public void stopDeployer() {
     deploy.stopMotor();
   }
+
+  @Override 
+  public void setDeployKp(double kP)
+  {
+    Slot0Configs configs = new Slot0Configs();
+    configs.kP = kP;
+    deploy.getConfigurator().refresh(configs);
+  }
 }
+  
