@@ -14,8 +14,9 @@ public class Shoot extends Command {
 
   @Override
   public void execute() {
-    if (RobotCoordinator.getInstance().canShoot()
-        && RobotCoordinator.getInstance().onOurSideOfField()) {
+    if ((RobotCoordinator.getInstance().canShoot()
+        && RobotCoordinator.getInstance().onOurSideOfField()) 
+        || RobotCoordinator.getInstance().debugOuttakeOverride()) {
       tunnel.feed();
     }
   }

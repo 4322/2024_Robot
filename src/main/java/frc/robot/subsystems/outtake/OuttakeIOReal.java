@@ -32,6 +32,7 @@ public class OuttakeIOReal implements OuttakeIO {
   ShuffleboardTab tab;
   GenericEntry outtakeFlywheelSpeed;
   GenericEntry pivotPosition;
+  GenericEntry debugOverrideEnable;
 
   private double heliumAbsoluteRotations;
 
@@ -61,6 +62,8 @@ public class OuttakeIOReal implements OuttakeIO {
               .getEntry();
       pivotPosition =
           tab.add("Pivot Position (Rotations)", 0).withSize(1, 1).withPosition(1, 0).getEntry();
+      debugOverrideEnable = 
+          tab.add("debugOverride", false).withSize(1, 1).withPosition(1,1).getEntry();
     }
   }
 
@@ -177,6 +180,7 @@ public class OuttakeIOReal implements OuttakeIO {
     if (Constants.outtakeTuningMode) {
       inputs.debugTargetRPS = outtakeFlywheelSpeed.getDouble(0);
       inputs.targetPivotPosition = pivotPosition.getDouble(0);
+      inputs.debugOverrideEnable = debugOverrideEnable.getBoolean(false);
     }
     if (inputs.heliumAbsRotations
         > Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
