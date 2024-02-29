@@ -318,7 +318,7 @@ public final class Constants {
     public static final double pivotClosedLoopSec = 0.1;
     public static final boolean limitForwardMotion = true;
     public static final boolean limitReverseMotion = true;
-    public static final double forwardSoftLimitThresholdRotations = 99; // TODO
+    public static final double forwardSoftLimitThresholdRotations = 120; // TODO
     public static final double reverseSoftLimitThresholdRotations = 0;
     public static final double pivotPeakForwardVoltage = 10;
     public static final double pivotPeakReverseVoltage = -10;
@@ -394,9 +394,9 @@ public final class Constants {
       public static final boolean limitForwardMotion = true;
       public static final boolean limitReverseMotion = true;
       public static final double encoderGearReduction = 60.0;
-      public static final double deployFallTolerance = 0.5; //TODO
-      public static final double slowDeployVolts = 1.25; //TODO
-    public static final double fastDeployVolts = 2.5;
+      public static final double deployFallTolerance = 0.5; // TODO
+      public static final double slowDeployVolts = 1.25; // TODO
+      public static final double fastDeployVolts = 2.5;
     }
 
     public static final class Logging {
