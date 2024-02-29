@@ -78,21 +78,53 @@ public class Intake extends SubsystemBase {
           break;
         case Deploying:
           if (inputs.heliumAbsRotations < inputs.slowPos) {
-            deployVolts = deployController.calculate(deployVolts, inputs.deployRotationsPerSec, inputs.deployMaxRotationsPerSec);
+            deployVolts = IntakeConstants.Deploy.fastDeployVolts;
+          } else if (deployVolts == IntakeConstants.Deploy.fastDeployVolts) {
+            deployVolts =
+                deployController.calculate(
+                    IntakeConstants.Deploy.slowDeployVolts,
+                    inputs.deployRotationsPerSec,
+                    inputs.deployMaxRotationsPerSec
+                        * Math.abs((inputs.heliumAbsRotations - inputs.slowPos)
+                        / (IntakeConstants.Deploy.retractTargetPosition - inputs.slowPos)));
+          } else {
+            deployVolts =
+                deployController.calculate(
+                    deployVolts, inputs.deployRotationsPerSec, inputs.deployMaxRotationsPerSec
+                        * Math.abs((inputs.heliumAbsRotations - inputs.slowPos)
+                        / (IntakeConstants.Deploy.retractTargetPosition - inputs.slowPos)));
           }
           if (isDeployed()) {
             setDeployerBrakeMode();
             state = IntakeDeployState.Deployed;
+          } else {
+            io.setDeployVoltage(deployVolts);
           }
           break;
         case Retracting:
           if (inputs.heliumAbsRotations
               > (IntakeConstants.Deploy.retractTargetPosition - inputs.slowPos)) {
-            deployVolts = deployController.calculate(deployVolts, inputs.deployRotationsPerSec, inputs.deployMaxRotationsPerSec);
+            deployVolts = -IntakeConstants.Deploy.fastDeployVolts;
+          } else if (deployVolts == -IntakeConstants.Deploy.fastDeployVolts) {
+            deployVolts =
+                deployController.calculate(
+                    -IntakeConstants.Deploy.slowDeployVolts,
+                    inputs.deployRotationsPerSec,
+                    inputs.deployMaxRotationsPerSec
+                        * Math.abs((IntakeConstants.Deploy.retractTargetPosition - inputs.heliumAbsRotations - inputs.slowPos)
+                        / (IntakeConstants.Deploy.retractTargetPosition - inputs.slowPos)));
+          } else {
+            deployVolts =
+                deployController.calculate(
+                    deployVolts, inputs.deployRotationsPerSec, inputs.deployMaxRotationsPerSec
+                        * Math.abs((IntakeConstants.Deploy.retractTargetPosition - inputs.heliumAbsRotations - inputs.slowPos)
+                        / (IntakeConstants.Deploy.retractTargetPosition - inputs.slowPos)));
           }
           if (isRetracted()) {
             setDeployerBrakeMode();
             state = IntakeDeployState.Retracted;
+          } else {
+            io.setDeployVoltage(deployVolts);
           }
           break;
         case Deployed:

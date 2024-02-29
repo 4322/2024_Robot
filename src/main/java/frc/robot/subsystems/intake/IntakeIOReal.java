@@ -185,7 +185,8 @@ public class IntakeIOReal implements IntakeIO {
 
     inputs.deployAppliedControl = deploy.getAppliedControl().toString();
 
-    if (inputs.heliumAbsRotations > Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
+    if (inputs.heliumAbsRotations
+        > Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
       inputs.heliumAbsRotations = 0;
     }
 

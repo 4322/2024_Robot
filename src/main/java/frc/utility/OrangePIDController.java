@@ -1,7 +1,7 @@
 package frc.utility;
 
 public class OrangePIDController {
-  
+
   private double kP;
 
   public OrangePIDController(double kP) {
@@ -19,5 +19,4 @@ public class OrangePIDController {
   public double getKp() {
     return kP;
   }
-
 }

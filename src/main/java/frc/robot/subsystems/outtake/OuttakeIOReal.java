@@ -178,7 +178,8 @@ public class OuttakeIOReal implements OuttakeIO {
       inputs.debugTargetRPS = outtakeFlywheelSpeed.getDouble(0);
       inputs.targetPivotPosition = pivotPosition.getDouble(0);
     }
-    if (inputs.heliumAbsRotations > Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
+    if (inputs.heliumAbsRotations
+        > Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
       inputs.heliumAbsRotations = 0;
     }
     heliumAbsoluteRotations = inputs.heliumAbsRotations;
