@@ -34,7 +34,7 @@ public class ResetFieldCentric extends InstantCommand {
   @Override
   public void initialize() {
     if (DriverStation.isDisabled() || runWhenEnabled) {
-      drive.resetFieldCentric(robotRotation.getDegrees());
+      drive.resetFieldCentric();
       String report = "Reset Field Centric";
       DriverStation.reportWarning(report, false);
     }
