@@ -173,8 +173,8 @@ public class Outtake extends SubsystemBase {
   }
 
   public boolean safeToPivot() {
-    return (inputs.pivotRotations < OuttakeConstants.reverseSoftLimitThresholdRotations
-        && inputs.pivotRotations > OuttakeConstants.forwardSoftLimitThresholdRotations);
+    return (inputs.pivotRotations > OuttakeConstants.reverseSoftLimitThresholdRotations
+        && inputs.pivotRotations < OuttakeConstants.forwardSoftLimitThresholdRotations);
   }
 
   public boolean getDebugOverrideEnabled() {

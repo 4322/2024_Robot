@@ -91,7 +91,7 @@ public final class Constants {
 
   public static final boolean driveTuningMode = false;
   public static final boolean steeringTuningMode = false;
-  public static final boolean outtakeTuningMode = true;
+  public static final boolean outtakeTuningMode = false;
 
   public enum DriveDegradedMode {
     normal,
@@ -402,7 +402,7 @@ public final class Constants {
     public static final double supplyLimit = 30;
     public static final double statorLimit = 45;
 
-    public static final double desiredVoltage = 3.0;
+    public static final double desiredVoltage = 4.0;
     public static final double peakVoltage = 6.0;
 
     public static final class Logging {

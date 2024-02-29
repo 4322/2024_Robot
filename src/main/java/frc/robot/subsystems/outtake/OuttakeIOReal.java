@@ -16,6 +16,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandcoder.Canandcoder;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants;
@@ -63,7 +64,11 @@ public class OuttakeIOReal implements OuttakeIO {
       pivotPosition =
           tab.add("Pivot Position (Rotations)", 0).withSize(1, 1).withPosition(1, 0).getEntry();
       debugOverrideEnable =
-          tab.add("debugOverride", false).withSize(1, 1).withPosition(1, 1).getEntry();
+          tab.add("debugOverride", false)
+              .withWidget(BuiltInWidgets.kToggleButton)
+              .withSize(1, 1)
+              .withPosition(1, 1)
+              .getEntry();
     }
   }
 

@@ -23,8 +23,7 @@ public class OuttakeAdjustToSpeaker extends Command {
   @Override
   public void execute() {
     if (RobotCoordinator.getInstance().onOurSideOfField()
-        && RobotCoordinator.getInstance().canPivot()
-        && outtake.safeToPivot()) {
+        && RobotCoordinator.getInstance().canPivot()) {
       FiringSolution firingSolution =
           FiringSolutionManager.getInstance()
               .calcSolution(
@@ -39,7 +38,7 @@ public class OuttakeAdjustToSpeaker extends Command {
       outtake.outtake(firingSolution.getFlywheelSpeed());
       // divide by 360 because pivot uses rotations instead of degrees
       outtake.pivot(
-          firingSolution.getShotAngle() / 360 * OuttakeConstants.gearReductionEncoderToMotor);
+          firingSolution.getShotRotations() * OuttakeConstants.gearReductionEncoderToMotor);
     }
   }
 
