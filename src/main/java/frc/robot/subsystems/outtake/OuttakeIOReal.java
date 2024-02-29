@@ -63,10 +63,8 @@ public class OuttakeIOReal implements OuttakeIO {
               .getEntry();
       pivotPosition =
           tab.add("Pivot Position (Rotations)", 0).withSize(1, 1).withPosition(1, 0).getEntry();
-      outtakeOn = 
-          tab.add("Outtake On", false).withSize(1, 1).withPosition(0, 2).getEntry();
-      pivotOn =
-          tab.add("Pivot On", false).withSize(1,1).withPosition(1, 1).getEntry();
+      outtakeOn = tab.add("Outtake On", false).withSize(1, 1).withPosition(0, 2).getEntry();
+      pivotOn = tab.add("Pivot On", false).withSize(1, 1).withPosition(1, 1).getEntry();
     }
   }
 

@@ -137,9 +137,9 @@ public class RobotContainer {
       tunnel.setDefaultCommand(tunnelFeed);
     }
 
-    if (Constants.outtakeEnabled) {
-      outtake.setDefaultCommand(adjustOuttakeToSpeaker);
-    }
+    // if (Constants.outtakeEnabled) {
+    //   outtake.setDefaultCommand(adjustOuttakeToSpeaker);
+    // }
 
     if (Constants.intakeEnabled) {
       intake.setDefaultCommand(intakeManual);
@@ -228,6 +228,20 @@ public class RobotContainer {
                       OuttakeConstants.subwooferOuttakeRPS,
                       OuttakeConstants.subwooferPivotPositionRotations)));
       driveXbox.povLeft().onTrue(new AtHome());
+      driveXbox
+          .b()
+          .whileTrue(
+              Commands.runOnce(
+                  () -> {
+                    Intake.getInstance().intake();
+                  }));
+      driveXbox
+          .y()
+          .whileTrue(
+              Commands.runOnce(
+                  () -> {
+                    tunnel.feed();
+                  }));
     }
   }
 

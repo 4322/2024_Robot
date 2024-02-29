@@ -5,7 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.RobotChooser.RobotChooser;
@@ -397,7 +396,7 @@ public final class Constants {
       public static final double encoderGearReduction = 60.0;
       public static final double retractTolerance = 0;
       public static final double slowDeployVolts = 0;
-    public static final double fastDeployVolts = 0;
+      public static final double fastDeployVolts = 0;
     }
 
     public static final class Logging {
