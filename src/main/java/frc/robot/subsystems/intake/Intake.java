@@ -91,7 +91,7 @@ public class Intake extends SubsystemBase {
         case Unknown:
           break;
         case Deploying:
-          if(inputs.heliumAbsRotations < slowPos.getDouble(IntakeConstants.slowPos))
+          if(inputs.heliumRotations < slowPos.getDouble(IntakeConstants.slowPos))
           {
             deployVolts = IntakeConstants.Deploy.slowDeployVolts;
           }
