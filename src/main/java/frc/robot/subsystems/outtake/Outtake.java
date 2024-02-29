@@ -96,7 +96,7 @@ public class Outtake extends SubsystemBase {
       }
       this.targetRPS = targetRPS;
       io.setOuttakeRPS(
-          Constants.OuttakeConstants.topOuttakeRPS, Constants.OuttakeConstants.bottomOuttakeRPS);
+          this.targetRPS, this.targetRPS);
       Logger.recordOutput(
           "Outtake/TopOuttakeTargetSpeedRPS", Constants.OuttakeConstants.topOuttakeRPS);
       Logger.recordOutput(
@@ -137,8 +137,8 @@ public class Outtake extends SubsystemBase {
   public void stopOuttake() {
     if (Constants.outtakeEnabled) {
       io.stopOuttake();
-      Logger.recordOutput("Outtake/TopOuttakeTargetSpeedRPS", 0);
-      Logger.recordOutput("Outtake/BottomOuttakeTargetSpeedRPS", 0);
+      Logger.recordOutput("Outtake/TopOuttakeTargetSpeedRPS", 0.0);
+      Logger.recordOutput("Outtake/BottomOuttakeTargetSpeedRPS", 0.0);
       Logger.recordOutput("Outtake/OuttakeStopped", true);
     }
   }
