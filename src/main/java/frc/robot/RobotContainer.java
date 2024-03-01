@@ -190,16 +190,14 @@ public class RobotContainer {
           .onTrue(
               Commands.runOnce(
                   () -> {
-                    Intake.getInstance().deploy();
-                    // RobotCoordinator.getInstance().setIntakeButtonState(true);
+                    RobotCoordinator.getInstance().setIntakeButtonState(true);
                   }));
       driveXbox
           .rightTrigger()
           .onFalse(
               Commands.runOnce(
                   () -> {
-                    Intake.getInstance().retract();
-                    // RobotCoordinator.getInstance().setIntakeButtonState(false);
+                    RobotCoordinator.getInstance().setIntakeButtonState(false);
                   }));
       driveXbox
           .rightBumper()
