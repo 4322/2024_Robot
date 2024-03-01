@@ -328,8 +328,8 @@ public final class Constants {
     public static final double pivotClosedLoopSec = 0.1;
     public static final boolean limitForwardMotion = true;
     public static final boolean limitReverseMotion = true;
-    public static final double forwardSoftLimitThresholdRotations = 120; // TODO
-    public static final double reverseSoftLimitThresholdRotations = 0;
+    public static final double forwardSoftLimitThresholdRotations = 120;
+    public static final double reverseSoftLimitThresholdRotations = 10;
     public static final double pivotPeakForwardVoltage = 10;
     public static final double pivotPeakReverseVoltage = -10;
 
