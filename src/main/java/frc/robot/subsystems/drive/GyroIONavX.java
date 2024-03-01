@@ -26,7 +26,9 @@ public class GyroIONavX implements GyroIO {
   }
 
   @Override
-  public void reset() {
+  public void resetWithOffset(double offsetDeg) {
     gyro.reset();
+    // subtract angle to set field centric to true angle
+    gyro.setAngleAdjustment(-offsetDeg);
   }
 }
