@@ -51,9 +51,8 @@ public class CrushConstants implements RobotChooserInterface {
     return 6;
   }
 
-  // arbitrary limit to be measured mid-match
   public double getMaxRotationSpeedRadPerSec() { // TODO
-    return 15; // physical limit of the bot
+    return 12.2718; // physical limit of the bot
   }
 
   public double getAutoRotatekP() { // TODO
