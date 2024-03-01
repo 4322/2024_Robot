@@ -323,7 +323,7 @@ public final class Constants {
     public static final double pivotkP = 3.0;
     public static final double pivotkFF = 0;
 
-    public static final double maxVelRotationsPerSec = 0.0;
+    public static final double maxVelRotationsPerSec = 85;
     public static final boolean enableFOC = false;
     public static final double pivotClosedLoopSec = 0.1;
     public static final boolean limitForwardMotion = true;
