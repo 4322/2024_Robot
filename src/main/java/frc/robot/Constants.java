@@ -167,7 +167,7 @@ public final class Constants {
       public static final double joystickRotateRightDeadband = 0.35; // don't go below 0.2
 
       public static final double xboxDriveDeadband = 0.17; // was 0.1 with a better controller
-      public static final double xboxRotateDeadband = 0.2;
+      public static final double xboxRotateDeadband = 0.25;
       public static final double maxManualRotation = 0.25;
       public static final double inhibitPseudoAutoRotateAngularVelocity = 0.05;
 
