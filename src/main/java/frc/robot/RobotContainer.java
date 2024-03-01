@@ -28,6 +28,7 @@ import frc.robot.commands.AutoSetOuttakeAdjust;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
+import frc.robot.commands.EjectThroughIntake;
 import frc.robot.commands.EjectThroughOuttake;
 import frc.robot.commands.IntakeManual;
 import frc.robot.commands.IntakeStop;
@@ -218,6 +219,7 @@ public class RobotContainer {
       operatorXbox.rightTrigger().whileTrue(new EjectThroughOuttake());
       operatorXbox.start().onTrue(new SetPivotsCoastMode());
       operatorXbox.back().onTrue(new SetPivotsBrakeMode());
+      operatorXbox.povLeft().whileTrue(new EjectThroughIntake());
       operatorXbox
           .a()
           .onTrue(
