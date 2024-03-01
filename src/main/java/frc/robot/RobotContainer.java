@@ -66,7 +66,7 @@ public class RobotContainer {
   private JoystickButton driveButtonSeven;
   private JoystickButton driveButtonTwelve;
 
-  private boolean opponentFieldSide;
+  private boolean onOpponentFieldSide;
 
   // Need to instantiate RobotCoordinator first due to a bug in the WPI command library.
   // If it gets instantiated from a subsystem periodic method, we get a concurrency
@@ -198,7 +198,7 @@ public class RobotContainer {
               Commands.runOnce(
                   () -> {
                     RobotCoordinator.getInstance().setIntakeButtonState(false);
-                  }));
+                  }).alongWith(Commands.runOnce(() -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE);})));
       driveXbox
           .rightBumper()
           .onTrue(
@@ -274,12 +274,14 @@ public class RobotContainer {
   }
 
   public void teleopPeriodic() {
-    if (!robotCoordinator.onOurSideOfField()) {
-      opponentFieldSide = true;
+    // if robot crossing from our side to opponent side
+    if (!robotCoordinator.onOurSideOfField() && !onOpponentFieldSide) {
+      onOpponentFieldSide = true;
     }
-    else if (robotCoordinator.onOurSideOfField() && opponentFieldSide) {
+    // if robot crossing from opponent side to our side
+    else if (robotCoordinator.onOurSideOfField() && onOpponentFieldSide) {
       Commands.runOnce(() -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SMART_SHOOTING);});
-      opponentFieldSide = false;
+      onOpponentFieldSide = false;
     }
   }
 
