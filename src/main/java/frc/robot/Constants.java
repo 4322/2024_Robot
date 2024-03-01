@@ -39,7 +39,7 @@ public final class Constants {
       RobotChooser.getInstance().getConstants();
   public static double noteRadiusInches = 7;
 
-  public static final boolean debug = true;
+  public static final boolean debug = false;
 
   public static final boolean driveEnabled = true;
   public static final boolean intakeEnabled = true;
@@ -100,7 +100,7 @@ public final class Constants {
 
   public static final boolean driveTuningMode = false;
   public static final boolean steeringTuningMode = false;
-  public static final boolean outtakeTuningMode = true;
+  public static final boolean outtakeTuningMode = false;
 
   public enum DriveDegradedMode {
     normal,
