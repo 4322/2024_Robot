@@ -78,23 +78,33 @@ public class DriveManual extends Command {
   public void execute() {
     updateDriveValues();
 
-    switch (stateMachine.getState()) {
-      case DEFAULT:
-        if (rotatePower != 0) {
-          doSpinout();
-        } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
-          drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
-        } else {
-          drive.drive(driveX, driveY, rotatePower);
-        }
-        break;
-      case SPEAKER_CENTRIC:
-        Pose2d drivePose2D = drive.getPose2d();
-        Translation2d speakerVec =
-            FiringSolutionHelper.getVectorToSpeaker(drivePose2D.getX(), drivePose2D.getY());
-        Logger.recordOutput("SpeakerCentricHeading", speakerVec.getAngle().getDegrees());
-        drive.driveAutoRotate(driveX, driveY, speakerVec.getAngle().getDegrees());
-        break;
+    if (Constants.speakerCentricEnabled) {
+      switch (stateMachine.getState()) {
+        case DEFAULT:
+          if (rotatePower != 0) {
+            doSpinout();
+          } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
+            drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
+          } else {
+            drive.drive(driveX, driveY, rotatePower);
+          }
+          break;
+        case SPEAKER_CENTRIC:
+          Pose2d drivePose2D = drive.getPose2d();
+          Translation2d speakerVec =
+              FiringSolutionHelper.getVectorToSpeaker(drivePose2D.getX(), drivePose2D.getY());
+          Logger.recordOutput("SpeakerCentricHeading", speakerVec.getAngle().getDegrees());
+          drive.driveAutoRotate(driveX, driveY, speakerVec.getAngle().getDegrees());
+          break;
+      }
+    } else { // do regular drive logic
+      if (rotatePower != 0) {
+        doSpinout();
+      } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
+        drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
+      } else {
+        drive.drive(driveX, driveY, rotatePower);
+      }
     }
   }
 
