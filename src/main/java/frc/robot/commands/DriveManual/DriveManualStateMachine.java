@@ -14,17 +14,20 @@ public class DriveManualStateMachine {
   }
 
   public enum DriveManualTrigger {
-    JOYSTICK_IN
+    SWITCH_MODES,
+    RESET_TO_DEFAULT,
   }
 
   public DriveManualStateMachine(DriveManualState initialState) {
     config
         .configure(DriveManualState.DEFAULT)
-        .permit(DriveManualTrigger.JOYSTICK_IN, DriveManualState.SPEAKER_CENTRIC);
+        .permit(DriveManualTrigger.SWITCH_MODES, DriveManualState.SPEAKER_CENTRIC)
+        .permitReentry(DriveManualTrigger.RESET_TO_DEFAULT);
 
     config
         .configure(DriveManualState.SPEAKER_CENTRIC)
-        .permit(DriveManualTrigger.JOYSTICK_IN, DriveManualState.DEFAULT);
+        .permit(DriveManualTrigger.SWITCH_MODES, DriveManualState.DEFAULT)
+        .permit(DriveManualTrigger.RESET_TO_DEFAULT, DriveManualState.DEFAULT);
 
     stateMachine = new StateMachine<DriveManualState, DriveManualTrigger>(initialState, config);
   }
