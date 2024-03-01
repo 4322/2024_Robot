@@ -2,6 +2,7 @@ package frc.robot.subsystems.LED;
 
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
+import com.ctre.phoenix.led.CANdle.VBatOutputMode;
 import com.ctre.phoenix.led.CANdleConfiguration;
 import com.ctre.phoenix.led.RainbowAnimation;
 import com.ctre.phoenix.led.StrobeAnimation;
@@ -11,11 +12,13 @@ public class LedIOReal implements LedIO {
   public CANdle candle;
 
   public LedIOReal() {
-    candle = new CANdle(Constants.LED.CANdleID, "rio");
+    candle = new CANdle(Constants.LED.CANdleID, Constants.DriveConstants.Drive.canivoreName);
 
     CANdleConfiguration config = new CANdleConfiguration();
+    config.v5Enabled = true;
     config.stripType = LEDStripType.RGB;
     config.brightnessScalar = 1;
+    config.vBatOutputMode = VBatOutputMode.On;
     candle.configAllSettings(config);
   }
 
