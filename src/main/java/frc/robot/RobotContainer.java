@@ -173,7 +173,7 @@ public class RobotContainer {
           .onTrue(
               Commands.runOnce(
                   () -> {
-                    driveManual.updateStateMachine(DriveManualTrigger.JOYSTICK_IN);
+                    driveManual.updateStateMachine(DriveManualTrigger.SWITCH_MODES);
                   }));
       driveXbox.povUp().onTrue(new ResetFieldCentric(true));
       driveXbox.povRight().onTrue(writeFiringSolution);
@@ -276,6 +276,8 @@ public class RobotContainer {
     intakeStop.schedule(); // interrupt all intake commands
     outtakeStop.schedule(); // interrupt all outtake commands
     tunnelStop.schedule(); // interrupt all tunnel commands
+
+    driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);
 
     disableTimer.reset();
     disableTimer.start();
