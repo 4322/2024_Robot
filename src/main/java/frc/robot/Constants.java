@@ -251,7 +251,7 @@ public final class Constants {
       public static final int currentLimit = 40;
       public static final int secondaryCurrentLimit = 80;
 
-      public static final double wheelDiameterInches = 3.9;
+      public static final double wheelDiameterInches = 4.0;
 
       public static final String canivoreName = "Clockwork";
       public static final int pigeonID = 10;

@@ -104,10 +104,10 @@ public class CrushConstants implements RobotChooserInterface {
 
   public double[] getDriveffVoltsOverMetersPerSec() { // TODO
     double[] voltsOverMetersPerSecAtSpeedThresholds = new double[4];
-    voltsOverMetersPerSecAtSpeedThresholds[0] = 3.3;
-    voltsOverMetersPerSecAtSpeedThresholds[1] = 3.3;
-    voltsOverMetersPerSecAtSpeedThresholds[2] = 3.3;
-    voltsOverMetersPerSecAtSpeedThresholds[3] = 3.37;
+    voltsOverMetersPerSecAtSpeedThresholds[0] = 2.3;
+    voltsOverMetersPerSecAtSpeedThresholds[1] = 2.3;
+    voltsOverMetersPerSecAtSpeedThresholds[2] = 2.3;
+    voltsOverMetersPerSecAtSpeedThresholds[3] = 2.3;
     return voltsOverMetersPerSecAtSpeedThresholds;
   }
 
