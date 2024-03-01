@@ -37,7 +37,7 @@ public class UpdateOdometry extends Command {
       Drive.getInstance()
           .updateOdometryVision(
               limelightPose,
-              Timer.getFPGATimestamp() - Limelight.getOuttakeInstance().getTotalLatency());
+              Timer.getFPGATimestamp() - limelight.getTotalLatency());
     }
   }
 
