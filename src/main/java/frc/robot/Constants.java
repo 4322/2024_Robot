@@ -56,6 +56,7 @@ public final class Constants {
   public static final boolean intakeLimeLightEnabled = true;
   public static final boolean outtakeLimeLightEnabled = true;
 
+  public static final boolean speakerCentricEnabled = true;
   public static final boolean spinoutCenterEnabled = true; // center rotate burst of power
   public static final boolean spinoutCornerEnabled = true;
   public static final boolean psuedoAutoRotateEnabled = true;
