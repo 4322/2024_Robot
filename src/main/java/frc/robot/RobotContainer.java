@@ -191,20 +191,15 @@ public class RobotContainer {
               Commands.runOnce(
                   () -> {
                     RobotCoordinator.getInstance().setIntakeButtonState(true);
+                    outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE);
                   }));
       driveXbox
           .rightTrigger()
           .onFalse(
               Commands.runOnce(
-                      () -> {
-                        RobotCoordinator.getInstance().setIntakeButtonState(false);
-                      })
-                  .alongWith(
-                      Commands.runOnce(
-                          () -> {
-                            outtakeManual.updateStateMachine(
-                                OuttakeManualTrigger.ENABLE_COLLECTING_NOTE);
-                          })));
+                  () -> {
+                    RobotCoordinator.getInstance().setIntakeButtonState(false);
+                  }));
       driveXbox
           .rightBumper()
           .onTrue(
