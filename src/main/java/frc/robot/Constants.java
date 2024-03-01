@@ -39,7 +39,7 @@ public final class Constants {
       RobotChooser.getInstance().getConstants();
   public static double noteRadiusInches = 7;
 
-  public static final boolean debug = true;
+  public static final boolean debug = false;
 
   public static final boolean driveEnabled = true;
   public static final boolean intakeEnabled = true;
@@ -59,13 +59,22 @@ public final class Constants {
   public static final boolean spinoutCenterEnabled = true; // center rotate burst of power
   public static final boolean spinoutCornerEnabled = true;
   public static final boolean psuedoAutoRotateEnabled = true;
-  public static final String driveInputScaling = InputScalingStrings.quadratic;
+  public static final String driveInputScaling = DriveInputScalingStrings.quadratic;
+  public static final String rotateInputScaling = RotateInputScalingStrings.linear;
+  public static final double rotateInputPowerScaling = 1.0;
   public static final String controllerType = ControllerTypeStrings.xboxLeftDrive;
 
-  public static final class InputScalingStrings {
+  public static final class DriveInputScalingStrings {
     public static final String linear = "Linear";
     public static final String quadratic = "Quadratic";
     public static final String cubic = "Cubic";
+  }
+
+  public static final class RotateInputScalingStrings {
+    public static final String linear = "Linear";
+    public static final String squareRoot = "Square Root";
+    public static final String quadratic = "Quadratic";
+    public static final String power = "Power";
   }
 
   public static final class ControllerTypeStrings {
@@ -91,7 +100,7 @@ public final class Constants {
 
   public static final boolean driveTuningMode = false;
   public static final boolean steeringTuningMode = false;
-  public static final boolean outtakeTuningMode = true;
+  public static final boolean outtakeTuningMode = false;
 
   public enum DriveDegradedMode {
     normal,
@@ -324,11 +333,6 @@ public final class Constants {
     public static final double pivotPeakReverseVoltage = -10;
 
     public static final double defaultPivotPositionRotations = 0;
-    public static final double ejectOuttakeRPS = 0.0; // TODO
-    public static final double subwooferShotMag = 0.0;
-    public static final double subwooferShotDeg = 0.0;
-    public static final double subwooferPivotPositionRotations = 0.0;
-    public static final double subwooferOuttakeRPS = 0.0;
 
     public static final double topOuttakeRPS = 0;
     public static final double bottomOuttakeRPS = 0;
@@ -491,13 +495,15 @@ public final class Constants {
   public static final class FiringSolutions {
     // TODO: update speeds and angles
     // shot mag/deg don't matter since these are used for setting speed/angle only
-    public static FiringSolution SubwooferBase = new FiringSolution(0, 0, 0, 0);
-    public static FiringSolution N6 = new FiringSolution(0, 0, 0, 0);
-    public static FiringSolution N7 = new FiringSolution(0, 0, 0, 0);
-    public static FiringSolution N8 = new FiringSolution(0, 0, 0, 0);
-    public static FiringSolution TS = new FiringSolution(0, 0, 0, 0);
-    public static FiringSolution MS = new FiringSolution(0, 0, 0, 0);
-    public static FiringSolution BS = new FiringSolution(0, 0, 0, 0);
+    public static final FiringSolution SubwooferBase = new FiringSolution(0, 0, 40, 100);
+    public static final FiringSolution N6 = new FiringSolution(0, 0, 0, 0);
+    public static final FiringSolution N7 = new FiringSolution(0, 0, 0, 0);
+    public static final FiringSolution N8 = new FiringSolution(0, 0, 0, 0);
+    public static final FiringSolution TS = new FiringSolution(0, 0, 0, 0);
+    public static final FiringSolution MS = new FiringSolution(0, 0, 0, 0);
+    public static final FiringSolution BS = new FiringSolution(0, 0, 0, 0);
+    public static final FiringSolution Eject = new FiringSolution(0, 0, 10, 50);
+    public static final FiringSolution CollectingNote = new FiringSolution(0, 0, 0, 50);
   }
 
   public enum WheelPosition {

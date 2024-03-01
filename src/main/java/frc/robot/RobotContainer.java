@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.AutoHelper.Auto;
-import frc.robot.Constants.OuttakeConstants;
 import frc.robot.centerline.CenterLineManager.CenterLineScoringStrategy;
 import frc.robot.commands.AtHome;
 import frc.robot.commands.AutoIntakeDeploy;
@@ -28,10 +27,10 @@ import frc.robot.commands.AutoSetOuttakeAdjust;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
-import frc.robot.commands.EjectThroughOuttake;
 import frc.robot.commands.IntakeManual;
 import frc.robot.commands.IntakeStop;
-import frc.robot.commands.OuttakeAdjustToSpeaker;
+import frc.robot.commands.OuttakeManual.OuttakeManual;
+import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualTrigger;
 import frc.robot.commands.OuttakeStop;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetPivotsBrakeMode;
@@ -42,7 +41,6 @@ import frc.robot.commands.TunnelFeed;
 import frc.robot.commands.TunnelStop;
 import frc.robot.commands.UpdateOdometry;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
-import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.drive.Drive;
@@ -86,7 +84,7 @@ public class RobotContainer {
 
   private final TunnelFeed tunnelFeed = new TunnelFeed();
 
-  private final OuttakeAdjustToSpeaker adjustOuttakeToSpeaker = new OuttakeAdjustToSpeaker();
+  private final OuttakeManual outtakeManual = new OuttakeManual();
 
   private final IntakeManual intakeManual = new IntakeManual();
 
@@ -140,7 +138,7 @@ public class RobotContainer {
     }
 
     if (Constants.outtakeEnabled) {
-      outtake.setDefaultCommand(adjustOuttakeToSpeaker);
+      outtake.setDefaultCommand(outtakeManual);
     }
 
     if (Constants.intakeEnabled) {
@@ -217,18 +215,6 @@ public class RobotContainer {
                     RobotCoordinator.getInstance().setAutoIntakeButtonPressed(false);
                   }));
       driveXbox.leftTrigger().whileTrue(new Shoot());
-      operatorXbox.rightTrigger().whileTrue(new EjectThroughOuttake());
-      operatorXbox.start().onTrue(new SetPivotsCoastMode());
-      operatorXbox.back().onTrue(new SetPivotsBrakeMode());
-      operatorXbox
-          .a()
-          .onTrue(
-              new AutoSetOuttakeAdjust(
-                  new FiringSolution(
-                      OuttakeConstants.subwooferShotMag,
-                      OuttakeConstants.subwooferShotDeg,
-                      OuttakeConstants.subwooferOuttakeRPS,
-                      OuttakeConstants.subwooferPivotPositionRotations)));
       driveXbox.povLeft().onTrue(new AtHome());
       driveXbox
           .b()
@@ -244,6 +230,36 @@ public class RobotContainer {
                   () -> {
                     tunnel.feed();
                   }));
+      operatorXbox.start().onTrue(new SetPivotsCoastMode());
+      operatorXbox.back().onTrue(new SetPivotsBrakeMode());
+      operatorXbox
+          .y()
+          .onTrue(
+              Commands.runOnce(
+                  () ->
+                      outtakeManual.updateStateMachine(
+                          OuttakeManualTrigger.ENABLE_SMART_SHOOTING)));
+      operatorXbox
+          .x()
+          .onTrue(
+              Commands.runOnce(
+                  () ->
+                      outtakeManual.updateStateMachine(
+                          OuttakeManualTrigger.ENABLE_EJECT)));
+      operatorXbox
+          .b()
+          .onTrue(
+              Commands.runOnce(
+                  () ->
+                      outtakeManual.updateStateMachine(
+                          OuttakeManualTrigger.ENABLE_SUBWOOFER)));
+      operatorXbox
+          .b()
+          .onTrue(
+              Commands.runOnce(
+                  () ->
+                      outtakeManual.updateStateMachine(
+                          OuttakeManualTrigger.ENABLE_STOP)));
     }
   }
 
