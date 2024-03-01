@@ -199,7 +199,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     // need fast initial reading from the CANCoder
     encoder
         .getPosition()
-        .setUpdateFrequency(OrangeMath.msAndHzConverter(Constants.controllerConfigTimeoutMs));
+        .setUpdateFrequency(OrangeMath.msAndHzConverter(10), Constants.controllerConfigTimeoutMs);
     try {
       Thread.sleep(50); // 5 status frames to be safe
     } catch (InterruptedException e) {
@@ -222,6 +222,11 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
         .setUpdateFrequency(
             OrangeMath.msAndHzConverter(CanBusUtil.nextFastStatusPeriodMs()),
             Constants.controllerConfigTimeoutMs);
+
+    // only need the CANcoder for AdvantageKit logging after this
+    encoder
+        .getPosition()
+        .setUpdateFrequency(OrangeMath.msAndHzConverter(200), Constants.controllerConfigTimeoutMs);
   }
 
   // Below are the implementations of the methods in SwerveModuleIO.java

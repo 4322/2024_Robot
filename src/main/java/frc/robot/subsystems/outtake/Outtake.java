@@ -94,8 +94,7 @@ public class Outtake extends SubsystemBase {
       if (Constants.outtakeTuningMode) {
         targetRPS = inputs.debugTargetRPS;
       }
-      if(targetRPS > OuttakeConstants.maxVelRotationsPerSec)
-      {
+      if (targetRPS > OuttakeConstants.maxVelRotationsPerSec) {
         targetRPS = OuttakeConstants.maxVelRotationsPerSec;
       }
       this.targetRPS = targetRPS;
