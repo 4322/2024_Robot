@@ -16,6 +16,8 @@ import frc.robot.Constants.LimelightConstants;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.littletonrobotics.junction.Logger;
+
 public class Limelight extends SubsystemBase {
   NetworkTable table;
 
@@ -150,7 +152,9 @@ public class Limelight extends SubsystemBase {
 
   public Pose2d getBotposeWpiBlue() {
     if (enabled && isNetworkTableConnected) {
-      return LimelightHelpers.getBotPose2d_wpiBlue(name);
+      final Pose2d limelightPose = LimelightHelpers.getBotPose2d_wpiBlue(name);
+      Logger.recordOutput(name + "/BotposeBlue", limelightPose);
+      return limelightPose;
     }
     return new Pose2d();
   }
