@@ -255,6 +255,13 @@ public class RobotContainer {
     }
   }
 
+  public void teleopPeriodic() {
+    if (RobotCoordinator.getInstance().crossedCenterLineToOurSide()) {
+      Commands.runOnce(null);
+    }
+
+  }
+
   public void enableSubsystems() {
     drive.setBrakeMode();
     tunnel.setBrakeMode();

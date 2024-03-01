@@ -33,6 +33,9 @@ public class RobotCoordinator extends SubsystemBase {
   private boolean autoIntakeButtonPressed;
   private boolean initAbsEncoderPressed;
 
+  private boolean opponentFieldSide;
+  private boolean ourFieldSide;
+
   public static RobotCoordinator getInstance() {
     if (robotCoordinator == null) {
       robotCoordinator = new RobotCoordinator();
@@ -183,6 +186,28 @@ public class RobotCoordinator extends SubsystemBase {
     } else {
       return false;
     }
+  }
+
+  public boolean crossedCenterLineToOurSide() { // check if we crossed once
+    if (!onOurSideOfField()) {
+      opponentFieldSide = true;
+    }
+    else if (onOurSideOfField() && opponentFieldSide) {
+      opponentFieldSide = false;
+      return true;
+    }
+    return false;
+  }
+
+  public boolean crossedCenterLineToOpponentSide() {
+    if (onOurSideOfField()) {
+      ourFieldSide = true;
+    }
+    else if (!onOurSideOfField() && ourFieldSide) {
+      ourFieldSide = false;
+      return true;
+    }
+    return false;
   }
 
   public double getRobotXPos() {
