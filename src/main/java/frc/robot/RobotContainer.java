@@ -278,7 +278,7 @@ public class RobotContainer {
       opponentFieldSide = true;
     }
     else if (robotCoordinator.onOurSideOfField() && opponentFieldSide) {
-      Commands.runOnce(null);
+      Commands.runOnce(() -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SMART_SHOOTING);});
       opponentFieldSide = false;
     }
   }
