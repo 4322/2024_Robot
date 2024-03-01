@@ -241,23 +241,17 @@ public class RobotContainer {
           .x()
           .onTrue(
               Commands.runOnce(
-                  () ->
-                      outtakeManual.updateStateMachine(
-                          OuttakeManualTrigger.ENABLE_EJECT)));
+                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_EJECT)));
       operatorXbox
           .b()
           .onTrue(
               Commands.runOnce(
-                  () ->
-                      outtakeManual.updateStateMachine(
-                          OuttakeManualTrigger.ENABLE_SUBWOOFER)));
+                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SUBWOOFER)));
       operatorXbox
-          .b()
+          .a()
           .onTrue(
               Commands.runOnce(
-                  () ->
-                      outtakeManual.updateStateMachine(
-                          OuttakeManualTrigger.ENABLE_STOP)));
+                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP)));
     }
   }
 
