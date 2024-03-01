@@ -2,7 +2,6 @@ package frc.robot.commands.OuttakeManual;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.FiringSolutions;
-import frc.robot.Constants.OuttakeConstants;
 import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualState;
 import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualTrigger;
 import frc.robot.shooting.FiringSolution;

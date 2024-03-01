@@ -196,9 +196,15 @@ public class RobotContainer {
           .rightTrigger()
           .onFalse(
               Commands.runOnce(
-                  () -> {
-                    RobotCoordinator.getInstance().setIntakeButtonState(false);
-                  }).alongWith(Commands.runOnce(() -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE);})));
+                      () -> {
+                        RobotCoordinator.getInstance().setIntakeButtonState(false);
+                      })
+                  .alongWith(
+                      Commands.runOnce(
+                          () -> {
+                            outtakeManual.updateStateMachine(
+                                OuttakeManualTrigger.ENABLE_COLLECTING_NOTE);
+                          })));
       driveXbox
           .rightBumper()
           .onTrue(
@@ -274,7 +280,10 @@ public class RobotContainer {
     }
     // if robot crossing from opponent side to our side
     else if (robotCoordinator.onOurSideOfField() && onOpponentFieldSide) {
-      Commands.runOnce(() -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SMART_SHOOTING);});
+      Commands.runOnce(
+          () -> {
+            outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SMART_SHOOTING);
+          });
       onOpponentFieldSide = false;
     }
   }
