@@ -1,6 +1,5 @@
 package frc.robot.RobotChooser;
 
-import frc.robot.Constants;
 import frc.utility.OrangeMath;
 
 public class CrushConstants implements RobotChooserInterface {
@@ -38,23 +37,18 @@ public class CrushConstants implements RobotChooserInterface {
     return 20;
   }
 
-  // full length of drivebase divided by 2 for distance between wheels
+  // measured distance between wheels / 2 for distance from center
   public double getDistWheelMetersX() {
-    return OrangeMath.inchesToMeters(26 / 2); // 26 in
+    return OrangeMath.inchesToMeters(20.75 / 2);
   }
 
   public double getDistWheelMetersY() {
-    return OrangeMath.inchesToMeters(26 / 2); // 26 in
+    return OrangeMath.inchesToMeters(20.75 / 2);
   }
 
-  // top speed at full motor output is 91 rot/sec with voltage comp at 11.5 volts
-  // however, setting the max speed to 91 only allows us to reach 86 due to insufficent kV
+  // arbitrary limit to be measured mid-match
   public double getMaxSpeedMetersPerSec() { // TODO
-    return OrangeMath.falconRotationsToMeters(
-        91,
-        OrangeMath.inchesToMeters(
-            OrangeMath.getCircumference(Constants.DriveConstants.Drive.wheelDiameterInches)),
-        getDriveGearRatio());
+    return 6;
   }
 
   public double getMaxRotationSpeedRadPerSec() { // TODO

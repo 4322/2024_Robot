@@ -56,6 +56,7 @@ public final class Constants {
   public static final boolean intakeLimeLightEnabled = true;
   public static final boolean outtakeLimeLightEnabled = true;
 
+  public static final boolean speakerCentricEnabled = true;
   public static final boolean spinoutCenterEnabled = true; // center rotate burst of power
   public static final boolean spinoutCornerEnabled = true;
   public static final boolean psuedoAutoRotateEnabled = true;
@@ -167,7 +168,7 @@ public final class Constants {
 
       public static final double xboxDriveDeadband = 0.17; // was 0.1 with a better controller
       public static final double xboxRotateDeadband = 0.2;
-      public static final double maxManualRotation = 0.34;
+      public static final double maxManualRotation = 0.25;
       public static final double inhibitPseudoAutoRotateAngularVelocity = 0.05;
 
       public static final double spinoutRotateDeadBand = 0.9;
@@ -322,13 +323,13 @@ public final class Constants {
     public static final double pivotkP = 3.0;
     public static final double pivotkFF = 0;
 
-    public static final double maxVelRotationsPerSec = 0.0;
+    public static final double maxVelRotationsPerSec = 85;
     public static final boolean enableFOC = false;
     public static final double pivotClosedLoopSec = 0.1;
     public static final boolean limitForwardMotion = true;
     public static final boolean limitReverseMotion = true;
-    public static final double forwardSoftLimitThresholdRotations = 120; // TODO
-    public static final double reverseSoftLimitThresholdRotations = 0;
+    public static final double forwardSoftLimitThresholdRotations = 120;
+    public static final double reverseSoftLimitThresholdRotations = 10;
     public static final double pivotPeakForwardVoltage = 10;
     public static final double pivotPeakReverseVoltage = -10;
 
@@ -416,8 +417,9 @@ public final class Constants {
   }
 
   public static final class LimelightConstants {
-    public static final double visionOdometryTolerance = 1.0;
-    public static final double odometryUpdatePeriodSeconds = 0.2;
+    public static final double visionOdometryTolerance = 0.5;
+    public static final double reverseOdometryOverrideTolerance = 1.0;
+    public static final int numTargetsToUseReverseOdom = 2;
     // TODO: Values need to be updated to the limelight itself.
     public static final double outtakeLimelightAngle = 25;
     public static final double outtakeLimelightHeight = OrangeMath.inchesToMeters(26.231);
