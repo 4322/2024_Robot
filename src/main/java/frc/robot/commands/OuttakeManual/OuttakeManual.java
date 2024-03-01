@@ -73,8 +73,7 @@ public class OuttakeManual extends Command {
     }
 
     if (RobotCoordinator.getInstance().canPivot()) {
-      // divide by 360 because pivot uses rotations instead of degrees
-      outtake.pivot(solution.getShotRotations() * OuttakeConstants.gearReductionEncoderToMotor);
+      outtake.pivot(solution.getShotRotations());
     } else {
       outtake.stopPivot();
     }
