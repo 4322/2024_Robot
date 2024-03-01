@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.intake.Intake;
 import frc.utility.OrangeMath;
 
 public class AutoAcquireNote extends Command {
@@ -91,7 +90,7 @@ public class AutoAcquireNote extends Command {
     return !initialized
         || coordinator.noteInRobot()
         || !coordinator.getAutoIntakeButtonPressed()
-        || Intake.getInstance().getState() != Intake.IntakeStates.feeding
+        || coordinator.getIntakeState() != IntakeManual.IntakeStates.feeding
         || !coordinator.noteInVision();
   }
 

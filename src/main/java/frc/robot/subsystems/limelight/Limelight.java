@@ -148,7 +148,7 @@ public class Limelight extends SubsystemBase {
     }
   }
 
-  public Pose2d getAprilTagPose2d() {
+  public Pose2d getBotposeWpiBlue() {
     if (enabled && isNetworkTableConnected) {
       return LimelightHelpers.getBotPose2d_wpiBlue(name);
     }
@@ -291,8 +291,6 @@ public class Limelight extends SubsystemBase {
 
     return distanceY;
   }
-
-  public void updatePoseEstimatorWithVisionBotPose() {}
 
   public void activateRetroReflective() {
     switchPipeline(0);

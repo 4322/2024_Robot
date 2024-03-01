@@ -7,7 +7,7 @@ import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.outtake.Outtake;
-import frc.utility.PositionVector;
+import frc.utility.FiringSolutionHelper;
 
 public class WriteFiringSolutionAtCurrentPos extends InstantCommand {
 
@@ -27,7 +27,8 @@ public class WriteFiringSolutionAtCurrentPos extends InstantCommand {
   public void initialize() {
     if (Constants.inShotTuning) {
       Translation2d rawTranslation =
-          PositionVector.getVectorToSpeaker(drive.getPose2d().getX(), drive.getPose2d().getY());
+          FiringSolutionHelper.getVectorToSpeaker(
+              drive.getPose2d().getX(), drive.getPose2d().getY());
       shotAngle = rawTranslation.getAngle().getDegrees();
       // Calculates magnitude from x and y vals
       shotMag =

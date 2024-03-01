@@ -16,18 +16,19 @@ public interface IntakeIO {
     public double intakeSpeedPct = 0.0;
 
     public double deployRotations = 0.0;
-    public double deployPositionRotations = 0.0;
-    public double retractPositionRotations = 0.0;
     public double deployRotationsPerSec = 0.0;
     public double deployAppliedVolts = 0.0;
     public double deployCurrentAmps = 0.0;
     public double deployTempC = 0.0;
     public boolean deployIsAlive = false;
 
-    public double deployEncoderRotations = 0.0;
-    public double deployEncoderRotationsPerSec = 0.0;
+    public double heliumAbsRotations = 0.0;
+    public double heliumRPS = 0.0;
 
     public String deployAppliedControl = "";
+    public double deployMaxRotationsPerSec;
+    public double deployKp = 0.0;
+    public double slowPos;
   }
 
   public default void updateInputs(IntakeIOInputs inputs) {}
@@ -38,11 +39,17 @@ public interface IntakeIO {
     return false;
   }
 
-  public default void setDeployTarget(double rotations) {}
+  public default void setDeployVoltage(double voltage) {}
 
-  public default void setBrakeMode() {}
+  public default void setDeployKp(double kP) {}
 
-  public default void setCoastMode() {}
+  public default void setIntakeBrakeMode() {}
+
+  public default void setIntakeCoastMode() {}
+
+  public default void setDeployerBrakeMode() {}
+
+  public default void setDeployerCoastMode() {}
 
   public default void stopFeeder() {}
 

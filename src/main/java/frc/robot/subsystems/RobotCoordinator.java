@@ -1,12 +1,13 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.BeamBreakConstants;
 import frc.robot.Robot;
+import frc.robot.commands.IntakeManual;
+import frc.robot.commands.IntakeManual.IntakeStates;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.limelight.Limelight;
@@ -14,9 +15,11 @@ import frc.robot.subsystems.outtake.Outtake;
 import org.littletonrobotics.junction.Logger;
 
 public class RobotCoordinator extends SubsystemBase {
-  private Intake intake;
-  private Outtake outtake;
-  private Drive drive;
+  private Intake intake = Intake.getInstance();
+  private Outtake outtake = Outtake.getInstance();
+  private Drive drive = Drive.getInstance();
+  private Limelight outtakeLimelight = Limelight.getOuttakeInstance();
+  private Limelight intakeLimelight = Limelight.getIntakeInstance();
 
   private static BeamBreakSensorIO noteTrackerSensorsIO;
   private static BeamBreakSensorIOInputsAutoLogged inputs = new BeamBreakSensorIOInputsAutoLogged();
@@ -38,9 +41,6 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   private RobotCoordinator() {
-    intake = Intake.getInstance();
-    outtake = Outtake.getInstance();
-    drive = Drive.getInstance();
     switch (Constants.currentMode) {
       case REAL:
         if (Constants.sensorsEnabled) {
@@ -125,15 +125,27 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public boolean canDeploy() {
-    return intake.isInitialized() && !intake.isDeployed();
+    return !intake.isDeployed();
+  }
+
+  public boolean intakeIsDeployed() {
+    return intake.isDeployed();
+  }
+
+  public IntakeStates getIntakeState() {
+    return IntakeManual.getIntakeState();
   }
 
   public boolean isInitialized() {
-    return intake.isInitialized() && outtake.pivotIsInitialized();
+    return outtake.pivotIsInitialized();
   }
 
   public boolean canRetract() {
-    return !intake.isFeeding() && intake.isInitialized();
+    return !intake.isFeeding();
+  }
+
+  public boolean intakeIsFeeding() {
+    return intake.isFeeding();
   }
 
   public boolean canShoot() {
@@ -182,22 +194,22 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public Double getNearestNoteTX() {
-    return Limelight.getIntakeInstance().getHorizontalDegToTarget();
+    return intakeLimelight.getHorizontalDegToTarget();
   }
 
   public Double getNearestNoteTY() {
-    return Limelight.getIntakeInstance().getVerticalDegToTarget();
+    return intakeLimelight.getVerticalDegToTarget();
   }
 
   public boolean noteInVision() {
-    return Limelight.getIntakeInstance().getTargetVisible();
+    return intakeLimelight.getTargetVisible();
   }
 
-  public Pose2d getOuttakeLimelightPose2d() {
-    return Limelight.getOuttakeInstance().getAprilTagPose2d();
+  public boolean pivotAtPosition() {
+    return outtake.pivotIsAtPosition();
   }
 
-  public double getOuttakeLimelightLatency() {
-    return Limelight.getOuttakeInstance().getTotalLatency();
+  public boolean debugOuttakeOverride() {
+    return outtake.getDebugOverrideEnabled();
   }
 }

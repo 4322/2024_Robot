@@ -34,7 +34,9 @@ public interface RobotChooserInterface {
 
   public double getRotationkD();
 
-  public double getGearRatio();
+  public double getDriveGearRatio();
+
+  public double getRotationGearRatio();
 
   public double getDrivekSVolts();
 
@@ -48,11 +50,15 @@ public interface RobotChooserInterface {
 
   public double getAutoTrajectoryXYkD();
 
+  public double getAutoTrajectoryXYkiZ();
+
   public double getAutoTrajectoryRotkP();
 
   public double getAutoTrajectoryRotkI();
 
   public double getAutoTrajectoryRotkD();
+
+  public double getAutoTrajectoryRotkiZ();
 
   public double getMinAutoRotateStoppedPower();
 

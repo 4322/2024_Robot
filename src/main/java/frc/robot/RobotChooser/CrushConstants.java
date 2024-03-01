@@ -54,7 +54,7 @@ public class CrushConstants implements RobotChooserInterface {
         91,
         OrangeMath.inchesToMeters(
             OrangeMath.getCircumference(Constants.DriveConstants.Drive.wheelDiameterInches)),
-        getGearRatio());
+        getDriveGearRatio());
   }
 
   public double getMaxRotationSpeedRadPerSec() { // TODO
@@ -71,15 +71,19 @@ public class CrushConstants implements RobotChooserInterface {
 
   // For tuning, graph Duty Cycle Position in the REV Hardware Client
   public double getRotationkP() { // TODO
-    return 0.009;
+    return 2.0;
   }
 
   public double getRotationkD() { // TODO
-    return 0.0002;
+    return 0.0;
   }
 
-  public double getGearRatio() {
+  public double getDriveGearRatio() {
     return 5.90278; // L2 drive gear ratio with 16t pinion
+  }
+
+  public double getRotationGearRatio() {
+    return 150.0 / 7.0;
   }
 
   public double getDrivekSVolts() { // TODO
@@ -100,10 +104,10 @@ public class CrushConstants implements RobotChooserInterface {
 
   public double[] getDriveffVoltsOverMetersPerSec() { // TODO
     double[] voltsOverMetersPerSecAtSpeedThresholds = new double[4];
-    voltsOverMetersPerSecAtSpeedThresholds[0] = 3.3;
-    voltsOverMetersPerSecAtSpeedThresholds[1] = 3.3;
-    voltsOverMetersPerSecAtSpeedThresholds[2] = 3.3;
-    voltsOverMetersPerSecAtSpeedThresholds[3] = 3.37;
+    voltsOverMetersPerSecAtSpeedThresholds[0] = 2.3;
+    voltsOverMetersPerSecAtSpeedThresholds[1] = 2.3;
+    voltsOverMetersPerSecAtSpeedThresholds[2] = 2.3;
+    voltsOverMetersPerSecAtSpeedThresholds[3] = 2.3;
     return voltsOverMetersPerSecAtSpeedThresholds;
   }
 
@@ -119,7 +123,11 @@ public class CrushConstants implements RobotChooserInterface {
     return 0.0;
   }
 
-  public double getAutoTrajectoryRotkP() { // TODO
+  public double getAutoTrajectoryXYkiZ() {
+    return 0.0;
+  }
+
+  public double getAutoTrajectoryRotkP() {
     return 2.0;
   }
 
@@ -129,6 +137,10 @@ public class CrushConstants implements RobotChooserInterface {
 
   public double getAutoTrajectoryRotkD() { // TODO
     return 0.01;
+  }
+
+  public double getAutoTrajectoryRotkiZ() { // TODO
+    return 0;
   }
 
   @Override

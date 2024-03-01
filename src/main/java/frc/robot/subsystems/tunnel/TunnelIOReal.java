@@ -1,5 +1,7 @@
 package frc.robot.subsystems.tunnel;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.VoltageConfigs;
@@ -23,10 +25,22 @@ public class TunnelIOReal implements TunnelIO {
     tunnel.getConfigurator().apply(new TalonFXConfiguration());
     MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
     VoltageConfigs voltageConfigs = new VoltageConfigs();
+    CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
+    HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs = new HardwareLimitSwitchConfigs();
 
     motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
     voltageConfigs.PeakForwardVoltage = TunnelConstants.peakVoltage;
     voltageConfigs.PeakReverseVoltage = -TunnelConstants.peakVoltage;
+    currentLimitsConfigs.StatorCurrentLimitEnable = TunnelConstants.statorEnabled;
+    currentLimitsConfigs.StatorCurrentLimit = TunnelConstants.statorLimit;
+    currentLimitsConfigs.SupplyCurrentLimitEnable = TunnelConstants.supplyEnabled;
+    currentLimitsConfigs.SupplyCurrentLimit = TunnelConstants.supplyLimit;
+
+    hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
+    hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
+
+    tunnel.getConfigurator().apply(hardwareLimitSwitchConfigs);
+    tunnel.getConfigurator().apply(currentLimitsConfigs);
     tunnel.getConfigurator().apply(motorOutputConfigs);
     tunnel.getConfigurator().apply(voltageConfigs);
   }

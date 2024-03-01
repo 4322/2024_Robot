@@ -21,7 +21,6 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.WheelPosition;
 import frc.robot.RobotChooser.RobotChooser;
 import frc.robot.RobotChooser.RobotChooserInterface;
-import frc.robot.subsystems.RobotCoordinator;
 import frc.utility.OrangeMath;
 import frc.utility.SnapshotTranslation2D;
 import java.util.ArrayList;
@@ -45,6 +44,8 @@ public class Drive extends SubsystemBase {
 
   private double latestVelocity;
   private double latestAcceleration;
+  private Translation2d latestVelocityXY;
+  private ChassisSpeeds latestChassisSpeeds;
   private double pitchOffset;
 
   private ArrayList<SnapshotTranslation2D> velocityHistory = new ArrayList<SnapshotTranslation2D>();
@@ -138,7 +139,7 @@ public class Drive extends SubsystemBase {
               gyro = new GyroIOPigeon();
               break;
             case NEMO:
-              gyro = new GyroIOPigeon(); // change to GyroIONavX when change on Nemo
+              gyro = new GyroIONavX(); // change to GyroIONavX when change on Nemo
               break;
           }
         }
@@ -188,7 +189,7 @@ public class Drive extends SubsystemBase {
         }
         poseEstimator =
             new SwerveDrivePoseEstimator(
-                kinematics, getRotation2d(), getModulePostitions(), new Pose2d());
+                kinematics, getRotation2d(), getModulePositions(), new Pose2d());
         resetFieldCentric();
       }
       disconnectTimer = new Timer();
@@ -307,20 +308,6 @@ public class Drive extends SubsystemBase {
 
       if (Constants.gyroEnabled) {
         updateOdometry();
-      }
-
-      if (Constants.outtakeLimeLightEnabled) {
-        if (poseEstimator
-                .getEstimatedPosition()
-                .getTranslation()
-                .getDistance(
-                    RobotCoordinator.getInstance().getOuttakeLimelightPose2d().getTranslation())
-            < Constants.LimelightConstants.visionOdometryTolerance) {
-          updateVision(
-              RobotCoordinator.getInstance().getOuttakeLimelightPose2d(),
-              Timer.getFPGATimestamp()
-                  - RobotCoordinator.getInstance().getOuttakeLimelightLatency());
-        }
       }
 
       if (Constants.debug) {
@@ -479,11 +466,11 @@ public class Drive extends SubsystemBase {
 
   public void updateOdometry() {
     if (Constants.gyroEnabled) {
-      poseEstimator.update(getRotation2d(), getModulePostitions());
+      poseEstimator.update(getRotation2d(), getModulePositions());
     }
   }
 
-  public void updateVision(Pose2d pose, double timestampSeconds) {
+  public void updateOdometryVision(Pose2d pose, double timestampSeconds) {
     if (Constants.intakeLimeLightEnabled) {
       poseEstimator.addVisionMeasurement(pose, timestampSeconds);
     }
@@ -491,7 +478,7 @@ public class Drive extends SubsystemBase {
 
   public void resetOdometry(Pose2d pose) {
     if (Constants.gyroEnabled) {
-      poseEstimator.resetPosition(getRotation2d(), getModulePostitions(), pose);
+      poseEstimator.resetPosition(getRotation2d(), getModulePositions(), pose);
     }
   }
 
@@ -520,7 +507,10 @@ public class Drive extends SubsystemBase {
   }
 
   public Pose2d getPose2d() {
-    return poseEstimator.getEstimatedPosition();
+    if (Constants.driveEnabled) {
+      return poseEstimator.getEstimatedPosition();
+    }
+    return new Pose2d();
   }
 
   public void setModuleStates(SwerveModuleState[] states) {
@@ -535,7 +525,24 @@ public class Drive extends SubsystemBase {
     }
   }
 
-  public SwerveModulePosition[] getModulePostitions() {
+  public ChassisSpeeds getChassisSpeeds() {
+    return latestChassisSpeeds;
+  }
+
+  public void setModuleStatesFromChassisSpeeds(ChassisSpeeds speeds) {
+    if (Constants.driveEnabled) {
+      var swerveModuleStates = kinematics.toSwerveModuleStates(speeds, new Translation2d());
+      SwerveDriveKinematics.desaturateWheelSpeeds(
+          swerveModuleStates, robotSpecificConstants.getMaxSpeedMetersPerSec());
+      int i = 0;
+      for (SwerveModuleState s : swerveModuleStates) {
+        swerveModules[i].setDesiredState(s);
+        i++;
+      }
+    }
+  }
+
+  public SwerveModulePosition[] getModulePositions() {
     if (Constants.driveEnabled) {
       // wheel locations must be in the same order as the WheelPosition enum values
       return new SwerveModulePosition[] {
@@ -654,6 +661,14 @@ public class Drive extends SubsystemBase {
     }
     latestVelocity = velocityXY.getNorm() / 4;
     latestAcceleration = accelerationXY.getNorm() / 4;
+    // class
+    latestVelocityXY = velocityXY.div(4);
+    latestChassisSpeeds =
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            latestVelocityXY.getX(),
+            latestVelocityXY.getY(),
+            getAngularVelocity(),
+            latestVelocityXY.getAngle());
 
     Logger.recordOutput("Drive/BotVelMetersPerSec", latestVelocity);
     Logger.recordOutput("Drive/BotVelDegrees", velocityXY.getAngle().getDegrees());

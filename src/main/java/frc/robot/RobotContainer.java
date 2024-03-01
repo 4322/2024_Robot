@@ -10,23 +10,43 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.AutoHelper.Auto;
+import frc.robot.Constants.OuttakeConstants;
+import frc.robot.centerline.CenterLineManager.CenterLineScoringStrategy;
+import frc.robot.commands.AtHome;
+import frc.robot.commands.AutoIntakeDeploy;
+import frc.robot.commands.AutoIntakeIn;
+import frc.robot.commands.AutoSetOuttakeAdjust;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
+import frc.robot.commands.EjectThroughOuttake;
+import frc.robot.commands.IntakeManual;
+import frc.robot.commands.IntakeStop;
+import frc.robot.commands.OuttakeAdjustToSpeaker;
+import frc.robot.commands.OuttakeStop;
 import frc.robot.commands.ResetFieldCentric;
+import frc.robot.commands.SetPivotsBrakeMode;
+import frc.robot.commands.SetPivotsCoastMode;
 import frc.robot.commands.SetRobotPose;
 import frc.robot.commands.Shoot;
-import frc.robot.commands.AdjustOuttakeToSpeaker;
 import frc.robot.commands.TunnelFeed;
+import frc.robot.commands.TunnelStop;
+import frc.robot.commands.UpdateOdometry;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
+import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.robot.subsystems.tunnel.Tunnel;
 
@@ -40,30 +60,72 @@ public class RobotContainer {
   private Timer disableTimer = new Timer();
 
   // Define controllers
-  public static CommandXboxController xbox;
+  public static CommandXboxController driveXbox;
+  public static CommandXboxController operatorXbox;
   public static Joystick driveStick;
   public static Joystick rotateStick;
 
   private JoystickButton driveButtonSeven;
   private JoystickButton driveButtonTwelve;
 
+  // Need to instantiate RobotCoordinator first due to a bug in the WPI command library.
+  // If it gets instantiated from a subsystem periodic method, we get a concurrency
+  // exception in the command scheduler.
+  private final RobotCoordinator robotCoordinator = RobotCoordinator.getInstance();
   private final Drive drive = Drive.getInstance();
   private final Tunnel tunnel = Tunnel.getInstance();
   private final Outtake outtake = Outtake.getInstance();
+  private final Intake intake = Intake.getInstance();
 
   private final WriteFiringSolutionAtCurrentPos writeFiringSolution =
       new WriteFiringSolutionAtCurrentPos();
 
   private final DriveManual driveManual = new DriveManual();
-  private final DriveStop driveStop = new DriveStop();
 
   private final TunnelFeed tunnelFeed = new TunnelFeed();
 
-  private final AdjustOuttakeToSpeaker adjustOuttakeToSpeaker = new AdjustOuttakeToSpeaker();
+  private final OuttakeAdjustToSpeaker adjustOuttakeToSpeaker = new OuttakeAdjustToSpeaker();
+
+  private final IntakeManual intakeManual = new IntakeManual();
+
+  private final DriveStop driveStop = new DriveStop();
+
+  private final IntakeStop intakeStop = new IntakeStop();
+
+  private final OuttakeStop outtakeStop = new OuttakeStop();
+
+  private final TunnelStop tunnelStop = new TunnelStop();
+
+  private final SendableChooser<Auto> autoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     configureButtonBindings();
+
+    PathPlannerManager.getInstance().addEvent("AutoIntakeDeploy", new AutoIntakeDeploy());
+    PathPlannerManager.getInstance().addEvent("AutoIntakeIn", new AutoIntakeIn());
+    PathPlannerManager.getInstance().addEvent("Shoot", new Shoot());
+
+    PathPlannerManager.getInstance()
+        .addEvent(
+            "SetOuttakeSubwooferBase",
+            new AutoSetOuttakeAdjust(Constants.FiringSolutions.SubwooferBase));
+    PathPlannerManager.getInstance()
+        .addEvent("SetOuttakeN6", new AutoSetOuttakeAdjust(Constants.FiringSolutions.N6));
+    PathPlannerManager.getInstance()
+        .addEvent("SetOuttakeN7", new AutoSetOuttakeAdjust(Constants.FiringSolutions.N7));
+    PathPlannerManager.getInstance()
+        .addEvent("SetOuttakeN8", new AutoSetOuttakeAdjust(Constants.FiringSolutions.N8));
+    PathPlannerManager.getInstance()
+        .addEvent("SetOuttakeTS", new AutoSetOuttakeAdjust(Constants.FiringSolutions.TS));
+    PathPlannerManager.getInstance()
+        .addEvent("SetOuttakeMS", new AutoSetOuttakeAdjust(Constants.FiringSolutions.MS));
+    PathPlannerManager.getInstance()
+        .addEvent("SetOuttakeBS", new AutoSetOuttakeAdjust(Constants.FiringSolutions.BS));
+
+    autoChooser = new SendableChooser<>();
+    AutoHelper.configAutoChooser(autoChooser);
+    Shuffleboard.getTab("Autos").add(autoChooser).withPosition(0, 0).withSize(5, 2);
 
     FiringSolutionManager.getInstance().loadSolutions();
 
@@ -78,6 +140,12 @@ public class RobotContainer {
     if (Constants.outtakeEnabled) {
       outtake.setDefaultCommand(adjustOuttakeToSpeaker);
     }
+
+    if (Constants.intakeEnabled) {
+      intake.setDefaultCommand(intakeManual);
+    }
+
+    CommandScheduler.getInstance().schedule(new UpdateOdometry());
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -98,54 +166,86 @@ public class RobotContainer {
     }
 
     if (Constants.xboxEnabled) {
-      xbox = new CommandXboxController(2);
-      xbox.x()
+      driveXbox = new CommandXboxController(2);
+      operatorXbox = new CommandXboxController(3);
+      driveXbox
+          .leftBumper()
           .onTrue(
               Commands.runOnce(
                   () -> {
-                    driveManual.updateStateMachine(DriveManualTrigger.JOYSTICK_IN);
+                    driveManual.updateStateMachine(DriveManualTrigger.SWITCH_MODES);
                   }));
-      xbox.povUp().onTrue(new ResetFieldCentric(true));
-      xbox.povRight().onTrue(writeFiringSolution);
+      driveXbox.povUp().onTrue(new ResetFieldCentric(true));
+      driveXbox.povRight().onTrue(writeFiringSolution);
       // Reset the odometry for testing speaker-centric driving. This assumes robot is on the
       // very left on the front of the speaker, facing down-field (forward).
-      xbox.start()
+      driveXbox
+          .start()
           .onTrue(
               new SetRobotPose(
                   new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()), true));
-      xbox.povDown().onTrue(driveStop);
-      xbox.rightTrigger()
+      driveXbox.povDown().onTrue(driveStop);
+      driveXbox
+          .rightTrigger()
           .onTrue(
               Commands.runOnce(
                   () -> {
                     RobotCoordinator.getInstance().setIntakeButtonState(true);
                   }));
-      xbox.rightTrigger()
+      driveXbox
+          .rightTrigger()
           .onFalse(
               Commands.runOnce(
                   () -> {
                     RobotCoordinator.getInstance().setIntakeButtonState(false);
                   }));
-      xbox.rightBumper()
+      driveXbox
+          .rightBumper()
           .onTrue(
               Commands.runOnce(
                   () -> {
                     RobotCoordinator.getInstance().setAutoIntakeButtonPressed(true);
                   }));
 
-      xbox.rightBumper()
+      driveXbox
+          .rightBumper()
           .onFalse(
               Commands.runOnce(
                   () -> {
                     RobotCoordinator.getInstance().setAutoIntakeButtonPressed(false);
                   }));
-      xbox.leftTrigger().whileTrue(new Shoot());
+      driveXbox.leftTrigger().whileTrue(new Shoot());
+      operatorXbox.rightTrigger().whileTrue(new EjectThroughOuttake());
+      operatorXbox.start().onTrue(new SetPivotsCoastMode());
+      operatorXbox.back().onTrue(new SetPivotsBrakeMode());
+      operatorXbox
+          .a()
+          .onTrue(
+              new AutoSetOuttakeAdjust(
+                  new FiringSolution(
+                      OuttakeConstants.subwooferShotMag,
+                      OuttakeConstants.subwooferShotDeg,
+                      OuttakeConstants.subwooferOuttakeRPS,
+                      OuttakeConstants.subwooferPivotPositionRotations)));
+      driveXbox.povLeft().onTrue(new AtHome());
+      driveXbox
+          .b()
+          .whileTrue(
+              Commands.runOnce(
+                  () -> {
+                    Intake.getInstance().intake();
+                  }));
+      driveXbox
+          .y()
+          .whileTrue(
+              Commands.runOnce(
+                  () -> {
+                    tunnel.feed();
+                  }));
     }
   }
 
   public void disabledPeriodic() {
-    // update logs
-
     if (disableTimer.hasElapsed(Constants.DriveConstants.disableBreakSec)) {
       if (Constants.driveEnabled) {
         drive.setCoastMode(); // robot has stopped, safe to enter coast mode
@@ -153,41 +253,60 @@ public class RobotContainer {
       disableTimer.stop();
       disableTimer.reset();
     }
-    // pressed when intake and outtake are in starting config
-    // can only be pressed once after bootup
-    xbox.povLeft()
-        .onTrue(
-            Commands.runOnce(
-                () -> {
-                  RobotCoordinator.getInstance().setInitAbsEncoderPressed(true);
-                }));
   }
 
   public void enableSubsystems() {
     drive.setBrakeMode();
     tunnel.setBrakeMode();
+    intake.setIntakeBrakeMode();
+    intake.setDeployerBrakeMode();
+    outtake.setPivotBrakeMode();
+
     disableTimer.stop();
     disableTimer.reset();
   }
 
   public void disableSubsystems() {
+    tunnel.setCoastMode();
+    intake.setIntakeCoastMode();
+
     driveStop.schedule(); // interrupt all drive commands
+    intakeStop.schedule(); // interrupt all intake commands
+    outtakeStop.schedule(); // interrupt all outtake commands
+    tunnelStop.schedule(); // interrupt all tunnel commands
+
+    driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);
 
     disableTimer.reset();
     disableTimer.start();
   }
 
-  public Command getAutonomousCommand() {
-    if (Constants.Demo.inDemoMode) {
-      return null;
-    }
-    return null;
-  }
-
-  // AUTO COMMANDS
-
   // Command that should always start off every auto
   public Command getAutoInitialize() {
-    return new SequentialCommandGroup(new ResetFieldCentric(true));
+    final String autoName = AutoHelper.getPathPlannerAutoName(autoChooser.getSelected());
+    if (autoName == "None") {
+      return new SequentialCommandGroup(new ResetFieldCentric(true));
+    } else {
+      return new SequentialCommandGroup(
+          new ResetFieldCentric(
+              true,
+              PathPlannerManager.getInstance()
+                  .getStartingPoseFromAutoFile(autoName)
+                  .getRotation()));
+    }
+  }
+
+  // Command for the auto on our side of the field (PathPlanner Auto)
+  public Command getAutoOurSide() {
+    final String autoName = AutoHelper.getPathPlannerAutoName(autoChooser.getSelected());
+    if (autoName == "None") {
+      return Commands.none();
+    } else {
+      return PathPlannerManager.getInstance().buildAuto(autoName);
+    }
+  }
+
+  public CenterLineScoringStrategy getCenterLineStrategy() {
+    return AutoHelper.getCenterLineScoringStrategy(autoChooser.getSelected());
   }
 }

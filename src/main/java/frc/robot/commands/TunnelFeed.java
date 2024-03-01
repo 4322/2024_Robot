@@ -2,8 +2,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.RobotCoordinator;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.Intake.IntakeStates;
 import frc.robot.subsystems.tunnel.Tunnel;
 
 public class TunnelFeed extends Command {
@@ -32,7 +30,7 @@ public class TunnelFeed extends Command {
   public void execute() {
     // Accounts for note being midway between intake and tunnel sensor
     // Tunnel still runs for this case
-    if (Intake.getInstance().getState() == IntakeStates.noteObtained) {
+    if (RobotCoordinator.getInstance().noteInIntake()) {
       noteDetected = true;
     }
 

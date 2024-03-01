@@ -19,6 +19,7 @@ class RegisterIO implements IIOProvider {
   long last_sensor_timestamp;
   boolean disconnect_reported;
   boolean connect_reported;
+  Timer disconnectTimer;
 
   static final double DELAY_OVERHEAD_SECONDS = 0.004;
 
@@ -39,6 +40,7 @@ class RegisterIO implements IIOProvider {
     last_sensor_timestamp = 0;
     disconnect_reported = false;
     connect_reported = false;
+    disconnectTimer = new Timer();
   }
 
   private final double IO_TIMEOUT_SECONDS = 1.0;
@@ -68,11 +70,19 @@ class RegisterIO implements IIOProvider {
     /* IO Loop */
     while (!stop) {
       if (board_state.update_rate_hz != this.update_rate_hz) {
-        System.out.printf(
-            "Changing NavX update rate from %d to %d",
-            board_state.update_rate_hz, this.update_rate_hz);
-        System.out.println();
-        setUpdateRateHz(this.update_rate_hz);
+        disconnectTimer.start();
+        if (disconnectTimer.hasElapsed(5)) {
+          System.out.printf(
+              "Changing NavX update rate from %d to %d",
+              board_state.update_rate_hz, this.update_rate_hz);
+          System.out.println();
+          setUpdateRateHz(this.update_rate_hz);
+        }
+      } else {
+        if (disconnectTimer.hasElapsed(.01)) {
+          disconnectTimer.stop();
+          disconnectTimer.reset();
+        }
       }
       getCurrentData();
       Timer.delay(update_rate);

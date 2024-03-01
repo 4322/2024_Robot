@@ -1,40 +1,33 @@
 package frc.robot.subsystems.intake;
 
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.commands.AutoAcquireNote;
-import frc.robot.commands.XboxControllerRumble;
-import frc.robot.subsystems.RobotCoordinator;
+import frc.robot.Constants.IntakeConstants.DeployConfig;
 import frc.utility.OrangeMath;
+import frc.utility.OrangePIDController;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
 
-  public enum IntakeStates {
-    retracted,
-    deploying,
-    feeding,
-    noteObtained,
-    notePastIntake,
-    retracting;
-  }
-
   private IntakeIO io;
   private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
-  private IntakeStates intakeState = IntakeStates.retracted;
-  private Timer existenceTimer;
-  private boolean initialized;
-  private double deployTarget = 99999; // set to very high value in case target not yet set
+
   private boolean isFeeding;
-  private boolean deployRequested;
-
-  private AutoAcquireNote autoAcquireNote = new AutoAcquireNote();
-  private XboxControllerRumble xBoxRumble = new XboxControllerRumble();
-
+  private boolean isDeployerInCoastMode;
+  private double desiredVolts;
   private static Intake intake;
+
+  public enum IntakeDeployState {
+    Unknown,
+    Deployed,
+    Deploying,
+    Retracting,
+    Retracted
+  }
+
+  private IntakeDeployState state;
+  private OrangePIDController deployController;
 
   public static Intake getInstance() {
     if (intake == null) {
@@ -56,203 +49,206 @@ public class Intake extends SubsystemBase {
         break;
     }
 
+    state = IntakeDeployState.Unknown;
+    deployController = new OrangePIDController(0);
+
     if (io == null) {
       io = new IntakeIO() {};
     }
-    existenceTimer = new Timer();
   }
 
   @Override
   public void periodic() {
-    RobotCoordinator coordinator = RobotCoordinator.getInstance();
-    // initialize motor internal encoder position until the intake isn't moving
-    if (Constants.intakeEnabled
-        && !initialized
-        && !existenceTimer.hasElapsed(5)
-        && coordinator.getInitAbsEncoderPressed()) {
-      existenceTimer.start();
-      initialized = io.initMotorPos();
-    }
-    if (Constants.intakeEnabled) {
+    if (Constants.intakeEnabled || Constants.intakeDeployerEnabled) {
       io.updateInputs(inputs);
       Logger.processInputs(IntakeConstants.Logging.key, inputs);
-
-      switch (intakeState) {
-        case retracted:
-          if (coordinator.getIntakeButtonPressed()
-              && (coordinator.onOurSideOfField() || !coordinator.noteInRobot())) {
-            intakeState = IntakeStates.deploying;
+    }
+    if (Constants.intakeDeployerEnabled) {
+      if (inputs.deployKp != deployController.getKp()) {
+        deployController.setKp(inputs.deployKp);
+      }
+      switch (state) {
+        case Unknown:
+          break;
+        case Deploying:
+          if (inputs.heliumAbsRotations > inputs.slowPos) {
+            // cruise phase
+            desiredVolts = DeployConfig.peakReverseVoltage;
+          } else {
+            // ramp down
+            desiredVolts =
+                DeployConfig.peakReverseVoltage * inputs.heliumAbsRotations / inputs.slowPos;
+          }
+          if (isDeployFinished()) {
+            state = IntakeDeployState.Deployed;
+            stopDeployer();
+          } else {
+            io.setDeployVoltage(desiredVolts);
           }
           break;
-        case deploying:
-          if (coordinator.canDeploy()) {
-            deploy();
+        case Retracting:
+          if (inputs.heliumAbsRotations
+              < (IntakeConstants.DeployConfig.retractTargetPosition - inputs.slowPos)) {
+            // cruise phase
+            desiredVolts = DeployConfig.peakForwardVoltage;
+          } else {
+            // ramp down
+            desiredVolts =
+                DeployConfig.peakForwardVoltage
+                    * (IntakeConstants.DeployConfig.retractTargetPosition
+                        - inputs.heliumAbsRotations)
+                    / inputs.slowPos;
           }
-          if (!coordinator.getIntakeButtonPressed()) {
-            intakeState = IntakeStates.retracting;
-          } else if (isDeployed() && !coordinator.noteInRobot()) {
-            intakeState = IntakeStates.feeding;
-          } else if (coordinator.noteInRobot() && isDeployed()) {
-            intakeState = IntakeStates.notePastIntake;
-          }
-          break;
-        case feeding:
-          if (coordinator.isIntakeDeployed()) {
-            intake();
-          }
-          if (!coordinator.getIntakeButtonPressed()) {
-            intakeState = IntakeStates.retracting;
-          } else if (coordinator.noteInIntake()) {
-            intakeState = IntakeStates.noteObtained;
-          } else if (coordinator.getAutoIntakeButtonPressed() && coordinator.noteInVision()) {
-            if (!autoAcquireNote.isScheduled()) {
-              CommandScheduler.getInstance().schedule(autoAcquireNote);
-            }
+          if (isRetractFinished()) {
+            state = IntakeDeployState.Retracted;
+            stopDeployer();
+          } else {
+            io.setDeployVoltage(desiredVolts);
           }
           break;
-        case noteObtained:
-          if (coordinator.isIntakeDeployed()) {
-            intake();
-          }
-          if (!coordinator.noteInIntake()) {
-            CommandScheduler.getInstance().schedule(xBoxRumble);
-            intakeState = IntakeStates.notePastIntake;
+        case Deployed:
+          break;
+        case Retracted:
+          if (!OrangeMath.equalToEpsilon(
+              inputs.heliumAbsRotations,
+              IntakeConstants.DeployConfig.retractTargetPosition,
+              IntakeConstants.DeployConfig
+                  .deployFallTolerance)) // if intake has drooped too far while driving
+          {
+            retract(); // move it back into position
           }
           break;
-        case notePastIntake:
-          stopFeeder();
-          if (!coordinator.onOurSideOfField() || !coordinator.getIntakeButtonPressed()) {
-            intakeState = IntakeStates.retracting;
-          } else if (!coordinator.noteInRobot()) {
-            intakeState = IntakeStates.feeding;
-          }
-          break;
-        case retracting:
-          stopFeeder();
-          if (coordinator.canRetract()) {
-            retract();
-          }
-          if (coordinator.getIntakeButtonPressed()
-              && (coordinator.onOurSideOfField() || !coordinator.noteInRobot())) {
-            intakeState = IntakeStates.deploying;
-          } else if (coordinator.isIntakeRetracted()) {
-            intakeState = IntakeStates.retracted;
-          }
+        default:
           break;
       }
     }
   }
 
   public void intake() {
-    if (Constants.intakeEnabled && initialized) {
+    if (Constants.intakeEnabled) {
       io.setFeedingVoltage(inputs.intakeFeederVoltage);
-      Logger.recordOutput(IntakeConstants.Logging.feederKey + "IntakeStopped", false);
+      Logger.recordOutput(IntakeConstants.Logging.feederKey + "State", "Intaking");
       isFeeding = true;
     }
   }
 
   public void outtake() {
-    if (Constants.intakeEnabled && initialized) {
+    if (Constants.intakeEnabled) {
       io.setFeedingVoltage(inputs.intakeEjectVoltage);
-      Logger.recordOutput(IntakeConstants.Logging.feederKey + "IntakeStopped", false);
+      Logger.recordOutput(IntakeConstants.Logging.feederKey + "State", "Outtaking");
       isFeeding = true;
     }
   }
 
-  public void setBrakeMode() {
-    if (Constants.intakeEnabled && initialized) {
-      io.setBrakeMode();
-      Logger.recordOutput(IntakeConstants.Logging.key + "TargetBrakeMode", "Brake");
+  public void setIntakeBrakeMode() {
+    if (Constants.intakeEnabled) {
+      io.setIntakeBrakeMode();
+      Logger.recordOutput(IntakeConstants.Logging.feederKey + "NeutralMode", "Brake");
     }
   }
 
-  public void setCoastMode() {
-    if (Constants.intakeEnabled && initialized) {
-      io.setCoastMode();
-      Logger.recordOutput(IntakeConstants.Logging.key + "TargetBrakeMode", "Coast");
+  public void setDeployerBrakeMode() {
+    if (Constants.intakeDeployerEnabled) {
+      io.setDeployerBrakeMode();
+      isDeployerInCoastMode = false;
+      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "NeutralMode", "Brake");
+    }
+  }
+
+  public void setIntakeCoastMode() {
+    if (Constants.intakeEnabled) {
+      io.setIntakeCoastMode();
+      Logger.recordOutput(IntakeConstants.Logging.feederKey + "NeutralMode", "Coast");
+    }
+  }
+
+  public void setDeployerCoastMode() {
+    if (Constants.intakeDeployerEnabled) {
+      io.setDeployerCoastMode();
+      isDeployerInCoastMode = true;
+      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "NeutralMode", "Coast");
     }
   }
 
   public void stopFeeder() {
-    if (Constants.intakeEnabled && initialized) {
+    if (Constants.intakeEnabled) {
       io.stopFeeder();
-      Logger.recordOutput(IntakeConstants.Logging.key + "IntakeStopped", true);
+      Logger.recordOutput(IntakeConstants.Logging.feederKey + "State", "Stopped");
       isFeeding = false;
     }
   }
 
   public void stopDeployer() {
-    if (Constants.intakeEnabled && initialized) {
-      io.stopFeeder();
-      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "DeployStopped", true);
-      deployRequested = false;
+    if (Constants.intakeDeployerEnabled) {
+      if (isDeployerInCoastMode) {
+        setDeployerBrakeMode();
+      }
+      desiredVolts = 0;
+      io.setDeployVoltage(desiredVolts);
+      io.stopDeployer();
+      if ((state == IntakeDeployState.Deploying) || (state == IntakeDeployState.Retracting)) {
+        state = IntakeDeployState.Unknown;
+      }
+      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "desiredVolts", desiredVolts);
+      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "State", "Stopped");
     }
   }
 
   public void deploy() {
-    if (Constants.intakeEnabled && initialized) {
-      io.setDeployTarget(inputs.deployPositionRotations);
-      deployTarget = inputs.deployPositionRotations;
-      Logger.recordOutput(
-          IntakeConstants.Logging.deployerKey + "DeployTargetRotations",
-          inputs.deployPositionRotations);
-      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "DeployStopped", false);
-      deployRequested = true;
+    if (Constants.intakeDeployerEnabled) {
+      if (!isDeployerInCoastMode) {
+        setDeployerCoastMode();
+      }
+      state = IntakeDeployState.Deploying;
+      desiredVolts = 0;
+      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "desiredVolts", desiredVolts);
+      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "State", "Deploying");
     }
   }
 
   public void retract() {
-    if (Constants.intakeEnabled && initialized) {
-      io.setDeployTarget(inputs.retractPositionRotations);
-      deployTarget = inputs.retractPositionRotations;
-      Logger.recordOutput(
-          IntakeConstants.Logging.deployerKey + "DeployTargetRotations",
-          inputs.retractPositionRotations);
-      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "DeployStopped", false);
-      deployRequested = false;
+    if (Constants.intakeDeployerEnabled) {
+      if (!isDeployerInCoastMode) {
+        setDeployerCoastMode();
+      }
+      state = IntakeDeployState.Retracting;
+      desiredVolts = 0;
+      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "desiredVolts", desiredVolts);
+      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "State", "Retracting");
     }
   }
 
-  public boolean isAtPosition() {
-    return OrangeMath.equalToEpsilon(
-        inputs.deployRotations, deployTarget, IntakeConstants.Deploy.toleranceRotations);
+  public boolean isDeployed() {
+    return (state == IntakeDeployState.Deployed) || !Constants.intakeDeployerEnabled;
   }
 
-  public boolean isDeployed() {
+  private boolean isDeployFinished() {
     return OrangeMath.equalToEpsilon(
-        inputs.deployRotations,
-        inputs.deployPositionRotations,
-        IntakeConstants.Deploy.toleranceRotations);
+        inputs.heliumAbsRotations,
+        IntakeConstants.DeployConfig.deployTargetPosition,
+        IntakeConstants.DeployConfig.atTargetTolerance);
   }
 
   public boolean isDeploying() {
-    return deployRequested && !isDeployed();
+    return state == IntakeDeployState.Deploying;
   }
 
   public double getDeployRotations() {
-    return inputs.deployRotations;
+    return inputs.heliumAbsRotations;
   }
 
   public boolean isRetracted() {
-    return OrangeMath.equalToEpsilon(
-        inputs.deployRotations,
-        inputs.retractPositionRotations,
-        IntakeConstants.Deploy.toleranceRotations);
+    return (state == IntakeDeployState.Retracted) && Constants.intakeDeployerEnabled;
   }
 
-  public boolean isInitialized() {
-    return initialized;
+  private boolean isRetractFinished() {
+    return OrangeMath.equalToEpsilon(
+        inputs.heliumAbsRotations,
+        IntakeConstants.DeployConfig.retractTargetPosition,
+        IntakeConstants.DeployConfig.atTargetTolerance);
   }
 
   public boolean isFeeding() {
     return isFeeding;
-  }
-
-  public IntakeStates getState() {
-    return intakeState;
-  }
-
-  public void setState(IntakeStates newState) {
-    intakeState = newState;
   }
 }
