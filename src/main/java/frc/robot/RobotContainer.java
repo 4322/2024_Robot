@@ -68,6 +68,8 @@ public class RobotContainer {
   private JoystickButton driveButtonSeven;
   private JoystickButton driveButtonTwelve;
 
+  private boolean opponentFieldSide;
+
   // Need to instantiate RobotCoordinator first due to a bug in the WPI command library.
   // If it gets instantiated from a subsystem periodic method, we get a concurrency
   // exception in the command scheduler.
@@ -256,10 +258,13 @@ public class RobotContainer {
   }
 
   public void teleopPeriodic() {
-    if (RobotCoordinator.getInstance().crossedCenterLineToOurSide()) {
-      Commands.runOnce(null);
+    if (!robotCoordinator.onOurSideOfField()) {
+      opponentFieldSide = true;
     }
-
+    else if (robotCoordinator.onOurSideOfField() && opponentFieldSide) {
+      Commands.runOnce(null);
+      opponentFieldSide = false;
+    }
   }
 
   public void enableSubsystems() {
