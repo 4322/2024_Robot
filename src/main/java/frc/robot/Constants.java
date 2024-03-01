@@ -422,8 +422,9 @@ public final class Constants {
   }
 
   public static final class LimelightConstants {
-    public static final double visionOdometryTolerance = 1.0;
-    public static final double odometryUpdatePeriodSeconds = 0.2;
+    public static final double visionOdometryTolerance = 0.5;
+    public static final double reverseOdometryOverrideTolerance = 1.0;
+    public static final int numTargetsToUseReverseOdom = 2;
     // TODO: Values need to be updated to the limelight itself.
     public static final double outtakeLimelightAngle = 25;
     public static final double outtakeLimelightHeight = OrangeMath.inchesToMeters(26.231);

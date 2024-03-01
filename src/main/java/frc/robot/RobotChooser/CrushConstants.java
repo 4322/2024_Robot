@@ -1,6 +1,5 @@
 package frc.robot.RobotChooser;
 
-import frc.robot.Constants;
 import frc.utility.OrangeMath;
 
 public class CrushConstants implements RobotChooserInterface {

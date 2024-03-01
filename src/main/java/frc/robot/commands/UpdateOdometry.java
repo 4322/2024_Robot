@@ -9,37 +9,35 @@ import frc.robot.subsystems.limelight.Limelight;
 
 public class UpdateOdometry extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Timer updateTimer;
+  private final Limelight limelight = Limelight.getOuttakeInstance();
 
   public UpdateOdometry() {
-    updateTimer = new Timer();
-
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements();
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    updateTimer.reset();
-    updateTimer.start();
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {
-    Pose2d limelightPose = Limelight.getOuttakeInstance().getBotposeWpiBlue();
-    if (Limelight.getOuttakeInstance().getTargetVisible()
-        && updateTimer.hasElapsed(LimelightConstants.odometryUpdatePeriodSeconds)
-        && Drive.getInstance()
-                .getPose2d()
-                .getTranslation()
-                .getDistance(limelightPose.getTranslation())
-            < LimelightConstants.visionOdometryTolerance) {
+    final Pose2d limelightPose = limelight.getBotposeWpiBlue();
+    final double distanceToBot =
+        Drive.getInstance()
+            .getPose2d()
+            .getTranslation()
+            .getDistance(limelightPose.getTranslation());
+    final boolean withinAcceptableDistance =
+        distanceToBot <= LimelightConstants.visionOdometryTolerance
+            || distanceToBot >= LimelightConstants.reverseOdometryOverrideTolerance;
+    if (limelight.getTargetVisible()
+        && withinAcceptableDistance
+        && limelight.getNumTargets() >= LimelightConstants.numTargetsToUseReverseOdom) {
       Drive.getInstance()
           .updateOdometryVision(
               limelightPose,
               Timer.getFPGATimestamp() - Limelight.getOuttakeInstance().getTotalLatency());
-      updateTimer.reset();
     }
   }
 
