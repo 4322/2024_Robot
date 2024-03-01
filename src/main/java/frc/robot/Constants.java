@@ -355,13 +355,13 @@ public final class Constants {
 
     public static final class DeployConfig {
       public static final double kP = 8.0;
-      public static final double slowPos = 0.3;
+      public static final double slowPos = 0.2;
       public static final double openLoopRamp = 0;
       public static final double updateHz =
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
 
-      public static final double peakForwardVoltage = 2.5; // anything higher will slip the belt
+      public static final double peakForwardVoltage = 1.5; // anything higher will slip the belt
       public static final double peakReverseVoltage = -2.5;
 
       public static final boolean supplyEnabled = true;

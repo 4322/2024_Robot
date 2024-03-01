@@ -67,59 +67,43 @@ public class Intake extends SubsystemBase {
       if (inputs.deployKp != deployController.getKp()) {
         deployController.setKp(inputs.deployKp);
       }
-      double desiredRPS;
       switch (state) {
         case Unknown:
           break;
         case Deploying:
           if (inputs.heliumAbsRotations > inputs.slowPos) {
             // cruise phase
-            desiredRPS = -inputs.deployMaxRotationsPerSec;
+            desiredVolts = DeployConfig.peakReverseVoltage;
           } else {
             // ramp down
-            desiredRPS =
-                -inputs.heliumAbsRotations / inputs.slowPos * inputs.deployMaxRotationsPerSec;
-          }
-          desiredVolts = deployController.calculate(desiredVolts, inputs.heliumRPS, desiredRPS);
-          if (desiredVolts < DeployConfig.peakReverseVoltage) {
-            desiredVolts = DeployConfig.peakReverseVoltage;
-          } else if (desiredVolts > DeployConfig.peakForwardVoltage) {
-            desiredVolts = DeployConfig.peakForwardVoltage;
+            desiredVolts =
+                DeployConfig.peakReverseVoltage * inputs.heliumAbsRotations / inputs.slowPos;
           }
           if (isDeployFinished()) {
             state = IntakeDeployState.Deployed;
             stopDeployer();
           } else {
             io.setDeployVoltage(desiredVolts);
-            Logger.recordOutput(IntakeConstants.Logging.deployerKey + "desiredRPS", desiredRPS);
-            Logger.recordOutput(IntakeConstants.Logging.deployerKey + "desiredVolts", desiredVolts);
           }
           break;
         case Retracting:
           if (inputs.heliumAbsRotations
               < (IntakeConstants.DeployConfig.retractTargetPosition - inputs.slowPos)) {
             // cruise phase
-            desiredRPS = inputs.deployMaxRotationsPerSec;
+            desiredVolts = DeployConfig.peakForwardVoltage;
           } else {
             // ramp down
-            desiredRPS =
-                (IntakeConstants.DeployConfig.retractTargetPosition - inputs.heliumAbsRotations)
-                    / inputs.slowPos
-                    * inputs.deployMaxRotationsPerSec;
-          }
-          desiredVolts = deployController.calculate(desiredVolts, inputs.heliumRPS, desiredRPS);
-          if (desiredVolts < DeployConfig.peakReverseVoltage) {
-            desiredVolts = DeployConfig.peakReverseVoltage;
-          } else if (desiredVolts > DeployConfig.peakForwardVoltage) {
-            desiredVolts = DeployConfig.peakForwardVoltage;
+            desiredVolts =
+                DeployConfig.peakForwardVoltage
+                    * (IntakeConstants.DeployConfig.retractTargetPosition
+                        - inputs.heliumAbsRotations)
+                    / inputs.slowPos;
           }
           if (isRetractFinished()) {
             state = IntakeDeployState.Retracted;
             stopDeployer();
           } else {
             io.setDeployVoltage(desiredVolts);
-            Logger.recordOutput(IntakeConstants.Logging.deployerKey + "desiredRPS", desiredRPS);
-            Logger.recordOutput(IntakeConstants.Logging.deployerKey + "desiredVolts", desiredVolts);
           }
           break;
         case Deployed:
@@ -199,11 +183,12 @@ public class Intake extends SubsystemBase {
       if (isDeployerInCoastMode) {
         setDeployerBrakeMode();
       }
+      desiredVolts = 0;
+      io.setDeployVoltage(desiredVolts);
       io.stopDeployer();
       if ((state == IntakeDeployState.Deploying) || (state == IntakeDeployState.Retracting)) {
         state = IntakeDeployState.Unknown;
       }
-      desiredVolts = 0;
       Logger.recordOutput(IntakeConstants.Logging.deployerKey + "desiredVolts", desiredVolts);
       Logger.recordOutput(IntakeConstants.Logging.deployerKey + "State", "Stopped");
     }

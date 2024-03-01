@@ -203,6 +203,7 @@ public class IntakeIOReal implements IntakeIO {
   @Override
   public void setDeployVoltage(double voltage) {
     deploy.setControl(new VoltageOut(voltage));
+    Logger.recordOutput(IntakeConstants.Logging.deployerKey + "voltage", voltage);
   }
 
   @Override
