@@ -333,11 +333,6 @@ public final class Constants {
     public static final double pivotPeakReverseVoltage = -10;
 
     public static final double defaultPivotPositionRotations = 0;
-    public static final double ejectOuttakeRPS = 0.0; // TODO
-    public static final double subwooferShotMag = 0.0;
-    public static final double subwooferShotDeg = 0.0;
-    public static final double subwooferPivotPositionRotations = 0.0;
-    public static final double subwooferOuttakeRPS = 0.0;
 
     public static final double topOuttakeRPS = 0;
     public static final double bottomOuttakeRPS = 0;
@@ -500,13 +495,15 @@ public final class Constants {
   public static final class FiringSolutions {
     // TODO: update speeds and angles
     // shot mag/deg don't matter since these are used for setting speed/angle only
-    public static FiringSolution SubwooferBase = new FiringSolution(0, 0, 0, 0);
-    public static FiringSolution N6 = new FiringSolution(0, 0, 0, 0);
-    public static FiringSolution N7 = new FiringSolution(0, 0, 0, 0);
-    public static FiringSolution N8 = new FiringSolution(0, 0, 0, 0);
-    public static FiringSolution TS = new FiringSolution(0, 0, 0, 0);
-    public static FiringSolution MS = new FiringSolution(0, 0, 0, 0);
-    public static FiringSolution BS = new FiringSolution(0, 0, 0, 0);
+    public static final FiringSolution SubwooferBase = new FiringSolution(0, 0, 40, 100);
+    public static final FiringSolution N6 = new FiringSolution(0, 0, 0, 0);
+    public static final FiringSolution N7 = new FiringSolution(0, 0, 0, 0);
+    public static final FiringSolution N8 = new FiringSolution(0, 0, 0, 0);
+    public static final FiringSolution TS = new FiringSolution(0, 0, 0, 0);
+    public static final FiringSolution MS = new FiringSolution(0, 0, 0, 0);
+    public static final FiringSolution BS = new FiringSolution(0, 0, 0, 0);
+    public static final FiringSolution Eject = new FiringSolution(0, 0, 10, 50);
+    public static final FiringSolution CollectingNote = new FiringSolution(0, 0, 0, 50);
   }
 
   public enum WheelPosition {

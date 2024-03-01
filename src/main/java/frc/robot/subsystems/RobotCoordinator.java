@@ -152,6 +152,11 @@ public class RobotCoordinator extends SubsystemBase {
     return outtake.isFlyWheelUpToSpeed() && outtake.pivotIsAtPosition() && noteInFiringPosition();
   }
 
+  // TODO: add checks to this
+  public boolean canSpinFlywheel() {
+    return true;
+  }
+
   public boolean canPivot() {
     return outtake.pivotIsInitialized();
   }
