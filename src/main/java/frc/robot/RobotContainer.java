@@ -137,7 +137,7 @@ public class RobotContainer {
       tunnel.setDefaultCommand(tunnelFeed);
     }
 
-    if (Constants.outtakeEnabled) {
+    if (Constants.outtakeEnabled && !Constants.outtakeTuningMode) {
       outtake.setDefaultCommand(adjustOuttakeToSpeaker);
     }
 
