@@ -70,16 +70,12 @@ public class ClimberIOReal implements ClimberIO{
     private void configClimber()
     {
         climber.getConfigurator().apply(new TalonFXConfiguration());
-        Slot0Configs slot0Configs = new Slot0Configs();
         MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
         SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
         VoltageConfigs voltageConfigs = new VoltageConfigs();
         CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
         OpenLoopRampsConfigs openLoopRampsConfigs = new OpenLoopRampsConfigs();
         openLoopRampsConfigs.VoltageOpenLoopRampPeriod = ClimberConstants.openRampPeriod;
-        slot0Configs.kP = ClimberConstants.kP;
-        slot0Configs.kI = ClimberConstants.kI;
-        slot0Configs.kD = ClimberConstants.kD;
         motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
         //TODO: Set peakForwardVoltage
         voltageConfigs.PeakForwardVoltage = ClimberConstants.peakForwardVoltage;
@@ -98,7 +94,6 @@ public class ClimberIOReal implements ClimberIO{
         climber.getConfigurator().apply(softwareLimitSwitchConfigs);
         climber.getConfigurator().apply(voltageConfigs);
         climber.getConfigurator().apply(motorOutputConfigs);
-        climber.getConfigurator().apply(slot0Configs);
         climber.getConfigurator().apply(openLoopRampsConfigs);
     }
     @Override
