@@ -87,9 +87,11 @@ public class Outtake extends SubsystemBase {
         pivot(inputs.targetPivotPosition);
       }
     }
-    if(pivotInitialized && RobotCoordinator.getInstance().isIntakeDeploying() && inputs.pivotRotations - OuttakeConstants.maxPivotForIntake > OuttakeConstants.pivotToleranceRotations)
-    {
-      pivot(OuttakeConstants.maxPivotForIntake);      
+    if (pivotInitialized
+        && RobotCoordinator.getInstance().isIntakeDeploying()
+        && inputs.pivotRotations - OuttakeConstants.maxPivotForIntake
+            > OuttakeConstants.pivotToleranceRotations) {
+      pivot(OuttakeConstants.maxPivotForIntake);
     }
   }
 
@@ -164,10 +166,8 @@ public class Outtake extends SubsystemBase {
   }
 
   public boolean isFlyWheelUpToSpeed() {
-    return (OrangeMath.equalToEpsilon(
-            inputs.leftRotationsPerSec, targetRPS, OuttakeConstants.outtakeToleranceRPS)
-        && OrangeMath.equalToEpsilon(
-            inputs.rightRotationsPerSec, targetRPS, OuttakeConstants.outtakeToleranceRPS));
+    return OrangeMath.equalToEpsilon(
+        inputs.rightRotationsPerSec, targetRPS, OuttakeConstants.outtakeToleranceRPS);
   }
 
   public boolean pivotIsAtPosition() {
