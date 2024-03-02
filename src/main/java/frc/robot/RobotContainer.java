@@ -109,17 +109,9 @@ public class RobotContainer {
             "SetOuttakeSubwooferBase",
             new AutoSetOuttakeAdjust(Constants.FiringSolutions.SubwooferBase));
     PathPlannerManager.getInstance()
-        .addEvent("SetOuttakeN6", new AutoSetOuttakeAdjust(Constants.FiringSolutions.N6));
-    PathPlannerManager.getInstance()
-        .addEvent("SetOuttakeN7", new AutoSetOuttakeAdjust(Constants.FiringSolutions.N7));
-    PathPlannerManager.getInstance()
-        .addEvent("SetOuttakeN8", new AutoSetOuttakeAdjust(Constants.FiringSolutions.N8));
-    PathPlannerManager.getInstance()
-        .addEvent("SetOuttakeTS", new AutoSetOuttakeAdjust(Constants.FiringSolutions.TS));
-    PathPlannerManager.getInstance()
-        .addEvent("SetOuttakeMS", new AutoSetOuttakeAdjust(Constants.FiringSolutions.MS));
-    PathPlannerManager.getInstance()
-        .addEvent("SetOuttakeBS", new AutoSetOuttakeAdjust(Constants.FiringSolutions.BS));
+        .addEvent(
+            "SetOuttakeCollectingNote",
+            new AutoSetOuttakeAdjust(Constants.FiringSolutions.CollectingNote));
 
     autoChooser = new SendableChooser<>();
     AutoHelper.configAutoChooser(autoChooser);

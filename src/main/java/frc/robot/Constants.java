@@ -305,9 +305,7 @@ public final class Constants {
     public static final double openLoopRampSec = 0;
     public static final double closedLoopRampSec = 0;
     public static final int gearRatioMotorToWheel = 0;
-    public static final double gearReductionEncoderToMotor = (44.0 / 40.0) * 125.0;
-    public static final double voltPerRPS =
-        0; // since we likely aren't going to adjust the speed, it's likely safe to
+    public static final double gearReductionEncoderToMotor = ((44.0 / 40.0) * 125.0); // since we likely aren't going to adjust the speed, it's likely safe to
     // not interpolate
     public static final boolean supplyEnabled = true;
     public static final boolean statorEnabled = true;
@@ -338,7 +336,7 @@ public final class Constants {
 
     public static final double topOuttakeRPS = 0;
     public static final double bottomOuttakeRPS = 0;
-    public static final double outtakeToleranceRPS = 20;
+    public static final double outtakeToleranceRPS = 15;
     public static final double pivotToleranceRotations = 0.1;
     public static final double maxPivotForIntake = 50;
   }
@@ -362,19 +360,19 @@ public final class Constants {
 
     public static final class DeployConfig {
       public static final double kP = 8.0;
-      public static final double slowPos = 0.2;
+      public static final double slowPos = 0.1;
       public static final double openLoopRamp = 0;
       public static final double updateHz =
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
 
-      public static final double peakForwardVoltage = 1.3; // anything higher will slip the belt
+      public static final double peakForwardVoltage = 2.5; // anything higher will slip the belt
       public static final double peakReverseVoltage = -2.5;
 
       public static final boolean supplyEnabled = true;
       public static final boolean statorEnabled = true;
       public static final double supplyLimit = 30;
-      public static final double statorLimit = 45;
+      public static final double statorLimit = 60;
 
       public static final double deployTargetPosition = 0.0;
       public static final double retractTargetPosition = 0.6;
@@ -508,10 +506,8 @@ public final class Constants {
     public static final FiringSolution TS = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution MS = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution BS = new FiringSolution(0, 0, 0, 0);
-    public static final FiringSolution Eject =
-        new FiringSolution(0, 0, 10, 50 * (44 / 40) / (30 / 28));
-    public static final FiringSolution CollectingNote =
-        new FiringSolution(0, 0, 0, 50 * (44 / 40) / (30 / 28));
+    public static final FiringSolution Eject = new FiringSolution(0, 0, 10, 50);
+    public static final FiringSolution CollectingNote = new FiringSolution(0, 0, 0, 50);
   }
 
   public enum WheelPosition {
