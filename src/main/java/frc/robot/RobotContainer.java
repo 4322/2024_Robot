@@ -219,7 +219,6 @@ public class RobotContainer {
       operatorXbox
         .rightBumper()
         .whileTrue(new ClimberExtend());
-      operatorXbox.rightTrigger().whileTrue(new EjectThroughOuttake());
       operatorXbox.start().onTrue(new SetPivotsCoastMode());
       operatorXbox.back().onTrue(new SetPivotsBrakeMode());
       operatorXbox.povUp().whileTrue(new EjectThroughIntake());
