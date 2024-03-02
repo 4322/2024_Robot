@@ -46,8 +46,8 @@ public final class Constants {
   public static final boolean intakeDeployerEnabled = true;
   public static final boolean gyroEnabled = true;
   public static final boolean tunnelEnabled = true;
-  public static final boolean outtakeEnabled = true;
-  public static final boolean outtakePivotEnabled = true;
+  public static final boolean outtakeEnabled = false;
+  public static final boolean outtakePivotEnabled = false;
   public static final boolean sensorsEnabled = true;
   public static final boolean ledEnabled = true;
   public static final boolean joysticksEnabled = false;
@@ -407,7 +407,7 @@ public final class Constants {
     public static final double supplyLimit = 30;
     public static final double statorLimit = 45;
 
-    public static final double desiredVoltage = 4.0;
+    public static final double desiredVoltage = 5.0;
     public static final double desiredReverseVoltage = -4.0;
     public static final double peakVoltage = 6.0;
 

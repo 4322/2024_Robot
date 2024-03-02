@@ -24,7 +24,7 @@ public class IntakeStop extends InstantCommand {
       IntakeManual.setIntakeState(IntakeStates.notePastIntake);
     } else if (RobotCoordinator.getInstance().isIntakeRetracted()) {
       IntakeManual.setIntakeState(IntakeStates.retracted);
-    } else if (RobotCoordinator.getInstance().noteInIntake()) {
+    } else if (RobotCoordinator.getInstance().noteEnteringIntake()) {
       IntakeManual.setIntakeState(IntakeStates.noteObtained);
     }
   }

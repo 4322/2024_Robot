@@ -58,7 +58,7 @@ public class IntakeManual extends Command {
         }
         if (!coordinator.getIntakeButtonPressed()) {
           intakeState = IntakeStates.retracting;
-        } else if (coordinator.noteInIntake()) {
+        } else if (coordinator.noteEnteringIntake()) {
           intakeState = IntakeStates.noteObtained;
         } else if (Constants.autoAcquireNoteEnabled
             && coordinator.getAutoIntakeButtonPressed()
@@ -72,7 +72,7 @@ public class IntakeManual extends Command {
         if (coordinator.isIntakeDeployed()) {
           intake.intake();
         }
-        if (!coordinator.noteInIntake()) {
+        if (!coordinator.noteEnteringIntake()) {
           CommandScheduler.getInstance().schedule(xBoxRumble);
           intakeState = IntakeStates.notePastIntake;
         }
