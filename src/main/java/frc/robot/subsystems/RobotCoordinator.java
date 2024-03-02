@@ -92,14 +92,6 @@ public class RobotCoordinator extends SubsystemBase {
         || getAutoIntakeButtonPressed(); // auto intake button is an identical bind so it also
     // counts as an intake button
   }
-  public void setSlowClimbButtonHeld(boolean slowPressed)
-  {
-    slowClimbButtonHeld = slowPressed;
-  }
-  public boolean getSlowClimbButtonHeld()
-  {
-    return slowClimbButtonHeld;
-  }
   public void setAutoIntakeButtonPressed(boolean isPressed) {
     autoIntakeButtonPressed = isPressed;
   }

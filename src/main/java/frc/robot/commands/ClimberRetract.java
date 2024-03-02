@@ -21,7 +21,7 @@ public class ClimberRetract extends Command{
     @Override
     public boolean isFinished()
     {
-        return (climber.isFullyRetracted());
+        return false;
     } 
     @Override
     public void end(boolean interrupted)

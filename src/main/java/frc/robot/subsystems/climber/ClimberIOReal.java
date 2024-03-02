@@ -23,10 +23,10 @@ import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.IntakeConstants.DeployConfig;
 public class ClimberIOReal implements ClimberIO{
     private final TalonFX climber;
-    ShuffleboardTab tab;
-    GenericEntry climberRotations;
-    GenericEntry slowVolts;
-    GenericEntry fastVolts;
+    private ShuffleboardTab tab;
+    private GenericEntry climberRotations;
+    private GenericEntry slowVolts;
+    private GenericEntry fastVolts;
     ClimberIOReal()
     {
         climber = new TalonFX(ClimberConstants.climberMotorID);

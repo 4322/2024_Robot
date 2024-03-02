@@ -13,6 +13,7 @@ public class OuttakeManualStateMachine {
     SUBWOOFER,
     EJECT,
     COLLECTING_NOTE,
+    CLIMBING,
     STOP
   }
 
@@ -21,7 +22,7 @@ public class OuttakeManualStateMachine {
     ENABLE_SUBWOOFER,
     ENABLE_EJECT,
     ENABLE_COLLECTING_NOTE,
-    ENABLE_STOP
+    ENABLE_STOP, ENABLE_CLIMBING
   }
 
   public OuttakeManualStateMachine(OuttakeManualState initialState) {
@@ -31,7 +32,8 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_SUBWOOFER, OuttakeManualState.SUBWOOFER)
         .permit(OuttakeManualTrigger.ENABLE_EJECT, OuttakeManualState.EJECT)
         .permit(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE, OuttakeManualState.COLLECTING_NOTE)
-        .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP);
+        .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP)
+        .permit(OuttakeManualTrigger.ENABLE_CLIMBING, OuttakeManualState.CLIMBING);
 
     config
         .configure(OuttakeManualState.SUBWOOFER)
@@ -39,6 +41,7 @@ public class OuttakeManualStateMachine {
         .permitReentry(OuttakeManualTrigger.ENABLE_SUBWOOFER)
         .permit(OuttakeManualTrigger.ENABLE_EJECT, OuttakeManualState.EJECT)
         .permit(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE, OuttakeManualState.COLLECTING_NOTE)
+        .permit(OuttakeManualTrigger.ENABLE_CLIMBING, OuttakeManualState.CLIMBING)
         .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP);
 
     config
@@ -47,6 +50,7 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_SUBWOOFER, OuttakeManualState.SUBWOOFER)
         .permitReentry(OuttakeManualTrigger.ENABLE_EJECT)
         .permit(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE, OuttakeManualState.COLLECTING_NOTE)
+        .permit(OuttakeManualTrigger.ENABLE_CLIMBING, OuttakeManualState.CLIMBING)
         .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP);
 
     config
@@ -55,6 +59,13 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_SUBWOOFER, OuttakeManualState.SUBWOOFER)
         .permit(OuttakeManualTrigger.ENABLE_EJECT, OuttakeManualState.EJECT)
         .permitReentry(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE)
+        .permit(OuttakeManualTrigger.ENABLE_CLIMBING, OuttakeManualState.CLIMBING)
+        .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP);
+    config
+        .configure(OuttakeManualState.CLIMBING)
+        .permitReentry(OuttakeManualTrigger.ENABLE_CLIMBING) .permit(OuttakeManualTrigger.ENABLE_SMART_SHOOTING, OuttakeManualState.SMART_SHOOTING)
+        .permit(OuttakeManualTrigger.ENABLE_SUBWOOFER, OuttakeManualState.SUBWOOFER)
+        .permit(OuttakeManualTrigger.ENABLE_EJECT, OuttakeManualState.EJECT)
         .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP);
 
     config
@@ -62,6 +73,7 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_SMART_SHOOTING, OuttakeManualState.SMART_SHOOTING)
         .permit(OuttakeManualTrigger.ENABLE_SUBWOOFER, OuttakeManualState.SUBWOOFER)
         .permit(OuttakeManualTrigger.ENABLE_EJECT, OuttakeManualState.EJECT)
+        .permit(OuttakeManualTrigger.ENABLE_CLIMBING, OuttakeManualState.CLIMBING)
         .permit(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE, OuttakeManualState.COLLECTING_NOTE)
         .permitReentry(OuttakeManualTrigger.ENABLE_STOP);
 

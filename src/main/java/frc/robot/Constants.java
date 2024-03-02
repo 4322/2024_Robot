@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.RobotChooser.RobotChooser;
 import frc.robot.RobotChooser.RobotChooserInterface;
 import frc.robot.shooting.FiringSolution;
+import frc.robot.subsystems.climber.Climber;
 import frc.utility.CanBusUtil;
 import frc.utility.OrangeMath;
 import java.util.Map;
@@ -529,6 +530,7 @@ public final class Constants {
     public static final FiringSolution BS = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution Eject = new FiringSolution(0, 0, 10, 50);
     public static final FiringSolution CollectingNote = new FiringSolution(0, 0, 0, 50);
+    public static final FiringSolution Climbing = new FiringSolution(0,0,0,ClimberConstants.climbingPivotRotations);
   }
 
   public enum WheelPosition {

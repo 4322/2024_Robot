@@ -58,6 +58,8 @@ public class OuttakeManual extends Command {
       case COLLECTING_NOTE:
         solution = FiringSolutions.CollectingNote;
         break;
+      case CLIMBING:
+        solution = FiringSolutions.Climbing;
       case STOP:
       default:
         outtake.stopOuttake();

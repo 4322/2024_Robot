@@ -24,6 +24,7 @@ import frc.robot.commands.AutoIntakeIn;
 import frc.robot.commands.AutoSetOuttakeAdjust;
 import frc.robot.commands.ClimberExtend;
 import frc.robot.commands.ClimberRetract;
+import frc.robot.commands.ClimberSlowRetractOverride;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
@@ -207,12 +208,14 @@ public class RobotContainer {
                     RobotCoordinator.getInstance().setAutoIntakeButtonPressed(false);
                   }));
       driveXbox.leftTrigger().whileTrue(new Shoot());
-      operatorXbox.leftTrigger().onTrue(Commands.runOnce(()-> {
-        RobotCoordinator.getInstance().setSlowClimbButtonHeld(true);
-      }));
-      operatorXbox.leftTrigger().onFalse(Commands.runOnce(()-> {
-        RobotCoordinator.getInstance().setSlowClimbButtonHeld(false);
-      }));
+      operatorXbox.leftTrigger().whileTrue(new ClimberSlowRetractOverride());
+      operatorXbox
+          .leftBumper()
+          .onTrue(
+              Commands.runOnce(
+                  () -> {
+                    outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_CLIMBING);
+                  }));
       operatorXbox
         .leftBumper()
         .whileTrue(new ClimberRetract());

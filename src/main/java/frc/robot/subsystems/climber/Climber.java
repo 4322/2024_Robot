@@ -51,32 +51,27 @@ public class Climber extends SubsystemBase{
     {
         if(Constants.climberEnabled)
         {
-            if(RobotCoordinator.getInstance().getSlowClimbButtonHeld()){
-                io.setClimberVoltage(inputs.slowVolts);
-                Logger.recordOutput("Climber/desiredVolts", inputs.slowVolts);
-                Logger.recordOutput("Climber/State", "Extending");
-            }
-            else{
-                io.setClimberVoltage(inputs.fastVolts);
-                Logger.recordOutput("Climber/desiredVolts", inputs.fastVolts);
-                Logger.recordOutput("Climber/State", "Extending");
-            }
+            io.setClimberVoltage(inputs.fastVolts);
+            Logger.recordOutput("Climber/desiredVolts", inputs.fastVolts);
+            Logger.recordOutput("Climber/State", "Extending");
         }
     }
     public void retract()
     {
          if(Constants.climberEnabled)
         {
-            if(RobotCoordinator.getInstance().getSlowClimbButtonHeld()){
-                io.setClimberVoltage(-inputs.slowVolts);
-                Logger.recordOutput("Climber/desiredVolts", -inputs.slowVolts);
-                Logger.recordOutput("Climber/State", "Retracting");
-            }
-            else{
-                io.setClimberVoltage(-inputs.fastVolts);
-                Logger.recordOutput("Climber/desiredVolts", -inputs.fastVolts);
-                Logger.recordOutput("Climber/State", "Retracting");
-            }
+            io.setClimberVoltage(-inputs.fastVolts);
+            Logger.recordOutput("Climber/desiredVolts", -inputs.fastVolts);
+            Logger.recordOutput("Climber/State", "Retracting");
+        }
+    }
+    public void slowRetractOverride()
+    {
+         if(Constants.climberEnabled)
+        {
+            io.setClimberVoltage(-inputs.slowVolts);
+            Logger.recordOutput("Climber/desiredVolts", -inputs.slowVolts);
+            Logger.recordOutput("Climber/State", "SlowRetracting");
         }
     }
     public void setBrakeMode()
