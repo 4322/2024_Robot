@@ -344,6 +344,7 @@ public final class Constants {
     public static final double bottomOuttakeRPS = 0;
     public static final double outtakeToleranceRPS = 0;
     public static final double pivotToleranceRotations = 0;
+    public static final double maxPivotForIntake = 50;
   }
 
   public static final class IntakeConstants {
