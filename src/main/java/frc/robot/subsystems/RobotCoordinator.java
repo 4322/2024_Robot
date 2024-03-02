@@ -68,8 +68,6 @@ public class RobotCoordinator extends SubsystemBase {
     // update note tracking logic in robot
     if (!inputs.intakeBeamBreak && intakeIsFeeding()) {
       notePassingIntake = true;
-    } else if (intakeIsEjecting()) {
-      notePassingIntake = false;
     } else if (!inputs.tunnelBeamBreak) {
       notePassingIntake = false;
       notePassingTunnel = true;
@@ -80,6 +78,8 @@ public class RobotCoordinator extends SubsystemBase {
         shootTimer.stop();
         shootTimer.reset();
       }
+    } else if (intakeIsEjecting()) {
+      notePassingIntake = false;
     }
   }
 
