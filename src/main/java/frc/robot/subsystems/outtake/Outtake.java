@@ -164,10 +164,8 @@ public class Outtake extends SubsystemBase {
   }
 
   public boolean isFlyWheelUpToSpeed() {
-    return (OrangeMath.equalToEpsilon(
-            inputs.leftRotationsPerSec, targetRPS, OuttakeConstants.outtakeToleranceRPS)
-        && OrangeMath.equalToEpsilon(
-            inputs.rightRotationsPerSec, targetRPS, OuttakeConstants.outtakeToleranceRPS));
+    return OrangeMath.equalToEpsilon(
+        inputs.rightRotationsPerSec, targetRPS, OuttakeConstants.outtakeToleranceRPS);
   }
 
   public boolean pivotIsAtPosition() {
