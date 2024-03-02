@@ -305,8 +305,7 @@ public final class Constants {
     public static final double openLoopRampSec = 0;
     public static final double closedLoopRampSec = 0;
     public static final int gearRatioMotorToWheel = 0;
-    public static final double gearReductionEncoderToMotor = (30.0 / 28.0) * 125.0;
-    public static final double voltPerRPS =
+    public static final double gearReductionEncoderToMotor = ((44.0 / 40.0) * 125.0)
         0; // since we likely aren't going to adjust the speed, it's likely safe to
     // not interpolate
     public static final boolean supplyEnabled = true;
@@ -500,15 +499,15 @@ public final class Constants {
   public static final class FiringSolutions {
     // TODO: update speeds and angles
     // shot mag/deg don't matter since these are used for setting speed/angle only
-    public static final FiringSolution SubwooferBase = new FiringSolution(0, 0, 40, 100);
+    public static final FiringSolution SubwooferBase = new FiringSolution(0, 0, 40, 100*(44/40)/(30/28));
     public static final FiringSolution N6 = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution N7 = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution N8 = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution TS = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution MS = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution BS = new FiringSolution(0, 0, 0, 0);
-    public static final FiringSolution Eject = new FiringSolution(0, 0, 10, 50);
-    public static final FiringSolution CollectingNote = new FiringSolution(0, 0, 0, 50);
+    public static final FiringSolution Eject = new FiringSolution(0, 0, 10, 50*(44/40)/(30/28));
+    public static final FiringSolution CollectingNote = new FiringSolution(0, 0, 0, 50*(44/40)/(30/28));
   }
 
   public enum WheelPosition {
