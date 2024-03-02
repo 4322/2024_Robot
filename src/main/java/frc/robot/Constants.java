@@ -307,6 +307,11 @@ public final class Constants {
       public static final double supplyLimit = 40;
       public static final double supplyThreshold = 60;
       public static final double supplyTime = 2.0;
+    public static final double kD = 0;
+    public static final double kP = 0;
+    public static final double kI = 0;
+    public static final boolean limitRotations = false;
+    public static final double openRampPeriod = 0.08; //TODO
   }
   public static final class OuttakeConstants {
     public static final int leftOuttakeDeviceID = 5;
