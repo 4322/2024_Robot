@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.AutoHelper.Auto;
-import frc.robot.Constants.OuttakeConstants;
 import frc.robot.centerline.CenterLineManager.CenterLineScoringStrategy;
 import frc.robot.commands.AtHome;
 import frc.robot.commands.AutoIntakeDeploy;
@@ -28,10 +27,11 @@ import frc.robot.commands.ClimberRetract;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
-import frc.robot.commands.EjectThroughOuttake;
+import frc.robot.commands.EjectThroughIntake;
 import frc.robot.commands.IntakeManual;
 import frc.robot.commands.IntakeStop;
-import frc.robot.commands.OuttakeAdjustToSpeaker;
+import frc.robot.commands.OuttakeManual.OuttakeManual;
+import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualTrigger;
 import frc.robot.commands.OuttakeStop;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetPivotsBrakeMode;
@@ -41,7 +41,6 @@ import frc.robot.commands.TunnelFeed;
 import frc.robot.commands.TunnelStop;
 import frc.robot.commands.UpdateOdometry;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
-import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.drive.Drive;
@@ -67,6 +66,8 @@ public class RobotContainer {
   private JoystickButton driveButtonSeven;
   private JoystickButton driveButtonTwelve;
 
+  private boolean onOpponentFieldSide;
+
   // Need to instantiate RobotCoordinator first due to a bug in the WPI command library.
   // If it gets instantiated from a subsystem periodic method, we get a concurrency
   // exception in the command scheduler.
@@ -83,7 +84,7 @@ public class RobotContainer {
 
   private final TunnelFeed tunnelFeed = new TunnelFeed();
 
-  private final OuttakeAdjustToSpeaker adjustOuttakeToSpeaker = new OuttakeAdjustToSpeaker();
+  private final OuttakeManual outtakeManual = new OuttakeManual();
 
   private final IntakeManual intakeManual = new IntakeManual();
 
@@ -137,7 +138,7 @@ public class RobotContainer {
     }
 
     if (Constants.outtakeEnabled && !Constants.outtakeTuningMode) {
-      outtake.setDefaultCommand(adjustOuttakeToSpeaker);
+      outtake.setDefaultCommand(outtakeManual);
     }
 
     if (Constants.intakeEnabled) {
@@ -182,6 +183,7 @@ public class RobotContainer {
               Commands.runOnce(
                   () -> {
                     RobotCoordinator.getInstance().setIntakeButtonState(true);
+                    outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE);
                   }));
       driveXbox
           .rightTrigger()
@@ -197,7 +199,6 @@ public class RobotContainer {
                   () -> {
                     RobotCoordinator.getInstance().setAutoIntakeButtonPressed(true);
                   }));
-
       driveXbox
           .rightBumper()
           .onFalse(
@@ -218,19 +219,31 @@ public class RobotContainer {
       operatorXbox
         .rightBumper()
         .whileTrue(new ClimberExtend());
-      operatorXbox.rightTrigger().whileTrue(new EjectThroughOuttake());
       operatorXbox.start().onTrue(new SetPivotsCoastMode());
       operatorXbox.back().onTrue(new SetPivotsBrakeMode());
+      operatorXbox.povUp().whileTrue(new EjectThroughIntake());
+      operatorXbox
+          .y()
+          .onTrue(
+              Commands.runOnce(
+                  () ->
+                      outtakeManual.updateStateMachine(
+                          OuttakeManualTrigger.ENABLE_SMART_SHOOTING)));
+      operatorXbox
+          .x()
+          .onTrue(
+              Commands.runOnce(
+                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_EJECT)));
+      operatorXbox
+          .b()
+          .onTrue(
+              Commands.runOnce(
+                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SUBWOOFER)));
       operatorXbox
           .a()
           .onTrue(
-              new AutoSetOuttakeAdjust(
-                  new FiringSolution(
-                      OuttakeConstants.subwooferShotMag,
-                      OuttakeConstants.subwooferShotDeg,
-                      OuttakeConstants.subwooferOuttakeRPS,
-                      OuttakeConstants.subwooferPivotPositionRotations)));
-      driveXbox.povLeft().onTrue(new AtHome());
+              Commands.runOnce(
+                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP)));
     }
   }
 
@@ -241,6 +254,22 @@ public class RobotContainer {
       }
       disableTimer.stop();
       disableTimer.reset();
+    }
+  }
+
+  public void teleopPeriodic() {
+    // if robot crossing from our side to opponent side
+    if (!robotCoordinator.onOurSideOfField() && !onOpponentFieldSide) {
+      onOpponentFieldSide = true;
+    }
+    // if robot crossing from opponent side to our side
+    else if (robotCoordinator.onOurSideOfField() && onOpponentFieldSide) {
+      // removed so driver has to manually change it.
+      /*Commands.runOnce(
+      () -> {
+        outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SMART_SHOOTING);
+      });*/
+      onOpponentFieldSide = false;
     }
   }
 

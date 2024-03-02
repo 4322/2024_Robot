@@ -53,6 +53,7 @@ public final class Constants {
   public static final boolean climberEnabled = false;
   public static final boolean joysticksEnabled = false;
   public static final boolean xboxEnabled = true;
+  public static final boolean autoAcquireNoteEnabled = false;
 
   public static final boolean intakeLimeLightEnabled = true;
   public static final boolean outtakeLimeLightEnabled = true;
@@ -60,7 +61,7 @@ public final class Constants {
   public static final boolean speakerCentricEnabled = true;
   public static final boolean spinoutCenterEnabled = true; // center rotate burst of power
   public static final boolean spinoutCornerEnabled = true;
-  public static final boolean psuedoAutoRotateEnabled = true;
+  public static final boolean psuedoAutoRotateEnabled = false;
   public static final String driveInputScaling = DriveInputScalingStrings.quadratic;
   public static final String rotateInputScaling = RotateInputScalingStrings.linear;
   public static final double rotateInputPowerScaling = 1.0;
@@ -345,25 +346,21 @@ public final class Constants {
 
     public static final double maxVelRotationsPerSec = 85;
     public static final boolean enableFOC = false;
-    public static final double pivotClosedLoopSec = 0.1;
+    public static final double pivotClosedLoopSec = 0.3;
     public static final boolean limitForwardMotion = true;
     public static final boolean limitReverseMotion = true;
-    public static final double forwardSoftLimitThresholdRotations = 120;
+    public static final double forwardSoftLimitThresholdRotations = 100;
     public static final double reverseSoftLimitThresholdRotations = 10;
     public static final double pivotPeakForwardVoltage = 10;
     public static final double pivotPeakReverseVoltage = -10;
 
     public static final double defaultPivotPositionRotations = 0;
-    public static final double ejectOuttakeRPS = 0.0; // TODO
-    public static final double subwooferShotMag = 0.0;
-    public static final double subwooferShotDeg = 0.0;
-    public static final double subwooferPivotPositionRotations = 0.0;
-    public static final double subwooferOuttakeRPS = 0.0;
 
     public static final double topOuttakeRPS = 0;
     public static final double bottomOuttakeRPS = 0;
-    public static final double outtakeToleranceRPS = 0;
-    public static final double pivotToleranceRotations = 0;
+    public static final double outtakeToleranceRPS = 5;
+    public static final double pivotToleranceRotations = 0.1;
+    public static final double maxPivotForIntake = 50;
   }
 
   public static final class IntakeConstants {
@@ -376,7 +373,7 @@ public final class Constants {
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
       public static final double intakeFeedVoltage = 11.0;
-      public static final double intakeEjectVoltage = -5.0;
+      public static final double intakeEjectVoltage = -11.0;
       public static final boolean supplyEnabled = true;
       public static final boolean statorEnabled = true;
       public static final double supplyLimit = 30;
@@ -433,6 +430,7 @@ public final class Constants {
     public static final double statorLimit = 45;
 
     public static final double desiredVoltage = 4.0;
+    public static final double desiredReverseVoltage = -4.0;
     public static final double peakVoltage = 6.0;
 
     public static final class Logging {
@@ -522,13 +520,15 @@ public final class Constants {
   public static final class FiringSolutions {
     // TODO: update speeds and angles
     // shot mag/deg don't matter since these are used for setting speed/angle only
-    public static FiringSolution SubwooferBase = new FiringSolution(0, 0, 0, 0);
-    public static FiringSolution N6 = new FiringSolution(0, 0, 0, 0);
-    public static FiringSolution N7 = new FiringSolution(0, 0, 0, 0);
-    public static FiringSolution N8 = new FiringSolution(0, 0, 0, 0);
-    public static FiringSolution TS = new FiringSolution(0, 0, 0, 0);
-    public static FiringSolution MS = new FiringSolution(0, 0, 0, 0);
-    public static FiringSolution BS = new FiringSolution(0, 0, 0, 0);
+    public static final FiringSolution SubwooferBase = new FiringSolution(0, 0, 40, 100);
+    public static final FiringSolution N6 = new FiringSolution(0, 0, 0, 0);
+    public static final FiringSolution N7 = new FiringSolution(0, 0, 0, 0);
+    public static final FiringSolution N8 = new FiringSolution(0, 0, 0, 0);
+    public static final FiringSolution TS = new FiringSolution(0, 0, 0, 0);
+    public static final FiringSolution MS = new FiringSolution(0, 0, 0, 0);
+    public static final FiringSolution BS = new FiringSolution(0, 0, 0, 0);
+    public static final FiringSolution Eject = new FiringSolution(0, 0, 10, 50);
+    public static final FiringSolution CollectingNote = new FiringSolution(0, 0, 0, 50);
   }
 
   public enum WheelPosition {

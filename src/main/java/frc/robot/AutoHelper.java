@@ -7,8 +7,13 @@ public class AutoHelper {
 
   public enum Auto {
     None,
-    SmartSixNoteTop,
-    ThreeNote
+    LeaveSourceCorner,
+    OneNoteCenter,
+    OneNoteRight,
+    OneNoteLeft,
+    TwoNoteCenter,
+    ThreeNoteCenter,
+    FourNoteCenter
   }
 
   public static void configAutoChooser(SendableChooser<Auto> chooser) {
@@ -22,10 +27,8 @@ public class AutoHelper {
 
   public static String getPathPlannerAutoName(Auto auto) {
     switch (auto) {
-      case SmartSixNoteTop:
-        return "3NoteToTopShoot";
-      case ThreeNote:
-        return "3Note";
+      case LeaveSourceCorner:
+        return "LeaveInTheMiddleOfNowhere";
       default:
         return "None";
     }
@@ -33,9 +36,6 @@ public class AutoHelper {
 
   public static CenterLineScoringStrategy getCenterLineScoringStrategy(Auto auto) {
     switch (auto) {
-      case SmartSixNoteTop:
-        return CenterLineScoringStrategy.OneToFive;
-      case ThreeNote:
       default:
         return CenterLineScoringStrategy.DoNothing;
     }
