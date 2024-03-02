@@ -305,8 +305,7 @@ public final class Constants {
     public static final double openLoopRampSec = 0;
     public static final double closedLoopRampSec = 0;
     public static final int gearRatioMotorToWheel = 0;
-    public static final double gearReductionEncoderToMotor = ((44.0 / 40.0) * 125.0)
-        0; // since we likely aren't going to adjust the speed, it's likely safe to
+    public static final double gearReductionEncoderToMotor = ((44.0 / 40.0) * 125.0); // since we likely aren't going to adjust the speed, it's likely safe to
     // not interpolate
     public static final boolean supplyEnabled = true;
     public static final boolean statorEnabled = true;
