@@ -325,10 +325,10 @@ public final class Constants {
 
     public static final double maxVelRotationsPerSec = 85;
     public static final boolean enableFOC = false;
-    public static final double pivotClosedLoopSec = 0.1;
+    public static final double pivotClosedLoopSec = 0.3;
     public static final boolean limitForwardMotion = true;
     public static final boolean limitReverseMotion = true;
-    public static final double forwardSoftLimitThresholdRotations = 120;
+    public static final double forwardSoftLimitThresholdRotations = 100;
     public static final double reverseSoftLimitThresholdRotations = 10;
     public static final double pivotPeakForwardVoltage = 10;
     public static final double pivotPeakReverseVoltage = -10;
@@ -337,8 +337,8 @@ public final class Constants {
 
     public static final double topOuttakeRPS = 0;
     public static final double bottomOuttakeRPS = 0;
-    public static final double outtakeToleranceRPS = 0;
-    public static final double pivotToleranceRotations = 0;
+    public static final double outtakeToleranceRPS = 5;
+    public static final double pivotToleranceRotations = 0.1;
   }
 
   public static final class IntakeConstants {

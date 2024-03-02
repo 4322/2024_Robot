@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
@@ -36,7 +34,6 @@ import frc.robot.commands.OuttakeStop;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetPivotsBrakeMode;
 import frc.robot.commands.SetPivotsCoastMode;
-import frc.robot.commands.SetRobotPose;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.TunnelFeed;
 import frc.robot.commands.TunnelStop;
