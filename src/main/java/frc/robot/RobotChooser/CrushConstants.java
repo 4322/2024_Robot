@@ -46,9 +46,8 @@ public class CrushConstants implements RobotChooserInterface {
     return OrangeMath.inchesToMeters(20.75 / 2);
   }
 
-  // arbitrary limit to be measured mid-match
-  public double getMaxSpeedMetersPerSec() { // TODO
-    return 6;
+  public double getMaxSpeedMetersPerSec() {
+    return 5.0;
   }
 
   public double getMaxRotationSpeedRadPerSec() { // TODO
@@ -80,8 +79,8 @@ public class CrushConstants implements RobotChooserInterface {
     return 150.0 / 7.0;
   }
 
-  public double getDrivekSVolts() { // TODO
-    return 0.182;
+  public double getDrivekSVolts() {
+    return 0.315;
   }
 
   // Feed Forward parameters for Drive PID
