@@ -79,8 +79,8 @@ public class CrushConstants implements RobotChooserInterface {
     return 150.0 / 7.0;
   }
 
-  public double getDrivekSVolts() { // TODO
-    return 0.182;
+  public double getDrivekSVolts() {
+    return 0.315;
   }
 
   // Feed Forward parameters for Drive PID
