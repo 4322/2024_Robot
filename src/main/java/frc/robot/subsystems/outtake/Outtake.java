@@ -87,9 +87,11 @@ public class Outtake extends SubsystemBase {
         pivot(inputs.targetPivotPosition);
       }
     }
-    if(pivotInitialized && RobotCoordinator.getInstance().isIntakeDeploying() && inputs.pivotRotations - OuttakeConstants.maxPivotForIntake > OuttakeConstants.pivotToleranceRotations)
-    {
-      pivot(OuttakeConstants.maxPivotForIntake);      
+    if (pivotInitialized
+        && RobotCoordinator.getInstance().isIntakeDeploying()
+        && inputs.pivotRotations - OuttakeConstants.maxPivotForIntake
+            > OuttakeConstants.pivotToleranceRotations) {
+      pivot(OuttakeConstants.maxPivotForIntake);
     }
   }
 
