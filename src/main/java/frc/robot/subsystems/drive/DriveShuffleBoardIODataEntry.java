@@ -10,7 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.Constants;
 import frc.robot.Constants.ControllerTypeStrings;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.InputScalingStrings;
+import frc.robot.Constants.DriveInputScalingStrings;
+import frc.robot.Constants.RotateInputScalingStrings;
 import frc.robot.RobotChooser.RobotChooser;
 import frc.robot.RobotChooser.RobotChooserInterface;
 
@@ -28,6 +29,8 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
   private ShuffleboardLayout feedForwardMetersPerSecThresholdLayout;
   private GenericEntry voltsToOvercomeFrictionEntry;
   private SendableChooser<String> driveInputScaling;
+  private SendableChooser<String> rotateInputScaling;
+  private GenericEntry rotateInputPowerScaling;
   private SendableChooser<String> driveControlType;
   private GenericEntry[] feedForwardArray =
       new GenericEntry[robotSpecificConstants.getDriveffVoltsOverMetersPerSec().length];
@@ -50,16 +53,39 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
               .getEntry();
 
       driveInputScaling = new SendableChooser<String>();
-      driveInputScaling.addOption(InputScalingStrings.linear, InputScalingStrings.linear);
+      driveInputScaling.addOption(DriveInputScalingStrings.linear, DriveInputScalingStrings.linear);
       driveInputScaling.setDefaultOption(
-          InputScalingStrings.quadratic, InputScalingStrings.quadratic);
-      driveInputScaling.addOption(InputScalingStrings.cubic, InputScalingStrings.cubic);
+          DriveInputScalingStrings.quadratic, DriveInputScalingStrings.quadratic);
+      driveInputScaling.addOption(DriveInputScalingStrings.cubic, DriveInputScalingStrings.cubic);
 
       customizationTab
-          .add("Input Scaling", driveInputScaling)
+          .add("Drive Input Scaling", driveInputScaling)
           .withWidget(BuiltInWidgets.kSplitButtonChooser)
           .withPosition(2, 0)
           .withSize(3, 1);
+
+      rotateInputScaling = new SendableChooser<String>();
+      rotateInputScaling.setDefaultOption(
+          RotateInputScalingStrings.linear, RotateInputScalingStrings.linear);
+      rotateInputScaling.addOption(
+          RotateInputScalingStrings.squareRoot, RotateInputScalingStrings.squareRoot);
+      rotateInputScaling.addOption(
+          RotateInputScalingStrings.quadratic, RotateInputScalingStrings.quadratic);
+      rotateInputScaling.addOption(
+          RotateInputScalingStrings.power, RotateInputScalingStrings.power);
+
+      customizationTab
+          .add("Rotate Input Scaling", rotateInputScaling)
+          .withWidget(BuiltInWidgets.kSplitButtonChooser)
+          .withPosition(2, 2)
+          .withSize(3, 1);
+
+      rotateInputPowerScaling =
+          customizationTab
+              .add("Power Rotation Scaling", 1)
+              .withPosition(5, 2)
+              .withSize(1, 1)
+              .getEntry();
 
       driveControlType = new SendableChooser<String>();
       driveControlType.addOption(ControllerTypeStrings.joysticks, ControllerTypeStrings.joysticks);
@@ -167,8 +193,10 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
     if (Constants.debug) {
       inputs.pseudoAutoRotateEnabled =
           pseudoAutoRotateCheckbox.getBoolean(Constants.psuedoAutoRotateEnabled);
-      inputs.inputScaling = driveInputScaling.getSelected();
+      inputs.driveInputScaling = driveInputScaling.getSelected();
       inputs.driveControllerType = driveControlType.getSelected();
+      inputs.rotateInputScaling = rotateInputScaling.getSelected();
+      inputs.rotateInputPowerScaling = rotateInputPowerScaling.getDouble(1);
       inputs.maxManualRotatePower =
           maxManualRotationEntry.getDouble(Constants.DriveConstants.Manual.maxManualRotation);
       inputs.slowMovingAutoRotatePower =
@@ -198,7 +226,7 @@ public class DriveShuffleBoardIODataEntry implements DriveShuffleBoardIO {
     } else {
       // if debug not enabled, don't want values to be 0
       inputs.pseudoAutoRotateEnabled = Constants.psuedoAutoRotateEnabled;
-      inputs.inputScaling = Constants.driveInputScaling;
+      inputs.driveInputScaling = Constants.driveInputScaling;
       inputs.driveControllerType = Constants.controllerType;
       inputs.maxManualRotatePower = Constants.DriveConstants.Manual.maxManualRotation;
       inputs.slowMovingAutoRotatePower = Constants.DriveConstants.Auto.slowMovingAutoRotate;

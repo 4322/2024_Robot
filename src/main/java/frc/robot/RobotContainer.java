@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
@@ -36,7 +34,6 @@ import frc.robot.commands.OuttakeStop;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetPivotsBrakeMode;
 import frc.robot.commands.SetPivotsCoastMode;
-import frc.robot.commands.SetRobotPose;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.TunnelFeed;
 import frc.robot.commands.TunnelStop;
@@ -137,7 +134,7 @@ public class RobotContainer {
       tunnel.setDefaultCommand(tunnelFeed);
     }
 
-    if (Constants.outtakeEnabled) {
+    if (Constants.outtakeEnabled && !Constants.outtakeTuningMode) {
       outtake.setDefaultCommand(adjustOuttakeToSpeaker);
     }
 
@@ -176,14 +173,6 @@ public class RobotContainer {
                     driveManual.updateStateMachine(DriveManualTrigger.SWITCH_MODES);
                   }));
       driveXbox.povUp().onTrue(new ResetFieldCentric(true));
-      driveXbox.povRight().onTrue(writeFiringSolution);
-      // Reset the odometry for testing speaker-centric driving. This assumes robot is on the
-      // very left on the front of the speaker, facing down-field (forward).
-      driveXbox
-          .start()
-          .onTrue(
-              new SetRobotPose(
-                  new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()), true));
       driveXbox.povDown().onTrue(driveStop);
       driveXbox
           .rightTrigger()
@@ -228,20 +217,6 @@ public class RobotContainer {
                       OuttakeConstants.subwooferOuttakeRPS,
                       OuttakeConstants.subwooferPivotPositionRotations)));
       driveXbox.povLeft().onTrue(new AtHome());
-      driveXbox
-          .b()
-          .whileTrue(
-              Commands.runOnce(
-                  () -> {
-                    Intake.getInstance().intake();
-                  }));
-      driveXbox
-          .y()
-          .whileTrue(
-              Commands.runOnce(
-                  () -> {
-                    tunnel.feed();
-                  }));
     }
   }
 

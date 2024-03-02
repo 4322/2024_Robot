@@ -13,6 +13,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
@@ -198,7 +199,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     // need fast initial reading from the CANCoder
     encoder
         .getPosition()
-        .setUpdateFrequency(OrangeMath.msAndHzConverter(Constants.controllerConfigTimeoutMs));
+        .setUpdateFrequency(OrangeMath.msAndHzConverter(10), Constants.controllerConfigTimeoutMs);
     try {
       Thread.sleep(50); // 5 status frames to be safe
     } catch (InterruptedException e) {
@@ -221,14 +222,27 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
         .setUpdateFrequency(
             OrangeMath.msAndHzConverter(CanBusUtil.nextFastStatusPeriodMs()),
             Constants.controllerConfigTimeoutMs);
+
+    // only need the CANcoder for AdvantageKit logging after this
+    encoder
+        .getPosition()
+        .setUpdateFrequency(OrangeMath.msAndHzConverter(200), Constants.controllerConfigTimeoutMs);
   }
 
   // Below are the implementations of the methods in SwerveModuleIO.java
   @Override
   public void updateInputs(SwerveModuleIOInputs inputs) {
     // drive inputs
-    inputs.driveMeters = driveMotor.getPosition().getValue();
-    inputs.driveMetersPerSec = driveMotor.getVelocity().getValue() / 60;
+    inputs.driveMeters =
+        driveMotor.getPosition().getValue()
+            * Math.PI
+            * OrangeMath.inchesToMeters(Constants.DriveConstants.Drive.wheelDiameterInches)
+            / robotSpecificConstants.getDriveGearRatio();
+    inputs.driveMetersPerSec =
+        driveMotor.getVelocity().getValue()
+            * Math.PI
+            * OrangeMath.inchesToMeters(Constants.DriveConstants.Drive.wheelDiameterInches)
+            / robotSpecificConstants.getDriveGearRatio();
     inputs.driveAppliedVolts =
         driveMotor.getDutyCycle().getValue() / 2 * driveMotor.getSupplyVoltage().getValue();
     inputs.driveCurrentAmps = driveMotor.getSupplyCurrent().getValue();
@@ -333,7 +347,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
             * (kSVolts + (calcFeedForwardVoltsOverMetersPerSec * desiredWheelMetersPerSecAbs));
 
     // send requested voltage to SparkMAX
-    driveMotor.setVoltage(desiredVolts);
+    driveMotor.setControl(new VoltageOut(desiredVolts).withEnableFOC(true));
   }
 
   @Override

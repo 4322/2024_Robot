@@ -190,7 +190,7 @@ public class Drive extends SubsystemBase {
         poseEstimator =
             new SwerveDrivePoseEstimator(
                 kinematics, getRotation2d(), getModulePositions(), new Pose2d());
-        resetFieldCentric();
+        resetFieldCentric(0);
       }
       disconnectTimer = new Timer();
       if (Constants.debug) {
@@ -360,9 +360,9 @@ public class Drive extends SubsystemBase {
     }
   }
 
-  public void resetFieldCentric() {
+  public void resetFieldCentric(double degrees) {
     if (Constants.driveEnabled && Constants.gyroEnabled && gyro != null) {
-      gyro.reset();
+      gyro.resetWithOffset(degrees);
     }
   }
 
@@ -582,13 +582,31 @@ public class Drive extends SubsystemBase {
     return Constants.DriveConstants.Manual.maxManualRotation;
   }
 
-  public String getInputScaling() {
+  public String getDriveInputScaling() {
     if (Constants.driveEnabled) {
       if (Constants.debug) {
-        return driveShuffleBoardInputs.inputScaling;
+        return driveShuffleBoardInputs.driveInputScaling;
       }
     }
     return Constants.driveInputScaling;
+  }
+
+  public String getRotateInputScaling() {
+    if (Constants.driveEnabled) {
+      if (Constants.debug) {
+        return driveShuffleBoardInputs.rotateInputScaling;
+      }
+    }
+    return Constants.rotateInputScaling;
+  }
+
+  public double getRotationPowerScaling() {
+    if (Constants.driveEnabled) {
+      if (Constants.debug) {
+        return driveShuffleBoardInputs.rotateInputPowerScaling;
+      }
+    }
+    return Constants.rotateInputPowerScaling;
   }
 
   public String getControlType() {

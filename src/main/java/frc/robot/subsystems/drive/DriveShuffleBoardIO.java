@@ -7,7 +7,9 @@ public interface DriveShuffleBoardIO {
   @AutoLog
   public static class DriveShuffleBoardIOInputs {
     public boolean pseudoAutoRotateEnabled;
-    public String inputScaling;
+    public String driveInputScaling;
+    public String rotateInputScaling;
+    public double rotateInputPowerScaling;
     public String driveControllerType;
     public double maxManualRotatePower;
     public double slowMovingAutoRotatePower;
