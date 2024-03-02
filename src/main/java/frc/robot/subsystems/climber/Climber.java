@@ -51,7 +51,6 @@ public class Climber extends SubsystemBase{
     {
         if(Constants.climberEnabled)
         {
-            setCoastMode();
             if(RobotCoordinator.getInstance().getSlowClimbButtonHeld()){
                 io.setClimberVoltage(inputs.slowVolts);
                 Logger.recordOutput("Climber/desiredVolts", inputs.slowVolts);
@@ -68,7 +67,6 @@ public class Climber extends SubsystemBase{
     {
          if(Constants.climberEnabled)
         {
-            setCoastMode();
             if(RobotCoordinator.getInstance().getSlowClimbButtonHeld()){
                 io.setClimberVoltage(-inputs.slowVolts);
                 Logger.recordOutput("Climber/desiredVolts", -inputs.slowVolts);
