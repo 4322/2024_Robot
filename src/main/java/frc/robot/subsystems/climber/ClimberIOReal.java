@@ -3,6 +3,7 @@ package frc.robot.subsystems.climber;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -64,10 +65,24 @@ public class ClimberIOReal implements ClimberIO{
     {
         climber.getConfigurator().apply(new TalonFXConfiguration());
         MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
+        SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
         VoltageConfigs voltageConfigs = new VoltageConfigs();
+        
         motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
+        //TODO: Set peakForwardVoltage
         voltageConfigs.PeakForwardVoltage = ClimberConstants.peakForwardVoltage;
+        //TODO: Set peakReverseVoltage
         voltageConfigs.PeakReverseVoltage = ClimberConstants.peakReverseVoltage;
+
+        softwareLimitSwitchConfigs.ForwardSoftLimitThreshold =
+            ClimberConstants.climberMaxRotations; // TODO: Set constant
+        softwareLimitSwitchConfigs.ReverseSoftLimitThreshold =
+            ClimberConstants.climberMinRotations; // TODO: Set constant 
+
+        climber.getConfigurator().apply(softwareLimitSwitchConfigs);
+        climber.getConfigurator().apply(voltageConfigs);
+        climber.getConfigurator().apply(motorOutputConfigs);
+
     }
     @Override
     public void setClimberVoltage(double voltage)

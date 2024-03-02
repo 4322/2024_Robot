@@ -26,7 +26,7 @@ public class ClimberRetract extends Command{
     @Override
     public void end(boolean interrupted)
     {
-        if(climber.isFullyExtended())
+        if(climber.isFullyRetracted())
         {
             CommandScheduler.getInstance().schedule(xBoxRumble);
         }

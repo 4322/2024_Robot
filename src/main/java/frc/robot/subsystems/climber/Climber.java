@@ -7,7 +7,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.utility.OrangeMath;
 
