@@ -291,7 +291,7 @@ public final class Constants {
   }
   public static final class ClimberConstants{
     public static final int climberMotorID = 25; //TODO before first match 3/2/2024
-    public static final double climberMaxRotations = 0; //TODO ask Andrew
+    public static final double climberMaxRotations = 180; //TODO ask Andrew
     public static final double climberMinRotations = 0; //TODO
     public static final double slowClimberVolts = 5; //TODO
     public static final double fastClimberVolts = 10;
@@ -299,6 +299,13 @@ public final class Constants {
     public static final int peakForwardVoltage = 12;
     public static final double peakReverseVoltage = 12;
     public static final double climbingPivotRotations = 100;
+
+    public static final double statorLimit = 60;
+      public static final boolean supplyEnabled = true;
+      public static final boolean statorEnabled = true;
+      public static final double supplyLimit = 40;
+      public static final double supplyThreshold = 60;
+      public static final double supplyTime = 2.0;
   }
   public static final class OuttakeConstants {
     public static final int leftOuttakeDeviceID = 5;

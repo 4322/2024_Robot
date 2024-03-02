@@ -2,6 +2,7 @@ package frc.robot.subsystems.climber;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -67,7 +68,7 @@ public class ClimberIOReal implements ClimberIO{
         MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
         SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
         VoltageConfigs voltageConfigs = new VoltageConfigs();
-        
+        CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
         motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
         //TODO: Set peakForwardVoltage
         voltageConfigs.PeakForwardVoltage = ClimberConstants.peakForwardVoltage;
@@ -79,6 +80,12 @@ public class ClimberIOReal implements ClimberIO{
         softwareLimitSwitchConfigs.ReverseSoftLimitThreshold =
             ClimberConstants.climberMinRotations; // TODO: Set constant 
 
+        currentLimitsConfigs.StatorCurrentLimitEnable = Constants.ClimberConstants.statorEnabled;
+        currentLimitsConfigs.StatorCurrentLimit = Constants.ClimberConstants.statorLimit;
+        currentLimitsConfigs.SupplyCurrentLimitEnable = Constants.ClimberConstants.supplyEnabled;
+        currentLimitsConfigs.SupplyCurrentLimit = Constants.ClimberConstants.supplyLimit;
+
+        climber.getConfigurator().apply(currentLimitsConfigs);
         climber.getConfigurator().apply(softwareLimitSwitchConfigs);
         climber.getConfigurator().apply(voltageConfigs);
         climber.getConfigurator().apply(motorOutputConfigs);
