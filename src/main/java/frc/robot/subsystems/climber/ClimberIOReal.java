@@ -4,6 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -63,7 +64,10 @@ public class ClimberIOReal implements ClimberIO{
     {
         climber.getConfigurator().apply(new TalonFXConfiguration());
         MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
+        VoltageConfigs voltageConfigs = new VoltageConfigs();
         motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
+        voltageConfigs.PeakForwardVoltage = ClimberConstants.peakForwardVoltage;
+        voltageConfigs.PeakReverseVoltage = ClimberConstants.peakReverseVoltage;
     }
     @Override
     public void setClimberVoltage(double voltage)

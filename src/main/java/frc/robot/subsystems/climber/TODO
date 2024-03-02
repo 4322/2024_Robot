@@ -1,8 +1,9 @@
 +button hold down if slow (robot coordinator likely)
--unwind (extend) sequential w/ pivot (hold down)
--rewind (retract)
++unwind (extend) sequential w/ pivot (hold down)
++rewind (retract)
 -maybe controller rumble? can't remember
 -set all the constants
--shuffleboard variables: read position of climber + set voltage
--end command if at/above max (if at, ENTER TOLERANCE IMMEDIATELY) and vice versa for other way
--left bumper is retract, right
+-configure climber motor
++shuffleboard variables: read position of climber + set voltage
++end command if at/above max (if at, ENTER TOLERANCE IMMEDIATELY) and vice versa for other way
++left bumper is retract, right bumper is extend

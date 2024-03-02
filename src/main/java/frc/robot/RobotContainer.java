@@ -23,6 +23,8 @@ import frc.robot.commands.AtHome;
 import frc.robot.commands.AutoIntakeDeploy;
 import frc.robot.commands.AutoIntakeIn;
 import frc.robot.commands.AutoSetOuttakeAdjust;
+import frc.robot.commands.ClimberExtend;
+import frc.robot.commands.ClimberRetract;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
@@ -210,6 +212,12 @@ public class RobotContainer {
       operatorXbox.leftTrigger().onFalse(Commands.runOnce(()-> {
         RobotCoordinator.getInstance().setSlowClimbButtonHeld(false);
       }));
+      operatorXbox
+        .leftBumper()
+        .whileTrue(new ClimberRetract());
+      operatorXbox
+        .rightBumper()
+        .whileTrue(new ClimberExtend());
       operatorXbox.rightTrigger().whileTrue(new EjectThroughOuttake());
       operatorXbox.start().onTrue(new SetPivotsCoastMode());
       operatorXbox.back().onTrue(new SetPivotsBrakeMode());
