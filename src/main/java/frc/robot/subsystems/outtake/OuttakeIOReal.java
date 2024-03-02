@@ -134,7 +134,7 @@ public class OuttakeIOReal implements OuttakeIO {
     currentLimitsConfigs.SupplyCurrentLimitEnable = Constants.OuttakeConstants.supplyEnabled;
     currentLimitsConfigs.SupplyCurrentLimit = Constants.OuttakeConstants.pivotSupplyLimit;
     motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
-    motorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    motorOutputConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
 
     hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
     hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
