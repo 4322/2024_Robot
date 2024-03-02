@@ -22,9 +22,7 @@ public class Shoot extends Command {
 
   @Override
   public boolean isFinished() {
-    return !RobotCoordinator.getInstance()
-        .noteInFiringPosition(); // once the tunnel beam can no longer 'see' the note, it'll be on
-    // the flywheel and can be stopped.
+    return false;
   }
 
   @Override
