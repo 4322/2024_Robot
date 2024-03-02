@@ -251,11 +251,11 @@ public class RobotContainer {
     }
     // if robot crossing from opponent side to our side
     else if (robotCoordinator.onOurSideOfField() && onOpponentFieldSide) {
-      //removed so driver has to manually change it.
+      // removed so driver has to manually change it.
       /*Commands.runOnce(
-          () -> {
-            outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SMART_SHOOTING);
-          });*/
+      () -> {
+        outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SMART_SHOOTING);
+      });*/
       onOpponentFieldSide = false;
     }
   }

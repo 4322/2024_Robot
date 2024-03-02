@@ -35,7 +35,7 @@ public class IntakeManual extends Command {
     switch (intakeState) {
       case retracted:
         if (coordinator.getIntakeButtonPressed()
-            && (coordinator.onOurSideOfField() || !coordinator.noteInRobot())) {
+            && (!coordinator.noteInRobot())) {
           intakeState = IntakeStates.deploying;
         }
         break;
@@ -76,7 +76,7 @@ public class IntakeManual extends Command {
         break;
       case notePastIntake:
         intake.stopFeeder();
-        if (!coordinator.onOurSideOfField() || !coordinator.getIntakeButtonPressed()) {
+        if (!coordinator.getIntakeButtonPressed()) {
           intakeState = IntakeStates.retracting;
         } else if (!coordinator.noteInRobot()) {
           intakeState = IntakeStates.feeding;
@@ -88,7 +88,7 @@ public class IntakeManual extends Command {
           intake.retract();
         }
         if (coordinator.getIntakeButtonPressed()
-            && (coordinator.onOurSideOfField() || !coordinator.noteInRobot())) {
+            && (!coordinator.noteInRobot())) {
           intakeState = IntakeStates.deploying;
         } else if (coordinator.isIntakeRetracted()) {
           intakeState = IntakeStates.retracted;
