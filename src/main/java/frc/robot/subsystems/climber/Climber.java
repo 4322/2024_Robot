@@ -33,4 +33,12 @@ public class Climber {
             io = new ClimberIO() {};
         }
     }
+    public void extend()
+    {
+
+    }
+    public void stopClimb()
+    {
+        
+    }
 }

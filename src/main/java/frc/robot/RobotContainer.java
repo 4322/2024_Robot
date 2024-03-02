@@ -204,6 +204,12 @@ public class RobotContainer {
                     RobotCoordinator.getInstance().setAutoIntakeButtonPressed(false);
                   }));
       driveXbox.leftTrigger().whileTrue(new Shoot());
+      operatorXbox.leftTrigger().onTrue(Commands.runOnce(()-> {
+        RobotCoordinator.getInstance().setSlowClimbButtonHeld(true);
+      }));
+      operatorXbox.leftTrigger().onFalse(Commands.runOnce(()-> {
+        RobotCoordinator.getInstance().setSlowClimbButtonHeld(false);
+      }));
       operatorXbox.rightTrigger().whileTrue(new EjectThroughOuttake());
       operatorXbox.start().onTrue(new SetPivotsCoastMode());
       operatorXbox.back().onTrue(new SetPivotsBrakeMode());

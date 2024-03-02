@@ -28,6 +28,7 @@ public class RobotCoordinator extends SubsystemBase {
   private Timer shootTimer = new Timer();
 
   private boolean intakeButtonPressed;
+  private boolean slowClimbButtonHeld;
   private boolean notePassingIntake;
   private boolean notePassingTunnel;
   private boolean autoIntakeButtonPressed;
@@ -90,7 +91,14 @@ public class RobotCoordinator extends SubsystemBase {
         || getAutoIntakeButtonPressed(); // auto intake button is an identical bind so it also
     // counts as an intake button
   }
-
+  public void setSlowClimbButtonHeld(boolean slowPressed)
+  {
+    slowClimbButtonHeld = slowPressed;
+  }
+  public boolean getSlowClimbButtonHeld()
+  {
+    return slowClimbButtonHeld;
+  }
   public void setAutoIntakeButtonPressed(boolean isPressed) {
     autoIntakeButtonPressed = isPressed;
   }

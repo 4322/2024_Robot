@@ -3,3 +3,6 @@
 -rewind (retract)
 -maybe controller rumble? can't remember
 -set all the constants
+-shuffleboard variables: read position of climber
+-end command if at/above max (if at, ENTER TOLERANCE IMMEDIATELY) and vice versa for other way
+-left bumper is retract, right
