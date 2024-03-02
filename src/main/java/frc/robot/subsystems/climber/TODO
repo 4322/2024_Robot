@@ -2,8 +2,6 @@
 +unwind (extend) sequential w/ pivot (hold down)
 +rewind (retract)
 +maybe controller rumble? can't remember
--set all the constants
--configure climber motor
 +shuffleboard variables: read position of climber + set voltage
 +end command if at/above max (if at, ENTER TOLERANCE IMMEDIATELY) and vice versa for other way
 +left bumper is retract, right bumper is extend
@@ -11,7 +9,12 @@
 +add new state to outtake (climbing)
 +make slowretract firing solution
 +for isFinished, have it return false- they can try to go up all they want
--there should be some sort of decorator that you pass in that allows you to override reverse soft limit (maybe set reverse soft limit enabled)
 +don't make it dependent on pivot being in position (climber extended)
 +slow retract, fast retract, fast extend (slow retract button, left trigger)
--change climber gear ratio (wtf)
++change climber gear ratio (ok, to what (to 40:44))
+TRUE TODO:
+
+-there should be some sort of decorator that you pass in that allows you to override reverse soft limit (maybe set reverse soft limit enabled)
+(working on it)
+-set all the constants
+-configure climber motor

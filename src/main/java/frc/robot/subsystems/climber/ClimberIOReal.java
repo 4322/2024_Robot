@@ -121,4 +121,9 @@ public class ClimberIOReal implements ClimberIO{
     {
         climber.stopMotor();
     }
+    public void setReverseSoftLimitEnabled(boolean softLimitsEnabled)
+    {   SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
+        softwareLimitSwitchConfigs.ReverseSoftLimitEnable = softLimitsEnabled;
+        climber.getConfigurator().refresh(softwareLimitSwitchConfigs);
+    }
 }

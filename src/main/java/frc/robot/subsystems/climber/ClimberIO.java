@@ -16,8 +16,9 @@ public interface ClimberIO {
         public double slowVolts = 0.0;
     }
     public default void updateInputs(ClimberIOInputs inputs) {}
-    public default void setClimberVoltage(double volts) {}
+    public default void setClimberVoltage(double volt) {}
     public default void setBrakeMode(){}
     public default void setCoastMode(){}
     public default void stopMotor(){}
+    public default void setReverseSoftLimitEnabled(boolean softLimitsEnabled) {}
 }
