@@ -143,7 +143,7 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public boolean canRetract() {
-    return !intake.isFeeding() || !intake.isEjecting();
+    return !intake.isFeeding() && !intake.isEjecting();
   }
 
   public boolean intakeIsFeeding() {

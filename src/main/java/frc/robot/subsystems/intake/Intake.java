@@ -138,7 +138,7 @@ public class Intake extends SubsystemBase {
     if (Constants.intakeEnabled) {
       io.setFeedingVoltage(inputs.intakeEjectVoltage);
       Logger.recordOutput(IntakeConstants.Logging.feederKey + "State", "Outtaking");
-      isFeeding = true;
+      isFeeding = false;
       isEjecting = true;
     }
   }
