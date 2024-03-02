@@ -50,6 +50,7 @@ public final class Constants {
   public static final boolean outtakePivotEnabled = true;
   public static final boolean sensorsEnabled = true;
   public static final boolean ledEnabled = true;
+  public static final boolean climberEnabled = false;
   public static final boolean joysticksEnabled = false;
   public static final boolean xboxEnabled = true;
 
@@ -288,7 +289,13 @@ public final class Constants {
     public static final double initializedRotationsTolerance = 5.0;
     public static final double absEncoderMaxZeroingThreshold = 0.95;
   }
-
+  public static final class ClimberConstants{
+    public static final int climberMotorID = 0; //TODO before first match 3/2/2024
+    public static final double climberMaxRotations = 0; //TODO ask Andrew
+    public static final double climberMinRotations = 0; //TODO
+    public static final double slowClimberVolts = 0; //TODO
+    public static final double fastClimberVolts = 0;
+  }
   public static final class OuttakeConstants {
     public static final int leftOuttakeDeviceID = 5;
     public static final int rightOuttakeDeviceID = 4;
