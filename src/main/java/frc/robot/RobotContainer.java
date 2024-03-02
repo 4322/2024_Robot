@@ -43,6 +43,7 @@ import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.robot.subsystems.tunnel.Tunnel;
 
@@ -135,7 +136,9 @@ public class RobotContainer {
       intake.setDefaultCommand(intakeManual);
     }
 
-    CommandScheduler.getInstance().schedule(new UpdateOdometry());
+    if (Constants.outtakeLimeLightEnabled) {
+      Limelight.getOuttakeInstance().setDefaultCommand(new UpdateOdometry());
+    }
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
