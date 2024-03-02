@@ -176,14 +176,6 @@ public class RobotContainer {
                     driveManual.updateStateMachine(DriveManualTrigger.SWITCH_MODES);
                   }));
       driveXbox.povUp().onTrue(new ResetFieldCentric(true));
-      driveXbox.povRight().onTrue(writeFiringSolution);
-      // Reset the odometry for testing speaker-centric driving. This assumes robot is on the
-      // very left on the front of the speaker, facing down-field (forward).
-      driveXbox
-          .start()
-          .onTrue(
-              new SetRobotPose(
-                  new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()), true));
       driveXbox.povDown().onTrue(driveStop);
       driveXbox
           .rightTrigger()
@@ -228,20 +220,6 @@ public class RobotContainer {
                       OuttakeConstants.subwooferOuttakeRPS,
                       OuttakeConstants.subwooferPivotPositionRotations)));
       driveXbox.povLeft().onTrue(new AtHome());
-      driveXbox
-          .b()
-          .whileTrue(
-              Commands.runOnce(
-                  () -> {
-                    Intake.getInstance().intake();
-                  }));
-      driveXbox
-          .y()
-          .whileTrue(
-              Commands.runOnce(
-                  () -> {
-                    tunnel.feed();
-                  }));
     }
   }
 
