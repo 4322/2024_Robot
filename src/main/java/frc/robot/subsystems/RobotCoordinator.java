@@ -156,7 +156,7 @@ public class RobotCoordinator extends SubsystemBase {
     return outtake.pivotIsInitialized();
   }
 
-  public boolean noteInFiringPosition() {
+  public boolean                             noteInFiringPosition() {
     return !inputs.tunnelBeamBreak;
   }
 
@@ -173,16 +173,6 @@ public class RobotCoordinator extends SubsystemBase {
 
   public boolean noteIsShot() {
     return !notePassingTunnel && inputs.tunnelBeamBreak;
-  }
-
-  public boolean onOurSideOfField() {
-    if (Robot.getAllianceColor().equals(Alliance.Red)) {
-      return (drive.getPose2d().getX() > Constants.FieldConstants.xCenterLineM);
-    } else if (Robot.getAllianceColor().equals(Alliance.Blue)) {
-      return (drive.getPose2d().getX() < Constants.FieldConstants.xCenterLineM);
-    } else {
-      return false;
-    }
   }
 
   public double getRobotXPos() {

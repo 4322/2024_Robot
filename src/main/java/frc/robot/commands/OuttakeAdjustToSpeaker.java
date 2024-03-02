@@ -22,8 +22,7 @@ public class OuttakeAdjustToSpeaker extends Command {
 
   @Override
   public void execute() {
-    if (RobotCoordinator.getInstance().onOurSideOfField()
-        && RobotCoordinator.getInstance().canPivot()) {
+    if (RobotCoordinator.getInstance().canPivot()) {
       FiringSolution firingSolution =
           FiringSolutionManager.getInstance()
               .calcSolution(
@@ -44,8 +43,7 @@ public class OuttakeAdjustToSpeaker extends Command {
 
   @Override
   public boolean isFinished() {
-    return !RobotCoordinator.getInstance().onOurSideOfField()
-        || !RobotCoordinator.getInstance().noteInRobot();
+    return (outtake.isFlyWheelUpToSpeed() && outtake.pivotIsAtPosition()); //wait a little
   }
 
   @Override
