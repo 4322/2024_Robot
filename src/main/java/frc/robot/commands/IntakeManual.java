@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.intake.Intake;
 
@@ -35,7 +36,7 @@ public class IntakeManual extends Command {
     switch (intakeState) {
       case retracted:
         if (coordinator.getIntakeButtonPressed()
-            && (coordinator.onOurSideOfField() || !coordinator.noteInRobot())) {
+            && (!coordinator.noteInRobot())) {
           intakeState = IntakeStates.deploying;
         }
         break;
@@ -57,9 +58,11 @@ public class IntakeManual extends Command {
         }
         if (!coordinator.getIntakeButtonPressed()) {
           intakeState = IntakeStates.retracting;
-        } else if (coordinator.noteInIntake()) {
+        } else if (coordinator.noteEnteringIntake()) {
           intakeState = IntakeStates.noteObtained;
-        } else if (coordinator.getAutoIntakeButtonPressed() && coordinator.noteInVision()) {
+        } else if (Constants.autoAcquireNoteEnabled
+            && coordinator.getAutoIntakeButtonPressed()
+            && coordinator.noteInVision()) {
           if (!autoAcquireNote.isScheduled()) {
             CommandScheduler.getInstance().schedule(autoAcquireNote);
           }
@@ -69,14 +72,14 @@ public class IntakeManual extends Command {
         if (coordinator.isIntakeDeployed()) {
           intake.intake();
         }
-        if (!coordinator.noteInIntake()) {
+        if (!coordinator.noteEnteringIntake()) {
           CommandScheduler.getInstance().schedule(xBoxRumble);
           intakeState = IntakeStates.notePastIntake;
         }
         break;
       case notePastIntake:
         intake.stopFeeder();
-        if (!coordinator.onOurSideOfField() || !coordinator.getIntakeButtonPressed()) {
+        if (!coordinator.getIntakeButtonPressed()) {
           intakeState = IntakeStates.retracting;
         } else if (!coordinator.noteInRobot()) {
           intakeState = IntakeStates.feeding;
@@ -88,7 +91,7 @@ public class IntakeManual extends Command {
           intake.retract();
         }
         if (coordinator.getIntakeButtonPressed()
-            && (coordinator.onOurSideOfField() || !coordinator.noteInRobot())) {
+            && (!coordinator.noteInRobot())) {
           intakeState = IntakeStates.deploying;
         } else if (coordinator.isIntakeRetracted()) {
           intakeState = IntakeStates.retracted;

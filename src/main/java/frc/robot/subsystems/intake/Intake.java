@@ -14,6 +14,7 @@ public class Intake extends SubsystemBase {
   private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
   private boolean isFeeding;
+  private boolean isEjecting;
   private boolean isDeployerInCoastMode;
   private double desiredVolts;
   private static Intake intake;
@@ -129,6 +130,7 @@ public class Intake extends SubsystemBase {
       io.setFeedingVoltage(inputs.intakeFeederVoltage);
       Logger.recordOutput(IntakeConstants.Logging.feederKey + "State", "Intaking");
       isFeeding = true;
+      isEjecting = false;
     }
   }
 
@@ -136,7 +138,8 @@ public class Intake extends SubsystemBase {
     if (Constants.intakeEnabled) {
       io.setFeedingVoltage(inputs.intakeEjectVoltage);
       Logger.recordOutput(IntakeConstants.Logging.feederKey + "State", "Outtaking");
-      isFeeding = true;
+      isFeeding = false;
+      isEjecting = true;
     }
   }
 
@@ -175,6 +178,7 @@ public class Intake extends SubsystemBase {
       io.stopFeeder();
       Logger.recordOutput(IntakeConstants.Logging.feederKey + "State", "Stopped");
       isFeeding = false;
+      isEjecting = false;
     }
   }
 
@@ -250,5 +254,9 @@ public class Intake extends SubsystemBase {
 
   public boolean isFeeding() {
     return isFeeding;
+  }
+
+  public boolean isEjecting() {
+    return isEjecting;
   }
 }
