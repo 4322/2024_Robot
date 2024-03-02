@@ -60,7 +60,7 @@ public final class Constants {
   public static final boolean speakerCentricEnabled = true;
   public static final boolean spinoutCenterEnabled = true; // center rotate burst of power
   public static final boolean spinoutCornerEnabled = true;
-  public static final boolean psuedoAutoRotateEnabled = true;
+  public static final boolean psuedoAutoRotateEnabled = false;
   public static final String driveInputScaling = DriveInputScalingStrings.quadratic;
   public static final String rotateInputScaling = RotateInputScalingStrings.linear;
   public static final double rotateInputPowerScaling = 1.0;
@@ -338,8 +338,9 @@ public final class Constants {
 
     public static final double topOuttakeRPS = 0;
     public static final double bottomOuttakeRPS = 0;
-    public static final double outtakeToleranceRPS = 5;
-    public static final double pivotToleranceRotations = 0.1;
+    public static final double outtakeToleranceRPS = 0;
+    public static final double pivotToleranceRotations = 0;
+    public static final double maxPivotForIntake = 50;
   }
 
   public static final class IntakeConstants {

@@ -1,14 +1,62 @@
 [
   {
-    "shotMag": 1.3,
+    "shotMag": 0.9,
     "shotDeg": 0.0,
-    "flywheelSpeed": 110,
-    "shotRotations": 40
+    "flywheelSpeed": 95,
+    "shotRotations": 29.9
+  },
+  {
+    "shotMag": 1.72,
+    "shotDeg": 0.0,
+    "flywheelSpeed": 95,
+    "shotRotations": 23.76
+  },
+  {
+    "shotMag": 2.54,
+    "shotDeg": 0.0,
+    "flywheelSpeed": 95,
+    "shotRotations": 19.631
+  },
+  {
+    "shotMag": 3.37,
+    "shotDeg": 0.0,
+    "flywheelSpeed": 95,
+    "shotRotations": 16.857
+  },
+  {
+    "shotMag": 4.19,
+    "shotDeg": 0.0,
+    "flywheelSpeed": 95,
+    "shotRotations": 14.926
+  },
+  {
+    "shotMag": 5.01,
+    "shotDeg": 0.0,
+    "flywheelSpeed": 95,
+    "shotRotations": 13.526
+  },
+  {
+    "shotMag": 5.833,
+    "shotDeg": 0.0,
+    "flywheelSpeed": 95,
+    "shotRotations": 12.472
+  },
+  {
+    "shotMag": 6.6556,
+    "shotDeg": 0.0,
+    "flywheelSpeed": 95,
+    "shotRotations": 11.654
+  },
+  {
+    "shotMag": 7.4778,
+    "shotDeg": 0.0,
+    "flywheelSpeed": 95,
+    "shotRotations": 11.002
   },
   {
     "shotMag": 8.3,
     "shotDeg": 0.0,
     "flywheelSpeed": 95,
-    "shotRotations": 15
+    "shotRotations": 10.472
   }
 ]
