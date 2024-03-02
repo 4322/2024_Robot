@@ -89,10 +89,10 @@ public class ClimberIOReal implements ClimberIO{
             ClimberConstants.climberMaxRotations; // TODO: Set constant
         softwareLimitSwitchConfigs.ReverseSoftLimitThreshold =
             ClimberConstants.climberMinRotations; // TODO: Set constant 
-        currentLimitsConfigs.StatorCurrentLimitEnable = DeployConfig.statorEnabled;
-        currentLimitsConfigs.StatorCurrentLimit = DeployConfig.statorLimit;
-        currentLimitsConfigs.SupplyCurrentLimitEnable = DeployConfig.supplyEnabled;
-        currentLimitsConfigs.SupplyCurrentLimit = DeployConfig.supplyLimit;
+        currentLimitsConfigs.StatorCurrentLimitEnable = ClimberConstants.statorEnabled;
+        currentLimitsConfigs.StatorCurrentLimit = ClimberConstants.statorLimit;
+        currentLimitsConfigs.SupplyCurrentLimitEnable = ClimberConstants.supplyEnabled;
+        currentLimitsConfigs.SupplyCurrentLimit = ClimberConstants.supplyLimit;
         climber.getConfigurator().apply(currentLimitsConfigs);
         climber.getConfigurator().apply(softwareLimitSwitchConfigs);
         climber.getConfigurator().apply(voltageConfigs);

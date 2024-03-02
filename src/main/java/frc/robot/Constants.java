@@ -304,6 +304,10 @@ public final class Constants {
     public static final double kI = 0;
     public static final boolean limitRotations = false;
     public static final double openRampPeriod = 0;
+    public static final boolean statorEnabled = true;//TODO
+    public static final double statorLimit = 45.0;//TODO
+    public static final boolean supplyEnabled = true;//TODO
+    public static final double supplyLimit = 30.0;//TODO
   }
   public static final class OuttakeConstants {
     public static final int leftOuttakeDeviceID = 5;
