@@ -52,6 +52,7 @@ public final class Constants {
   public static final boolean ledEnabled = true;
   public static final boolean joysticksEnabled = false;
   public static final boolean xboxEnabled = true;
+  public static final boolean autoAcquireNoteEnabled = false;
 
   public static final boolean intakeLimeLightEnabled = true;
   public static final boolean outtakeLimeLightEnabled = true;
@@ -168,7 +169,7 @@ public final class Constants {
 
       public static final double xboxDriveDeadband = 0.17; // was 0.1 with a better controller
       public static final double xboxRotateDeadband = 0.25;
-      public static final double maxManualRotation = 0.25;
+      public static final double maxManualRotation = 0.30;
       public static final double inhibitPseudoAutoRotateAngularVelocity = 0.05;
 
       public static final double spinoutRotateDeadBand = 0.9;
