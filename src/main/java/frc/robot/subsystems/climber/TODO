@@ -1,7 +1,7 @@
 +button hold down if slow (robot coordinator likely)
 +unwind (extend) sequential w/ pivot (hold down)
 +rewind (retract)
--maybe controller rumble? can't remember
++maybe controller rumble? can't remember
 -set all the constants
 -configure climber motor
 +shuffleboard variables: read position of climber + set voltage

@@ -8,6 +8,7 @@ import frc.robot.Constants.BeamBreakConstants;
 import frc.robot.Robot;
 import frc.robot.commands.IntakeManual;
 import frc.robot.commands.IntakeManual.IntakeStates;
+import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.limelight.Limelight;
@@ -20,7 +21,7 @@ public class RobotCoordinator extends SubsystemBase {
   private Drive drive = Drive.getInstance();
   private Limelight outtakeLimelight = Limelight.getOuttakeInstance();
   private Limelight intakeLimelight = Limelight.getIntakeInstance();
-
+  private Climber climber = Climber.getInstance();
   private static BeamBreakSensorIO noteTrackerSensorsIO;
   private static BeamBreakSensorIOInputsAutoLogged inputs = new BeamBreakSensorIOInputsAutoLogged();
 
@@ -216,7 +217,14 @@ public class RobotCoordinator extends SubsystemBase {
   public boolean pivotAtPosition() {
     return outtake.pivotIsAtPosition();
   }
-
+  public boolean climberIsFullyRetracted()
+  {
+    return (climber.isFullyRetracted());
+  }
+    public boolean climberIsFullyExtended()
+  {
+    return (climber.isFullyExtended());
+  }
   public boolean debugOuttakeOverride() {
     return outtake.getDebugOverrideEnabled();
   }
