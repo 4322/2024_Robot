@@ -9,8 +9,8 @@ public class AutoHelper {
     None,
     LeaveSourceCorner,
     OneNoteCenter,
-    OneNoteAmp,
-    OneNoteSource,
+    OneNoteRight,
+    OneNoteLeft,
     TwoNoteCenter,
     ThreeNoteCenter,
     FourNoteCenter
@@ -29,8 +29,6 @@ public class AutoHelper {
     switch (auto) {
       case LeaveSourceCorner:
         return "LeaveInTheMiddleOfNowhere";
-      case OneNoteAmp:
-        return "OneNoteAmp";
       default:
         return "None";
     }
