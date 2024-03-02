@@ -9,12 +9,12 @@ import frc.robot.subsystems.outtake.Outtake;
 public class AutoSetOuttakeAdjust extends InstantCommand {
   private Outtake outtake;
   private double flywheelSpeed;
-  private double pivotAngle;
+  private double pivotRotations;
 
   public AutoSetOuttakeAdjust(FiringSolution solution) {
     outtake = Outtake.getInstance();
     this.flywheelSpeed = solution.getFlywheelSpeed();
-    this.pivotAngle = solution.getShotRotations();
+    this.pivotRotations = solution.getShotRotations();
 
     addRequirements(outtake);
   }
@@ -23,7 +23,7 @@ public class AutoSetOuttakeAdjust extends InstantCommand {
   public void initialize() {
     if (RobotCoordinator.getInstance().canPivot()) {
       outtake.outtake(flywheelSpeed);
-      outtake.pivot(pivotAngle / 360 * OuttakeConstants.gearReductionEncoderToMotor);
+      outtake.pivot(pivotRotations * OuttakeConstants.gearReductionEncoderToMotor);
     }
   }
 
