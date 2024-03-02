@@ -52,6 +52,7 @@ public final class Constants {
   public static final boolean ledEnabled = true;
   public static final boolean joysticksEnabled = false;
   public static final boolean xboxEnabled = true;
+  public static final boolean autoAcquireNoteEnabled = false;
 
   public static final boolean intakeLimeLightEnabled = true;
   public static final boolean outtakeLimeLightEnabled = true;

@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.intake.Intake;
 
@@ -59,7 +60,7 @@ public class IntakeManual extends Command {
           intakeState = IntakeStates.retracting;
         } else if (coordinator.noteInIntake()) {
           intakeState = IntakeStates.noteObtained;
-        } else if (coordinator.getAutoIntakeButtonPressed() && coordinator.noteInVision()) {
+        } else if (Constants.autoAcquireNoteEnabled && coordinator.getAutoIntakeButtonPressed() && coordinator.noteInVision()) {
           if (!autoAcquireNote.isScheduled()) {
             CommandScheduler.getInstance().schedule(autoAcquireNote);
           }
