@@ -32,10 +32,10 @@ public class PathPlannerManager {
       HolonomicPathFollowerConfig holonomicConfig =
           new HolonomicPathFollowerConfig(
               new PIDConstants(
-                  robotSpecificConstants.getAutoTrajectoryRotkP(),
-                  robotSpecificConstants.getAutoTrajectoryRotkI(),
-                  robotSpecificConstants.getAutoTrajectoryRotkD(),
-                  robotSpecificConstants.getAutoTrajectoryRotkiZ()),
+                  robotSpecificConstants.getAutoTrajectoryXYkP(),
+                  robotSpecificConstants.getAutoTrajectoryXYkI(),
+                  robotSpecificConstants.getAutoTrajectoryXYkD(),
+                  robotSpecificConstants.getAutoTrajectoryXYkiZ()),
               new PIDConstants(
                   robotSpecificConstants.getAutoTrajectoryRotkP(),
                   robotSpecificConstants.getAutoTrajectoryRotkI(),
