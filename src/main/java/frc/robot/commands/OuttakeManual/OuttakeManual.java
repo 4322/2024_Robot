@@ -32,7 +32,6 @@ public class OuttakeManual extends Command {
 
     switch (stateMachine.getState()) {
       case SMART_SHOOTING:
-        if (RobotCoordinator.getInstance().onOurSideOfField()) {
           solution =
               FiringSolutionManager.getInstance()
                   .calcSolution(
@@ -43,11 +42,6 @@ public class OuttakeManual extends Command {
                               RobotCoordinator.getInstance().getRobotXPos(),
                               RobotCoordinator.getInstance().getRobotYPos())
                           .getDegrees());
-        } else {
-          outtake.stopOuttake();
-          outtake.stopPivot();
-          return;
-        }
         break;
       case SUBWOOFER:
         solution = FiringSolutions.SubwooferBase;
