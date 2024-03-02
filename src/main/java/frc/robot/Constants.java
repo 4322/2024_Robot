@@ -295,6 +295,7 @@ public final class Constants {
     public static final double climberMinRotations = 0; //TODO
     public static final double slowClimberVolts = 0; //TODO
     public static final double fastClimberVolts = 0;
+    public static final double climberRotationTolerance = 0.05;
   }
   public static final class OuttakeConstants {
     public static final int leftOuttakeDeviceID = 5;

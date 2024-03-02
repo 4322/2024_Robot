@@ -54,13 +54,13 @@ public class Climber extends SubsystemBase{
         {
             setCoastMode();
             if(RobotCoordinator.getInstance().getSlowClimbButtonHeld()){
-                io.setClimberVoltage(ClimberConstants.slowClimberVolts);
-                Logger.recordOutput("Climber/desiredVolts", ClimberConstants.slowClimberVolts);
+                io.setClimberVoltage(inputs.slowVolts);
+                Logger.recordOutput("Climber/desiredVolts", inputs.slowVolts);
                 Logger.recordOutput("Climber/State", "Extending");
             }
             else{
-                io.setClimberVoltage(ClimberConstants.fastClimberVolts);
-                Logger.recordOutput("Climber/desiredVolts", ClimberConstants.fastClimberVolts);
+                io.setClimberVoltage(inputs.fastVolts);
+                Logger.recordOutput("Climber/desiredVolts", inputs.fastVolts);
                 Logger.recordOutput("Climber/State", "Extending");
             }
         }
@@ -71,22 +71,15 @@ public class Climber extends SubsystemBase{
         {
             setCoastMode();
             if(RobotCoordinator.getInstance().getSlowClimbButtonHeld()){
-                io.setClimberVoltage(-ClimberConstants.slowClimberVolts);
-                Logger.recordOutput("Climber/desiredVolts", -ClimberConstants.slowClimberVolts);
+                io.setClimberVoltage(-inputs.slowVolts);
+                Logger.recordOutput("Climber/desiredVolts", -inputs.slowVolts);
                 Logger.recordOutput("Climber/State", "Retracting");
             }
             else{
-                io.setClimberVoltage(-ClimberConstants.fastClimberVolts);
-                Logger.recordOutput("Climber/desiredVolts", -ClimberConstants.fastClimberVolts);
+                io.setClimberVoltage(-inputs.fastVolts);
+                Logger.recordOutput("Climber/desiredVolts", -inputs.fastVolts);
                 Logger.recordOutput("Climber/State", "Retracting");
             }
-        }
-    }
-    public void stopClimb()
-    {
-        if(Constants.climberEnabled)
-        {
-
         }
     }
     public void setBrakeMode()
@@ -99,12 +92,19 @@ public class Climber extends SubsystemBase{
         io.setCoastMode();
         Logger.recordOutput("Climber/NeutralMode","Coast");
     }
+    public void stopClimb()
+    {
+        io.setBrakeMode();
+        io.stopMotor();
+        Logger.recordOutput("Climber/desiredVolts", 0);
+        Logger.recordOutput("Climber/State","Stopped");
+    }
     public boolean isFullyExtended()
     {
-        return OrangeMath.equalToEpsilon(inputs.rotations, ClimberConstants.climberMaxRotations, 0);
+        return OrangeMath.equalToEpsilon(inputs.rotations, ClimberConstants.climberMaxRotations, ClimberConstants.climberRotationTolerance) || (inputs.rotations > ClimberConstants.climberMaxRotations);
     }
     public boolean isFullyRetracted()
     {
-        return OrangeMath.equalToEpsilon(inputs.rotations, ClimberConstants.climberMinRotations, 0);
+        return OrangeMath.equalToEpsilon(inputs.rotations, ClimberConstants.climberMinRotations, ClimberConstants.climberRotationTolerance) || (inputs.rotations < ClimberConstants.climberMinRotations);
     }
 }
