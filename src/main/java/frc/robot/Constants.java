@@ -290,24 +290,27 @@ public final class Constants {
     public static final double absEncoderMaxZeroingThreshold = 0.95;
   }
   public static final class ClimberConstants{
-    public static final int climberMotorID = 0; //TODO before first match 3/2/2024
-    public static final double climberMaxRotations = 0; //TODO ask Andrew
+    public static final int climberMotorID = 25; //TODO before first match 3/2/2024
+    public static final double climberMaxRotations = 180; //TODO ask Andrew
     public static final double climberMinRotations = 0; //TODO
-    public static final double slowClimberVolts = 0; //TODO
-    public static final double fastClimberVolts = 0;
-    public static final double climberRotationTolerance = 0.05;
-    public static final int peakForwardVoltage = 0;
-    public static final double peakReverseVoltage = 0;
-    public static final double climbingPivotRotations = 0;
+    public static final double slowClimberVolts = 5; //TODO
+    public static final double fastClimberVolts = 10;
+    public static final double climberRotationTolerance = 1;
+    public static final int peakForwardVoltage = 12;
+    public static final double peakReverseVoltage = 12;
+    public static final double climbingPivotRotations = 100;
+
+    public static final double statorLimit = 60;
+      public static final boolean supplyEnabled = true;
+      public static final boolean statorEnabled = true;
+      public static final double supplyLimit = 40;
+      public static final double supplyThreshold = 60;
+      public static final double supplyTime = 2.0;
     public static final double kD = 0;
     public static final double kP = 0;
     public static final double kI = 0;
     public static final boolean limitRotations = false;
-    public static final double openRampPeriod = 0;
-    public static final boolean statorEnabled = true;//TODO
-    public static final double statorLimit = 45.0;//TODO
-    public static final boolean supplyEnabled = true;//TODO
-    public static final double supplyLimit = 30.0;//TODO
+    public static final double openRampPeriod = 0.08; //TODO
   }
   public static final class OuttakeConstants {
     public static final int leftOuttakeDeviceID = 5;
