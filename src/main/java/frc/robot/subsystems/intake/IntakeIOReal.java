@@ -117,6 +117,7 @@ public class IntakeIOReal implements IntakeIO {
     openLoopRampsConfigs.VoltageOpenLoopRampPeriod = DeployConfig.openLoopRamp;
     motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
     motorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    motorOutputConfigs.DutyCycleNeutralDeadband = 0;
     currentLimitsConfigs.StatorCurrentLimitEnable = DeployConfig.statorEnabled;
     currentLimitsConfigs.StatorCurrentLimit = DeployConfig.statorLimit;
     currentLimitsConfigs.SupplyCurrentLimitEnable = DeployConfig.supplyEnabled;
