@@ -63,9 +63,7 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP);
     config
         .configure(OuttakeManualState.CLIMBING)
-        .permitReentry(OuttakeManualTrigger.ENABLE_CLIMBING) .permit(OuttakeManualTrigger.ENABLE_SMART_SHOOTING, OuttakeManualState.SMART_SHOOTING)
-        .permit(OuttakeManualTrigger.ENABLE_SUBWOOFER, OuttakeManualState.SUBWOOFER)
-        .permit(OuttakeManualTrigger.ENABLE_EJECT, OuttakeManualState.EJECT)
+        .permitReentry(OuttakeManualTrigger.ENABLE_CLIMBING)
         .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP);
 
     config

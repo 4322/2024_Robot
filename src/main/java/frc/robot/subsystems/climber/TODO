@@ -12,9 +12,13 @@
 +don't make it dependent on pivot being in position (climber extended)
 +slow retract, fast retract, fast extend (slow retract button, left trigger)
 +change climber gear ratio (ok, to what (to 40:44))
++put climbing intake state (what I want but also impractical) or make not climbing a state necessary for intaking/tunneling (integrate w/ robotcoordinator) (did second half)
++write command that says "emergency climber shutoff" (basically made stop button emergency stop)
 TRUE TODO:
 
 -there should be some sort of decorator that you pass in that allows you to override reverse soft limit (maybe set reverse soft limit enabled)
 (working on it)
 -set all the constants
 -configure climber motor
+
+-same safety checks as outtake (or i could just use the state machines)

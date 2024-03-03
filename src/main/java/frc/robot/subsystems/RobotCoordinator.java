@@ -34,6 +34,7 @@ public class RobotCoordinator extends SubsystemBase {
   private boolean notePassingTunnel;
   private boolean autoIntakeButtonPressed;
   private boolean initAbsEncoderPressed;
+  private boolean outtakeInClimbState = false;
 
   public static RobotCoordinator getInstance() {
     if (robotCoordinator == null) {
@@ -86,7 +87,14 @@ public class RobotCoordinator extends SubsystemBase {
   public void setIntakeButtonState(boolean isPressed) {
     intakeButtonPressed = isPressed;
   }
-
+  public boolean isClimbing()
+  {
+    return outtakeInClimbState;
+  }
+  public void setInClimbingMode(boolean inClimbState)
+  {
+    outtakeInClimbState = inClimbState;
+  }
   public boolean getIntakeButtonPressed() {
     return intakeButtonPressed
         || getAutoIntakeButtonPressed(); // auto intake button is an identical bind so it also
