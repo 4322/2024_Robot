@@ -29,7 +29,7 @@ public class OuttakeManual extends Command {
   @Override
   public void execute() {
     final FiringSolution solution;
-
+    boolean limitForwardMotion = true;
     switch (stateMachine.getState()) {
       case SMART_SHOOTING:
         solution =
@@ -54,6 +54,7 @@ public class OuttakeManual extends Command {
         break;
       case CLIMBING:
         solution = FiringSolutions.Climbing;
+        limitForwardMotion = false;
         RobotCoordinator.getInstance().setInClimbingMode(true);
       case STOP:
       default:
@@ -70,7 +71,7 @@ public class OuttakeManual extends Command {
     }
 
     if (RobotCoordinator.getInstance().canPivot()) {
-      outtake.pivot(solution.getShotRotations());
+      outtake.pivot(solution.getShotRotations(), limitForwardMotion);
     } else {
       outtake.stopPivot();
     }

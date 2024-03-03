@@ -194,7 +194,6 @@ public class RobotCoordinator extends SubsystemBase {
         || notePassingIntake
         || notePassingTunnel;
   }
-
   public boolean noteIsShot() {
     return !notePassingTunnel && inputs.tunnelBeamBreak;
   }

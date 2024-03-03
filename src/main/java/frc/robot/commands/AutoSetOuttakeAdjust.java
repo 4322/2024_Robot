@@ -23,7 +23,7 @@ public class AutoSetOuttakeAdjust extends InstantCommand {
   public void initialize() {
     if (RobotCoordinator.getInstance().canPivot()) {
       outtake.outtake(flywheelSpeed);
-      outtake.pivot(pivotRotations * OuttakeConstants.gearReductionEncoderToMotor);
+      outtake.pivot(pivotRotations * OuttakeConstants.gearReductionEncoderToMotor, true);
     }
   }
 
