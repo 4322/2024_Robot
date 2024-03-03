@@ -97,9 +97,9 @@ public class ClimberIOReal implements ClimberIO{
         climber.getConfigurator().apply(openLoopRampsConfigs);
     }
     @Override
-    public void setClimberVoltage(double voltage)
+    public void setClimberVoltage(double voltage, boolean limitReverseMotion)
     {
-        climber.setControl(new VoltageOut(voltage));
+        climber.setControl(new VoltageOut(voltage).withLimitReverseMotion(limitReverseMotion));
         Logger.recordOutput("Climber/voltage", voltage);
     }
     @Override

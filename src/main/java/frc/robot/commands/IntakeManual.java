@@ -78,7 +78,7 @@ public class IntakeManual extends Command {
           }
           if (!coordinator.getIntakeButtonPressed()) {
             intakeState = IntakeStates.retracting;
-          } else if (coordinator.noteEnteringIntake()) {
+          } else if (coordinator.noteInIntake()) {
             intakeState = IntakeStates.noteObtained;
           } else if (Constants.autoAcquireNoteEnabled
               && coordinator.getAutoIntakeButtonPressed()
@@ -138,7 +138,7 @@ public class IntakeManual extends Command {
           {
             intake.retract();
           }
-          if(intake.DeployAtTarget(IntakeConstants.DeployConfig.climbingIntakePosition))
+          if(intake.DeployAtTarget(IntakeConstants.DeployConfig.deployTargetPosition))
           {
             intake.setDeployerBrakeMode();
             intake.stopDeployer();

@@ -197,7 +197,10 @@ public class RobotCoordinator extends SubsystemBase {
   public boolean noteIsShot() {
     return !notePassingTunnel && inputs.tunnelBeamBreak;
   }
-
+  public boolean noteInIntake()
+  {
+    return !inputs.intakeBeamBreak;
+  }
   public boolean onOurSideOfField() {
     if (Robot.getAllianceColor().equals(Alliance.Red)) {
       return (drive.getPose2d().getX() > Constants.FieldConstants.xCenterLineM);

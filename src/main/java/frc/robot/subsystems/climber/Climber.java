@@ -51,7 +51,7 @@ public class Climber extends SubsystemBase{
     {
         if(Constants.climberEnabled)
         {
-            io.setClimberVoltage(inputs.fastVolts);
+            io.setClimberVoltage(inputs.fastVolts, true);
             Logger.recordOutput("Climber/desiredVolts", inputs.fastVolts);
             Logger.recordOutput("Climber/State", "Extending");
         }
@@ -60,7 +60,7 @@ public class Climber extends SubsystemBase{
     {
          if(Constants.climberEnabled)
         {
-            io.setClimberVoltage(-inputs.fastVolts);
+            io.setClimberVoltage(-inputs.fastVolts, true);
             Logger.recordOutput("Climber/desiredVolts", -inputs.fastVolts);
             Logger.recordOutput("Climber/State", "Retracting");
         }
@@ -69,7 +69,7 @@ public class Climber extends SubsystemBase{
     {
          if(Constants.climberEnabled)
         {
-            io.setClimberVoltage(-inputs.slowVolts);
+            io.setClimberVoltage(-inputs.slowVolts, false); //only letting us retract freely when slow bc otherwise we could be unable to stop in time
             Logger.recordOutput("Climber/desiredVolts", -inputs.slowVolts);
             Logger.recordOutput("Climber/State", "SlowRetracting");
         }
