@@ -300,7 +300,7 @@ public final class Constants {
     public static final double climberRotationTolerance = 1;
     public static final int peakForwardVoltage = 12;
     public static final double peakReverseVoltage = 12;
-    public static final double climbingPivotRotations = 100;
+    public static final double climbingPivotRotations = 159.132;
 
     public static final double statorLimit = 60;
       public static final boolean supplyEnabled = true;
@@ -402,7 +402,6 @@ public final class Constants {
       public static final double atTargetTolerance = 0.03;
       public static final double deployFallTolerance = 0.08;
       public static final double maxRotationsPerSec = 0.2;
-    public static final double climbingIntakePosition = 0;
     }
 
     public static final class Logging {
