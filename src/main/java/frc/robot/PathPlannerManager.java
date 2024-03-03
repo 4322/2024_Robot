@@ -43,7 +43,7 @@ public class PathPlannerManager {
                   robotSpecificConstants.getAutoTrajectoryRotkiZ()),
               DriveConstants.Auto.autoMaxModuleSpeedMetersPerSecond,
               DriveConstants.distWheelMetersR,
-              new ReplanningConfig());
+              new ReplanningConfig(true, true));
 
       AutoBuilder.configureHolonomic(
           Drive.getInstance()::getPose2d,
