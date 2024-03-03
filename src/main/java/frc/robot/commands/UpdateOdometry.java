@@ -13,7 +13,7 @@ public class UpdateOdometry extends Command {
 
   public UpdateOdometry() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements();
+    addRequirements(limelight);
   }
 
   // Called when the command is initially scheduled.

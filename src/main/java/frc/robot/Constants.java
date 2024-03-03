@@ -47,8 +47,8 @@ public final class Constants {
   public static final boolean intakeDeployerEnabled = true;
   public static final boolean gyroEnabled = true;
   public static final boolean tunnelEnabled = true;
-  public static final boolean outtakeEnabled = true;
-  public static final boolean outtakePivotEnabled = true;
+  public static final boolean outtakeEnabled = false;
+  public static final boolean outtakePivotEnabled = false;
   public static final boolean sensorsEnabled = true;
   public static final boolean ledEnabled = true;
   public static final boolean climberEnabled = false;
@@ -326,9 +326,9 @@ public final class Constants {
     public static final double openLoopRampSec = 0;
     public static final double closedLoopRampSec = 0;
     public static final int gearRatioMotorToWheel = 0;
-    public static final double gearReductionEncoderToMotor = (44.0 / 40.0) * 125.0;
-    public static final double voltPerRPS =
-        0; // since we likely aren't going to adjust the speed, it's likely safe to
+    public static final double gearReductionEncoderToMotor =
+        ((44.0 / 40.0)
+            * 125.0); // since we likely aren't going to adjust the speed, it's likely safe to
     // not interpolate
     public static final boolean supplyEnabled = true;
     public static final boolean statorEnabled = true;
@@ -359,7 +359,7 @@ public final class Constants {
 
     public static final double topOuttakeRPS = 0;
     public static final double bottomOuttakeRPS = 0;
-    public static final double outtakeToleranceRPS = 5;
+    public static final double outtakeToleranceRPS = 15;
     public static final double pivotToleranceRotations = 0.1;
     public static final double maxPivotForIntake = 50;
   }
@@ -383,19 +383,19 @@ public final class Constants {
 
     public static final class DeployConfig {
       public static final double kP = 8.0;
-      public static final double slowPos = 0.2;
+      public static final double slowPos = 0.1;
       public static final double openLoopRamp = 0;
       public static final double updateHz =
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
 
-      public static final double peakForwardVoltage = 1.5; // anything higher will slip the belt
+      public static final double peakForwardVoltage = 2.5; // anything higher will slip the belt
       public static final double peakReverseVoltage = -2.5;
 
       public static final boolean supplyEnabled = true;
       public static final boolean statorEnabled = true;
       public static final double supplyLimit = 30;
-      public static final double statorLimit = 45;
+      public static final double statorLimit = 60;
 
       public static final double deployTargetPosition = 0.0;
       public static final double retractTargetPosition = 0.6;
@@ -430,7 +430,7 @@ public final class Constants {
     public static final double supplyLimit = 30;
     public static final double statorLimit = 45;
 
-    public static final double desiredVoltage = 4.0;
+    public static final double desiredVoltage = 5.0;
     public static final double desiredReverseVoltage = -4.0;
     public static final double peakVoltage = 6.0;
 
@@ -521,7 +521,8 @@ public final class Constants {
   public static final class FiringSolutions {
     // TODO: update speeds and angles
     // shot mag/deg don't matter since these are used for setting speed/angle only
-    public static final FiringSolution SubwooferBase = new FiringSolution(0, 0, 40, 100);
+    public static final FiringSolution SubwooferBase =
+        new FiringSolution(0, 0, 40, 100);
     public static final FiringSolution N6 = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution N7 = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution N8 = new FiringSolution(0, 0, 0, 0);

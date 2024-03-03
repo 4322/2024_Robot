@@ -32,16 +32,16 @@ public class OuttakeManual extends Command {
 
     switch (stateMachine.getState()) {
       case SMART_SHOOTING:
-          solution =
-              FiringSolutionManager.getInstance()
-                  .calcSolution(
-                      FiringSolutionHelper.getMag(
-                          RobotCoordinator.getInstance().getRobotXPos(),
-                          RobotCoordinator.getInstance().getRobotYPos()),
-                      FiringSolutionHelper.getAngle(
-                              RobotCoordinator.getInstance().getRobotXPos(),
-                              RobotCoordinator.getInstance().getRobotYPos())
-                          .getDegrees());
+        solution =
+            FiringSolutionManager.getInstance()
+                .calcSolution(
+                    FiringSolutionHelper.getMag(
+                        RobotCoordinator.getInstance().getRobotXPos(),
+                        RobotCoordinator.getInstance().getRobotYPos()),
+                    FiringSolutionHelper.getAngle(
+                            RobotCoordinator.getInstance().getRobotXPos(),
+                            RobotCoordinator.getInstance().getRobotYPos())
+                        .getDegrees());
         break;
       case SUBWOOFER:
         solution = FiringSolutions.SubwooferBase;

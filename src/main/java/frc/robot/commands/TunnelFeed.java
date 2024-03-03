@@ -30,7 +30,7 @@ public class TunnelFeed extends Command {
   public void execute() {
     // Accounts for note being midway between intake and tunnel sensor
     // Tunnel still runs for this case
-    if (RobotCoordinator.getInstance().noteInIntake()) {
+    if (RobotCoordinator.getInstance().noteEnteringIntake()) {
       noteDetected = true;
     }
 

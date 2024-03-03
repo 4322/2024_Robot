@@ -14,7 +14,7 @@ public class Intake extends SubsystemBase {
   private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
   private boolean isFeeding;
-  private boolean isDeployerInCoastMode;
+  private boolean isEjecting;
   private double desiredVolts;
   private static Intake intake;
 
@@ -129,6 +129,7 @@ public class Intake extends SubsystemBase {
       io.setFeedingVoltage(inputs.intakeFeederVoltage);
       Logger.recordOutput(IntakeConstants.Logging.feederKey + "State", "Intaking");
       isFeeding = true;
+      isEjecting = false;
     }
   }
 
@@ -136,37 +137,32 @@ public class Intake extends SubsystemBase {
     if (Constants.intakeEnabled) {
       io.setFeedingVoltage(inputs.intakeEjectVoltage);
       Logger.recordOutput(IntakeConstants.Logging.feederKey + "State", "Outtaking");
-      isFeeding = true;
+      isFeeding = false;
+      isEjecting = true;
     }
   }
 
   public void setIntakeBrakeMode() {
     if (Constants.intakeEnabled) {
       io.setIntakeBrakeMode();
-      Logger.recordOutput(IntakeConstants.Logging.feederKey + "NeutralMode", "Brake");
     }
   }
 
   public void setDeployerBrakeMode() {
     if (Constants.intakeDeployerEnabled) {
       io.setDeployerBrakeMode();
-      isDeployerInCoastMode = false;
-      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "NeutralMode", "Brake");
     }
   }
 
   public void setIntakeCoastMode() {
     if (Constants.intakeEnabled) {
       io.setIntakeCoastMode();
-      Logger.recordOutput(IntakeConstants.Logging.feederKey + "NeutralMode", "Coast");
     }
   }
 
   public void setDeployerCoastMode() {
     if (Constants.intakeDeployerEnabled) {
       io.setDeployerCoastMode();
-      isDeployerInCoastMode = true;
-      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "NeutralMode", "Coast");
     }
   }
 
@@ -175,14 +171,12 @@ public class Intake extends SubsystemBase {
       io.stopFeeder();
       Logger.recordOutput(IntakeConstants.Logging.feederKey + "State", "Stopped");
       isFeeding = false;
+      isEjecting = false;
     }
   }
 
   public void stopDeployer() {
     if (Constants.intakeDeployerEnabled) {
-      if (isDeployerInCoastMode) {
-        setDeployerBrakeMode();
-      }
       desiredVolts = 0;
       io.setDeployVoltage(desiredVolts);
       io.stopDeployer();
@@ -196,9 +190,6 @@ public class Intake extends SubsystemBase {
 
   public void deploy() {
     if (Constants.intakeDeployerEnabled) {
-      if (!isDeployerInCoastMode) {
-        setDeployerCoastMode();
-      }
       state = IntakeDeployState.Deploying;
       desiredVolts = 0;
       Logger.recordOutput(IntakeConstants.Logging.deployerKey + "desiredVolts", desiredVolts);
@@ -208,9 +199,6 @@ public class Intake extends SubsystemBase {
 
   public void retract() {
     if (Constants.intakeDeployerEnabled) {
-      if (!isDeployerInCoastMode) {
-        setDeployerCoastMode();
-      }
       state = IntakeDeployState.Retracting;
       desiredVolts = 0;
       Logger.recordOutput(IntakeConstants.Logging.deployerKey + "desiredVolts", desiredVolts);
@@ -250,5 +238,9 @@ public class Intake extends SubsystemBase {
 
   public boolean isFeeding() {
     return isFeeding;
+  }
+
+  public boolean isEjecting() {
+    return isEjecting;
   }
 }

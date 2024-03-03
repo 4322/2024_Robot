@@ -69,7 +69,7 @@ public class RobotCoordinator extends SubsystemBase {
     }
 
     // update note tracking logic in robot
-    if (!inputs.intakeBeamBreak) {
+    if (!inputs.intakeBeamBreak && intakeIsFeeding()) {
       notePassingIntake = true;
     } else if (!inputs.tunnelBeamBreak) {
       notePassingIntake = false;
@@ -81,6 +81,8 @@ public class RobotCoordinator extends SubsystemBase {
         shootTimer.stop();
         shootTimer.reset();
       }
+    } else if (intakeIsEjecting()) {
+      notePassingIntake = false;
     }
   }
 
@@ -150,11 +152,15 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public boolean canRetract() {
-    return !intake.isFeeding();
+    return !intake.isFeeding() && !intake.isEjecting();
   }
 
   public boolean intakeIsFeeding() {
     return intake.isFeeding();
+  }
+
+  public boolean intakeIsEjecting() {
+    return intake.isEjecting();
   }
 
   public boolean canShoot() {
@@ -174,8 +180,12 @@ public class RobotCoordinator extends SubsystemBase {
     return !inputs.tunnelBeamBreak;
   }
 
-  public boolean noteInIntake() {
-    return !inputs.intakeBeamBreak;
+  public boolean noteEnteringIntake() {
+    return !inputs.intakeBeamBreak && intake.isFeeding();
+  }
+
+  public boolean noteEjectingThroughIntake() {
+    return !inputs.intakeBeamBreak && intake.isEjecting();
   }
 
   public boolean noteInRobot() {

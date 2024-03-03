@@ -1,0 +1,129 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.3320651054382324,
+      "y": 5.457383155822754
+    },
+    "rotation": 1.739035346242168e-18
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoIntakeDeploy"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoIntakeIn"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SetOuttakeSubwooferBase"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 3.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SetOuttakeCollectingNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ThreeNoteCenter.1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SetOuttakeSubwooferBase"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ThreeNoteCenter.2"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SetOuttakeCollectingNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ThreeNoteCenter.3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SetOuttakeSubwooferBase"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ThreeNoteCenter.4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": true
+}
