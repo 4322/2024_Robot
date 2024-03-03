@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -43,6 +42,7 @@ import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.robot.subsystems.tunnel.Tunnel;
 
@@ -135,7 +135,9 @@ public class RobotContainer {
       intake.setDefaultCommand(intakeManual);
     }
 
-    CommandScheduler.getInstance().schedule(new UpdateOdometry());
+    if (Constants.outtakeLimeLightEnabled) {
+      Limelight.getOuttakeInstance().setDefaultCommand(new UpdateOdometry());
+    }
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
