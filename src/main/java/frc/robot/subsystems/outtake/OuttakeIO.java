@@ -44,7 +44,7 @@ public interface OuttakeIO {
     return false;
   }
 
-  public default void setPivotTarget(double rotations) {}
+  public default void setPivotTarget(double rotations, boolean limitForwardMotion) {}
 
   public default void setPivotBrakeMode() {}
   ;

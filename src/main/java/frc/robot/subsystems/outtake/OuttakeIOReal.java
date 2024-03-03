@@ -225,8 +225,8 @@ public class OuttakeIOReal implements OuttakeIO {
   }
 
   @Override
-  public void setPivotTarget(double rotations) {
-    pivotMotor.setControl(new PositionVoltage(rotations));
+  public void setPivotTarget(double rotations, boolean limitForwardMotion) {
+    pivotMotor.setControl(new PositionVoltage(rotations).withLimitForwardMotion(limitForwardMotion));
   }
 
   @Override

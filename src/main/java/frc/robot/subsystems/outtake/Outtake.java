@@ -84,7 +84,7 @@ public class Outtake extends SubsystemBase {
         outtake(inputs.debugTargetRPS);
       }
       if (Constants.outtakePivotEnabled) {
-        pivot(inputs.targetPivotPosition);
+        pivot(inputs.targetPivotPosition, true);
       }
     }
   }
@@ -107,12 +107,12 @@ public class Outtake extends SubsystemBase {
     }
   }
 
-  public void pivot(double rotations) {
+  public void pivot(double rotations, boolean limitForwardMotion) {
     if (Constants.outtakePivotEnabled && pivotInitialized) {
       if (Constants.outtakeTuningMode) {
         rotations = inputs.targetPivotPosition;
       }
-      io.setPivotTarget(rotations);
+      io.setPivotTarget(rotations, limitForwardMotion);
       pivotTarget = rotations;
       Logger.recordOutput("Outtake/PivotTargetRotations", rotations);
       Logger.recordOutput("Outtake/PivotStopped", false);
@@ -121,7 +121,7 @@ public class Outtake extends SubsystemBase {
 
   public void resetPivot() {
     if (Constants.outtakePivotEnabled && pivotInitialized) {
-      io.setPivotTarget(Constants.OuttakeConstants.defaultPivotPositionRotations);
+      io.setPivotTarget(Constants.OuttakeConstants.defaultPivotPositionRotations, true);
       pivotTarget = Constants.OuttakeConstants.defaultPivotPositionRotations;
       Logger.recordOutput(
           "Outtake/PivotTargetRotations", Constants.OuttakeConstants.defaultPivotPositionRotations);
