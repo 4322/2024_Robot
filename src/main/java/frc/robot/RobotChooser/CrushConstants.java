@@ -105,7 +105,7 @@ public class CrushConstants implements RobotChooserInterface {
   }
 
   public double getAutoTrajectoryXYkP() { // TODO
-    return 0.1;
+    return 0.0;
   }
 
   public double getAutoTrajectoryXYkI() { // TODO
@@ -121,7 +121,7 @@ public class CrushConstants implements RobotChooserInterface {
   }
 
   public double getAutoTrajectoryRotkP() {
-    return 2.0;
+    return 0.0;
   }
 
   public double getAutoTrajectoryRotkI() { // TODO
@@ -129,11 +129,11 @@ public class CrushConstants implements RobotChooserInterface {
   }
 
   public double getAutoTrajectoryRotkD() { // TODO
-    return 0.01;
+    return 0.0;
   }
 
   public double getAutoTrajectoryRotkiZ() { // TODO
-    return 0;
+    return 0.0;
   }
 
   @Override
