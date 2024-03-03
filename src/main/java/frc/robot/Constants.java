@@ -402,6 +402,7 @@ public final class Constants {
       public static final double atTargetTolerance = 0.03;
       public static final double deployFallTolerance = 0.08;
       public static final double maxRotationsPerSec = 0.2;
+    public static final double climbingIntakePosition = 0;
     }
 
     public static final class Logging {

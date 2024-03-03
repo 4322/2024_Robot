@@ -239,7 +239,10 @@ public class Intake extends SubsystemBase {
   public boolean isFeeding() {
     return isFeeding;
   }
-
+  public boolean DeployAtTarget(double target)
+  {
+    return(OrangeMath.equalToEpsilon(inputs.heliumAbsRotations, target, IntakeConstants.DeployConfig.atTargetTolerance));
+  }
   public boolean isEjecting() {
     return isEjecting;
   }

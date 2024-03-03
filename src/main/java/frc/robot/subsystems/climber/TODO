@@ -16,9 +16,11 @@
 +write command that says "emergency climber shutoff" (basically made stop button emergency stop)
 TRUE TODO:
 
--there should be some sort of decorator that you pass in that allows you to override reverse soft limit (maybe set reverse soft limit enabled)
+-there should be some sort of decorator that you pass in that allows you to override reverse soft limit (maybe set reverse soft limit enabled) for climber + override forward soft limit for shooter
 (working on it)
 -set all the constants
 -configure climber motor
 
 -same safety checks as outtake (or i could just use the state machines)
++preclimb state (deploying to specific state)
++climb 

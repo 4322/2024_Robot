@@ -3,8 +3,10 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.intake.Intake;
+import frc.utility.OrangeMath;
 
 public class IntakeManual extends Command {
   public enum IntakeStates {
@@ -13,7 +15,7 @@ public class IntakeManual extends Command {
     feeding,
     noteObtained,
     notePastIntake,
-    retracting;
+    retracting, preClimb, Climb;
   }
 
   private static IntakeStates intakeState = IntakeStates.retracted;
@@ -37,12 +39,23 @@ public class IntakeManual extends Command {
     {
       switch (intakeState) {
         case retracted:
+          if(coordinator.isClimbing())
+          {
+            intake.stopFeeder();
+            intakeState = IntakeStates.preClimb;
+          }
+            
           if (coordinator.getIntakeButtonPressed()
               && (!coordinator.noteInRobot())) {
             intakeState = IntakeStates.deploying;
           }
           break;
         case deploying:
+          if(coordinator.isClimbing())
+          {
+            intake.stopFeeder();
+            intakeState = IntakeStates.preClimb;
+          }
           if (coordinator.canDeploy()) {
             intake.deploy();
           }
@@ -55,6 +68,11 @@ public class IntakeManual extends Command {
           }
           break;
         case feeding:
+          if(coordinator.isClimbing())
+          {
+            intake.stopFeeder();
+            intakeState = IntakeStates.preClimb;
+          }
           if (coordinator.isIntakeDeployed()) {
             intake.intake();
           }
@@ -71,6 +89,11 @@ public class IntakeManual extends Command {
           }
           break;
         case noteObtained:
+          if(coordinator.isClimbing())
+          {
+            intake.stopFeeder();
+            intakeState = IntakeStates.preClimb;
+          }
           if (coordinator.isIntakeDeployed()) {
             intake.intake();
             CommandScheduler.getInstance().schedule(xBoxRumble);
@@ -78,6 +101,11 @@ public class IntakeManual extends Command {
           }
           break;
         case notePastIntake:
+          if(coordinator.isClimbing())
+          {
+            intake.stopFeeder();
+            intakeState = IntakeStates.preClimb;
+          }
           intake.stopFeeder();
           if (!coordinator.getIntakeButtonPressed()) {
             intakeState = IntakeStates.retracting;
@@ -87,6 +115,10 @@ public class IntakeManual extends Command {
           break;
         case retracting:
           intake.stopFeeder();
+          if(coordinator.isClimbing())
+          {
+            intakeState = IntakeStates.preClimb;
+          }
           if (coordinator.canRetract()) {
             intake.retract();
           }
@@ -97,6 +129,27 @@ public class IntakeManual extends Command {
             intakeState = IntakeStates.retracted;
           }
           break;
+        case preClimb://on switched to, stop feeding
+          if(coordinator.canDeploy())
+          {
+            intake.deploy();
+          }
+          else if(coordinator.canRetract())
+          {
+            intake.retract();
+          }
+          if(intake.DeployAtTarget(IntakeConstants.DeployConfig.climbingIntakePosition))
+          {
+            intake.setDeployerBrakeMode();
+            intake.stopDeployer();
+            intakeState = IntakeStates.Climb;
+          }
+          break;
+        case Climb:
+          if(!coordinator.isClimbing())
+          {
+            intakeState = IntakeStates.retracting;
+          }
       }
     }
     else
