@@ -88,11 +88,11 @@ public class Outtake extends SubsystemBase {
       }
     }
     if (pivotInitialized
-      && RobotCoordinator.getInstance().isIntakeDeploying()
-      && inputs.pivotRotations - OuttakeConstants.maxPivotForIntake
-          > OuttakeConstants.pivotToleranceRotations) {
-    pivot(OuttakeConstants.maxPivotForIntake);
-}
+        && RobotCoordinator.getInstance().isIntakeDeploying()
+        && inputs.pivotRotations - OuttakeConstants.maxPivotForIntake
+            > OuttakeConstants.pivotToleranceRotations) {
+      pivot(OuttakeConstants.maxPivotForIntake);
+    }
   }
 
   public void outtake(double targetRPS) {
