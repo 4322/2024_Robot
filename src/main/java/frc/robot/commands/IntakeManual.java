@@ -78,7 +78,7 @@ public class IntakeManual extends Command {
           }
           if (!coordinator.getIntakeButtonPressed()) {
             intakeState = IntakeStates.retracting;
-          } else if (coordinator.noteInIntake()) {
+          } else if (coordinator.noteInRobot()) {
             intakeState = IntakeStates.noteObtained;
           } else if (Constants.autoAcquireNoteEnabled
               && coordinator.getAutoIntakeButtonPressed()
