@@ -145,28 +145,24 @@ public class Intake extends SubsystemBase {
   public void setIntakeBrakeMode() {
     if (Constants.intakeEnabled) {
       io.setIntakeBrakeMode();
-      Logger.recordOutput(IntakeConstants.Logging.feederKey + "NeutralMode", "Brake");
     }
   }
 
   public void setDeployerBrakeMode() {
     if (Constants.intakeDeployerEnabled) {
       io.setDeployerBrakeMode();
-      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "NeutralMode", "Brake");
     }
   }
 
   public void setIntakeCoastMode() {
     if (Constants.intakeEnabled) {
       io.setIntakeCoastMode();
-      Logger.recordOutput(IntakeConstants.Logging.feederKey + "NeutralMode", "Coast");
     }
   }
 
   public void setDeployerCoastMode() {
     if (Constants.intakeDeployerEnabled) {
       io.setDeployerCoastMode();
-      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "NeutralMode", "Coast");
     }
   }
 
