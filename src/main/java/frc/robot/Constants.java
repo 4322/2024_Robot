@@ -339,7 +339,7 @@ public final class Constants {
     public static final double topOuttakeRPS = 0;
     public static final double bottomOuttakeRPS = 0;
     public static final double outtakeToleranceRPS = 15;
-    public static final double pivotToleranceRotations = 0.25;
+    public static final double pivotToleranceRotations = 1;
     public static final double maxPivotForIntake = 50;
   }
 
