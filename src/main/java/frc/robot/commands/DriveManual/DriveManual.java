@@ -83,6 +83,8 @@ public class DriveManual extends Command {
         case DEFAULT:
           if (rotatePower != 0) {
             doSpinout();
+          } else if (drive.isAutoRotateTuningEnabled()) {
+            drive.driveAutoRotate(driveX, driveY, 0);
           } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
             drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
           } else {
@@ -100,6 +102,8 @@ public class DriveManual extends Command {
     } else { // do regular drive logic
       if (rotatePower != 0) {
         doSpinout();
+      } else if (drive.isAutoRotateTuningEnabled()) {
+        drive.driveAutoRotate(driveX, driveY, 0);
       } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
         drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
       } else {

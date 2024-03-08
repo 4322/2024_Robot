@@ -12,6 +12,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -63,6 +64,7 @@ public class Drive extends SubsystemBase {
   private GenericEntry rotSpeedTab;
   private GenericEntry rotkP;
   private GenericEntry rotkD;
+  private GenericEntry pseudoAutoRotateTuningCheckBox;
   private GenericEntry yawTab;
   private GenericEntry rollTab;
   private GenericEntry pitchTab;
@@ -211,6 +213,13 @@ public class Drive extends SubsystemBase {
                 .withPosition(2, 0)
                 .withSize(1, 1)
                 .getEntry();
+
+        pseudoAutoRotateTuningCheckBox =
+            tab.add("Rotate to 0 Degrees", Constants.autoRotateTuningMode)
+              .withWidget(BuiltInWidgets.kToggleButton)
+              .withPosition(4, 3)
+              .withSize(2, 1)
+              .getEntry();
 
         yawTab = tab.add("Yaw", 0).withPosition(0, 3).withSize(1, 1).getEntry();
 
@@ -571,6 +580,15 @@ public class Drive extends SubsystemBase {
       }
     }
     return Constants.psuedoAutoRotateEnabled;
+  }
+
+  public boolean isAutoRotateTuningEnabled() {
+    if (Constants.driveEnabled) {
+      if (Constants.debug) {
+        return pseudoAutoRotateTuningCheckBox.getBoolean(Constants.autoRotateTuningMode);
+      }
+    }
+    return Constants.autoRotateTuningMode;
   }
 
   public double getMaxManualRotationEntry() {
