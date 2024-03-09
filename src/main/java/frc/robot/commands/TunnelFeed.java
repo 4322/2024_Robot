@@ -36,8 +36,7 @@ public class TunnelFeed extends Command {
 
     if (noteDetected && !RobotCoordinator.getInstance().isClimbing()) {
       tunnel.feed();
-    }
-    else{
+    } else {
       tunnel.stopTunnel();
     }
   }

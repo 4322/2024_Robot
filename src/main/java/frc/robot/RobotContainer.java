@@ -12,12 +12,12 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.AutoHelper.Auto;
 import frc.robot.centerline.CenterLineManager.CenterLineScoringStrategy;
-import frc.robot.commands.AtHome;
 import frc.robot.commands.AutoIntakeDeploy;
 import frc.robot.commands.AutoIntakeIn;
 import frc.robot.commands.AutoSetOuttakeAdjust;
@@ -30,6 +30,7 @@ import frc.robot.commands.DriveStop;
 import frc.robot.commands.EjectThroughIntake;
 import frc.robot.commands.IntakeManual;
 import frc.robot.commands.IntakeStop;
+import frc.robot.commands.OperatorXboxControllerRumble;
 import frc.robot.commands.OuttakeManual.OuttakeManual;
 import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualTrigger;
 import frc.robot.commands.OuttakeStop;
@@ -43,6 +44,7 @@ import frc.robot.commands.UpdateOdometry;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
+import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.limelight.Limelight;
@@ -210,15 +212,23 @@ public class RobotContainer {
                   () -> {
                     outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_CLIMBING);
                   }));
+      operatorXbox.leftTrigger().onTrue(new AutoIntakeDeploy());
       operatorXbox
-        .leftTrigger()
-        .onTrue(new AutoIntakeDeploy());
+          .leftTrigger()
+          .whileTrue(
+              new ParallelCommandGroup(
+                  new ClimberExtend(),
+                  new SequentialCommandGroup(
+                      Commands.waitUntil(() -> Climber.getInstance().isFullyExtended()),
+                      new OperatorXboxControllerRumble())));
       operatorXbox
-        .leftTrigger()
-        .whileTrue(new ClimberExtend());
-      operatorXbox
-        .rightBumper()
-        .whileTrue(new ClimberRetract());
+          .rightTrigger()
+          .whileTrue(
+              new ParallelCommandGroup(
+                  new ClimberRetract(),
+                  new SequentialCommandGroup(
+                      Commands.waitUntil(() -> Climber.getInstance().isFullyRetracted()),
+                      new OperatorXboxControllerRumble())));
       operatorXbox.start().onTrue(new SetPivotsCoastMode());
       operatorXbox.back().onTrue(new SetPivotsBrakeMode());
       operatorXbox.povUp().whileTrue(new EjectThroughIntake());

@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.RobotChooser.RobotChooser;
 import frc.robot.RobotChooser.RobotChooserInterface;
 import frc.robot.shooting.FiringSolution;
-import frc.robot.subsystems.climber.Climber;
 import frc.utility.CanBusUtil;
 import frc.utility.OrangeMath;
 import java.util.Map;
@@ -291,11 +290,12 @@ public final class Constants {
     public static final double initializedRotationsTolerance = 5.0;
     public static final double absEncoderMaxZeroingThreshold = 0.95;
   }
-  public static final class ClimberConstants{
-    public static final int climberMotorID = 25; //TODO before first match 3/2/2024
-    public static final double climberMaxRotations = 180; //TODO ask Andrew
-    public static final double climberMinRotations = 0; //TODO
-    public static final double slowClimberVolts = 5; //TODO
+
+  public static final class ClimberConstants {
+    public static final int climberMotorID = 25; // TODO before first match 3/2/2024
+    public static final double climberMaxRotations = 180; // TODO ask Andrew
+    public static final double climberMinRotations = 0; // TODO
+    public static final double slowClimberVolts = 5; // TODO
     public static final double fastClimberVolts = 10;
     public static final double climberRotationTolerance = 1;
     public static final int peakForwardVoltage = 12;
@@ -303,14 +303,15 @@ public final class Constants {
     public static final double climbingPivotRotations = 159.132;
 
     public static final double statorLimit = 60;
-      public static final boolean supplyEnabled = true;
-      public static final boolean statorEnabled = true;
-      public static final double supplyLimit = 40;
-      public static final double supplyThreshold = 60;
-      public static final double supplyTime = 2.0;
+    public static final boolean supplyEnabled = true;
+    public static final boolean statorEnabled = true;
+    public static final double supplyLimit = 40;
+    public static final double supplyThreshold = 60;
+    public static final double supplyTime = 2.0;
     public static final boolean limitRotations = false;
-    public static final double openRampPeriod = 0.08; //TODO
+    public static final double openRampPeriod = 0.08; // TODO
   }
+
   public static final class OuttakeConstants {
     public static final int leftOuttakeDeviceID = 5;
     public static final int rightOuttakeDeviceID = 4;
@@ -530,7 +531,8 @@ public final class Constants {
     public static final FiringSolution BS = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution Eject = new FiringSolution(0, 0, 10, 50);
     public static final FiringSolution CollectingNote = new FiringSolution(0, 0, 0, 50);
-    public static final FiringSolution Climbing = new FiringSolution(0,0,0,ClimberConstants.climbingPivotRotations);
+    public static final FiringSolution Climbing =
+        new FiringSolution(0, 0, 0, ClimberConstants.climbingPivotRotations);
   }
 
   public enum WheelPosition {

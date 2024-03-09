@@ -30,7 +30,7 @@ public class UpdateOdometry extends Command {
             .getDistance(limelightPose.getTranslation());
     final boolean withinAcceptableDistance =
         distanceToBot <= LimelightConstants.visionOdometryTolerance;
-    final boolean pastVisionOverrideTolerance = 
+    final boolean pastVisionOverrideTolerance =
         distanceToBot >= LimelightConstants.reverseOdometryOverrideTolerance;
     final int numTargets = limelight.getNumTargets();
     if (limelight.getTargetVisible()
@@ -39,8 +39,7 @@ public class UpdateOdometry extends Command {
         Drive.getInstance()
             .updateOdometryVision(
                 limelightPose, Timer.getFPGATimestamp() - limelight.getTotalLatency());
-      }
-      else if (pastVisionOverrideTolerance) {
+      } else if (pastVisionOverrideTolerance) {
         Drive.getInstance().resetOdometry(limelightPose);
       }
     }

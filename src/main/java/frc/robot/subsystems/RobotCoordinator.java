@@ -89,19 +89,21 @@ public class RobotCoordinator extends SubsystemBase {
   public void setIntakeButtonState(boolean isPressed) {
     intakeButtonPressed = isPressed;
   }
-  public boolean isClimbing()
-  {
+
+  public boolean isClimbing() {
     return outtakeInClimbState;
   }
-  public void setInClimbingMode(boolean inClimbState)
-  {
+
+  public void setInClimbingMode(boolean inClimbState) {
     outtakeInClimbState = inClimbState;
   }
+
   public boolean getIntakeButtonPressed() {
     return intakeButtonPressed
         || getAutoIntakeButtonPressed(); // auto intake button is an identical bind so it also
     // counts as an intake button
   }
+
   public void setAutoIntakeButtonPressed(boolean isPressed) {
     autoIntakeButtonPressed = isPressed;
   }
@@ -194,13 +196,15 @@ public class RobotCoordinator extends SubsystemBase {
         || notePassingIntake
         || notePassingTunnel;
   }
+
   public boolean noteIsShot() {
     return !notePassingTunnel && inputs.tunnelBeamBreak;
   }
-  public boolean noteInIntake()
-  {
+
+  public boolean noteInIntake() {
     return !inputs.intakeBeamBreak;
   }
+
   public boolean onOurSideOfField() {
     if (Robot.getAllianceColor().equals(Alliance.Red)) {
       return (drive.getPose2d().getX() > Constants.FieldConstants.xCenterLineM);
@@ -234,14 +238,15 @@ public class RobotCoordinator extends SubsystemBase {
   public boolean pivotAtPosition() {
     return outtake.pivotIsAtPosition();
   }
-  public boolean climberIsFullyRetracted()
-  {
+
+  public boolean climberIsFullyRetracted() {
     return (climber.isFullyRetracted());
   }
-    public boolean climberIsFullyExtended()
-  {
+
+  public boolean climberIsFullyExtended() {
     return (climber.isFullyExtended());
   }
+
   public boolean debugOuttakeOverride() {
     return outtake.getDebugOverrideEnabled();
   }

@@ -216,10 +216,10 @@ public class Drive extends SubsystemBase {
 
         pseudoAutoRotateTuningCheckBox =
             tab.add("Rotate to 0 Degrees", false)
-              .withWidget(BuiltInWidgets.kToggleButton)
-              .withPosition(4, 3)
-              .withSize(2, 1)
-              .getEntry();
+                .withWidget(BuiltInWidgets.kToggleButton)
+                .withPosition(4, 3)
+                .withSize(2, 1)
+                .getEntry();
 
         yawTab = tab.add("Yaw", 0).withPosition(0, 3).withSize(1, 1).getEntry();
 

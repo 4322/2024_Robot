@@ -33,12 +33,10 @@ public class IntakeManual extends Command {
   @Override
   public void execute() {
     RobotCoordinator coordinator = RobotCoordinator.getInstance();
-    if(!coordinator.isClimbing())
-    {
+    if (!coordinator.isClimbing()) {
       switch (intakeState) {
         case retracted:
-          if (coordinator.getIntakeButtonPressed()
-              && (!coordinator.noteInRobot())) {
+          if (coordinator.getIntakeButtonPressed() && (!coordinator.noteInRobot())) {
             intakeState = IntakeStates.deploying;
           }
           break;
@@ -90,23 +88,20 @@ public class IntakeManual extends Command {
           if (coordinator.canRetract()) {
             intake.retract();
           }
-          if (coordinator.getIntakeButtonPressed()
-              && (!coordinator.noteInRobot())) {
+          if (coordinator.getIntakeButtonPressed() && (!coordinator.noteInRobot())) {
             intakeState = IntakeStates.deploying;
           } else if (coordinator.isIntakeRetracted()) {
             intakeState = IntakeStates.retracted;
           }
           break;
       }
-    }
-    else
-    {
-      //if necessary, we can set position here and wrap line 105 in an isatposition
+    } else {
+      // if necessary, we can set position here and wrap line 105 in an isatposition
       intake.stopDeployer();
       intake.stopFeeder();
-      
     }
   }
+
   @Override
   public boolean isFinished() {
     return false;

@@ -22,7 +22,8 @@ public class OuttakeManualStateMachine {
     ENABLE_SUBWOOFER,
     ENABLE_EJECT,
     ENABLE_COLLECTING_NOTE,
-    ENABLE_STOP, ENABLE_CLIMBING
+    ENABLE_STOP,
+    ENABLE_CLIMBING
   }
 
   public OuttakeManualStateMachine(OuttakeManualState initialState) {
@@ -63,6 +64,10 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP);
     config
         .configure(OuttakeManualState.CLIMBING)
+        .permit(OuttakeManualTrigger.ENABLE_SMART_SHOOTING, OuttakeManualState.SMART_SHOOTING)
+        .permit(OuttakeManualTrigger.ENABLE_SUBWOOFER, OuttakeManualState.SUBWOOFER)
+        .permit(OuttakeManualTrigger.ENABLE_EJECT, OuttakeManualState.EJECT)
+        .permit(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE, OuttakeManualState.COLLECTING_NOTE)
         .permitReentry(OuttakeManualTrigger.ENABLE_CLIMBING)
         .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP);
 
