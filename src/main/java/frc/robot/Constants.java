@@ -299,7 +299,7 @@ public final class Constants {
     public static final double kP = 0.0;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
-    public static final double kF = 0.124;
+    public static final double kF = 0.13;
     public static final double kS = 0.35;
 
     public static final double openLoopRampSec = 0;
@@ -321,7 +321,7 @@ public final class Constants {
 
     public static final double pivotkD = 0;
     public static final double pivotkI = 0;
-    public static final double pivotkP = 1.6;
+    public static final double pivotkP = 0.9;
     public static final double pivotkFF = 0;
 
     public static final double maxVelRotationsPerSec = 85;
