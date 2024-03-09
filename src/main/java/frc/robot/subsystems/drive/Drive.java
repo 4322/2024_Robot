@@ -215,7 +215,7 @@ public class Drive extends SubsystemBase {
                 .getEntry();
 
         pseudoAutoRotateTuningCheckBox =
-            tab.add("Rotate to 0 Degrees", Constants.autoRotateTuningMode)
+            tab.add("Rotate to 0 Degrees", false)
               .withWidget(BuiltInWidgets.kToggleButton)
               .withPosition(4, 3)
               .withSize(2, 1)
@@ -583,12 +583,13 @@ public class Drive extends SubsystemBase {
   }
 
   public boolean isAutoRotateTuningEnabled() {
+    // should never return true for a match or in general unless in debug mode and button is pressed
     if (Constants.driveEnabled) {
       if (Constants.debug) {
-        return pseudoAutoRotateTuningCheckBox.getBoolean(Constants.autoRotateTuningMode);
+        return pseudoAutoRotateTuningCheckBox.getBoolean(false);
       }
     }
-    return Constants.autoRotateTuningMode;
+    return false;
   }
 
   public double getMaxManualRotationEntry() {
