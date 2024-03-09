@@ -304,7 +304,7 @@ public class RobotContainer {
     if (autoName == "None") {
       return Commands.none();
     } else {
-      return PathPlannerManager.getInstance().buildAuto(autoName);
+      return PathPlannerManager.getInstance().getAuto(autoName);
     }
   }
 
