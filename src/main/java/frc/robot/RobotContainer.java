@@ -200,6 +200,9 @@ public class RobotContainer {
                   }));
       driveXbox.leftTrigger().whileTrue(new Shoot());
       driveXbox.povLeft().onTrue(new AtHome());
+      if (Constants.shotTuningMode) {
+        driveXbox.x().onTrue(writeFiringSolution);
+      }
       operatorXbox.start().onTrue(new SetPivotsCoastMode());
       operatorXbox.back().onTrue(new SetPivotsBrakeMode());
       operatorXbox.povUp().whileTrue(new EjectThroughIntake());

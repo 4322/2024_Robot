@@ -103,6 +103,7 @@ public final class Constants {
   public static final boolean driveTuningMode = false;
   public static final boolean steeringTuningMode = false;
   public static final boolean outtakeTuningMode = false;
+  public static final boolean shotTuningMode = false;
 
   public enum DriveDegradedMode {
     normal,
@@ -122,7 +123,6 @@ public final class Constants {
   public static final int shuffleboardStatusPeriodMaxMs = 90; // for interactive response
   public static final int slowStatusPeriodMaxMs = 255;
   public static final int controllerConfigTimeoutMs = 50;
-  public static final boolean inShotTuning = false;
   public static final double fieldWidthMeters = 8;
 
   public static final class DriveConstants {
