@@ -55,16 +55,18 @@ public class PathPlannerManager {
           holonomicConfig,
           Robot::isRed,
           Drive.getInstance());
-
-      autos = new HashMap<>();
-      for (String autoName : AutoBuilder.getAllAutoNames()) {
-        autos.put(autoName, AutoBuilder.buildAuto(autoName));
-      }
     }
   }
 
   public void addEvent(String eventName, Command command) {
     NamedCommands.registerCommand(eventName, CommandUtil.wrappedEventCommand(command));
+  }
+
+  public void preloadAutos() {
+    autos = new HashMap<>();
+    for (String autoName : AutoBuilder.getAllAutoNames()) {
+      autos.put(autoName, AutoBuilder.buildAuto(autoName));
+    }
   }
 
   public Command getAuto(String autoName) {

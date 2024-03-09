@@ -103,7 +103,6 @@ public class RobotContainer {
     PathPlannerManager.getInstance().addEvent("AutoIntakeDeploy", new AutoIntakeDeploy());
     PathPlannerManager.getInstance().addEvent("AutoIntakeIn", new AutoIntakeIn());
     PathPlannerManager.getInstance().addEvent("Shoot", new Shoot());
-
     PathPlannerManager.getInstance()
         .addEvent(
             "SetOuttakeSubwooferBase",
@@ -112,6 +111,9 @@ public class RobotContainer {
         .addEvent(
             "SetOuttakeCollectingNote",
             new AutoSetOuttakeAdjust(Constants.FiringSolutions.CollectingNote));
+    
+    // DO NOT MOVE OR REMOVE THIS WITHOUT KNOWING WHAT YOU'RE DOING
+    PathPlannerManager.getInstance().preloadAutos();
 
     autoChooser = new SendableChooser<>();
     AutoHelper.configAutoChooser(autoChooser);
