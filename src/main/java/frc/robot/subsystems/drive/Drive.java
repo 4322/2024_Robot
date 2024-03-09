@@ -12,6 +12,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -63,6 +64,7 @@ public class Drive extends SubsystemBase {
   private GenericEntry rotSpeedTab;
   private GenericEntry rotkP;
   private GenericEntry rotkD;
+  private GenericEntry pseudoAutoRotateTuningCheckBox;
   private GenericEntry yawTab;
   private GenericEntry rollTab;
   private GenericEntry pitchTab;
@@ -211,6 +213,13 @@ public class Drive extends SubsystemBase {
                 .withPosition(2, 0)
                 .withSize(1, 1)
                 .getEntry();
+
+        pseudoAutoRotateTuningCheckBox =
+            tab.add("Rotate to 0 Degrees", false)
+              .withWidget(BuiltInWidgets.kToggleButton)
+              .withPosition(4, 3)
+              .withSize(2, 1)
+              .getEntry();
 
         yawTab = tab.add("Yaw", 0).withPosition(0, 3).withSize(1, 1).getEntry();
 
@@ -471,7 +480,7 @@ public class Drive extends SubsystemBase {
   }
 
   public void updateOdometryVision(Pose2d pose, double timestampSeconds) {
-    if (Constants.intakeLimeLightEnabled) {
+    if (Constants.outtakeLimeLightEnabled) {
       poseEstimator.addVisionMeasurement(pose, timestampSeconds);
     }
   }
@@ -571,6 +580,16 @@ public class Drive extends SubsystemBase {
       }
     }
     return Constants.psuedoAutoRotateEnabled;
+  }
+
+  public boolean isAutoRotateTuningEnabled() {
+    // should never return true for a match or in general unless in debug mode and button is pressed
+    if (Constants.driveEnabled) {
+      if (Constants.debug) {
+        return pseudoAutoRotateTuningCheckBox.getBoolean(false);
+      }
+    }
+    return false;
   }
 
   public double getMaxManualRotationEntry() {
