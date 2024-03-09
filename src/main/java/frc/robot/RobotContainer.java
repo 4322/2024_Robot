@@ -202,20 +202,23 @@ public class RobotContainer {
                     RobotCoordinator.getInstance().setAutoIntakeButtonPressed(false);
                   }));
       driveXbox.leftTrigger().whileTrue(new Shoot());
-      operatorXbox.leftTrigger().whileTrue(new ClimberSlowRetractOverride());
+      operatorXbox.rightBumper().whileTrue(new ClimberSlowRetractOverride());
       operatorXbox
-          .leftBumper()
+          .leftTrigger()
           .onTrue(
               Commands.runOnce(
                   () -> {
                     outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_CLIMBING);
                   }));
       operatorXbox
-        .leftBumper()
-        .whileTrue(new ClimberRetract());
+        .leftTrigger()
+        .onTrue(new AutoIntakeDeploy());
+      operatorXbox
+        .leftTrigger()
+        .whileTrue(new ClimberExtend());
       operatorXbox
         .rightBumper()
-        .whileTrue(new ClimberExtend());
+        .whileTrue(new ClimberRetract());
       operatorXbox.start().onTrue(new SetPivotsCoastMode());
       operatorXbox.back().onTrue(new SetPivotsBrakeMode());
       operatorXbox.povUp().whileTrue(new EjectThroughIntake());

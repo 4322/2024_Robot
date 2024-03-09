@@ -3,16 +3,13 @@ package frc.robot.subsystems.climber;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.networktables.GenericEntry;
@@ -20,7 +17,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
-import frc.robot.Constants.IntakeConstants.DeployConfig;
 public class ClimberIOReal implements ClimberIO{
     private final TalonFX climber;
     private ShuffleboardTab tab;
@@ -121,6 +117,7 @@ public class ClimberIOReal implements ClimberIO{
     {
         climber.stopMotor();
     }
+    @Override
     public void setReverseSoftLimitEnabled(boolean softLimitsEnabled)
     {   SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
         softwareLimitSwitchConfigs.ReverseSoftLimitEnable = softLimitsEnabled;
