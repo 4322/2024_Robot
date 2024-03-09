@@ -29,15 +29,20 @@ public class UpdateOdometry extends Command {
             .getTranslation()
             .getDistance(limelightPose.getTranslation());
     final boolean withinAcceptableDistance =
-        distanceToBot <= LimelightConstants.visionOdometryTolerance
-            || distanceToBot >= LimelightConstants.reverseOdometryOverrideTolerance;
+        distanceToBot <= LimelightConstants.visionOdometryTolerance;
+    final boolean pastVisionOverrideTolerance = 
+        distanceToBot >= LimelightConstants.reverseOdometryOverrideTolerance;
     final int numTargets = limelight.getNumTargets();
     if (limelight.getTargetVisible()
-        && withinAcceptableDistance
         && numTargets >= LimelightConstants.numTargetsToUseReverseOdom) {
-      Drive.getInstance()
-          .updateOdometryVision(
-              limelightPose, Timer.getFPGATimestamp() - limelight.getTotalLatency());
+      if (withinAcceptableDistance) {
+        Drive.getInstance()
+            .updateOdometryVision(
+                limelightPose, Timer.getFPGATimestamp() - limelight.getTotalLatency());
+      }
+      else if (pastVisionOverrideTolerance) {
+        Drive.getInstance().resetOdometry(limelightPose);
+      }
     }
   }
 
