@@ -480,7 +480,7 @@ public class Drive extends SubsystemBase {
   }
 
   public void updateOdometryVision(Pose2d pose, double timestampSeconds) {
-    if (Constants.intakeLimeLightEnabled) {
+    if (Constants.outtakeLimeLightEnabled) {
       poseEstimator.addVisionMeasurement(pose, timestampSeconds);
     }
   }
