@@ -9,6 +9,8 @@ import frc.utility.interpolation.GenericFiringSolutionManager;
 import java.io.File;
 import java.util.ArrayList;
 
+import org.littletonrobotics.junction.Logger;
+
 public class FiringSolutionManager implements GenericFiringSolutionManager<FiringSolution> {
   private static ArrayList<FiringSolution> solutions = new ArrayList<FiringSolution>();
   private static GenericCalculator<FiringSolution> calculator = new Calculator1D<>();
@@ -53,6 +55,9 @@ public class FiringSolutionManager implements GenericFiringSolutionManager<Firin
   public FiringSolution calcSolution(double currentMag, double currentDeg) {
     FiringSolution inputsToFind = new FiringSolution(currentMag, currentDeg);
     ArrayList<FiringSolution> selectedSolutions = calculator.find(inputsToFind);
+    for (int i = 0; i < selectedSolutions.size(); i++) {
+      Logger.recordOutput("FiringSolutions/PointOfInterpolation/Solution " + i, selectedSolutions.get(i).toString());
+    }
     ArrayList<Double> calculatedComponents =
         calculator.calculate(currentMag, currentDeg, selectedSolutions);
     return new FiringSolution(currentMag, currentDeg, calculatedComponents);

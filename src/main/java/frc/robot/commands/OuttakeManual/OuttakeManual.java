@@ -1,5 +1,7 @@
 package frc.robot.commands.OuttakeManual;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.FiringSolutions;
 import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualState;
@@ -44,6 +46,7 @@ public class OuttakeManual extends Command {
                             RobotCoordinator.getInstance().getRobotYPos())
                         .getAngle()
                         .getDegrees());
+        Logger.recordOutput("FiringSolutions/CalculatedShot", solution.toString());
         break;
       case SUBWOOFER:
         solution = FiringSolutions.SubwooferBase;

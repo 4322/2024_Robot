@@ -63,4 +63,10 @@ public class FiringSolution extends GenericFiringSolution {
   public double getShotRotations() {
     return shotRotations;
   }
+
+  @Override
+  public String toString() {
+    // used for logging purposes
+    return "[ShotRotations: " + shotRotations + "], [FlywheelSpeed: " + flywheelSpeed + "]";
+  }
 }
