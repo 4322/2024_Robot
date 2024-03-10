@@ -1,7 +1,5 @@
 package frc.robot.commands.OuttakeManual;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.FiringSolutions;
 import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualState;
@@ -11,6 +9,7 @@ import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.utility.FiringSolutionHelper;
+import org.littletonrobotics.junction.Logger;
 
 public class OuttakeManual extends Command {
   private final Outtake outtake;
@@ -34,19 +33,23 @@ public class OuttakeManual extends Command {
 
     switch (stateMachine.getState()) {
       case SMART_SHOOTING:
+        double botMagToSpeaker =
+            FiringSolutionHelper.getVectorToSpeaker(
+                    RobotCoordinator.getInstance().getRobotXPos(),
+                    RobotCoordinator.getInstance().getRobotYPos())
+                .getDistance(FiringSolutionHelper.getSpeakerTranslation2d());
+        double botAngleToSpeaker =
+            FiringSolutionHelper.getVectorToSpeaker(
+                    RobotCoordinator.getInstance().getRobotXPos(),
+                    RobotCoordinator.getInstance().getRobotYPos())
+                .getAngle()
+                .getDegrees();
         solution =
-            FiringSolutionManager.getInstance()
-                .calcSolution(
-                    FiringSolutionHelper.getVectorToSpeaker(
-                            RobotCoordinator.getInstance().getRobotXPos(),
-                            RobotCoordinator.getInstance().getRobotYPos())
-                        .getDistance(FiringSolutionHelper.getSpeakerTranslation2d()),
-                    FiringSolutionHelper.getVectorToSpeaker(
-                            RobotCoordinator.getInstance().getRobotXPos(),
-                            RobotCoordinator.getInstance().getRobotYPos())
-                        .getAngle()
-                        .getDegrees());
+            FiringSolutionManager.getInstance().calcSolution(botMagToSpeaker, botAngleToSpeaker);
+
         Logger.recordOutput("FiringSolutions/CalculatedShot", solution.toString());
+        Logger.recordOutput("FiringSolutions/BotPoseInput/Mag", botMagToSpeaker);
+        Logger.recordOutput("FiringSolutions/BotPoseInput/Angle", botAngleToSpeaker);
         break;
       case SUBWOOFER:
         solution = FiringSolutions.SubwooferBase;
