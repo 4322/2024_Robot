@@ -82,7 +82,7 @@ public class OuttakeIOReal implements OuttakeIO {
     slot0Configs.kP = Constants.OuttakeConstants.kP;
     slot0Configs.kI = Constants.OuttakeConstants.kI;
     slot0Configs.kD = Constants.OuttakeConstants.kD;
-    slot0Configs.kV = Constants.OuttakeConstants.kF;
+    slot0Configs.kV = Constants.OuttakeConstants.kV;
     slot0Configs.kS = Constants.OuttakeConstants.kS;
     closedLoopRampsConfigs.VoltageClosedLoopRampPeriod =
         Constants.OuttakeConstants.closedLoopRampSec;

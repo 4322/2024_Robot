@@ -75,13 +75,14 @@ public class Outtake extends SubsystemBase {
     if ((Constants.outtakeEnabled) || (Constants.outtakePivotEnabled)) {
       io.updateInputs(inputs);
       Logger.processInputs("Outtake", inputs);
-      Logger.recordOutput("Outtake/TopRotationsPerSecAbs", Math.abs(inputs.leftRotationsPerSec));
-      Logger.recordOutput(
-          "Outtake/BottomRotationsPerSecAbs", Math.abs(inputs.rightRotationsPerSec));
+      Logger.recordOutput("Outtake/LeftRotationsPerSecAbs", Math.abs(inputs.leftRotationsPerSec));
+      Logger.recordOutput("Outtake/RightRotationsPerSecAbs", Math.abs(inputs.rightRotationsPerSec));
     }
-    if (Constants.outtakeTuningMode && inputs.debugOverrideEnable) {
-      if (Constants.outtakeEnabled) {
-        outtake(inputs.debugTargetRPS);
+    if (Constants.outtakeTuningMode) {
+      if (inputs.debugOverrideEnable) {
+        if (Constants.outtakeEnabled) {
+          outtake(inputs.debugTargetRPS);
+        }
       }
     }
     if (pivotInitialized
@@ -102,10 +103,7 @@ public class Outtake extends SubsystemBase {
       }
       this.targetRPS = targetRPS;
       io.setOuttakeRPS(this.targetRPS, this.targetRPS);
-      Logger.recordOutput(
-          "Outtake/TopOuttakeTargetSpeedRPS", Constants.OuttakeConstants.topOuttakeRPS);
-      Logger.recordOutput(
-          "Outtake/BottomOuttakeTargetSpeedRPS", Constants.OuttakeConstants.bottomOuttakeRPS);
+      Logger.recordOutput("Outtake/OuttakeTargetSpeedRPS", this.targetRPS);
       Logger.recordOutput("Outtake/OuttakeStopped", false);
     }
   }
@@ -142,8 +140,7 @@ public class Outtake extends SubsystemBase {
   public void stopOuttake() {
     if (Constants.outtakeEnabled) {
       io.stopOuttake();
-      Logger.recordOutput("Outtake/TopOuttakeTargetSpeedRPS", 0.0);
-      Logger.recordOutput("Outtake/BottomOuttakeTargetSpeedRPS", 0.0);
+      Logger.recordOutput("Outtake/OuttakeTargetSpeedRPS", 0.0);
       Logger.recordOutput("Outtake/OuttakeStopped", true);
     }
   }
