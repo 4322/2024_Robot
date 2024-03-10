@@ -1,8 +1,11 @@
 package frc.robot.commands;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.limelight.Limelight;
@@ -35,9 +38,13 @@ public class UpdateOdometry extends Command {
     if (limelight.getTargetVisible()
         && withinAcceptableDistance
         && numTargets >= LimelightConstants.numTargetsToUseReverseOdom) {
+      Logger.recordOutput(Constants.LimelightConstants.outtakeLimelightName, true);
       Drive.getInstance()
           .updateOdometryVision(
               limelightPose, Timer.getFPGATimestamp() - limelight.getTotalLatency());
+    }
+    else {
+      Logger.recordOutput(Constants.LimelightConstants.outtakeLimelightName, false);
     }
   }
 
