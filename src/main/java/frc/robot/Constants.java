@@ -428,7 +428,7 @@ public final class Constants {
     public static final double outtakeLimelightHeight = OrangeMath.inchesToMeters(26.231);
     public static final double outtakeLimelightXOffsetMeters = 0.0;
     public static final double outtakeLimelightYOffsetMeters = OrangeMath.inchesToMeters(-3.387);
-    public static final String outtakeLimelightName = "limelight-shooter";
+    public static final String outtakeLimelightName = "limelight-speaker";
 
     public static final double intakeLimelightAngle = -25;
     public static final double intakeLimelightHeight = OrangeMath.inchesToMeters(25.237216);
