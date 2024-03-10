@@ -24,7 +24,7 @@ public class FiringSolutionHelper {
     if (Robot.isRed()) {
       speakerTranslation2d = FieldConstants.redSpeakerTranslation2d;
     } else {
-      speakerTranslation2d = FieldConstants.redSpeakerTranslation2d;
+      speakerTranslation2d = FieldConstants.blueSpeakerTranslation2d;
     }
 
     distance = botTranslation2d.getDistance(speakerTranslation2d);
