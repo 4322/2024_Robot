@@ -2,9 +2,8 @@ package frc.utility;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Robot;
 
 public class FiringSolutionHelper {
   // 218.353069 inches
@@ -14,20 +13,26 @@ public class FiringSolutionHelper {
   private static Translation2d vector;
   private static double xComponentToTarget;
   private static double yComponentToTarget;
+  private static Translation2d botTranslation2d;
+  private static Translation2d speakerTranslation2d;
 
   public static Translation2d getVectorToSpeaker(
       double x, double y) { // Position of robot relative to origin ()
-    distance =
-        Math.sqrt(
-            ((x - FieldConstants.xSpeakerPosM) * (x - FieldConstants.xSpeakerPosM))
-                + ((y - FieldConstants.ySpeakerPosM) * (y - FieldConstants.ySpeakerPosM)));
+    botTranslation2d = new Translation2d(x, y);
+    if (Robot.isRed()) {
+      speakerTranslation2d = FieldConstants.redSpeakerTranslation2d;
+    } else {
+      speakerTranslation2d = FieldConstants.blueSpeakerTranslation2d;
+    }
 
-    xComponentToTarget = Math.abs(x - FieldConstants.xSpeakerPosM);
-    yComponentToTarget = y - FieldConstants.ySpeakerPosM;
+    distance = botTranslation2d.getDistance(speakerTranslation2d);
+
+    xComponentToTarget = Math.abs(x - speakerTranslation2d.getX());
+    yComponentToTarget = y - speakerTranslation2d.getY();
 
     angleRadians = Math.atan2(yComponentToTarget, xComponentToTarget);
 
-    if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
+    if (Robot.isRed()) {
       angleRadians = -angleRadians; // Flip by pi radian if red
       // Assumes that 0 is alwyas facing away from speaker
     }
@@ -37,24 +42,11 @@ public class FiringSolutionHelper {
     return vector;
   }
 
-  public static double getMag(double x, double y) {
-    return Math.sqrt(
-        ((x - FieldConstants.xSpeakerPosM) * (x - FieldConstants.xSpeakerPosM))
-            + ((y - FieldConstants.ySpeakerPosM) * (y - FieldConstants.ySpeakerPosM)));
-  }
-
-  public static Rotation2d getAngle(double x, double y) {
-    // negative on red
-    if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
-      return new Rotation2d(
-          -Math.atan2(
-              Math.abs(y - FieldConstants.ySpeakerPosM),
-              Math.abs(x - FieldConstants.xSpeakerPosM)));
+  public static Translation2d getSpeakerTranslation2d() {
+    if (Robot.isRed()) {
+      return FieldConstants.redSpeakerTranslation2d;
     } else {
-      return new Rotation2d(
-          Math.atan2(
-              Math.abs(y - FieldConstants.ySpeakerPosM),
-              Math.abs(x - FieldConstants.xSpeakerPosM)));
+      return FieldConstants.blueSpeakerTranslation2d;
     }
   }
 }

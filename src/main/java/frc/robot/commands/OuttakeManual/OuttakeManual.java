@@ -35,12 +35,14 @@ public class OuttakeManual extends Command {
         solution =
             FiringSolutionManager.getInstance()
                 .calcSolution(
-                    FiringSolutionHelper.getMag(
-                        RobotCoordinator.getInstance().getRobotXPos(),
-                        RobotCoordinator.getInstance().getRobotYPos()),
-                    FiringSolutionHelper.getAngle(
+                    FiringSolutionHelper.getVectorToSpeaker(
                             RobotCoordinator.getInstance().getRobotXPos(),
                             RobotCoordinator.getInstance().getRobotYPos())
+                        .getDistance(FiringSolutionHelper.getSpeakerTranslation2d()),
+                    FiringSolutionHelper.getVectorToSpeaker(
+                            RobotCoordinator.getInstance().getRobotXPos(),
+                            RobotCoordinator.getInstance().getRobotYPos())
+                        .getAngle()
                         .getDegrees());
         break;
       case SUBWOOFER:
