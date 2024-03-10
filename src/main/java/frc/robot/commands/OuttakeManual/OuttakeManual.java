@@ -37,7 +37,7 @@ public class OuttakeManual extends Command {
             FiringSolutionHelper.getVectorToSpeaker(
                     RobotCoordinator.getInstance().getRobotXPos(),
                     RobotCoordinator.getInstance().getRobotYPos())
-                .getDistance(FiringSolutionHelper.getSpeakerTranslation2d());
+                .getNorm();
         double botAngleToSpeaker =
             FiringSolutionHelper.getVectorToSpeaker(
                     RobotCoordinator.getInstance().getRobotXPos(),
