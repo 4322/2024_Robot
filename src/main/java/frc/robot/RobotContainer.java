@@ -209,10 +209,10 @@ public class RobotContainer {
         driveXbox.x().onTrue(writeFiringSolution);
         // right up against front of speaker with edge of robot on source side
         driveXbox
-          .start()
-          .onTrue(
-              new SetRobotPose(
-                  new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()), true));
+            .start()
+            .onTrue(
+                new SetRobotPose(
+                    new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()), true));
       }
       operatorXbox.start().onTrue(new SetPivotsCoastMode());
       operatorXbox.back().onTrue(new SetPivotsBrakeMode());
