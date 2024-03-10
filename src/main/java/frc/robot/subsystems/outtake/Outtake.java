@@ -28,7 +28,7 @@ public class Outtake extends SubsystemBase {
   private Outtake() {
     switch (Constants.currentMode) {
       case REAL:
-        if (Constants.outtakeEnabled) {
+        if (Constants.outtakeEnabled || Constants.outtakePivotEnabled) {
           io = new OuttakeIOReal();
         }
         break;
