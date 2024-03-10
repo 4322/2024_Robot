@@ -2,10 +2,8 @@ package frc.utility;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.Robot;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Robot;
 
 public class FiringSolutionHelper {
   // 218.353069 inches
@@ -33,7 +31,6 @@ public class FiringSolutionHelper {
     yComponentToTarget = y - speakerTranslation2d.getY();
 
     angleRadians = Math.atan2(yComponentToTarget, xComponentToTarget);
-
 
     if (Robot.isRed()) {
       angleRadians = -angleRadians; // Flip by pi radian if red
