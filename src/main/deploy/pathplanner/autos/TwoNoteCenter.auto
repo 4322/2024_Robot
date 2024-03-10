@@ -61,15 +61,15 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "SetOuttakeSubwooferBase"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "TwoNoteCenter.2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SetOuttakeSubwooferBase"
           }
         },
         {
