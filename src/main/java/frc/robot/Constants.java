@@ -5,8 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.RobotChooser.RobotChooser;
 import frc.robot.RobotChooser.RobotChooserInterface;
 import frc.robot.shooting.FiringSolution;
@@ -338,8 +336,8 @@ public final class Constants {
 
     public static final double topOuttakeRPS = 0;
     public static final double bottomOuttakeRPS = 0;
-    public static final double outtakeToleranceRPS = 15;
-    public static final double pivotToleranceRotations = 1;
+    public static final double outtakeToleranceRPS = 1;
+    public static final double pivotToleranceRotations = 0.5;
     public static final double maxPivotForIntake = 50;
   }
 
@@ -484,8 +482,10 @@ public final class Constants {
     public static final double xRedSpeakerPosM = 16.591;
     public static final double yRedSpeakerPosM = 5.546;
 
-    public static final Translation2d blueSpeakerTranslation2d = new Translation2d(xBlueSpeakerPosM, yBlueSpeakerPosM);
-    public static final Translation2d redSpeakerTranslation2d = new Translation2d(xRedSpeakerPosM, yRedSpeakerPosM);
+    public static final Translation2d blueSpeakerTranslation2d =
+        new Translation2d(xBlueSpeakerPosM, yBlueSpeakerPosM);
+    public static final Translation2d redSpeakerTranslation2d =
+        new Translation2d(xRedSpeakerPosM, yRedSpeakerPosM);
 
     public static final double xCenterLineM = 8.2955;
   }
