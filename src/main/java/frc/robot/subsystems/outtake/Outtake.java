@@ -83,9 +83,6 @@ public class Outtake extends SubsystemBase {
       if (Constants.outtakeEnabled) {
         outtake(inputs.debugTargetRPS);
       }
-      if (Constants.outtakePivotEnabled) {
-        pivot(inputs.targetPivotPosition);
-      }
     }
     if (pivotInitialized
         && RobotCoordinator.getInstance().isIntakeDeploying()
