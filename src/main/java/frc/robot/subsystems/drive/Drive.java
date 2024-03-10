@@ -317,6 +317,9 @@ public class Drive extends SubsystemBase {
 
       if (Constants.gyroEnabled) {
         updateOdometry();
+        Logger.recordOutput("Drive/Odometry/WheelEncoderPoseX", getPose2d().getX());
+        Logger.recordOutput("Drive/Odometry/WheelEncoderPoseY", getPose2d().getY());
+        Logger.recordOutput("Drive/Odometry/WheelEncoderPoseDeg", getPose2d().getRotation().getDegrees());
       }
 
       if (Constants.debug) {
@@ -481,7 +484,6 @@ public class Drive extends SubsystemBase {
 
   public void updateOdometryVision(Pose2d pose, double timestampSeconds) {
     if (Constants.outtakeLimeLightEnabled) {
-      Logger.recordOutput("Drive/Odometry/VisionPose", pose);
       poseEstimator.addVisionMeasurement(pose, timestampSeconds);
     }
   }
