@@ -42,6 +42,11 @@ public class WriteFiringSolutionAtCurrentPos extends InstantCommand {
   }
 
   @Override
+  public boolean runsWhenDisabled() {
+    return true;
+  }
+
+  @Override
   public boolean isFinished() {
     return true;
   }
