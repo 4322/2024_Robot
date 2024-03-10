@@ -83,6 +83,14 @@ public class Outtake extends SubsystemBase {
         if (Constants.outtakeEnabled) {
           outtake(inputs.debugTargetRPS);
         }
+        if (Constants.outtakePivotEnabled) {
+          pivot(inputs.targetPivotPosition);
+        }
+      }
+      else {
+        if (Constants.outtakeEnabled) {
+          outtake(0);
+        }
       }
     }
     if (pivotInitialized
