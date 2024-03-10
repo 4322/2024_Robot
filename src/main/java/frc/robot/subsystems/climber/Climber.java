@@ -84,6 +84,12 @@ public class Climber extends SubsystemBase {
     Logger.recordOutput("Climber/State", "Stopped");
   }
 
+  public void zeroClimberAtCurrentPos() {
+    if (Constants.climberEnabled) {
+      io.zeroClimberAtCurrentPos();
+    }   
+  }
+
   public boolean isFullyExtended() {
     return OrangeMath.equalToEpsilon(
             inputs.rotations,

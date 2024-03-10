@@ -26,5 +26,6 @@ public class ClimberSlowRetractOverride extends Command {
   @Override
   public void end(boolean interrupted) {
     climber.stopClimb();
+    climber.zeroClimberAtCurrentPos();
   }
 }

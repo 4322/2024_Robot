@@ -115,4 +115,9 @@ public class ClimberIOReal implements ClimberIO {
   public void stopMotor() {
     climber.stopMotor();
   }
+
+  @Override
+  public void zeroClimberAtCurrentPos() {
+    climber.setPosition(0);
+  }
 }

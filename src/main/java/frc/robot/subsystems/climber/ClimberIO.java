@@ -25,5 +25,7 @@ public interface ClimberIO {
 
   public default void stopMotor() {}
 
+  public default void zeroClimberAtCurrentPos() {}
+
   public default void setReverseSoftLimitEnabled(boolean softLimitsEnabled) {}
 }
