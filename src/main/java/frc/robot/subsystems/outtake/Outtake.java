@@ -80,11 +80,20 @@ public class Outtake extends SubsystemBase {
           "Outtake/BottomRotationsPerSecAbs", Math.abs(inputs.rightRotationsPerSec));
     }
     if (Constants.outtakeTuningMode && inputs.debugOverrideEnable) {
-      if (Constants.outtakeEnabled) {
-        outtake(inputs.debugTargetRPS);
-      }
-      if (Constants.outtakePivotEnabled) {
-        pivot(inputs.targetPivotPosition);
+      if (inputs.debugOverrideEnable) {
+        if (Constants.outtakeEnabled) {
+          outtake(inputs.debugTargetRPS);
+        }
+        if (Constants.outtakePivotEnabled) {
+          pivot(inputs.targetPivotPosition);
+        }
+      } else {
+        if (Constants.outtakeEnabled) {
+          outtake(0);
+        }
+        if (Constants.outtakePivotEnabled) {
+          pivot(0);
+        }
       }
     }
     if (pivotInitialized
