@@ -531,8 +531,6 @@ public final class Constants {
     public static final FiringSolution sol3 = new FiringSolution(2.871440222, -0.6504111183955062, 60.0, 62.0);
     public static final FiringSolution sol4 = new FiringSolution(3.364694169, -0.5810479316417732, 60.0, 54.5);
   }
-    
-  }
 
   public static FiringSolution[] odometryFiringSolutions;
   static {
