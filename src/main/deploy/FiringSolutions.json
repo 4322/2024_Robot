@@ -1,26 +1,26 @@
 [
   {
-      "shotMag": 3.364694169,
-      "shotDeg": -0.5810479316417732,
-      "flywheelSpeed": 60.0,
-      "shotRotations": 54.5
+    "shotMag": 3.364694169,
+    "shotDeg": -0.5810479316417732,
+    "flywheelSpeed": 60.0,
+    "shotRotations": 54.5
   },
   {
-      "shotMag": 2.871440222,
-      "shotDeg": -0.6504111183955062,
-      "flywheelSpeed": 60.0,
-      "shotRotations": 62.0
+    "shotMag": 2.871440222,
+    "shotDeg": -0.6504111183955062,
+    "flywheelSpeed": 60.0,
+    "shotRotations": 62.0
   },
   {
-      "shotMag": 2.43521634,
-      "shotDeg": -0.5941755097888944,
-      "flywheelSpeed": 55.0,
-      "shotRotations": 70.0
+    "shotMag": 2.43521634,
+    "shotDeg": -0.5941755097888944,
+    "flywheelSpeed": 55.0,
+    "shotRotations": 70.0
   },
   {
-      "shotMag": 1.809581132,
-      "shotDeg": -0.523426789472108,
-      "flywheelSpeed": 55.0,
-      "shotRotations": 90.0
+    "shotMag": 1.809581132,
+    "shotDeg": -0.523426789472108,
+    "flywheelSpeed": 55.0,
+    "shotRotations": 90.0
   }
 ]

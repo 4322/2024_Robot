@@ -32,17 +32,16 @@ public class OuttakeManual extends Command {
 
     switch (stateMachine.getState()) {
       case SMART_SHOOTING:
-        
         solution =
             FiringSolutionManager.getInstance()
                 .calcSolution(
                     FiringSolutionHelper.getVectorToSpeaker(
-                        RobotCoordinator.getInstance().getRobotXPos(),
-                        RobotCoordinator.getInstance().getRobotYPos())
+                            RobotCoordinator.getInstance().getRobotXPos(),
+                            RobotCoordinator.getInstance().getRobotYPos())
                         .getDistance(FiringSolutionHelper.getSpeakerTranslation2d()),
                     FiringSolutionHelper.getVectorToSpeaker(
-                        RobotCoordinator.getInstance().getRobotXPos(),
-                        RobotCoordinator.getInstance().getRobotYPos())
+                            RobotCoordinator.getInstance().getRobotXPos(),
+                            RobotCoordinator.getInstance().getRobotYPos())
                         .getAngle()
                         .getDegrees());
         break;
