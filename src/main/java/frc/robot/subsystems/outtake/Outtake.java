@@ -87,11 +87,6 @@ public class Outtake extends SubsystemBase {
           pivot(inputs.targetPivotPosition, true);
         }
       }
-      else {
-        if (Constants.outtakeEnabled) {
-          outtake(0);
-        }
-      }
     }
   }
 
