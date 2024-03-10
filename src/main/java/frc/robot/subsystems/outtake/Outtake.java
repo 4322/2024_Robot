@@ -87,11 +87,6 @@ public class Outtake extends SubsystemBase {
           pivot(inputs.targetPivotPosition);
         }
       }
-      else {
-        if (Constants.outtakeEnabled) {
-          outtake(0);
-        }
-      }
     }
     if (pivotInitialized
         && RobotCoordinator.getInstance().isIntakeDeploying()
