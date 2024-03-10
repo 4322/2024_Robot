@@ -1,62 +1,26 @@
 [
   {
-    "shotMag": 0.9,
-    "shotDeg": 0.0,
-    "flywheelSpeed": 77,
-    "shotRotations": 30.7
+    "shotMag": 3.364694169,
+    "shotDeg": -0.5810479316417732,
+    "flywheelSpeed": 60.0,
+    "shotRotations": 54.5
   },
   {
-    "shotMag": 1.72,
-    "shotDeg": 0.0,
-    "flywheelSpeed": 77,
-    "shotRotations": 24.394
+    "shotMag": 2.871440222,
+    "shotDeg": -0.6504111183955062,
+    "flywheelSpeed": 60.0,
+    "shotRotations": 62.0
   },
   {
-    "shotMag": 2.54,
-    "shotDeg": 0.0,
-    "flywheelSpeed": 77,
-    "shotRotations": 20.155
+    "shotMag": 2.43521634,
+    "shotDeg": -0.5941755097888944,
+    "flywheelSpeed": 55.0,
+    "shotRotations": 70.0
   },
   {
-    "shotMag": 3.37,
-    "shotDeg": 0.0,
-    "flywheelSpeed": 77,
-    "shotRotations": 17.301
-  },
-  {
-    "shotMag": 4.19,
-    "shotDeg": 0.0,
-    "flywheelSpeed": 77,
-    "shotRotations": 15.33
-  },
-  {
-    "shotMag": 5.01,
-    "shotDeg": 0.0,
-    "flywheelSpeed": 77,
-    "shotRotations": 13.887
-  },
-  {
-    "shotMag": 5.833,
-    "shotDeg": 0.0,
-    "flywheelSpeed": 77,
-    "shotRotations": 12.805
-  },
-  {
-    "shotMag": 6.6556,
-    "shotDeg": 0.0,
-    "flywheelSpeed": 77,
-    "shotRotations": 11.966
-  },
-  {
-    "shotMag": 7.4778,
-    "shotDeg": 0.0,
-    "flywheelSpeed": 77,
-    "shotRotations": 11.30
-  },
-  {
-    "shotMag": 8.3,
-    "shotDeg": 0.0,
-    "flywheelSpeed": 77,
-    "shotRotations": 10.752
+    "shotMag": 1.809581132,
+    "shotDeg": -0.523426789472108,
+    "flywheelSpeed": 55.0,
+    "shotRotations": 90.0
   }
 ]

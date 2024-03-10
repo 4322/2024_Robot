@@ -8,7 +8,9 @@ import frc.robot.subsystems.tunnel.Tunnel;
 
 public class EjectThroughIntake extends Command {
 
-  public EjectThroughIntake() {}
+  public EjectThroughIntake() {
+    addRequirements(Intake.getInstance(), Tunnel.getInstance());
+  }
 
   @Override
   public void execute() {

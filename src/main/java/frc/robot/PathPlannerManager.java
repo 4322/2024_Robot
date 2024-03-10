@@ -14,11 +14,13 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.RobotChooser.RobotChooser;
 import frc.robot.RobotChooser.RobotChooserInterface;
 import frc.robot.subsystems.drive.Drive;
+import java.util.HashMap;
 
 public class PathPlannerManager {
   private static PathPlannerManager manager;
   private static RobotChooserInterface robotSpecificConstants =
       RobotChooser.getInstance().getConstants();
+  private HashMap<String, Command> autos;
 
   public static PathPlannerManager getInstance() {
     if (manager == null) {
@@ -43,7 +45,7 @@ public class PathPlannerManager {
                   robotSpecificConstants.getAutoTrajectoryRotkiZ()),
               DriveConstants.Auto.autoMaxModuleSpeedMetersPerSecond,
               DriveConstants.distWheelMetersR,
-              new ReplanningConfig(true, true, 0.2, 0.05));
+              new ReplanningConfig());
 
       AutoBuilder.configureHolonomic(
           Drive.getInstance()::getPose2d,
@@ -60,8 +62,15 @@ public class PathPlannerManager {
     NamedCommands.registerCommand(eventName, CommandUtil.wrappedEventCommand(command));
   }
 
-  public Command buildAuto(String autoName) {
-    return AutoBuilder.buildAuto(autoName);
+  public void preloadAutos() {
+    autos = new HashMap<>();
+    for (String autoName : AutoBuilder.getAllAutoNames()) {
+      autos.put(autoName, AutoBuilder.buildAuto(autoName));
+    }
+  }
+
+  public Command getAuto(String autoName) {
+    return autos.get(autoName);
   }
 
   public Pose2d getStartingPoseFromAutoFile(String autoName) {

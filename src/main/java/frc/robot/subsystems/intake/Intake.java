@@ -107,13 +107,21 @@ public class Intake extends SubsystemBase {
           }
           break;
         case Deployed:
+          if (!OrangeMath.equalToEpsilon(
+              inputs.heliumAbsRotations,
+              IntakeConstants.DeployConfig.deployTargetPosition,
+              IntakeConstants.DeployConfig
+                  .correctionTolerance)) // if intake has popped up too far while driving
+          {
+            deploy(); // move it back into position
+          }
           break;
         case Retracted:
           if (!OrangeMath.equalToEpsilon(
               inputs.heliumAbsRotations,
               IntakeConstants.DeployConfig.retractTargetPosition,
               IntakeConstants.DeployConfig
-                  .deployFallTolerance)) // if intake has drooped too far while driving
+                  .correctionTolerance)) // if intake has drooped too far while driving
           {
             retract(); // move it back into position
           }

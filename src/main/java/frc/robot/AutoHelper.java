@@ -28,7 +28,7 @@ public class AutoHelper {
   public static String getPathPlannerAutoName(Auto auto) {
     switch (auto) {
       case LeaveSourceCorner:
-        return "LeaveInTheMiddleOfNowherer";
+        return "LeaveInTheMiddleOfNowhere";
       case OneNoteCenter:
         return "OneNoteCenter";
       case OneNoteAmp:

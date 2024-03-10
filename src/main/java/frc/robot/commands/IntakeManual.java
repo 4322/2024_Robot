@@ -33,72 +33,68 @@ public class IntakeManual extends Command {
   @Override
   public void execute() {
     RobotCoordinator coordinator = RobotCoordinator.getInstance();
-    if (!coordinator.isClimbing()) {
-      switch (intakeState) {
-        case retracted:
-          if (coordinator.getIntakeButtonPressed() && (!coordinator.noteInRobot())) {
-            intakeState = IntakeStates.deploying;
+    switch (intakeState) {
+      case retracted:
+        if (coordinator.getIntakeButtonPressed()) {
+          intakeState = IntakeStates.deploying;
+        }
+        break;
+      case deploying:
+        if (coordinator.canDeploy()) {
+          intake.deploy();
+        }
+        if (!coordinator.getIntakeButtonPressed()) {
+          intakeState = IntakeStates.retracting;
+        } else if (coordinator.intakeIsDeployed() && !coordinator.noteInRobot()) {
+          intakeState = IntakeStates.feeding;
+        } else if (coordinator.noteInRobot() && coordinator.intakeIsDeployed()) {
+          intakeState = IntakeStates.notePastIntake;
+        }
+        break;
+      case feeding:
+        if (coordinator.isIntakeDeployed()) {
+          intake.intake();
+        }
+        if (!coordinator.getIntakeButtonPressed()) {
+          intakeState = IntakeStates.retracting;
+        } else if (coordinator.noteEnteringIntake()) {
+          intakeState = IntakeStates.noteObtained;
+        } else if (Constants.autoAcquireNoteEnabled
+            && coordinator.getAutoIntakeButtonPressed()
+            && coordinator.noteInVision()) {
+          if (!autoAcquireNote.isScheduled()) {
+            CommandScheduler.getInstance().schedule(autoAcquireNote);
           }
-          break;
-        case deploying:
-          if (coordinator.canDeploy()) {
-            intake.deploy();
-          }
-          if (!coordinator.getIntakeButtonPressed()) {
-            intakeState = IntakeStates.retracting;
-          } else if (coordinator.intakeIsDeployed() && !coordinator.noteInRobot()) {
-            intakeState = IntakeStates.feeding;
-          } else if (coordinator.noteInRobot() && coordinator.intakeIsDeployed()) {
-            intakeState = IntakeStates.notePastIntake;
-          }
-          break;
-        case feeding:
-          if (coordinator.isIntakeDeployed()) {
-            intake.intake();
-          }
-          if (!coordinator.getIntakeButtonPressed()) {
-            intakeState = IntakeStates.retracting;
-          } else if (coordinator.noteInIntake()) {
-            intakeState = IntakeStates.noteObtained;
-          } else if (Constants.autoAcquireNoteEnabled
-              && coordinator.getAutoIntakeButtonPressed()
-              && coordinator.noteInVision()) {
-            if (!autoAcquireNote.isScheduled()) {
-              CommandScheduler.getInstance().schedule(autoAcquireNote);
-            }
-          }
-          break;
-        case noteObtained:
-          if (coordinator.isIntakeDeployed()) {
-            intake.intake();
-            CommandScheduler.getInstance().schedule(xBoxRumble);
-            intakeState = IntakeStates.notePastIntake;
-          }
-          break;
-        case notePastIntake:
-          intake.stopFeeder();
-          if (!coordinator.getIntakeButtonPressed()) {
-            intakeState = IntakeStates.retracting;
-          } else if (!coordinator.noteInRobot()) {
-            intakeState = IntakeStates.feeding;
-          }
-          break;
-        case retracting:
-          intake.stopFeeder();
-          if (coordinator.canRetract()) {
-            intake.retract();
-          }
-          if (coordinator.getIntakeButtonPressed() && (!coordinator.noteInRobot())) {
-            intakeState = IntakeStates.deploying;
-          } else if (coordinator.isIntakeRetracted()) {
-            intakeState = IntakeStates.retracted;
-          }
-          break;
-      }
-    } else {
-      // if necessary, we can set position here and wrap line 105 in an isatposition
-      intake.stopDeployer();
-      intake.stopFeeder();
+        }
+        break;
+      case noteObtained:
+        if (coordinator.isIntakeDeployed()) {
+          intake.intake();
+        }
+        if (!coordinator.noteEnteringIntake()) {
+          CommandScheduler.getInstance().schedule(xBoxRumble);
+          intakeState = IntakeStates.notePastIntake;
+        }
+        break;
+      case notePastIntake:
+        intake.stopFeeder();
+        if (!coordinator.getIntakeButtonPressed()) {
+          intakeState = IntakeStates.retracting;
+        } else if (!coordinator.noteInRobot()) {
+          intakeState = IntakeStates.feeding;
+        }
+        break;
+      case retracting:
+        intake.stopFeeder();
+        if (coordinator.canRetract()) {
+          intake.retract();
+        }
+        if (coordinator.getIntakeButtonPressed()) {
+          intakeState = IntakeStates.deploying;
+        } else if (coordinator.isIntakeRetracted()) {
+          intakeState = IntakeStates.retracted;
+        }
+        break;
     }
   }
 

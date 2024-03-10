@@ -481,6 +481,7 @@ public class Drive extends SubsystemBase {
 
   public void updateOdometryVision(Pose2d pose, double timestampSeconds) {
     if (Constants.outtakeLimeLightEnabled) {
+      Logger.recordOutput("Drive/Odometry/VisionPose", pose);
       poseEstimator.addVisionMeasurement(pose, timestampSeconds);
     }
   }

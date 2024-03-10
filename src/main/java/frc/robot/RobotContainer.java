@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
@@ -37,6 +39,7 @@ import frc.robot.commands.OuttakeStop;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetPivotsBrakeMode;
 import frc.robot.commands.SetPivotsCoastMode;
+import frc.robot.commands.SetRobotPose;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.TunnelFeed;
 import frc.robot.commands.TunnelStop;
@@ -108,7 +111,6 @@ public class RobotContainer {
     PathPlannerManager.getInstance().addEvent("AutoIntakeDeploy", new AutoIntakeDeploy());
     PathPlannerManager.getInstance().addEvent("AutoIntakeIn", new AutoIntakeIn());
     PathPlannerManager.getInstance().addEvent("Shoot", new Shoot());
-
     PathPlannerManager.getInstance()
         .addEvent(
             "SetOuttakeSubwooferBase",
@@ -117,6 +119,9 @@ public class RobotContainer {
         .addEvent(
             "SetOuttakeCollectingNote",
             new AutoSetOuttakeAdjust(Constants.FiringSolutions.CollectingNote));
+
+    // DO NOT MOVE OR REMOVE THIS WITHOUT KNOWING WHAT YOU'RE DOING
+    PathPlannerManager.getInstance().preloadAutos();
 
     autoChooser = new SendableChooser<>();
     AutoHelper.configAutoChooser(autoChooser);
@@ -229,6 +234,15 @@ public class RobotContainer {
                   new SequentialCommandGroup(
                       Commands.waitUntil(() -> Climber.getInstance().isFullyRetracted()),
                       new OperatorXboxControllerRumble())));
+      if (Constants.shotTuningMode) {
+        driveXbox.x().onTrue(writeFiringSolution);
+        // right up against front of speaker with edge of robot on source side
+        driveXbox
+            .start()
+            .onTrue(
+                new SetRobotPose(
+                    new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()), true));
+      }
       operatorXbox.start().onTrue(new SetPivotsCoastMode());
       operatorXbox.back().onTrue(new SetPivotsBrakeMode());
       operatorXbox.povUp().whileTrue(new EjectThroughIntake());
@@ -330,7 +344,7 @@ public class RobotContainer {
     if (autoName == "None") {
       return Commands.none();
     } else {
-      return PathPlannerManager.getInstance().buildAuto(autoName);
+      return PathPlannerManager.getInstance().getAuto(autoName);
     }
   }
 

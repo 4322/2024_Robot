@@ -5,8 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.RobotChooser.RobotChooser;
 import frc.robot.RobotChooser.RobotChooserInterface;
 import frc.robot.shooting.FiringSolution;
@@ -61,7 +59,7 @@ public final class Constants {
   public static final boolean speakerCentricEnabled = true;
   public static final boolean spinoutCenterEnabled = true; // center rotate burst of power
   public static final boolean spinoutCornerEnabled = true;
-  public static final boolean psuedoAutoRotateEnabled = false;
+  public static final boolean psuedoAutoRotateEnabled = true;
   public static final String driveInputScaling = DriveInputScalingStrings.quadratic;
   public static final String rotateInputScaling = RotateInputScalingStrings.linear;
   public static final double rotateInputPowerScaling = 1.0;
@@ -104,6 +102,7 @@ public final class Constants {
   public static final boolean driveTuningMode = false;
   public static final boolean steeringTuningMode = false;
   public static final boolean outtakeTuningMode = false;
+  public static final boolean shotTuningMode = false;
 
   public enum DriveDegradedMode {
     normal,
@@ -123,7 +122,6 @@ public final class Constants {
   public static final int shuffleboardStatusPeriodMaxMs = 90; // for interactive response
   public static final int slowStatusPeriodMaxMs = 255;
   public static final int controllerConfigTimeoutMs = 50;
-  public static final boolean inShotTuning = false;
   public static final double fieldWidthMeters = 8;
 
   public static final class DriveConstants {
@@ -321,7 +319,7 @@ public final class Constants {
     public static final double kP = 0.0;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
-    public static final double kF = 0.124;
+    public static final double kV = 0.13; // kV * maxVelRotationsPerSec = max voltage
     public static final double kS = 0.35;
 
     public static final double openLoopRampSec = 0;
@@ -343,7 +341,7 @@ public final class Constants {
 
     public static final double pivotkD = 0;
     public static final double pivotkI = 0;
-    public static final double pivotkP = 1.6;
+    public static final double pivotkP = 0.9;
     public static final double pivotkFF = 0;
 
     public static final double maxVelRotationsPerSec = 85;
@@ -358,10 +356,8 @@ public final class Constants {
 
     public static final double defaultPivotPositionRotations = 0;
 
-    public static final double topOuttakeRPS = 0;
-    public static final double bottomOuttakeRPS = 0;
-    public static final double outtakeToleranceRPS = 15;
-    public static final double pivotToleranceRotations = 1;
+    public static final double outtakeToleranceRPS = 1;
+    public static final double pivotToleranceRotations = 0.5;
     public static final double maxPivotForIntake = 50;
   }
 
@@ -401,7 +397,7 @@ public final class Constants {
       public static final double deployTargetPosition = 0.0;
       public static final double retractTargetPosition = 0.53;
       public static final double atTargetTolerance = 0.03;
-      public static final double deployFallTolerance = 0.08;
+      public static final double correctionTolerance = 0.06;
       public static final double maxRotationsPerSec = 0.2;
     }
 
@@ -429,10 +425,10 @@ public final class Constants {
     public static final boolean supplyEnabled = true;
     public static final boolean statorEnabled = true;
     public static final double supplyLimit = 30;
-    public static final double statorLimit = 45;
+    public static final double statorLimit = 60;
 
-    public static final double desiredVoltage = 5.0;
-    public static final double desiredReverseVoltage = -4.0;
+    public static final double desiredVoltage = 6.0;
+    public static final double desiredReverseVoltage = -6.0;
     public static final double peakVoltage = 6.0;
 
     public static final class Logging {
@@ -450,7 +446,7 @@ public final class Constants {
     public static final double outtakeLimelightHeight = OrangeMath.inchesToMeters(26.231);
     public static final double outtakeLimelightXOffsetMeters = 0.0;
     public static final double outtakeLimelightYOffsetMeters = OrangeMath.inchesToMeters(-3.387);
-    public static final String outtakeLimelightName = "limelight-shooter";
+    public static final String outtakeLimelightName = "limelight-speaker";
 
     public static final double intakeLimelightAngle = -25;
     public static final double intakeLimelightHeight = OrangeMath.inchesToMeters(25.237216);
@@ -501,20 +497,15 @@ public final class Constants {
   }
 
   public static final class FieldConstants {
-    public static double xSpeakerPosM;
-    public static double ySpeakerPosM;
+    public static final double xBlueSpeakerPosM = 0;
+    public static final double yBlueSpeakerPosM = 5.546;
+    public static final double xRedSpeakerPosM = 16.591;
+    public static final double yRedSpeakerPosM = 5.546;
 
-    static {
-      if (DriverStation.getAlliance()
-          .get()
-          .equals(Alliance.Blue)) { // Account for origin remaining same between blue and red
-        xSpeakerPosM = 0;
-        ySpeakerPosM = 5.546;
-      } else {
-        xSpeakerPosM = 16.591;
-        ySpeakerPosM = 5.546;
-      }
-    }
+    public static final Translation2d blueSpeakerTranslation2d =
+        new Translation2d(xBlueSpeakerPosM, yBlueSpeakerPosM);
+    public static final Translation2d redSpeakerTranslation2d =
+        new Translation2d(xRedSpeakerPosM, yRedSpeakerPosM);
 
     public static final double xCenterLineM = 8.2955;
   }
@@ -522,7 +513,7 @@ public final class Constants {
   public static final class FiringSolutions {
     // TODO: update speeds and angles
     // shot mag/deg don't matter since these are used for setting speed/angle only
-    public static final FiringSolution SubwooferBase = new FiringSolution(0, 0, 40, 117);
+    public static final FiringSolution SubwooferBase = new FiringSolution(0, 0, 40, 113);
     public static final FiringSolution N6 = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution N7 = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution N8 = new FiringSolution(0, 0, 0, 0);
@@ -530,10 +521,30 @@ public final class Constants {
     public static final FiringSolution MS = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution BS = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution Eject = new FiringSolution(0, 0, 10, 50);
-    public static final FiringSolution CollectingNote = new FiringSolution(0, 0, 0, 50);
     public static final FiringSolution Climbing =
         new FiringSolution(0, 0, 0, ClimberConstants.climbingPivotRotations);
+    public static final FiringSolution CollectingNote = new FiringSolution(0, 0, 0, 10);
+
+    // shots get progressively farther away from speaker, starting at closest to speaker
+    public static final FiringSolution sol1 = new FiringSolution(1.809581132, -0.523426789472108, 55.0, 90.0);
+    public static final FiringSolution sol2 = new FiringSolution(2.43521634, -0.5941755097888944, 55.0, 70.0);
+    public static final FiringSolution sol3 = new FiringSolution(2.871440222, -0.6504111183955062, 60.0, 62.0);
+    public static final FiringSolution sol4 = new FiringSolution(3.364694169, -0.5810479316417732, 60.0, 54.5);
   }
+    
+  }
+
+  public static FiringSolution[] odometryFiringSolutions;
+  static {
+    odometryFiringSolutions = new FiringSolution[5];
+    int i = 0;
+    odometryFiringSolutions[i++] = FiringSolutions.SubwooferBase;
+    odometryFiringSolutions[i++] = FiringSolutions.sol1;
+    odometryFiringSolutions[i++] = FiringSolutions.sol2;
+    odometryFiringSolutions[i++] = FiringSolutions.sol3;
+    odometryFiringSolutions[i++] = FiringSolutions.sol4;
+  }
+
 
   public enum WheelPosition {
     // construction of SwerveDriveKinematics is dependent on this enum

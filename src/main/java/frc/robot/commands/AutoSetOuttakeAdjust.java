@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.Constants.OuttakeConstants;
 import frc.robot.shooting.FiringSolution;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.outtake.Outtake;
@@ -23,7 +22,7 @@ public class AutoSetOuttakeAdjust extends InstantCommand {
   public void initialize() {
     if (RobotCoordinator.getInstance().canPivot()) {
       outtake.outtake(flywheelSpeed);
-      outtake.pivot(pivotRotations * OuttakeConstants.gearReductionEncoderToMotor, true);
+      outtake.pivot(pivotRotations, true);
     }
   }
 
