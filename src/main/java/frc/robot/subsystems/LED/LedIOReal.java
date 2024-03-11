@@ -26,6 +26,7 @@ public class LedIOReal implements LedIO {
   public void updateInputs(LedIOInputs inputs) {
     inputs.temperatureC = candle.getTemperature();
     inputs.currentAmps = candle.getCurrent();
+    inputs.fiveVRailVoltage = candle.get5VRailVoltage();
   }
 
   @Override

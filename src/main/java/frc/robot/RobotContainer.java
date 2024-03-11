@@ -43,6 +43,7 @@ import frc.robot.commands.UpdateOdometry;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
+import frc.robot.subsystems.LED.LED;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.limelight.Limelight;
@@ -77,6 +78,7 @@ public class RobotContainer {
   private final Tunnel tunnel = Tunnel.getInstance();
   private final Outtake outtake = Outtake.getInstance();
   private final Intake intake = Intake.getInstance();
+  private final LED led = LED.getInstance();
 
   private final WriteFiringSolutionAtCurrentPos writeFiringSolution =
       new WriteFiringSolutionAtCurrentPos();

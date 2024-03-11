@@ -7,6 +7,7 @@ public interface LedIO {
   public class LedIOInputs {
     public double temperatureC = 0.0;
     public double currentAmps = 0.0;
+    public double fiveVRailVoltage = 0.0;
   }
 
   public default void setLED(int red, int green, int blue, int startOffset, int ledNum) {}
