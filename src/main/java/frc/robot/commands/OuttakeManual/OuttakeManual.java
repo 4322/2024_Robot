@@ -33,19 +33,23 @@ public class OuttakeManual extends Command {
 
     switch (stateMachine.getState()) {
       case SMART_SHOOTING:
+        double botMagToSpeaker =
+            FiringSolutionHelper.getVectorToSpeaker(
+                    RobotCoordinator.getInstance().getRobotXPos(),
+                    RobotCoordinator.getInstance().getRobotYPos())
+                .getNorm();
+        double botAngleToSpeaker =
+            FiringSolutionHelper.getVectorToSpeaker(
+                    RobotCoordinator.getInstance().getRobotXPos(),
+                    RobotCoordinator.getInstance().getRobotYPos())
+                .getAngle()
+                .getDegrees();
         solution =
-            FiringSolutionManager.getInstance()
-                .calcSolution(
-                    FiringSolutionHelper.getVectorToSpeaker(
-                            RobotCoordinator.getInstance().getRobotXPos(),
-                            RobotCoordinator.getInstance().getRobotYPos())
-                        .getDistance(FiringSolutionHelper.getSpeakerTranslation2d()),
-                    FiringSolutionHelper.getVectorToSpeaker(
-                            RobotCoordinator.getInstance().getRobotXPos(),
-                            RobotCoordinator.getInstance().getRobotYPos())
-                        .getAngle()
-                        .getDegrees());
+            FiringSolutionManager.getInstance().calcSolution(botMagToSpeaker, botAngleToSpeaker);
+
         Logger.recordOutput("FiringSolutions/CalculatedShot", solution.toString());
+        Logger.recordOutput("FiringSolutions/BotPoseInput/Mag", botMagToSpeaker);
+        Logger.recordOutput("FiringSolutions/BotPoseInput/Angle", botAngleToSpeaker);
         break;
       case SUBWOOFER:
         solution = FiringSolutions.SubwooferBase;

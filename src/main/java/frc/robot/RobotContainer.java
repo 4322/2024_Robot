@@ -132,7 +132,8 @@ public class RobotContainer {
       tunnel.setDefaultCommand(tunnelFeed);
     }
 
-    if (Constants.outtakeEnabled && !Constants.outtakeTuningMode) {
+    if ((Constants.outtakeEnabled || Constants.outtakePivotEnabled)
+        && !Constants.outtakeTuningMode) {
       outtake.setDefaultCommand(outtakeManual);
     }
 
