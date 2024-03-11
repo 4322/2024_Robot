@@ -39,7 +39,7 @@ public class UpdateOdometry extends Command {
         && numTargets >= LimelightConstants.numTargetsToUseReverseOdom) {
       Drive.getInstance()
           .updateOdometryVision(
-              limelightPose, Timer.getFPGATimestamp() - limelight.getTotalLatency());
+              limelightPose, Timer.getFPGATimestamp() - (limelight.getTotalLatency() / 1000.0));
       Logger.recordOutput(
           Constants.LimelightConstants.outtakeLimelightName + "/IsAddingVisonMeasurement", true);
     } else {
