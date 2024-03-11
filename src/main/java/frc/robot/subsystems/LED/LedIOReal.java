@@ -35,7 +35,7 @@ public class LedIOReal implements LedIO {
   }
 
   @Override
-  public void rainbowAnimate(double brightness, double speed, int ledNum, int startOffset) {
+  public void rainbowAnimate(double brightness, double speed, int startOffset, int ledNum) {
     RainbowAnimation rainbowAnim =
         new RainbowAnimation(brightness, speed, ledNum, false, startOffset);
     candle.animate(rainbowAnim);
@@ -43,7 +43,7 @@ public class LedIOReal implements LedIO {
 
   @Override
   public void flashAnimate(
-      int red, int green, int blue, double speed, int ledNum, int startOffset) {
+      int red, int green, int blue, double speed,  int startOffset, int ledNum) {
     StrobeAnimation strobeAnim =
         new StrobeAnimation(red, green, blue, 0, speed, ledNum, startOffset);
     candle.animate(strobeAnim);
