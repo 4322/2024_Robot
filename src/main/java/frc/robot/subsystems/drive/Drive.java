@@ -319,7 +319,8 @@ public class Drive extends SubsystemBase {
         updateOdometry();
         Logger.recordOutput("Drive/Odometry/WheelEncoderPoseX", getPose2d().getX());
         Logger.recordOutput("Drive/Odometry/WheelEncoderPoseY", getPose2d().getY());
-        Logger.recordOutput("Drive/Odometry/WheelEncoderPoseDeg", getPose2d().getRotation().getDegrees());
+        Logger.recordOutput(
+            "Drive/Odometry/WheelEncoderPoseDeg", getPose2d().getRotation().getDegrees());
       }
 
       if (Constants.debug) {
