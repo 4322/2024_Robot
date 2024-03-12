@@ -4,11 +4,13 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.RobotCoordinator;
+import org.littletonrobotics.junction.Logger;
 
 public class LED extends SubsystemBase {
   public LedIO io;
   private LEDState currentState = LEDState.idle;
   private Timer initTimer = new Timer();
+  private LedIOInputsAutoLogged inputs = new LedIOInputsAutoLogged();
 
   public enum LEDState {
     notInitialized,
@@ -53,6 +55,9 @@ public class LED extends SubsystemBase {
   public void periodic() {
     // initial check
     if (Constants.ledEnabled) {
+      io.updateInputs(inputs);
+      Logger.processInputs("LED/", inputs);
+
       if (!RobotCoordinator.getInstance().getInitAbsEncoderPressed()
           && !RobotCoordinator.getInstance().isInitialized()) {
         setLEDState(LEDState.notInitialized);
