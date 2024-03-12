@@ -1,35 +1,27 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.BeamBreakConstants;
 import frc.robot.Robot;
 import frc.robot.commands.IntakeManual;
 import frc.robot.commands.IntakeManual.IntakeStates;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.limelight.Limelight;
+import frc.robot.subsystems.noteTracker.NoteTracker;
 import frc.robot.subsystems.outtake.Outtake;
-import org.littletonrobotics.junction.Logger;
 
 public class RobotCoordinator extends SubsystemBase {
   private Intake intake = Intake.getInstance();
   private Outtake outtake = Outtake.getInstance();
   private Drive drive = Drive.getInstance();
+  private NoteTracker noteTracker = NoteTracker.getInstance();
   private Limelight outtakeLimelight = Limelight.getOuttakeInstance();
   private Limelight intakeLimelight = Limelight.getIntakeInstance();
 
-  private static BeamBreakSensorIO noteTrackerSensorsIO;
-  private static BeamBreakSensorIOInputsAutoLogged inputs = new BeamBreakSensorIOInputsAutoLogged();
-
   private static RobotCoordinator robotCoordinator;
-  private Timer shootTimer = new Timer();
-
   private boolean intakeButtonPressed;
-  private boolean notePassingIntake;
-  private boolean notePassingTunnel;
   private boolean autoIntakeButtonPressed;
   private boolean initAbsEncoderPressed;
 
@@ -40,49 +32,30 @@ public class RobotCoordinator extends SubsystemBase {
     return robotCoordinator;
   }
 
-  private RobotCoordinator() {
-    switch (Constants.currentMode) {
-      case REAL:
-        if (Constants.sensorsEnabled) {
-          noteTrackerSensorsIO = new BeamBreakSensorIOReal();
-        }
-        break;
-      case SIM:
-        break;
-      case REPLAY:
-        break;
-    }
+  private RobotCoordinator() {}
 
-    if (noteTrackerSensorsIO == null) {
-      noteTrackerSensorsIO = new BeamBreakSensorIO() {};
-    }
+  // *****BELOW METHODS PERTAIN TO PHYSICAL LIMITATIONS OF ROBOT / SAFETY CHECKS*****
+  public boolean canDeploy() {
+    return !intake.isDeployed();
   }
 
-  @Override
-  public void periodic() {
-    if (Constants.sensorsEnabled) {
-      noteTrackerSensorsIO.updateInputs(inputs);
-      Logger.processInputs(BeamBreakConstants.Logging.key, inputs);
-    }
-
-    // update note tracking logic in robot
-    if (!inputs.intakeBeamBreak && intakeIsFeeding()) {
-      notePassingIntake = true;
-    } else if (!inputs.tunnelBeamBreak) {
-      notePassingIntake = false;
-      notePassingTunnel = true;
-    } else if (inputs.tunnelBeamBreak && notePassingTunnel) {
-      shootTimer.start();
-      if (shootTimer.hasElapsed(0.5)) {
-        notePassingTunnel = false;
-        shootTimer.stop();
-        shootTimer.reset();
-      }
-    } else if (intakeIsEjecting()) {
-      notePassingIntake = false;
-    }
+  public boolean canRetract() {
+    return !intake.isFeeding() && !intake.isEjecting();
   }
 
+  public boolean canShoot() {
+    return outtake.isFlyWheelUpToSpeed() && outtake.pivotIsAtPosition();
+  }
+
+  public boolean canSpinFlywheel() { // TODO: add checks to this
+    return true;
+  }
+
+  public boolean canPivot() {
+    return outtake.pivotIsInitialized();
+  }
+
+  // *****METHODS BELOW PERTAIN TO SUBSYTEM STATE INFORMATION*****
   public void setIntakeButtonState(boolean isPressed) {
     intakeButtonPressed = isPressed;
   }
@@ -109,7 +82,6 @@ public class RobotCoordinator extends SubsystemBase {
     return initAbsEncoderPressed;
   }
 
-  // below are all boolean checks polled from subsystems
   public boolean isIntakeDeployed() {
     return intake.isDeployed();
   }
@@ -126,10 +98,6 @@ public class RobotCoordinator extends SubsystemBase {
     return intake.isRetracted();
   }
 
-  public boolean canDeploy() {
-    return !intake.isDeployed();
-  }
-
   public boolean intakeIsDeployed() {
     return intake.isDeployed();
   }
@@ -142,10 +110,6 @@ public class RobotCoordinator extends SubsystemBase {
     return outtake.pivotIsInitialized();
   }
 
-  public boolean canRetract() {
-    return !intake.isFeeding() && !intake.isEjecting();
-  }
-
   public boolean intakeIsFeeding() {
     return intake.isFeeding();
   }
@@ -154,40 +118,23 @@ public class RobotCoordinator extends SubsystemBase {
     return intake.isEjecting();
   }
 
-  public boolean canShoot() {
-    return outtake.isFlyWheelUpToSpeed() && outtake.pivotIsAtPosition();
-  }
-
-  // TODO: add checks to this
-  public boolean canSpinFlywheel() {
-    return true;
-  }
-
-  public boolean canPivot() {
-    return outtake.pivotIsInitialized();
-  }
-
   public boolean noteInFiringPosition() {
-    return !inputs.tunnelBeamBreak;
+    return noteTracker.tunnelBeamBroken();
   }
 
   public boolean noteEnteringIntake() {
-    return !inputs.intakeBeamBreak && intake.isFeeding();
+    return noteTracker.intakeBeamBroken() && intake.isFeeding();
   }
 
   public boolean noteEjectingThroughIntake() {
-    return !inputs.intakeBeamBreak && intake.isEjecting();
+    return noteTracker.intakeBeamBroken() && intake.isEjecting();
   }
 
   public boolean noteInRobot() {
-    return !inputs.intakeBeamBreak
-        || !inputs.tunnelBeamBreak
-        || notePassingIntake
-        || notePassingTunnel;
-  }
-
-  public boolean noteIsShot() {
-    return !notePassingTunnel && inputs.tunnelBeamBreak;
+    return noteTracker.intakeBeamBroken()
+        || noteTracker.tunnelBeamBroken()
+        || noteTracker.notePassingIntake()
+        || noteTracker.notePassingTunnel();
   }
 
   public boolean onOurSideOfField() {

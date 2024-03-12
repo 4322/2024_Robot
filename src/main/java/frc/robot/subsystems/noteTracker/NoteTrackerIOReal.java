@@ -1,13 +1,13 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.noteTracker;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 
-public class BeamBreakSensorIOReal implements BeamBreakSensorIO {
+public class NoteTrackerIOReal implements NoteTrackerIO {
   DigitalInput intakeInput;
   DigitalInput tunneInput;
 
-  public BeamBreakSensorIOReal() {
+  public NoteTrackerIOReal() {
     if (Constants.sensorsEnabled) {
       intakeInput = new DigitalInput(Constants.BeamBreakConstants.intakeBeamBreakID);
       tunneInput = new DigitalInput(Constants.BeamBreakConstants.tunnelBeamBreakID);
@@ -15,7 +15,7 @@ public class BeamBreakSensorIOReal implements BeamBreakSensorIO {
   }
 
   @Override
-  public void updateInputs(BeamBreakSensorIOInputs inputs) {
+  public void updateInputs(NoteTrackerIOInputs inputs) {
     // returns true when note doesn't break beam
     inputs.tunnelBeamBreak = tunneInput.get();
     inputs.intakeBeamBreak = intakeInput.get();
