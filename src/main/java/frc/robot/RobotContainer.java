@@ -116,6 +116,10 @@ public class RobotContainer {
         .addEvent(
             "SetOuttakeCollectingNote",
             new AutoSetOuttakeAdjust(Constants.FiringSolutions.CollectingNote));
+    PathPlannerManager.getInstance()
+        .addEvent(
+            "SetOuttakeSmartShooting",
+            new AutoSmartShooting());
 
     // DO NOT MOVE OR REMOVE THIS WITHOUT KNOWING WHAT YOU'RE DOING
     PathPlannerManager.getInstance().preloadAutos();
