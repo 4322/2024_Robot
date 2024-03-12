@@ -11,7 +11,7 @@ import frc.robot.subsystems.outtake.Outtake;
 import frc.utility.FiringSolutionHelper;
 import org.littletonrobotics.junction.Logger;
 
-public class AutoSmartShooting extends Command {
+public class AutoSmartShooting extends InstantCommand {
   private final Outtake outtake;
 
   public AutoSmartShooting() {
@@ -22,10 +22,7 @@ public class AutoSmartShooting extends Command {
   }
 
   @Override
-  public void initialize() {}
-
-  @Override
-  public void execute() {
+  public void initialize() {
     final FiringSolution solution;
     double botMagToSpeaker =
         FiringSolutionHelper.getVectorToSpeaker(
@@ -55,13 +52,7 @@ public class AutoSmartShooting extends Command {
   }
 
   @Override
-  public boolean isFinished() {
-    return false;
-  }
-
-  @Override
   public void end(boolean interrupted) {
-    outtake.stopOuttake();
-    outtake.stopPivot();
+
   }
 }
