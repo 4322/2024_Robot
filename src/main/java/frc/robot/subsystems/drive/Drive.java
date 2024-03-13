@@ -48,6 +48,7 @@ public class Drive extends SubsystemBase {
   private Translation2d latestVelocityXY;
   private ChassisSpeeds latestChassisSpeeds;
   private double pitchOffset;
+  private boolean robotCentricEnabled;
 
   private ArrayList<SnapshotTranslation2D> velocityHistory = new ArrayList<SnapshotTranslation2D>();
 
@@ -403,7 +404,13 @@ public class Drive extends SubsystemBase {
         stop();
       } else {
         Rotation2d robotAngle;
-        robotAngle = getRotation2d();
+        // switches between robot centric and field centric driving
+        if (robotCentricEnabled) {
+          robotAngle = new Rotation2d();
+        }
+        else {
+          robotAngle = getRotation2d();
+        }
 
         // create SwerveModuleStates inversely from the kinematics
         var swerveModuleStates =
@@ -575,6 +582,10 @@ public class Drive extends SubsystemBase {
     } else {
       return null;
     }
+  }
+
+  public void enableRobotCentricDriving(boolean enabled) {
+    robotCentricEnabled = enabled;
   }
 
   public boolean isPseudoAutoRotateEnabled() {

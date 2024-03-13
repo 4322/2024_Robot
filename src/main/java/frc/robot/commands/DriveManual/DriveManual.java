@@ -81,6 +81,7 @@ public class DriveManual extends Command {
     if (Constants.speakerCentricEnabled) {
       switch (stateMachine.getState()) {
         case DEFAULT:
+          drive.enableRobotCentricDriving(false);
           if (rotatePower != 0) {
             doSpinout();
           } else if (drive.isAutoRotateTuningEnabled()) {
@@ -92,12 +93,16 @@ public class DriveManual extends Command {
           }
           break;
         case SPEAKER_CENTRIC:
+          drive.enableRobotCentricDriving(false);
           Pose2d drivePose2D = drive.getPose2d();
           Translation2d speakerVec =
               FiringSolutionHelper.getVectorToSpeaker(drivePose2D.getX(), drivePose2D.getY());
           Logger.recordOutput("SpeakerCentricHeading", speakerVec.getAngle().getDegrees());
           drive.driveAutoRotate(driveX, driveY, speakerVec.getAngle().getDegrees());
           break;
+        case ROBOT_CENTRIC:
+          drive.enableRobotCentricDriving(true);
+          drive.drive(driveX, driveY, rotatePower);
       }
     } else { // do regular drive logic
       if (rotatePower != 0) {
