@@ -48,13 +48,13 @@ public class UpdateOdometry extends Command {
     }
 
     Logger.recordOutput(
-      Constants.LimelightConstants.outtakeLimelightName + "/BotposeBlue/OdomX",
+        Constants.LimelightConstants.outtakeLimelightName + "/BotposeBlue/OdomX",
         limelightPose.getX());
     Logger.recordOutput(
-      Constants.LimelightConstants.outtakeLimelightName + "/BotposeBlue/OdomY",
+        Constants.LimelightConstants.outtakeLimelightName + "/BotposeBlue/OdomY",
         limelightPose.getY());
     Logger.recordOutput(
-      Constants.LimelightConstants.outtakeLimelightName + "/BotposeBlue/RotationDeg",
+        Constants.LimelightConstants.outtakeLimelightName + "/BotposeBlue/RotationDeg",
         limelightPose.getRotation().getDegrees());
   }
 

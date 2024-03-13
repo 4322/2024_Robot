@@ -1,15 +1,13 @@
-package frc.robot.commands.OuttakeManual;
+package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.FiringSolutions;
-import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualState;
-import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualTrigger;
 import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.utility.FiringSolutionHelper;
 import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class AutoSmartShooting extends InstantCommand {
   private final Outtake outtake;
@@ -35,8 +33,7 @@ public class AutoSmartShooting extends InstantCommand {
                 RobotCoordinator.getInstance().getRobotYPos())
             .getAngle()
             .getDegrees();
-    solution =
-        FiringSolutionManager.getInstance().calcSolution(botMagToSpeaker, botAngleToSpeaker);
+    solution = FiringSolutionManager.getInstance().calcSolution(botMagToSpeaker, botAngleToSpeaker);
 
     Logger.recordOutput("FiringSolutions/CalculatedShot", solution.toString());
     Logger.recordOutput("FiringSolutions/BotPoseInput/Mag", botMagToSpeaker);
@@ -52,7 +49,5 @@ public class AutoSmartShooting extends InstantCommand {
   }
 
   @Override
-  public void end(boolean interrupted) {
-
-  }
+  public void end(boolean interrupted) {}
 }
