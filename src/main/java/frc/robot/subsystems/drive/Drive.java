@@ -381,11 +381,21 @@ public class Drive extends SubsystemBase {
 
   // this drive function is for regular driving when pivot point is at robot center point
   public void drive(double driveX, double driveY, double rotate) {
-    drive(driveX, driveY, rotate, new Translation2d());
+    drive(driveX, driveY, rotate, new Translation2d(), getRotation2d());
   }
 
-  // main drive function accounts for spinout when center point is on swerve modules
+  // this drive function allows you to switch to robot centric driving
+  public void drive(double driveX, double driveY, double rotate, Rotation2d robotAngle) {
+    drive(driveX, driveY, rotate, new Translation2d(), robotAngle);
+  }
+
+  // this drive function accounts for spinout when center point is on swerve modules
   public void drive(double driveX, double driveY, double rotate, Translation2d centerOfRotation) {
+    drive(driveX, driveY, rotate, centerOfRotation, getRotation2d());
+  }
+
+  // main drive function
+  public void drive(double driveX, double driveY, double rotate, Translation2d centerOfRotation, Rotation2d robotAngle) {
     if (Constants.driveEnabled && Constants.gyroEnabled) {
 
       if (Constants.debug) {
@@ -402,9 +412,6 @@ public class Drive extends SubsystemBase {
       if ((driveX == 0) && (driveY == 0) && (rotate == 0)) {
         stop();
       } else {
-        Rotation2d robotAngle;
-        robotAngle = getRotation2d();
-
         // create SwerveModuleStates inversely from the kinematics
         var swerveModuleStates =
             kinematics.toSwerveModuleStates(
