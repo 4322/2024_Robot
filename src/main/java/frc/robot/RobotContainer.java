@@ -251,6 +251,11 @@ public class RobotContainer {
           .onTrue(
               Commands.runOnce(
                   () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP)));
+      operatorXbox
+          .back()
+          .onTrue(
+              Commands.runOnce(
+                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED)));
     }
   }
 
