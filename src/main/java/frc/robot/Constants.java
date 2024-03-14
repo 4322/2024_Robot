@@ -500,6 +500,7 @@ public final class Constants {
     public static final FiringSolution BS = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution Eject = new FiringSolution(0, 0, 10, 50);
     public static final FiringSolution CollectingNote = new FiringSolution(0, 0, 0, 10);
+    public static final FiringSolution Feed = new FiringSolution(0, 0, -25, 113); // TODO need to tune for source
   }
 
   public enum WheelPosition {
