@@ -184,4 +184,12 @@ public class Outtake extends SubsystemBase {
   public boolean getDebugOverrideEnabled() {
     return inputs.debugOverrideEnable;
   }
+
+  public boolean isOuttaking() {
+    return targetRPS > 0;
+  }
+
+  public boolean isFeeding() {
+    return targetRPS < 0;
+  }
 }
