@@ -3,9 +3,11 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.limelight.Limelight;
+import org.littletonrobotics.junction.Logger;
 
 public class UpdateOdometry extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
@@ -37,13 +39,33 @@ public class UpdateOdometry extends Command {
         && numTargets >= LimelightConstants.numTargetsToUseReverseOdom) {
       Drive.getInstance()
           .updateOdometryVision(
-              limelightPose, Timer.getFPGATimestamp() - limelight.getTotalLatency());
+              limelightPose, Timer.getFPGATimestamp() - (limelight.getTotalLatency() / 1000.0));
+      Logger.recordOutput(
+          Constants.LimelightConstants.outtakeLimelightName + "/IsAddingVisonMeasurement", true);
+    } else {
+      Logger.recordOutput(
+          Constants.LimelightConstants.outtakeLimelightName + "/IsAddingVisonMeasurement", false);
     }
+
+    Logger.recordOutput(
+        Constants.LimelightConstants.outtakeLimelightName + "/BotposeBlue/OdomX",
+        limelightPose.getX());
+    Logger.recordOutput(
+        Constants.LimelightConstants.outtakeLimelightName + "/BotposeBlue/OdomY",
+        limelightPose.getY());
+    Logger.recordOutput(
+        Constants.LimelightConstants.outtakeLimelightName + "/BotposeBlue/RotationDeg",
+        limelightPose.getRotation().getDegrees());
   }
 
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
   }
 
   // Called once the command ends or is interrupted.

@@ -4,11 +4,13 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.RobotCoordinator;
+import org.littletonrobotics.junction.Logger;
 
 public class LED extends SubsystemBase {
   public LedIO io;
   private LEDState currentState = LEDState.idle;
   private Timer initTimer = new Timer();
+  private LedIOInputsAutoLogged inputs = new LedIOInputsAutoLogged();
 
   public enum LEDState {
     notInitialized,
@@ -53,6 +55,9 @@ public class LED extends SubsystemBase {
   public void periodic() {
     // initial check
     if (Constants.ledEnabled) {
+      io.updateInputs(inputs);
+      Logger.processInputs("LED/", inputs);
+
       if (!RobotCoordinator.getInstance().getInitAbsEncoderPressed()
           && !RobotCoordinator.getInstance().isInitialized()) {
         setLEDState(LEDState.notInitialized);
@@ -81,12 +86,12 @@ public class LED extends SubsystemBase {
     if (Constants.ledEnabled) {
       if (currentState != state) {
         currentState = state;
+        io.configBrightness(1); // reset brightness scalar
+        io.clearAnimation(); // allows for other LED states to be set
       }
-      io.configBrightness(1); // reset brightness scalar
-      io.clearAnimation(); // allows for other LED states to be set
       switch (currentState) {
         case notInitialized:
-          io.flashAnimate(255, 0, 0, 0.5, Constants.LED.totalLEDs, 0);
+          io.flashAnimate(255, 0, 0, 0.5, 0, Constants.LED.totalLEDs);
           break;
         case initialized:
           io.setLED(0, 255, 0, 0, Constants.LED.totalLEDs);
@@ -95,9 +100,6 @@ public class LED extends SubsystemBase {
           io.setLED(0, 0, 255, 0, Constants.LED.totalLEDs);
           break;
         case deployingIntake:
-          io.configBrightness(
-              RobotCoordinator.getInstance().getDeployRotations()
-                  / Constants.IntakeConstants.DeployConfig.deployTargetPosition); // TODO
           io.setLED(255, 0, 0, 0, Constants.LED.totalLEDs);
           break;
         case noteInRobot:
@@ -107,7 +109,7 @@ public class LED extends SubsystemBase {
           io.setLED(0, 255, 0, 0, Constants.LED.totalLEDs);
           break;
         case noteReadyToShoot:
-          io.rainbowAnimate(1, 0.5, Constants.LED.totalLEDs, 0);
+          io.rainbowAnimate(1, 0.5, 0, Constants.LED.totalLEDs);
           break;
       }
     }

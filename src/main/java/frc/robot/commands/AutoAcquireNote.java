@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -66,6 +68,10 @@ public class AutoAcquireNote extends Command {
     desiredRobotDirectionY = Math.sin(desiredHeadingAngle);
     notePositionX = noteDistance * desiredRobotDirectionX + pose.getX();
     notePositionY = noteDistance * desiredRobotDirectionY + pose.getY();
+
+    Logger.recordOutput("AutoAcquireNote/NoteDistFromRobot", noteDistance);
+    Logger.recordOutput("AutoAcquireNote/PoseXOnField", notePositionX);
+    Logger.recordOutput("AutoAcquireNote/PoseYOnField", notePositionY);
   }
 
   @Override

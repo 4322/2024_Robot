@@ -26,6 +26,7 @@ import frc.robot.commands.AutoSetOuttakeAdjust;
 import frc.robot.commands.ClimberExtend;
 import frc.robot.commands.ClimberRetract;
 import frc.robot.commands.ClimberSlowRetractOverride;
+import frc.robot.commands.AutoSmartShooting;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
@@ -46,6 +47,7 @@ import frc.robot.commands.TunnelStop;
 import frc.robot.commands.UpdateOdometry;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
 import frc.robot.shooting.FiringSolutionManager;
+import frc.robot.subsystems.LED.LED;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
@@ -82,6 +84,7 @@ public class RobotContainer {
   private final Tunnel tunnel = Tunnel.getInstance();
   private final Outtake outtake = Outtake.getInstance();
   private final Intake intake = Intake.getInstance();
+  private final LED led = LED.getInstance();
 
   private final WriteFiringSolutionAtCurrentPos writeFiringSolution =
       new WriteFiringSolutionAtCurrentPos();
@@ -119,6 +122,7 @@ public class RobotContainer {
         .addEvent(
             "SetOuttakeCollectingNote",
             new AutoSetOuttakeAdjust(Constants.FiringSolutions.CollectingNote));
+    PathPlannerManager.getInstance().addEvent("SetOuttakeSmartShooting", new AutoSmartShooting());
 
     // DO NOT MOVE OR REMOVE THIS WITHOUT KNOWING WHAT YOU'RE DOING
     PathPlannerManager.getInstance().preloadAutos();
@@ -137,7 +141,8 @@ public class RobotContainer {
       tunnel.setDefaultCommand(tunnelFeed);
     }
 
-    if (Constants.outtakeEnabled && !Constants.outtakeTuningMode) {
+    if ((Constants.outtakeEnabled || Constants.outtakePivotEnabled)
+        && !Constants.outtakeTuningMode) {
       outtake.setDefaultCommand(outtakeManual);
     }
 
@@ -175,9 +180,30 @@ public class RobotContainer {
           .onTrue(
               Commands.runOnce(
                   () -> {
-                    driveManual.updateStateMachine(DriveManualTrigger.SWITCH_MODES);
+                    driveManual.updateStateMachine(DriveManualTrigger.ENABLE_ROBOT_CENTRIC);
                   }));
-      driveXbox.povUp().onTrue(new ResetFieldCentric(true));
+      driveXbox
+          .leftBumper()
+          .onFalse(
+              Commands.runOnce(
+                  () -> {
+                    driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);
+                  }));
+      driveXbox
+          .rightBumper()
+          .onTrue(
+              Commands.runOnce(
+                  () -> {
+                    driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC);
+                  }));
+      driveXbox
+          .button(0) // TODO: need to figure out and map to button on back right of controller
+          .onTrue(
+            Commands.runOnce(
+                  () -> {
+                    driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC);
+                  }));
+      driveXbox.x().onTrue(new ResetFieldCentric(true));
       driveXbox.povDown().onTrue(driveStop);
       driveXbox
           .rightTrigger()
@@ -194,12 +220,14 @@ public class RobotContainer {
                   () -> {
                     RobotCoordinator.getInstance().setIntakeButtonState(false);
                   }));
-      driveXbox
-          .rightBumper()
+      driveXbox.leftTrigger().whileTrue(new Shoot());
+      operatorXbox.rightBumper().whileTrue(new ClimberSlowRetractOverride());
+      operatorXbox
+          .leftTrigger()
           .onTrue(
               Commands.runOnce(
                   () -> {
-                    RobotCoordinator.getInstance().setAutoIntakeButtonPressed(true);
+                    outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_CLIMBING);
                   }));
       driveXbox
           .rightBumper()
@@ -235,7 +263,7 @@ public class RobotContainer {
                       Commands.waitUntil(() -> Climber.getInstance().isFullyRetracted()),
                       new OperatorXboxControllerRumble())));
       if (Constants.shotTuningMode) {
-        driveXbox.x().onTrue(writeFiringSolution);
+        driveXbox.y().onTrue(writeFiringSolution);
         // right up against front of speaker with edge of robot on source side
         driveXbox
             .start()

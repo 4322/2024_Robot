@@ -1,14 +1,15 @@
 package frc.robot.shooting;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.Constants;
+import edu.wpi.first.wpilibj.Filesystem;
 import frc.utility.interpolation.Calculator1D;
 import frc.utility.interpolation.GenericCalculator;
 import frc.utility.interpolation.GenericFiringSolutionManager;
 import java.io.File;
 import java.util.ArrayList;
-
+import java.util.List;
 import org.littletonrobotics.junction.Logger;
 
 public class FiringSolutionManager implements GenericFiringSolutionManager<FiringSolution> {
@@ -46,17 +47,29 @@ public class FiringSolutionManager implements GenericFiringSolutionManager<Firin
   }
 
   public void loadSolutions() {
-    for (FiringSolution solution : Constants.odometryFiringSolutions) {
-      addSolution(solution);
+    List<FiringSolution> solutionList;
+    try {
+      solutionList =
+          objectMapper.readValue(
+              new File(Filesystem.getDeployDirectory().getPath() + "/FiringSolutions.json"),
+              new TypeReference<ArrayList<FiringSolution>>() {});
+      for (FiringSolution solution : solutionList) {
+        addSolution(solution);
+      }
+      DriverStation.reportWarning("Loaded all firing solutions", false);
+    } catch (Exception e) {
+      e.printStackTrace();
+      DriverStation.reportError("Failed to load firing solutions", e.getStackTrace());
     }
-    DriverStation.reportWarning("Loaded all firing solutions", false);
   }
 
   public FiringSolution calcSolution(double currentMag, double currentDeg) {
     FiringSolution inputsToFind = new FiringSolution(currentMag, currentDeg);
     ArrayList<FiringSolution> selectedSolutions = calculator.find(inputsToFind);
     for (int i = 0; i < selectedSolutions.size(); i++) {
-      Logger.recordOutput("FiringSolutions/PointOfInterpolation/Solution " + i, selectedSolutions.get(i).toString());
+      Logger.recordOutput(
+          "FiringSolutions/PointOfInterpolation/Solution " + i,
+          selectedSolutions.get(i).toString());
     }
     ArrayList<Double> calculatedComponents =
         calculator.calculate(currentMag, currentDeg, selectedSolutions);

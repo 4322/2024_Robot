@@ -492,7 +492,7 @@ public final class Constants {
   }
 
   public static final class LED {
-    public static final int totalLEDs = 0; // TODO: find umber of INDIVIDUAL LEDs mounted on robot
+    public static final int totalLEDs = 20; // TODO: find umber of INDIVIDUAL LEDs mounted on robot
     public static final int CANdleID = 3;
   }
 
@@ -524,25 +524,7 @@ public final class Constants {
     public static final FiringSolution Climbing =
         new FiringSolution(0, 0, 0, ClimberConstants.climbingPivotRotations);
     public static final FiringSolution CollectingNote = new FiringSolution(0, 0, 0, 10);
-
-    // shots get progressively farther away from speaker, starting at closest to speaker
-    public static final FiringSolution sol1 = new FiringSolution(1.809581132, -0.523426789472108, 55.0, 90.0);
-    public static final FiringSolution sol2 = new FiringSolution(2.43521634, -0.5941755097888944, 55.0, 70.0);
-    public static final FiringSolution sol3 = new FiringSolution(2.871440222, -0.6504111183955062, 60.0, 62.0);
-    public static final FiringSolution sol4 = new FiringSolution(3.364694169, -0.5810479316417732, 60.0, 54.5);
   }
-
-  public static FiringSolution[] odometryFiringSolutions;
-  static {
-    odometryFiringSolutions = new FiringSolution[5];
-    int i = 0;
-    odometryFiringSolutions[i++] = FiringSolutions.SubwooferBase;
-    odometryFiringSolutions[i++] = FiringSolutions.sol1;
-    odometryFiringSolutions[i++] = FiringSolutions.sol2;
-    odometryFiringSolutions[i++] = FiringSolutions.sol3;
-    odometryFiringSolutions[i++] = FiringSolutions.sol4;
-  }
-
 
   public enum WheelPosition {
     // construction of SwerveDriveKinematics is dependent on this enum
