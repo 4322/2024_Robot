@@ -10,24 +10,34 @@ public class DriveManualStateMachine {
 
   public enum DriveManualState {
     DEFAULT,
-    SPEAKER_CENTRIC
+    SPEAKER_CENTRIC,
+    ROBOT_CENTRIC
   }
 
   public enum DriveManualTrigger {
-    SWITCH_MODES,
+    ENABLE_SPEAKER_CENTRIC,
+    ENABLE_ROBOT_CENTRIC,
     RESET_TO_DEFAULT,
   }
 
   public DriveManualStateMachine(DriveManualState initialState) {
     config
         .configure(DriveManualState.DEFAULT)
-        .permit(DriveManualTrigger.SWITCH_MODES, DriveManualState.SPEAKER_CENTRIC)
+        .permit(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC, DriveManualState.SPEAKER_CENTRIC)
+        .permit(DriveManualTrigger.ENABLE_ROBOT_CENTRIC, DriveManualState.ROBOT_CENTRIC)
         .permitReentry(DriveManualTrigger.RESET_TO_DEFAULT);
 
     config
         .configure(DriveManualState.SPEAKER_CENTRIC)
-        .permit(DriveManualTrigger.SWITCH_MODES, DriveManualState.DEFAULT)
-        .permit(DriveManualTrigger.RESET_TO_DEFAULT, DriveManualState.DEFAULT);
+        .permit(DriveManualTrigger.RESET_TO_DEFAULT, DriveManualState.DEFAULT)
+        .permitReentry(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC)
+        .permitReentry(DriveManualTrigger.ENABLE_ROBOT_CENTRIC); // don't want to accidentally switch to robot centric from speaker centric
+    
+    config
+        .configure(DriveManualState.ROBOT_CENTRIC)
+        .permit(DriveManualTrigger.RESET_TO_DEFAULT, DriveManualState.DEFAULT)
+        .permitReentry(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC)
+        .permitReentry(DriveManualTrigger.ENABLE_ROBOT_CENTRIC);// don't want to accidentally switch to speaker centric from robot centric
 
     stateMachine = new StateMachine<DriveManualState, DriveManualTrigger>(initialState, config);
   }
