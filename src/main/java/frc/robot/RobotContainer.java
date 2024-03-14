@@ -175,9 +175,30 @@ public class RobotContainer {
           .onTrue(
               Commands.runOnce(
                   () -> {
-                    driveManual.updateStateMachine(DriveManualTrigger.SWITCH_MODES);
+                    driveManual.updateStateMachine(DriveManualTrigger.ENABLE_ROBOT_CENTRIC);
                   }));
-      driveXbox.povUp().onTrue(new ResetFieldCentric(true));
+      driveXbox
+          .leftBumper()
+          .onFalse(
+              Commands.runOnce(
+                  () -> {
+                    driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);
+                  }));
+      driveXbox
+          .rightBumper()
+          .onTrue(
+              Commands.runOnce(
+                  () -> {
+                    driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC);
+                  }));
+      driveXbox
+          .button(0) // TODO: need to figure out and map to button on back right of controller
+          .onTrue(
+            Commands.runOnce(
+                  () -> {
+                    driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC);
+                  }));
+      driveXbox.x().onTrue(new ResetFieldCentric(true));
       driveXbox.povDown().onTrue(driveStop);
       driveXbox
           .rightTrigger()
@@ -194,24 +215,10 @@ public class RobotContainer {
                   () -> {
                     RobotCoordinator.getInstance().setIntakeButtonState(false);
                   }));
-      driveXbox
-          .rightBumper()
-          .onTrue(
-              Commands.runOnce(
-                  () -> {
-                    RobotCoordinator.getInstance().setAutoIntakeButtonPressed(true);
-                  }));
-      driveXbox
-          .rightBumper()
-          .onFalse(
-              Commands.runOnce(
-                  () -> {
-                    RobotCoordinator.getInstance().setAutoIntakeButtonPressed(false);
-                  }));
       driveXbox.leftTrigger().whileTrue(new Shoot());
       driveXbox.povLeft().onTrue(new AtHome());
       if (Constants.shotTuningMode) {
-        driveXbox.x().onTrue(writeFiringSolution);
+        driveXbox.y().onTrue(writeFiringSolution);
         // right up against front of speaker with edge of robot on source side
         driveXbox
             .start()
