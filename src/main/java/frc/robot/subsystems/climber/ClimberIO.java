@@ -11,13 +11,11 @@ public interface ClimberIO {
     public double currentAmps = 0.0;
     public double tempC = 0;
     public boolean isAlive = false;
-    public double fastVolts = 0.0;
-    public double slowVolts = 0.0;
   }
 
   public default void updateInputs(ClimberIOInputs inputs) {}
 
-  public default void setClimberVoltage(double volt, boolean limitReverseMotion) {}
+  public default void setFreeMoveVoltage(double volt) {}
 
   public default void setBrakeMode() {}
 
@@ -25,7 +23,7 @@ public interface ClimberIO {
 
   public default void stopMotor() {}
 
-  public default void zeroClimberAtCurrentPos() {}
+  public default void setClimbingVoltage(double volts) {}
 
-  public default void setReverseSoftLimitEnabled(boolean softLimitsEnabled) {}
+  public default void zeroClimberAtCurrentPos() {}
 }

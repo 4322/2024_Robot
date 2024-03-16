@@ -42,27 +42,25 @@ public class Climber extends SubsystemBase {
 
   public void extend() {
     if (Constants.climberEnabled) {
-      io.setClimberVoltage(inputs.fastVolts, true);
-      Logger.recordOutput("Climber/desiredVolts", inputs.fastVolts);
+      io.setFreeMoveVoltage(Constants.ClimberConstants.fastClimberVolts);
+      Logger.recordOutput("Climber/desiredVolts", Constants.ClimberConstants.fastClimberVolts);
       Logger.recordOutput("Climber/State", "Extending");
     }
   }
 
   public void retract() {
     if (Constants.climberEnabled) {
-      io.setClimberVoltage(-inputs.fastVolts, true);
-      Logger.recordOutput("Climber/desiredVolts", -inputs.fastVolts);
+      io.setClimbingVoltage(-Constants.ClimberConstants.fastClimberVolts);
+      Logger.recordOutput("Climber/desiredVolts", -Constants.ClimberConstants.fastClimberVolts);
       Logger.recordOutput("Climber/State", "Retracting");
     }
   }
 
   public void slowRetractOverride() {
     if (Constants.climberEnabled) {
-      io.setClimberVoltage(
-          -inputs.slowVolts,
-          false); // only letting us retract freely when slow bc otherwise we could be unable to
-      // stop in time
-      Logger.recordOutput("Climber/desiredVolts", -inputs.slowVolts);
+      io.setFreeMoveVoltage(
+          -Constants.ClimberConstants.slowClimberVolts);
+      Logger.recordOutput("Climber/desiredVolts", -Constants.ClimberConstants.slowClimberVolts);
       Logger.recordOutput("Climber/State", "SlowRetracting");
     }
   }
@@ -98,11 +96,11 @@ public class Climber extends SubsystemBase {
         || (inputs.rotations > ClimberConstants.climberMaxRotations);
   }
 
-  public boolean isFullyRetracted() {
+  public boolean isAtClimbRetractingThreshold() {
     return OrangeMath.equalToEpsilon(
             inputs.rotations,
-            ClimberConstants.climberMinRotations,
+            ClimberConstants.retractingThreshold,
             ClimberConstants.climberRotationTolerance)
-        || (inputs.rotations < ClimberConstants.climberMinRotations);
+        || (inputs.rotations < ClimberConstants.retractingThreshold);
   }
 }
