@@ -2,7 +2,6 @@ package frc.robot.commands.OuttakeTunnelFeed;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualState;
 import frc.robot.commands.OuttakeTunnelFeed.OuttakeTunnelFeedStateMachine.OuttakeTunnelFeedState;
 import frc.robot.commands.OuttakeTunnelFeed.OuttakeTunnelFeedStateMachine.OuttakeTunnelFeedTrigger;
 import frc.robot.subsystems.noteTracker.NoteTracker;
@@ -45,6 +44,8 @@ public class OuttakeTunnelFeed extends Command {
         }
         break;
       case NOTE_IDLE_IN_TUNNEL:
+        // delay of 0.5 needed before entering this state in order to stop tunnel from reversing
+        // direction immediately and causing wear in pulleys
         break;
     }
   }

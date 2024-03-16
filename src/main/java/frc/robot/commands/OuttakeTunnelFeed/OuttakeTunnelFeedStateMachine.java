@@ -24,26 +24,18 @@ private StateMachine<OuttakeTunnelFeedState, OuttakeTunnelFeedTrigger> stateMach
   public OuttakeTunnelFeedStateMachine(OuttakeTunnelFeedState initialState) {
     config
         .configure(OuttakeTunnelFeedState.NO_NOTE)
-        .permitReentry(OuttakeTunnelFeedTrigger.TUNNEL_BEAM_NOT_BROKEN)
-        .permit(OuttakeTunnelFeedTrigger.TUNNEL_BEAM_BROKEN, OuttakeTunnelFeedState.NOTE_PASSING_TUNNEL)
-        .permitReentry(OuttakeTunnelFeedTrigger.ENABLE_STATE_RESET);
+        .permit(OuttakeTunnelFeedTrigger.TUNNEL_BEAM_BROKEN, OuttakeTunnelFeedState.NOTE_PASSING_TUNNEL);
     
     config
         .configure(OuttakeTunnelFeedState.NOTE_PASSING_TUNNEL)
-        .permit(OuttakeTunnelFeedTrigger.TUNNEL_BEAM_NOT_BROKEN, OuttakeTunnelFeedState.NOTE_PAST_TUNNEL)
-        .permitReentry(OuttakeTunnelFeedTrigger.TUNNEL_BEAM_BROKEN)
-        .permit(OuttakeTunnelFeedTrigger.ENABLE_STATE_RESET, OuttakeTunnelFeedState.NO_NOTE);
+        .permit(OuttakeTunnelFeedTrigger.TUNNEL_BEAM_NOT_BROKEN, OuttakeTunnelFeedState.NOTE_PAST_TUNNEL);
     
     config
         .configure(OuttakeTunnelFeedState.NOTE_PAST_TUNNEL)
-        .permit(OuttakeTunnelFeedTrigger.TUNNEL_BEAM_NOT_BROKEN, OuttakeTunnelFeedState.NOTE_IDLE_IN_TUNNEL)
-        .permitReentry(OuttakeTunnelFeedTrigger.TUNNEL_BEAM_BROKEN)
-        .permit(OuttakeTunnelFeedTrigger.ENABLE_STATE_RESET, OuttakeTunnelFeedState.NO_NOTE);
+        .permit(OuttakeTunnelFeedTrigger.TUNNEL_BEAM_NOT_BROKEN, OuttakeTunnelFeedState.NOTE_IDLE_IN_TUNNEL);
     
     config
         .configure(OuttakeTunnelFeedState.NOTE_IDLE_IN_TUNNEL)
-        .permitReentry(OuttakeTunnelFeedTrigger.TUNNEL_BEAM_NOT_BROKEN)
-        .permitReentry(OuttakeTunnelFeedTrigger.TUNNEL_BEAM_BROKEN)
         .permit(OuttakeTunnelFeedTrigger.ENABLE_STATE_RESET, OuttakeTunnelFeedState.NO_NOTE);
         
 
