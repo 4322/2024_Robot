@@ -229,22 +229,6 @@ public class RobotContainer {
                   () -> {
                     outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_CLIMBING);
                   }));
-      driveXbox
-          .rightBumper()
-          .onFalse(
-              Commands.runOnce(
-                  () -> {
-                    RobotCoordinator.getInstance().setAutoIntakeButtonPressed(false);
-                  }));
-      driveXbox.leftTrigger().whileTrue(new Shoot());
-      operatorXbox.rightBumper().whileTrue(new ClimberSlowRetractOverride());
-      operatorXbox
-          .leftTrigger()
-          .onTrue(
-              Commands.runOnce(
-                  () -> {
-                    outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_CLIMBING);
-                  }));
       operatorXbox.leftTrigger().onTrue(new AutoIntakeDeploy());
       operatorXbox
           .leftTrigger()
