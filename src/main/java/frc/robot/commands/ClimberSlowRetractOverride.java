@@ -5,10 +5,8 @@ import frc.robot.subsystems.climber.Climber;
 
 public class ClimberSlowRetractOverride extends Command {
   private Climber climber;
-  private OperatorXboxControllerRumble xBoxRumble;
 
   public ClimberSlowRetractOverride() {
-    xBoxRumble = new OperatorXboxControllerRumble();
     climber = Climber.getInstance();
     addRequirements(climber);
   }

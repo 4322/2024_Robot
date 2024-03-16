@@ -17,18 +17,18 @@ public class ClimberRetract extends Command {
   @Override
   public void execute() {
     climber.retract();
+    if (climber.isFullyRetracted()) {
+      CommandScheduler.getInstance().schedule(xBoxRumble);
+    }
   }
 
   @Override
   public boolean isFinished() {
-    return false;
+    return climber.isFullyRetracted();
   }
 
   @Override
   public void end(boolean interrupted) {
-    if (climber.isFullyRetracted()) {
-      CommandScheduler.getInstance().schedule(xBoxRumble);
-    }
     climber.stopClimb();
   }
 }

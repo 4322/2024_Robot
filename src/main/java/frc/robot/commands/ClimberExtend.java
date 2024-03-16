@@ -17,18 +17,18 @@ public class ClimberExtend extends Command {
   @Override
   public void execute() {
     climber.extend();
+    if (climber.isFullyExtended()) {
+      CommandScheduler.getInstance().schedule(xBoxRumble);
+    }
   }
 
   @Override
   public boolean isFinished() {
-    return false;
+    return climber.isFullyExtended();
   }
 
   @Override
   public void end(boolean interrupted) {
-    if (climber.isFullyExtended()) {
-      CommandScheduler.getInstance().schedule(xBoxRumble);
-    }
     climber.stopClimb();
   }
 }
