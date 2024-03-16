@@ -47,8 +47,8 @@ public class RobotCoordinator extends SubsystemBase {
     return outtake.isFlyWheelUpToSpeed() && outtake.pivotIsAtPosition();
   }
 
-  public boolean canSpinFlywheel() { // TODO: add checks to this
-    return true;
+  public boolean canSpinFlywheel() {
+    return Outtake.getInstance().pivotIsInitialized();
   }
 
   public boolean canPivot() {
@@ -116,6 +116,14 @@ public class RobotCoordinator extends SubsystemBase {
 
   public boolean intakeIsEjecting() {
     return intake.isEjecting();
+  }
+
+  public boolean outtakeIsFeeding() {
+    return outtake.isFeeding();
+  }
+
+  public boolean outtakeIsEjecting() {
+    return outtake.isOuttaking();
   }
 
   public boolean noteInFiringPosition() {
