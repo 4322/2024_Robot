@@ -63,11 +63,6 @@ public class UpdateOdometry extends Command {
     return false;
   }
 
-  @Override
-  public boolean runsWhenDisabled() {
-    return true;
-  }
-
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}
