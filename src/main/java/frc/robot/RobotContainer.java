@@ -18,11 +18,12 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.AutoHelper.Auto;
+import frc.robot.Constants.FiringSolutions;
 import frc.robot.centerline.CenterLineManager.CenterLineScoringStrategy;
 import frc.robot.commands.AtHome;
 import frc.robot.commands.AutoIntakeDeploy;
 import frc.robot.commands.AutoIntakeIn;
-import frc.robot.commands.AutoSetOuttakeAdjust;
+import frc.robot.commands.SetOuttake;
 import frc.robot.commands.AutoSmartShooting;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
@@ -30,14 +31,13 @@ import frc.robot.commands.DriveStop;
 import frc.robot.commands.EjectThroughIntake;
 import frc.robot.commands.IntakeManual;
 import frc.robot.commands.IntakeStop;
-import frc.robot.commands.OuttakeManual.OuttakeManual;
-import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualTrigger;
 import frc.robot.commands.OuttakeStop;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetPivotsBrakeMode;
 import frc.robot.commands.SetPivotsCoastMode;
 import frc.robot.commands.SetRobotPose;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.SmartOuttake;
 import frc.robot.commands.TunnelFeed;
 import frc.robot.commands.TunnelStop;
 import frc.robot.commands.UpdateOdometry;
@@ -87,9 +87,7 @@ public class RobotContainer {
   private final DriveManual driveManual = new DriveManual();
 
   private final TunnelFeed tunnelFeed = new TunnelFeed();
-
-  private final OuttakeManual outtakeManual = new OuttakeManual();
-
+  
   private final IntakeManual intakeManual = new IntakeManual();
 
   private final DriveStop driveStop = new DriveStop();
@@ -112,11 +110,11 @@ public class RobotContainer {
     PathPlannerManager.getInstance()
         .addEvent(
             "SetOuttakeSubwooferBase",
-            new AutoSetOuttakeAdjust(Constants.FiringSolutions.SubwooferBase));
+            new SetOuttake(Constants.FiringSolutions.SubwooferBase));
     PathPlannerManager.getInstance()
         .addEvent(
             "SetOuttakeCollectingNote",
-            new AutoSetOuttakeAdjust(Constants.FiringSolutions.CollectingNote));
+            new SetOuttake(Constants.FiringSolutions.CollectingNote));
     PathPlannerManager.getInstance().addEvent("SetOuttakeSmartShooting", new AutoSmartShooting());
 
     // DO NOT MOVE OR REMOVE THIS WITHOUT KNOWING WHAT YOU'RE DOING
@@ -134,11 +132,6 @@ public class RobotContainer {
 
     if (Constants.tunnelEnabled) {
       tunnel.setDefaultCommand(tunnelFeed);
-    }
-
-    if ((Constants.outtakeEnabled || Constants.outtakePivotEnabled)
-        && !Constants.outtakeTuningMode) {
-      outtake.setDefaultCommand(outtakeManual);
     }
 
     if (Constants.intakeEnabled) {
@@ -202,12 +195,7 @@ public class RobotContainer {
       driveXbox.povDown().onTrue(driveStop);
       driveXbox
           .rightTrigger()
-          .onTrue(
-              Commands.runOnce(
-                  () -> {
-                    RobotCoordinator.getInstance().setIntakeButtonState(true);
-                    outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE);
-                  }));
+          .onTrue(new SetOuttake(FiringSolutions.CollectingNote));
       driveXbox
           .rightTrigger()
           .onFalse(
@@ -231,26 +219,16 @@ public class RobotContainer {
       operatorXbox.povUp().whileTrue(new EjectThroughIntake());
       operatorXbox
           .y()
-          .onTrue(
-              Commands.runOnce(
-                  () ->
-                      outtakeManual.updateStateMachine(
-                          OuttakeManualTrigger.ENABLE_SMART_SHOOTING)));
+          .onTrue(new SmartOuttake());
       operatorXbox
           .x()
-          .onTrue(
-              Commands.runOnce(
-                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_EJECT)));
+          .onTrue(new SetOuttake(FiringSolutions.Eject));
       operatorXbox
           .b()
-          .onTrue(
-              Commands.runOnce(
-                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SUBWOOFER)));
+          .onTrue(new SetOuttake(FiringSolutions.SubwooferBase));
       operatorXbox
           .a()
-          .onTrue(
-              Commands.runOnce(
-                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP)));
+          .onTrue(outtakeStop);
     }
   }
 

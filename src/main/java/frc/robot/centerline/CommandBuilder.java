@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.PathPlannerManager;
 import frc.robot.centerline.CLSM.TravelState;
-import frc.robot.commands.AutoSetOuttakeAdjust;
+import frc.robot.commands.SetOuttake;
 import frc.robot.commands.Shoot;
 
 public class CommandBuilder {
@@ -36,21 +36,21 @@ public class CommandBuilder {
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
                 PathPlannerManager.getInstance().followChoreoPath(state.toString()),
-                new AutoSetOuttakeAdjust(Constants.FiringSolutions.TS)),
+                new SetOuttake(Constants.FiringSolutions.TS)),
             new Shoot());
       case N3ToMS:
       case N4ToMS:
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
                 PathPlannerManager.getInstance().followChoreoPath(state.toString()),
-                new AutoSetOuttakeAdjust(Constants.FiringSolutions.MS)),
+                new SetOuttake(Constants.FiringSolutions.MS)),
             new Shoot());
       case N4ToBS:
       case N5ToBS:
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
                 PathPlannerManager.getInstance().followChoreoPath(state.toString()),
-                new AutoSetOuttakeAdjust(Constants.FiringSolutions.BS)),
+                new SetOuttake(Constants.FiringSolutions.BS)),
             new Shoot());
       case BSToBottomEndPos:
       case N5ToBottomEndPos:
