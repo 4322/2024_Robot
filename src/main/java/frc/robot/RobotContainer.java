@@ -28,11 +28,11 @@ import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.EjectThroughIntake;
-import frc.robot.commands.FeedThroughOuttake;
 import frc.robot.commands.IntakeManual;
 import frc.robot.commands.IntakeStop;
 import frc.robot.commands.OuttakeManual.OuttakeManual;
 import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualTrigger;
+import frc.robot.commands.OuttakeTunnelFeed.OuttakeTunnelFeed;
 import frc.robot.commands.OuttakeStop;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetPivotsBrakeMode;
@@ -255,7 +255,7 @@ public class RobotContainer {
       operatorXbox
           .back()
           .onTrue(new SequentialCommandGroup(Commands.runOnce(
-                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED)), new FeedThroughOuttake()));
+                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED)), new OuttakeTunnelFeed()));
     }
   }
 
