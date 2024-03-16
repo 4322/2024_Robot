@@ -44,7 +44,7 @@ public class AutoSmartShooting extends InstantCommand {
     }
 
     if (RobotCoordinator.getInstance().canPivot()) {
-      outtake.pivot(solution.getShotRotations(), true);
+      outtake.pivot(solution.getShotRotations());
     }
   }
 

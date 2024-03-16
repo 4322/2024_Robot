@@ -84,7 +84,7 @@ public class Outtake extends SubsystemBase {
           outtake(inputs.debugTargetRPS);
         }
         if (Constants.outtakePivotEnabled) {
-          pivot(inputs.targetPivotPosition, true);
+          pivot(inputs.targetPivotPosition);
         }
       }
     }
@@ -105,12 +105,12 @@ public class Outtake extends SubsystemBase {
     }
   }
 
-  public void pivot(double rotations, boolean limitForwardMotion) {
+  public void pivot(double rotations) {
     if (Constants.outtakePivotEnabled && pivotInitialized) {
       if (Constants.outtakeTuningMode) {
         rotations = inputs.targetPivotPosition;
       }
-      io.setPivotTarget(rotations, limitForwardMotion);
+      io.setPivotTarget(rotations);
       pivotTarget = rotations;
       Logger.recordOutput("Outtake/PivotTargetRotations", rotations);
       Logger.recordOutput("Outtake/PivotStopped", false);
@@ -119,7 +119,7 @@ public class Outtake extends SubsystemBase {
 
   public void resetPivot() {
     if (Constants.outtakePivotEnabled && pivotInitialized) {
-      io.setPivotTarget(Constants.OuttakeConstants.defaultPivotPositionRotations, true);
+      io.setPivotTarget(Constants.OuttakeConstants.defaultPivotPositionRotations);
       pivotTarget = Constants.OuttakeConstants.defaultPivotPositionRotations;
       Logger.recordOutput(
           "Outtake/PivotTargetRotations", Constants.OuttakeConstants.defaultPivotPositionRotations);
@@ -154,6 +154,10 @@ public class Outtake extends SubsystemBase {
       io.setPivotBrakeMode();
       Logger.recordOutput("Outtake/NeutralMode", "Brake");
     }
+  }
+
+  public void overrideForwardSoftLimit() {
+    io.overrideForwardSoftLimit();
   }
 
   public boolean isFlyWheelUpToSpeed() {

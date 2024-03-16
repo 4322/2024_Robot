@@ -227,9 +227,17 @@ public class OuttakeIOReal implements OuttakeIO {
   }
 
   @Override
-  public void setPivotTarget(double rotations, boolean limitForwardMotion) {
+  public void setPivotTarget(double rotations) {
     pivotMotor.setControl(
-        new PositionVoltage(rotations).withLimitForwardMotion(limitForwardMotion));
+        new PositionVoltage(rotations));
+  }
+
+  @Override
+  public void overrideForwardSoftLimit() {
+    SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
+    softwareLimitSwitchConfigs.ForwardSoftLimitEnable = false;
+    softwareLimitSwitchConfigs.ReverseSoftLimitEnable = true;
+    pivotMotor.getConfigurator().apply(softwareLimitSwitchConfigs);
   }
 
   @Override

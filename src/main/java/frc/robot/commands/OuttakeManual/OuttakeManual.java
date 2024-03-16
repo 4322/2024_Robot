@@ -30,7 +30,6 @@ public class OuttakeManual extends Command {
   @Override
   public void execute() {
     final FiringSolution solution;
-    boolean limitForwardMotion = true;
     switch (stateMachine.getState()) {
       case SMART_SHOOTING:
         double botMagToSpeaker =
@@ -61,8 +60,8 @@ public class OuttakeManual extends Command {
         solution = FiringSolutions.CollectingNote;
         break;
       case CLIMBING:
+        outtake.overrideForwardSoftLimit();
         solution = FiringSolutions.Climbing;
-        limitForwardMotion = false;
         RobotCoordinator.getInstance().setInClimbingMode(true);
       case STOP:
       default:
@@ -79,7 +78,7 @@ public class OuttakeManual extends Command {
     }
 
     if (RobotCoordinator.getInstance().canPivot()) {
-      outtake.pivot(solution.getShotRotations(), limitForwardMotion);
+      outtake.pivot(solution.getShotRotations());
     } else {
       outtake.stopPivot();
     }
