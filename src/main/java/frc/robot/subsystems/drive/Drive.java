@@ -385,8 +385,8 @@ public class Drive extends SubsystemBase {
   }
 
   // this drive function allows you to switch to robot centric driving
-  public void drive(double driveX, double driveY, double rotate, Rotation2d robotAngle) {
-    drive(driveX, driveY, rotate, new Translation2d(), robotAngle);
+  public void drive(double driveX, double driveY, double rotate, Rotation2d angleToZero) {
+    drive(driveX, driveY, rotate, new Translation2d(), angleToZero);
   }
 
   // this drive function accounts for spinout when center point is on swerve modules
@@ -395,7 +395,7 @@ public class Drive extends SubsystemBase {
   }
 
   // main drive function
-  public void drive(double driveX, double driveY, double rotate, Translation2d centerOfRotation, Rotation2d robotAngle) {
+  public void drive(double driveX, double driveY, double rotate, Translation2d centerOfRotation, Rotation2d angleToZero) {
     if (Constants.driveEnabled && Constants.gyroEnabled) {
 
       if (Constants.debug) {
@@ -415,7 +415,7 @@ public class Drive extends SubsystemBase {
         // create SwerveModuleStates inversely from the kinematics
         var swerveModuleStates =
             kinematics.toSwerveModuleStates(
-                ChassisSpeeds.fromFieldRelativeSpeeds(driveX, driveY, rotate, robotAngle),
+                ChassisSpeeds.fromFieldRelativeSpeeds(driveX, driveY, rotate, angleToZero),
                 centerOfRotation);
         SwerveDriveKinematics.desaturateWheelSpeeds(
             swerveModuleStates, robotSpecificConstants.getMaxSpeedMetersPerSec());
