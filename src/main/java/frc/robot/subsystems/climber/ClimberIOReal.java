@@ -76,7 +76,8 @@ public class ClimberIOReal implements ClimberIO {
     voltageConfigs.PeakForwardVoltage = ClimberConstants.peakForwardVoltage;
     // TODO: Set peakReverseVoltage
     voltageConfigs.PeakReverseVoltage = ClimberConstants.peakReverseVoltage;
-    softwareLimitSwitchConfigs.ForwardSoftLimitEnable = ClimberConstants.limitRotations;
+    softwareLimitSwitchConfigs.ForwardSoftLimitEnable = true;
+    softwareLimitSwitchConfigs.ReverseSoftLimitEnable = true;
     softwareLimitSwitchConfigs.ForwardSoftLimitThreshold =
         ClimberConstants.climberMaxRotations; // TODO: Set constant
     softwareLimitSwitchConfigs.ReverseSoftLimitThreshold =
@@ -94,7 +95,7 @@ public class ClimberIOReal implements ClimberIO {
 
   @Override
   public void setClimberVoltage(double voltage, boolean limitReverseMotion) {
-    climber.setControl(new VoltageOut(voltage).withLimitReverseMotion(limitReverseMotion));
+    climber.setControl(new VoltageOut(voltage));
     Logger.recordOutput("Climber/voltage", voltage);
   }
 
