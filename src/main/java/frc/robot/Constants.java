@@ -327,7 +327,7 @@ public final class Constants {
     public static final double pivotClosedLoopSec = 0.3;
     public static final boolean limitForwardMotion = true;
     public static final boolean limitReverseMotion = true;
-    public static final double forwardSoftLimitThresholdRotations = 117;
+    public static final double forwardSoftLimitThresholdRotations = 118;
     public static final double reverseSoftLimitThresholdRotations = 14.5;
     public static final double pivotPeakForwardVoltage = 10;
     public static final double pivotPeakReverseVoltage = -10;
@@ -499,7 +499,7 @@ public final class Constants {
     public static final FiringSolution MS = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution BS = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution Eject = new FiringSolution(0, 0, 10, 50);
-    public static final FiringSolution CollectingNote = new FiringSolution(0, 0, 0, 10);
+    public static final FiringSolution CollectingNote = new FiringSolution(0, 0, -10, 118);
   }
 
   public enum WheelPosition {
