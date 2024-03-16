@@ -291,14 +291,14 @@ public final class Constants {
 
   public static final class ClimberConstants {
     public static final int climberMotorID = 25;
-    public static final double climberMaxRotations = 180; // TODO ask Andrew
-    public static final double climberMinRotations = 0; // TODO
-    public static final double slowClimberVolts = 2; // TODO
-    public static final double fastClimberVolts = 5; // TODO
-    public static final double climberRotationTolerance = 1; //TODO
-    public static final int peakForwardVoltage = 12; // TODO
-    public static final double peakReverseVoltage = 12; // TODO
-    public static final double climbingPivotRotations = 120; // TODO
+    public static final double climberMaxRotations = 149; // physical limit of climber
+    public static final double climberMinRotations = 0;
+    public static final double slowClimberVolts = 2;
+    public static final double fastClimberVolts = 12;
+    public static final double climberRotationTolerance = 1;
+    public static final int peakForwardVoltage = 12;
+    public static final double peakReverseVoltage = 12;
+    public static final double climbingPivotRotations = 150; // for outtake pivot
 
     public static final double statorLimit = 60;
     public static final boolean supplyEnabled = true;
