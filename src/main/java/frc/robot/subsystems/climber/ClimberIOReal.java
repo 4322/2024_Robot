@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -35,28 +36,22 @@ public class ClimberIOReal implements ClimberIO {
   }
 
   private void configClimber() {
-    climber.getConfigurator().apply(new TalonFXConfiguration());
-    MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-    SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
-    VoltageConfigs voltageConfigs = new VoltageConfigs();
-    CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
-    OpenLoopRampsConfigs openLoopRampsConfigs = new OpenLoopRampsConfigs();
-    openLoopRampsConfigs.VoltageOpenLoopRampPeriod = ClimberConstants.openRampPeriod;
-    motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
-    voltageConfigs.PeakForwardVoltage = ClimberConstants.peakForwardVoltage;
-    voltageConfigs.PeakReverseVoltage = ClimberConstants.peakReverseVoltage;
-    softwareLimitSwitchConfigs.ForwardSoftLimitEnable = true;
-    softwareLimitSwitchConfigs.ForwardSoftLimitThreshold =
-        ClimberConstants.climberMaxRotations;
-    currentLimitsConfigs.StatorCurrentLimitEnable = ClimberConstants.statorEnabled;
-    currentLimitsConfigs.StatorCurrentLimit = ClimberConstants.statorLimit;
-    currentLimitsConfigs.SupplyCurrentLimitEnable = ClimberConstants.supplyEnabled;
-    currentLimitsConfigs.SupplyCurrentLimit = ClimberConstants.supplyLimit;
-    climber.getConfigurator().apply(currentLimitsConfigs);
-    climber.getConfigurator().apply(softwareLimitSwitchConfigs);
-    climber.getConfigurator().apply(voltageConfigs);
-    climber.getConfigurator().apply(motorOutputConfigs);
-    climber.getConfigurator().apply(openLoopRampsConfigs);
+    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.OpenLoopRamps.VoltageOpenLoopRampPeriod = ClimberConstants.openRampPeriod;
+    config.Voltage.PeakForwardVoltage = ClimberConstants.peakForwardVoltage;
+    config.Voltage.PeakReverseVoltage = ClimberConstants.peakReverseVoltage;
+    config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ClimberConstants.climberMaxRotations;
+    config.HardwareLimitSwitch.ForwardLimitEnable = false;
+    config.HardwareLimitSwitch.ReverseLimitEnable = false;
+    config.CurrentLimits.StatorCurrentLimitEnable = true;
+    config.CurrentLimits.StatorCurrentLimit = ClimberConstants.statorLimit;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLimit = ClimberConstants.supplyLimit;
+
+    climber.getConfigurator().apply(config);
   }
 
   /*

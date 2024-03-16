@@ -302,8 +302,6 @@ public final class Constants {
     public static final double climbingPivotRotations = 150; // for outtake pivot
 
     public static final double statorLimit = 60;
-    public static final boolean supplyEnabled = true;
-    public static final boolean statorEnabled = true;
     public static final double supplyLimit = 40;
     public static final double supplyThreshold = 60;
     public static final double supplyTime = 2.0;
