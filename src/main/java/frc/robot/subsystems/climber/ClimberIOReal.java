@@ -56,7 +56,8 @@ public class ClimberIOReal implements ClimberIO {
 
   /*
    * Used when extending and performing slow override
-   * Deson't use FOC because it doesn't lift robot or come in contact with chain
+   * Doesn't use FOC because it doesn't lift robot or come in contact with chain
+   * The speed of extending and retracting is more important than having more torque
    */
   @Override
   public void setFreeMoveVoltage(double voltage) {
@@ -67,6 +68,8 @@ public class ClimberIOReal implements ClimberIO {
   /*
    * Used ONLY when climbing
    * Needs FOC control due to motor lifting entire weight of robot
+   * FOC is a torque control mode that makes motor more powerful/efficient
+   * It sacrifices speed in order to make sure robot climbs steadily and doesn't fall
    */
   @Override
   public void setClimbingVoltage(double voltage) {
