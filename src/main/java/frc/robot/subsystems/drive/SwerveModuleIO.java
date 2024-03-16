@@ -8,11 +8,13 @@ public interface SwerveModuleIO {
     public double driveMeters = 0.0;
     public double driveMetersPerSec = 0.0;
     public double driveAppliedVolts = 0.0;
-    public double driveCurrentAmps = 0.0;
+    public double driveSupplyCurrentAmps = 0.0;
+    public double driveStatorCurrentAmps = 0.0;
 
     public double turnVelocityDegPerSec = 0.0;
     public double turnAppliedVolts = 0.0;
-    public double turnCurrentAmps = 0.0;
+    public double turnSupplyCurrentAmps = 0.0;
+    public double turnStatorCurrentAmps = 0.0;
     public double turnDegrees = 0.0;
     public double turnRotations = 0.0;
 
