@@ -85,6 +85,7 @@ public class LED extends SubsystemBase {
   public void setLEDState(LEDState state) {
     if (Constants.ledEnabled) {
       if (currentState != state) {
+        Logger.recordOutput("LED/CurrentState/", state.toString());
         currentState = state;
         io.configBrightness(1); // reset brightness scalar
         io.clearAnimation(); // allows for other LED states to be set
