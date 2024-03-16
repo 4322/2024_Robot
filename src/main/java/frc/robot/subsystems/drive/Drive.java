@@ -395,7 +395,12 @@ public class Drive extends SubsystemBase {
   }
 
   // main drive function
-  public void drive(double driveX, double driveY, double rotate, Translation2d centerOfRotation, Rotation2d angleToZero) {
+  public void drive(
+      double driveX,
+      double driveY,
+      double rotate,
+      Translation2d centerOfRotation,
+      Rotation2d angleToZero) {
     if (Constants.driveEnabled && Constants.gyroEnabled) {
 
       if (Constants.debug) {
