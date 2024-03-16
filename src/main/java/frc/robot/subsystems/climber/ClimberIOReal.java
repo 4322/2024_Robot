@@ -59,12 +59,20 @@ public class ClimberIOReal implements ClimberIO {
     climber.getConfigurator().apply(openLoopRampsConfigs);
   }
 
+  /*
+   * Used when extending and performing slow override
+   * Deson't use FOC because it doesn't lift robot or come in contact with chain
+   */
   @Override
   public void setFreeMoveVoltage(double voltage) {
     climber.setControl(new VoltageOut(voltage));
     Logger.recordOutput("Climber/voltage", voltage);
   }
 
+  /*
+   * Used ONLY when climbing
+   * Needs FOC control due to motor lifting entire weight of robot
+   */
   @Override
   public void setClimbingVoltage(double voltage) {
     climber.setControl(new VoltageOut(voltage).withEnableFOC(true));
