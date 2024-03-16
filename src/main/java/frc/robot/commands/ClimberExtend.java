@@ -12,9 +12,12 @@ public class ClimberExtend extends Command {
   }
 
   @Override
-  public void execute() {
+  public void initialize() {
     climber.extend();
   }
+
+  @Override
+  public void execute() {}
 
   @Override
   public boolean isFinished() {

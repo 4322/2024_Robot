@@ -12,9 +12,12 @@ public class ClimberRetract extends Command {
   }
 
   @Override
-  public void execute() {
+  public void initialize() {
     climber.retract();
   }
+
+  @Override
+  public void execute() {}
 
   @Override
   public boolean isFinished() {
