@@ -21,11 +21,7 @@ public class OuttakeTunnelFeed extends Command {
   }
 
   @Override
-  public void initialize() {
-    stateMachine.fire(OuttakeTunnelFeedTrigger.ENABLE_STATE_RESET);
-    tunnelDelayTimer.stop();
-    tunnelDelayTimer.reset();
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {
@@ -59,5 +55,10 @@ public class OuttakeTunnelFeed extends Command {
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    // needed to reset state machine
+    stateMachine.fire(OuttakeTunnelFeedTrigger.ENABLE_STATE_RESET);
+    tunnelDelayTimer.stop();
+    tunnelDelayTimer.reset();
+  }
 }
