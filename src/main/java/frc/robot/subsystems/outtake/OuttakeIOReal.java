@@ -237,7 +237,7 @@ public class OuttakeIOReal implements OuttakeIO {
     SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
     softwareLimitSwitchConfigs.ForwardSoftLimitEnable = false;
     softwareLimitSwitchConfigs.ReverseSoftLimitEnable = true;
-    pivotMotor.getConfigurator().apply(softwareLimitSwitchConfigs);
+    pivotMotor.getConfigurator().refresh(softwareLimitSwitchConfigs);
   }
 
   @Override
