@@ -48,7 +48,7 @@ public final class Constants {
   public static final boolean outtakePivotEnabled = true;
   public static final boolean sensorsEnabled = true;
   public static final boolean ledEnabled = true;
-  public static final boolean climberEnabled = false;
+  public static final boolean climberEnabled = true;
   public static final boolean joysticksEnabled = false;
   public static final boolean xboxEnabled = true;
   public static final boolean autoAcquireNoteEnabled = false;
@@ -306,7 +306,6 @@ public final class Constants {
     public static final double supplyLimit = 40;
     public static final double supplyThreshold = 60;
     public static final double supplyTime = 2.0;
-    public static final boolean limitRotations = false;
     public static final double openRampPeriod = 0.08; // TODO
   }
 
