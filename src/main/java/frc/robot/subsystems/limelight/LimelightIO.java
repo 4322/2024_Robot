@@ -18,12 +18,4 @@ public interface LimelightIO {
   }
 
   public default void updateInputs(LimelightIOInputs inputs, Limelight limelight) {}
-
-  public default void setCamMode(CamMode mode) {}
-
-  public default void activateRetroReflective() {}
-
-  public default void activateAprilTag() {}
-
-  public default void switchPipeline(int pipelineIdx) {}
 }
