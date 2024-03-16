@@ -17,9 +17,6 @@ public class ClimberExtend extends Command {
   @Override
   public void execute() {
     climber.extend();
-    if (climber.isFullyExtended()) {
-      CommandScheduler.getInstance().schedule(xBoxRumble);
-    }
   }
 
   @Override
