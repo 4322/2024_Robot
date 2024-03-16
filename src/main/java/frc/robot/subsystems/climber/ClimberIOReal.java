@@ -24,7 +24,8 @@ public class ClimberIOReal implements ClimberIO {
   private GenericEntry fastVolts;
 
   ClimberIOReal() {
-    climber = new TalonFX(ClimberConstants.climberMotorID);
+    climber =
+        new TalonFX(ClimberConstants.climberMotorID, Constants.DriveConstants.Drive.canivoreName);
     configClimber();
     if (Constants.debug) {
       tab = Shuffleboard.getTab("Climber");
