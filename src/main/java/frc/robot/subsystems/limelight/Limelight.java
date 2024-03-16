@@ -42,9 +42,13 @@ public class Limelight extends SubsystemBase {
   boolean enabled;
   int currentPipeline = -1;
   boolean isNetworkTableConnected;
-  Map<Double, LimelightHelpers.LimelightTarget_Fiducial> llFiducialMap =
-      new HashMap<Double, LimelightHelpers.LimelightTarget_Fiducial>();
+  LimelightIOInputsAutoLogged IntakeIOInputs = new LimelightIOInputsAutoLogged();
+  LimelightIOInputsAutoLogged OuttakeIOInputs = new LimelightIOInputsAutoLogged();
+  Map<Double, LimelightIOReal.LimelightTarget_Fiducial> llFiducialMap =
+      new HashMap<Double, LimelightIOReal.LimelightTarget_Fiducial>();
 
+  LimelightIO outtakeIO;
+  LimelightIO intakeIO;
   // the distance from where you want to calculate from
   // should always be calculated with WPI coordinates (front is positive X)
   Translation2d offset;
@@ -97,41 +101,62 @@ public class Limelight extends SubsystemBase {
       boolean facingBackward,
       boolean isTestSubsystem,
       boolean enabled) {
-    name = limelightName;
-    limeHeight = limelightHeightMeters;
-    limeAngle = limelightAngleDegrees;
-    offset = new Translation2d(xOffsetMeters, yOffsetMeters);
-    backward = facingBackward;
-    this.isTestSubsystem = isTestSubsystem;
-    this.enabled = enabled;
 
-    if (enabled) {
-      table = NetworkTableInstance.getDefault().getTable(name);
-      tx = table.getEntry("tx");
-      ty = table.getEntry("ty");
-      ta = table.getEntry("ta");
-      tv = table.getEntry("tv");
-      ledMode = table.getEntry("ledMode");
-      camMode = table.getEntry("camMode");
-      pipeline = table.getEntry("pipeline");
+    switch (Constants.currentMode) {
+      case REAL:
+        name = limelightName;
+        limeHeight = limelightHeightMeters;
+        limeAngle = limelightAngleDegrees;
+        offset = new Translation2d(xOffsetMeters, yOffsetMeters);
+        backward = facingBackward;
+        this.isTestSubsystem = isTestSubsystem;
+        this.enabled = enabled;
 
-      if (Constants.debug) {
-        tab = Shuffleboard.getTab(name);
-        targetVisible =
-            tab.add("Target Visible", false)
-                .withWidget(BuiltInWidgets.kBooleanBox)
-                .withPosition(0, 0)
-                .getEntry();
-        distanceToTargetX = tab.add("Target X", 0).withPosition(0, 1).getEntry();
-        distanceToTargetY = tab.add("Target Y", 0).withPosition(0, 2).getEntry();
-      }
+        if (enabled) {
+          intakeIO = new LimelightIOReal();
+          outtakeIO = new LimelightIOReal();
+          table = NetworkTableInstance.getDefault().getTable(name);
+          tx = table.getEntry("tx");
+          ty = table.getEntry("ty");
+          ta = table.getEntry("ta");
+          tv = table.getEntry("tv");
+          ledMode = table.getEntry("ledMode");
+          camMode = table.getEntry("camMode");
+          pipeline = table.getEntry("pipeline");
+
+          if (Constants.debug) {
+            tab = Shuffleboard.getTab(name);
+            targetVisible =
+                tab.add("Target Visible", false)
+                    .withWidget(BuiltInWidgets.kBooleanBox)
+                    .withPosition(0, 0)
+                    .getEntry();
+            distanceToTargetX = tab.add("Target X", 0).withPosition(0, 1).getEntry();
+            distanceToTargetY = tab.add("Target Y", 0).withPosition(0, 2).getEntry();
+          }
+        }
+        break;
+      case SIM:
+        break;
+      case REPLAY:
+        break;
+    }
+
+    if(intakeIO == null){
+      intakeIO = new LimelightIO() {};
+    }
+    if(outtakeIO == null){
+      outtakeIO = new LimelightIO() {};
     }
   }
 
   @Override
   public void periodic() {
     if (enabled) {
+
       if (Constants.debug) {
+        outtakeIO.updateInputs(OuttakeIOInputs, outtakeLimelight);
+        intakeIO.updateInputs(IntakeIOInputs, outtakeLimelight);
         boolean visible = getTargetVisible();
         targetVisible.setBoolean(visible);
         if (visible) {
@@ -151,7 +176,7 @@ public class Limelight extends SubsystemBase {
 
   public Pose2d getBotposeWpiBlue() {
     if (enabled && isNetworkTableConnected) {
-      final Pose2d limelightPose = LimelightHelpers.getBotPose2d_wpiBlue(name);
+      final Pose2d limelightPose = LimelightIOReal.getBotPose2d_wpiBlue(name);
       return limelightPose;
     }
     return new Pose2d();
@@ -160,7 +185,7 @@ public class Limelight extends SubsystemBase {
   public int getNumTargets() {
     if (enabled && isNetworkTableConnected) {
       final int numTargets =
-          LimelightHelpers.getLatestResults(name).targetingResults.targets_Fiducials.length;
+          LimelightIOReal.getLatestResults(name).targetingResults.targets_Fiducials.length;
       Logger.recordOutput(name + "/NumTargets", numTargets);
       return numTargets;
     }
@@ -169,21 +194,21 @@ public class Limelight extends SubsystemBase {
 
   public double getTotalLatency() {
     if (enabled && isNetworkTableConnected) {
-      return LimelightHelpers.getLatency_Capture(name) + LimelightHelpers.getLatency_Pipeline(name);
+      return LimelightIOReal.getLatency_Capture(name) + LimelightIOReal.getLatency_Pipeline(name);
     }
     return 0;
   }
 
   public void refreshOdometry() {
-    String json = LimelightHelpers.getJSONDump(name);
+    String json = LimelightIOReal.getJSONDump(name);
     llFiducialMap.clear();
     int nextPos = 0;
     while ((nextPos = json.indexOf("\"fID\":", nextPos)) != -1) {
       int startIndex = nextPos + 6;
       nextPos++; // don't get stuck in a loop if there is no tx
       if ((nextPos = json.indexOf(',', nextPos)) != -1) {
-        LimelightHelpers.LimelightTarget_Fiducial fiducial =
-            new LimelightHelpers.LimelightTarget_Fiducial();
+        LimelightIOReal.LimelightTarget_Fiducial fiducial =
+            new LimelightIOReal.LimelightTarget_Fiducial();
         fiducial.fiducialID = Double.valueOf(json.substring(startIndex, nextPos));
         if ((nextPos = json.indexOf("\"tx\":", nextPos)) != -1) {
           startIndex = nextPos + 5;
@@ -202,7 +227,7 @@ public class Limelight extends SubsystemBase {
     }
   }
 
-  public LimelightHelpers.LimelightTarget_Fiducial getTag(double fID) {
+  public LimelightIOReal.LimelightTarget_Fiducial getTag(double fID) {
     return llFiducialMap.get(fID);
   }
 
@@ -235,16 +260,6 @@ public class Limelight extends SubsystemBase {
       return tv.getDouble(0.0) == 1.0;
     } else {
       return false;
-    }
-  }
-
-  public void setCamMode(CamMode mode) {
-    if (enabled && isNetworkTableConnected) {
-      if (mode == CamMode.VisionProcessor) {
-        camMode.setNumber(0);
-      } else if (mode == CamMode.DriverCamera) {
-        camMode.setNumber(1);
-      }
     }
   }
 
@@ -302,20 +317,5 @@ public class Limelight extends SubsystemBase {
     double distanceY = distanceX * Math.tan(Math.toRadians(getVerticalDegToTarget()));
 
     return distanceY;
-  }
-
-  public void activateRetroReflective() {
-    switchPipeline(0);
-  }
-
-  public void activateAprilTag() {
-    switchPipeline(1);
-  }
-
-  private void switchPipeline(int pipelineIdx) {
-    if (enabled && (currentPipeline != pipelineIdx) && isNetworkTableConnected) {
-      pipeline.setNumber(pipelineIdx);
-      currentPipeline = pipelineIdx;
-    }
   }
 }

@@ -395,7 +395,12 @@ public class Drive extends SubsystemBase {
   }
 
   // main drive function
-  public void drive(double driveX, double driveY, double rotate, Translation2d centerOfRotation, Rotation2d angleToZero) {
+  public void drive(
+      double driveX,
+      double driveY,
+      double rotate,
+      Translation2d centerOfRotation,
+      Rotation2d angleToZero) {
     if (Constants.driveEnabled && Constants.gyroEnabled) {
 
       if (Constants.debug) {
@@ -449,7 +454,7 @@ public class Drive extends SubsystemBase {
       } else {
         adjMaxAutoRotatePower = driveShuffleBoardInputs.slowMovingAutoRotatePower;
       }
-      // no need to maintain exact heading when driving to reduce wobble
+      // no need to maintain exact heading  when driving to reduce wobble
       if (isRobotMoving()) {
         adjMinAutoRotatePower = DriveConstants.Auto.minAutoRotateMovingPower;
         toleranceDeg = Constants.DriveConstants.Auto.rotateMovingToleranceDegrees;

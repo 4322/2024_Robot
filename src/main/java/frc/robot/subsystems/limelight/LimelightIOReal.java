@@ -24,7 +24,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.CompletableFuture;
 
-public class LimelightHelpers {
+public class LimelightIOReal implements LimelightIO {
 
   public static class LimelightTarget_Retro {
 
@@ -675,6 +675,19 @@ public class LimelightHelpers {
     setLimelightNTDoubleArray(limelightName, "crop", entries);
   }
 
+  @Override
+  public void updateInputs(LimelightIOInputs inputs, Limelight limelight) {
+    NetworkTable table = NetworkTableInstance.getDefault().getTable(limelight.getName());
+    inputs.tx = table.getEntry("tx").getDouble(0);
+    inputs.ty = table.getEntry("ty").getDouble(0);
+    inputs.ta = table.getEntry("ta").getDouble(0);
+    inputs.tv = table.getEntry("tv").getDouble(0);
+    inputs.ledMode = table.getEntry("ledMode").getDouble(0);
+    inputs.camMode = table.getEntry("camMode").getDouble(0);
+    inputs.pipeline = table.getEntry("pipeline").getDouble(0);
+    inputs.currentPipeline = limelight.currentPipeline;
+  }
+
   public static void setCameraPose_RobotSpace(
       String limelightName,
       double forward,
@@ -740,7 +753,7 @@ public class LimelightHelpers {
   public static LimelightResults getLatestResults(String limelightName) {
 
     long start = System.nanoTime();
-    LimelightHelpers.LimelightResults results = new LimelightHelpers.LimelightResults();
+    LimelightIOReal.LimelightResults results = new LimelightIOReal.LimelightResults();
     if (mapper == null) {
       mapper =
           new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

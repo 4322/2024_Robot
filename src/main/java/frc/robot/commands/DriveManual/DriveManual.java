@@ -98,7 +98,8 @@ public class DriveManual extends Command {
           Pose2d drivePose2D = drive.getPose2d();
           Translation2d speakerVec =
               FiringSolutionHelper.getVectorToSpeaker(drivePose2D.getX(), drivePose2D.getY());
-          Logger.recordOutput("RobotHeading/SpeakerCentricHeading/", speakerVec.getAngle().getDegrees());
+          Logger.recordOutput(
+              "RobotHeading/SpeakerCentricHeading/", speakerVec.getAngle().getDegrees());
           Logger.recordOutput("RobotHeading/State", "Speaker centric");
           drive.driveAutoRotate(driveX, driveY, speakerVec.getAngle().getDegrees());
           break;
