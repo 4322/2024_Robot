@@ -199,7 +199,7 @@ public class RobotContainer {
       driveXbox
           .back() // binded to back right button on xbox
           .onTrue(
-            Commands.runOnce(
+              Commands.runOnce(
                   () -> {
                     driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);
                   }));
