@@ -528,7 +528,9 @@ public class Drive extends SubsystemBase {
 
   public Pose2d getPose2d() {
     if (Constants.driveEnabled) {
-      return poseEstimator.getEstimatedPosition();
+      if (Constants.gyroEnabled) {
+        return poseEstimator.getEstimatedPosition();
+      }
     }
     return new Pose2d();
   }
