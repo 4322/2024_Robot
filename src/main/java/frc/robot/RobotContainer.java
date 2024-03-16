@@ -197,11 +197,11 @@ public class RobotContainer {
                     driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC);
                   }));
       driveXbox
-          .button(0) // TODO: need to figure out and map to button on back right of controller
+          .back() // binded to back right button on xbox
           .onTrue(
             Commands.runOnce(
                   () -> {
-                    driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC);
+                    driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);
                   }));
       driveXbox.x().onTrue(new ResetFieldCentric(true));
       driveXbox.povDown().onTrue(driveStop);

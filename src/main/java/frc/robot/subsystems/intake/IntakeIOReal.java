@@ -152,10 +152,11 @@ public class IntakeIOReal implements IntakeIO {
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
     inputs.intakeRotations = intake.getPosition().getValue();
-    inputs.intakeRotationsPerSec = intake.getVelocity().getValue() / 60;
+    inputs.intakeRotationsPerSec = intake.getVelocity().getValue();
     inputs.intakeAppliedVolts =
         intake.getDutyCycle().getValue() / 2 * intake.getSupplyVoltage().getValue();
-    inputs.intakeCurrentAmps = intake.getSupplyCurrent().getValue();
+    inputs.intakeSupplyCurrentAmps = intake.getSupplyCurrent().getValue();
+    inputs.intakeStatorCurrentAmps = intake.getStatorCurrent().getValue();
     inputs.intakeTempC = intake.getDeviceTemp().getValue();
     inputs.intakeIsAlive = intake.isAlive();
     inputs.intakeSpeedPct = intake.get();
@@ -163,7 +164,8 @@ public class IntakeIOReal implements IntakeIO {
     inputs.deployRotationsPerSec = deploy.getVelocity().getValue();
     inputs.deployAppliedVolts =
         deploy.getDutyCycle().getValue() / 2 * deploy.getSupplyVoltage().getValue();
-    inputs.deployCurrentAmps = deploy.getSupplyCurrent().getValue();
+    inputs.deploySupplyCurrentAmps = deploy.getSupplyCurrent().getValue();
+    inputs.deployStatorCurrentAmps = deploy.getStatorCurrent().getValue();
     inputs.deployTempC = deploy.getDeviceTemp().getValue();
     inputs.deployIsAlive = deploy.isAlive();
 

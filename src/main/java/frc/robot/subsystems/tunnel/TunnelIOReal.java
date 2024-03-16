@@ -48,10 +48,11 @@ public class TunnelIOReal implements TunnelIO {
   @Override
   public void updateInputs(TunnelIOInputs inputs) {
     inputs.tunnelRotations = tunnel.getPosition().getValue();
-    inputs.tunnelRotationsPerSec = tunnel.getVelocity().getValue() / 60;
+    inputs.tunnelRotationsPerSec = tunnel.getVelocity().getValue();
     inputs.tunnelAppliedVolts =
         tunnel.getDutyCycle().getValue() / 2 * tunnel.getSupplyVoltage().getValue();
-    inputs.tunnelCurrentAmps = tunnel.getSupplyCurrent().getValue();
+    inputs.tunnelSupplyCurrentAmps = tunnel.getSupplyCurrent().getValue();
+    inputs.tunnelStatorCurrentAmps = tunnel.getStatorCurrent().getValue();
     inputs.tunnelTempC = tunnel.getDeviceTemp().getValue();
     inputs.tunnelIsAlive = tunnel.isAlive();
     inputs.tunnelSpeedPct = tunnel.get();

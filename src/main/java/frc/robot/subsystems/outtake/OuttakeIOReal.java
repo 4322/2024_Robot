@@ -165,7 +165,8 @@ public class OuttakeIOReal implements OuttakeIO {
     inputs.leftRotationsPerSec = leftOuttakeMotor.getVelocity().getValue();
     inputs.leftOuttakeIsAlive = leftOuttakeMotor.isAlive();
 
-    inputs.rightCurrentAmps = rightOuttakeMotor.getSupplyCurrent().getValue();
+    inputs.rightSupplyCurrentAmps = rightOuttakeMotor.getSupplyCurrent().getValue();
+    inputs.rightStatorCurrentAmps = rightOuttakeMotor.getStatorCurrent().getValue();
     inputs.rightTempC = rightOuttakeMotor.getDeviceTemp().getValue();
     inputs.rightRotationsPerSec = rightOuttakeMotor.getVelocity().getValue();
     inputs.rightOuttakeIsAlive = rightOuttakeMotor.isAlive();
@@ -174,7 +175,8 @@ public class OuttakeIOReal implements OuttakeIO {
     inputs.pivotRotationsPerSec = pivotMotor.getVelocity().getValue();
     inputs.pivotAppliedVolts =
         pivotMotor.getDutyCycle().getValue() / 2 * pivotMotor.getSupplyVoltage().getValue();
-    inputs.pivotCurrentAmps = pivotMotor.getSupplyCurrent().getValue();
+    inputs.pivotSupplyCurrentAmps = pivotMotor.getSupplyCurrent().getValue();
+    inputs.pivotStatorCurrentAmps = pivotMotor.getStatorCurrent().getValue();
     inputs.pivotTempC = pivotMotor.getDeviceTemp().getValue();
     inputs.pivotIsAlive = pivotMotor.isAlive();
 

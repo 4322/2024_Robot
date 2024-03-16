@@ -8,7 +8,8 @@ public interface IntakeIO {
     public double intakeRotations = 0.0;
     public double intakeRotationsPerSec = 0.0;
     public double intakeAppliedVolts = 0.0;
-    public double intakeCurrentAmps = 0.0;
+    public double intakeSupplyCurrentAmps = 0.0;
+    public double intakeStatorCurrentAmps = 0.0;
     public double intakeTempC = 0.0;
     public boolean intakeIsAlive = false;
     public double intakeFeederVoltage = 0.0;
@@ -18,7 +19,8 @@ public interface IntakeIO {
     public double deployRotations = 0.0;
     public double deployRotationsPerSec = 0.0;
     public double deployAppliedVolts = 0.0;
-    public double deployCurrentAmps = 0.0;
+    public double deploySupplyCurrentAmps = 0.0;
+    public double deployStatorCurrentAmps = 0.0;
     public double deployTempC = 0.0;
     public boolean deployIsAlive = false;
 
@@ -28,7 +30,7 @@ public interface IntakeIO {
     public String deployAppliedControl = "";
     public double deployMaxRotationsPerSec;
     public double deployKp = 0.0;
-    public double slowPos;
+    public double slowPos = 0.0;
   }
 
   public default void updateInputs(IntakeIOInputs inputs) {}

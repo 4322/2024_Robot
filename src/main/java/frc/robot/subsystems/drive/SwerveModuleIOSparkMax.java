@@ -139,12 +139,12 @@ public class SwerveModuleIOSparkMax implements SwerveModuleIO {
     inputs.driveMeters = driveMotor.getEncoder().getPosition();
     inputs.driveMetersPerSec = driveMotor.getEncoder().getVelocity();
     inputs.driveAppliedVolts = driveMotor.getAppliedOutput() * driveMotor.getBusVoltage();
-    inputs.driveCurrentAmps = driveMotor.getOutputCurrent();
+    inputs.driveSupplyCurrentAmps = driveMotor.getOutputCurrent();
 
     // turn inputs
     inputs.turnVelocityDegPerSec = Units.rotationsToDegrees(encoder.getVelocity());
     inputs.turnAppliedVolts = turningMotor.getAppliedOutput() * turningMotor.getBusVoltage();
-    inputs.turnCurrentAmps = turningMotor.getOutputCurrent();
+    inputs.turnSupplyCurrentAmps = turningMotor.getOutputCurrent();
     inputs.turnDegrees = encoder.getPosition();
 
     inputs.calculatedFF = calcFeedForwardVoltsOverMetersPerSec;
