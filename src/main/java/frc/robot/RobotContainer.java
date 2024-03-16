@@ -195,7 +195,12 @@ public class RobotContainer {
       driveXbox.povDown().onTrue(driveStop);
       driveXbox
           .rightTrigger()
-          .onTrue(new SetOuttake(FiringSolutions.CollectingNote));
+          .onTrue(
+            Commands.runOnce(
+              () -> {
+                RobotCoordinator.getInstance().setIntakeButtonState(true);
+                new SetOuttake(FiringSolutions.CollectingNote);
+              }));
       driveXbox
           .rightTrigger()
           .onFalse(
