@@ -244,7 +244,7 @@ public class RobotContainer {
               new ParallelCommandGroup(
                   new ClimberRetract(),
                   new SequentialCommandGroup(
-                      Commands.waitUntil(() -> Climber.getInstance().isFullyRetracted()),
+                      Commands.waitUntil(() -> Climber.getInstance().isAtClimbRetractingThreshold()),
                       new OperatorXboxControllerRumble())));
       if (Constants.shotTuningMode) {
         driveXbox.y().onTrue(writeFiringSolution);

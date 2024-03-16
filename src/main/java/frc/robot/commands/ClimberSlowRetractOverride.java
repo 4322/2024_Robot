@@ -12,9 +12,12 @@ public class ClimberSlowRetractOverride extends Command {
   }
 
   @Override
-  public void execute() {
+  public void initialize() {
     climber.slowRetractOverride();
   }
+
+  @Override
+  public void execute() {}
 
   @Override
   public boolean isFinished() {

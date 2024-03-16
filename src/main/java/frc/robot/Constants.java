@@ -296,6 +296,7 @@ public final class Constants {
     public static final double slowClimberVolts = 2;
     public static final double fastClimberVolts = 12;
     public static final double climberRotationTolerance = 1;
+    public static final double retractingThreshold = 0; // TODO: tune depending on how chain engages with hook
     public static final int peakForwardVoltage = 12;
     public static final double peakReverseVoltage = 12;
     public static final double climbingPivotRotations = 150; // for outtake pivot

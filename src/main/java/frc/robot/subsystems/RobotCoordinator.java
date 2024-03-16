@@ -186,8 +186,8 @@ public class RobotCoordinator extends SubsystemBase {
     return outtake.pivotIsAtPosition();
   }
 
-  public boolean climberIsFullyRetracted() {
-    return (climber.isFullyRetracted());
+  public boolean climberIsAtRetractThreshold() {
+    return (climber.isAtClimbRetractingThreshold());
   }
 
   public boolean climberIsFullyExtended() {
