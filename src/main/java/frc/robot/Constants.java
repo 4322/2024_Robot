@@ -405,8 +405,8 @@ public final class Constants {
     public static final double supplyLimit = 30;
     public static final double statorLimit = 60;
 
-    public static final double desiredVoltage = 4.0;
-    public static final double desiredReverseVoltage = -4.0;
+    public static final double desiredVoltage = 2.0;
+    public static final double desiredReverseVoltage = -2.0;
     public static final double peakVoltage = 6.0;
 
     public static final class Logging {
