@@ -23,6 +23,7 @@ import frc.robot.commands.AtHome;
 import frc.robot.commands.AutoIntakeDeploy;
 import frc.robot.commands.AutoIntakeIn;
 import frc.robot.commands.AutoSetOuttakeAdjust;
+import frc.robot.commands.AutoSmartShooting;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
