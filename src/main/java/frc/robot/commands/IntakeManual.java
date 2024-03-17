@@ -61,8 +61,8 @@ public class IntakeManual extends Command {
           intakeState = IntakeStates.noteObtained;
         } else if (Constants.autoAcquireNoteEnabled) {
           if (coordinator.getAutoIntakeButtonPressed()
-            && coordinator.noteInVision()
-            && !autoAcquireNote.isScheduled()) {
+              && coordinator.noteInVision()
+              && !autoAcquireNote.isScheduled()) {
             CommandScheduler.getInstance().schedule(autoAcquireNote);
           }
         }
