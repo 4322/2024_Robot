@@ -272,8 +272,6 @@ public final class Constants {
 
       // when supply threshold is exceeded for the time, drop the current to the limit
       public static final double statorLimit = 60;
-      public static final boolean supplyEnabled = true;
-      public static final boolean statorEnabled = true;
       public static final double supplyLimit = 40;
       public static final double supplyThreshold = 60;
       public static final double supplyTime = 2.0;
@@ -307,8 +305,6 @@ public final class Constants {
         ((44.0 / 40.0)
             * 125.0); // since we likely aren't going to adjust the speed, it's likely safe to
     // not interpolate
-    public static final boolean supplyEnabled = true;
-    public static final boolean statorEnabled = true;
     public static final double shooterSupplyLimit = 40;
     public static final double shooterStatorLimit = 80;
     public static final double shooterSupplyCurrentThreshold = 50;
@@ -350,8 +346,6 @@ public final class Constants {
       public static final double timeoutMs = 50;
       public static final double intakeFeedVoltage = 11.0;
       public static final double intakeEjectVoltage = -11.0;
-      public static final boolean supplyEnabled = true;
-      public static final boolean statorEnabled = true;
       public static final double supplyLimit = 30;
       public static final double statorLimit = 45;
     }
@@ -367,8 +361,6 @@ public final class Constants {
       public static final double peakForwardVoltage = 2.5; // anything higher will slip the belt
       public static final double peakReverseVoltage = -2.5;
 
-      public static final boolean supplyEnabled = true;
-      public static final boolean statorEnabled = true;
       public static final double supplyLimit = 30;
       public static final double statorLimit = 60;
 
@@ -400,8 +392,6 @@ public final class Constants {
 
   public static final class TunnelConstants {
     public static final int tunnelMotorID = 3;
-    public static final boolean supplyEnabled = true;
-    public static final boolean statorEnabled = true;
     public static final double supplyLimit = 30;
     public static final double statorLimit = 60;
 
