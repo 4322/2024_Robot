@@ -150,7 +150,6 @@ public class RobotCoordinator extends SubsystemBase {
         || noteTracker.notePassingTunnel();
   }
 
-
   public boolean onOurSideOfField() {
     if (Robot.getAllianceColor().equals(Alliance.Red)) {
       return (drive.getPose2d().getX() > Constants.FieldConstants.xCenterLineM);

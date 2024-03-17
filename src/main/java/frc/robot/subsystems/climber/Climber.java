@@ -58,8 +58,7 @@ public class Climber extends SubsystemBase {
 
   public void slowRetractOverride() {
     if (Constants.climberEnabled) {
-      io.setFreeMoveVoltage(
-          -Constants.ClimberConstants.slowClimberVolts);
+      io.setFreeMoveVoltage(-Constants.ClimberConstants.slowClimberVolts);
       Logger.recordOutput("Climber/desiredVolts", -Constants.ClimberConstants.slowClimberVolts);
       Logger.recordOutput("Climber/State", "SlowRetracting");
     }
@@ -85,7 +84,7 @@ public class Climber extends SubsystemBase {
   public void zeroClimberAtCurrentPos() {
     if (Constants.climberEnabled) {
       io.zeroClimberAtCurrentPos();
-    }   
+    }
   }
 
   public boolean isFullyExtended() {

@@ -23,10 +23,10 @@ import frc.robot.centerline.CenterLineManager.CenterLineScoringStrategy;
 import frc.robot.commands.AutoIntakeDeploy;
 import frc.robot.commands.AutoIntakeIn;
 import frc.robot.commands.AutoSetOuttakeAdjust;
+import frc.robot.commands.AutoSmartShooting;
 import frc.robot.commands.ClimberExtend;
 import frc.robot.commands.ClimberRetract;
 import frc.robot.commands.ClimberSlowRetractOverride;
-import frc.robot.commands.AutoSmartShooting;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
@@ -244,7 +244,8 @@ public class RobotContainer {
               new ParallelCommandGroup(
                   new ClimberRetract(),
                   new SequentialCommandGroup(
-                      Commands.waitUntil(() -> Climber.getInstance().isAtClimbRetractingThreshold()),
+                      Commands.waitUntil(
+                          () -> Climber.getInstance().isAtClimbRetractingThreshold()),
                       new OperatorXboxControllerRumble())));
       if (Constants.shotTuningMode) {
         driveXbox.y().onTrue(writeFiringSolution);
