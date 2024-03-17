@@ -297,8 +297,8 @@ public final class Constants {
     public static final double kP = 0.0;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
-    public static final double kV = 0.13; // kV * maxVelRotationsPerSec = max voltage
-    public static final double kS = 0.35;
+    public static final double kV = 0.131; // kV * maxVelRotationsPerSec = max voltage
+    public static final double kS = 0.465;
 
     public static final double openLoopRampSec = 0;
     public static final double closedLoopRampSec = 0;
