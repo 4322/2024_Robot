@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
@@ -127,6 +128,10 @@ public class RobotContainer {
     Shuffleboard.getTab("Autos").add(autoChooser).withPosition(0, 0).withSize(5, 2);
 
     FiringSolutionManager.getInstance().loadSolutions();
+
+    // Records branch name and commit hash to only Driver station log (doesn't output to console)
+    System.out.println("Git branch in use: " + BuildConstants.GIT_BRANCH);
+    System.out.println("Git commit hash in use: " + BuildConstants.GIT_SHA);
 
     if (Constants.driveEnabled) {
       drive.setDefaultCommand(driveManual);
