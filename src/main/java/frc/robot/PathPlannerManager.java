@@ -63,7 +63,7 @@ public class PathPlannerManager {
   }
 
   public void preloadAutos() {
-    autos = new HashMap<>();
+    autos = new HashMap<String, Command>();
     for (String autoName : AutoBuilder.getAllAutoNames()) {
       autos.put(autoName, AutoBuilder.buildAuto(autoName));
     }

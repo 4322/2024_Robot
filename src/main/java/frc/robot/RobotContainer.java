@@ -118,11 +118,12 @@ public class RobotContainer {
             "SetOuttakeCollectingNote",
             new AutoSetOuttakeAdjust(Constants.FiringSolutions.CollectingNote));
     PathPlannerManager.getInstance().addEvent("SetOuttakeSmartShooting", new AutoSmartShooting());
+    PathPlannerManager.getInstance().addEvent("SetOuttakeN8", new AutoSmartShooting());
 
     // DO NOT MOVE OR REMOVE THIS WITHOUT KNOWING WHAT YOU'RE DOING
     PathPlannerManager.getInstance().preloadAutos();
 
-    autoChooser = new SendableChooser<>();
+    autoChooser = new SendableChooser<Auto>();
     AutoHelper.configAutoChooser(autoChooser);
     Shuffleboard.getTab("Autos").add(autoChooser).withPosition(0, 0).withSize(5, 2);
 
