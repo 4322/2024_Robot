@@ -78,14 +78,12 @@ public class Outtake extends SubsystemBase {
       Logger.recordOutput("Outtake/LeftRotationsPerSecAbs", Math.abs(inputs.leftRotationsPerSec));
       Logger.recordOutput("Outtake/RightRotationsPerSecAbs", Math.abs(inputs.rightRotationsPerSec));
     }
-    if (Constants.outtakeTuningMode) {
-      if (inputs.debugOverrideEnable) {
-        if (Constants.outtakeEnabled) {
-          outtake(inputs.debugTargetRPS);
-        }
-        if (Constants.outtakePivotEnabled) {
-          pivot(inputs.targetPivotPosition);
-        }
+    if (inputs.tuneOuttakeOverrideEnable) {
+      if (Constants.outtakeEnabled) {
+        outtake(inputs.debugTargetRPS);
+      }
+      if (Constants.outtakePivotEnabled) {
+        pivot(inputs.targetPivotPosition);
       }
     }
     if (pivotInitialized
@@ -98,7 +96,7 @@ public class Outtake extends SubsystemBase {
 
   public void outtake(double targetRPS) {
     if (Constants.outtakeEnabled) {
-      if (Constants.outtakeTuningMode) {
+      if (inputs.tuneOuttakeOverrideEnable) {
         targetRPS = inputs.debugTargetRPS;
       }
       if (targetRPS > OuttakeConstants.maxVelRotationsPerSec) {
@@ -113,7 +111,7 @@ public class Outtake extends SubsystemBase {
 
   public void pivot(double rotations) {
     if (Constants.outtakePivotEnabled && pivotInitialized) {
-      if (Constants.outtakeTuningMode) {
+      if (inputs.tuneOuttakeOverrideEnable) {
         rotations = inputs.targetPivotPosition;
       }
       io.setPivotTarget(rotations);
@@ -182,6 +180,6 @@ public class Outtake extends SubsystemBase {
   }
 
   public boolean getDebugOverrideEnabled() {
-    return inputs.debugOverrideEnable;
+    return inputs.tuneOuttakeOverrideEnable;
   }
 }
