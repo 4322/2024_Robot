@@ -32,8 +32,7 @@ public class AutoSmartShooting extends InstantCommand {
                 RobotCoordinator.getInstance().getRobotYPos())
             .getAngle()
             .getDegrees();
-    solution =
-        FiringSolutionManager.getInstance().calcSolution(botMagToSpeaker, botAngleToSpeaker);
+    solution = FiringSolutionManager.getInstance().calcSolution(botMagToSpeaker, botAngleToSpeaker);
 
     Logger.recordOutput("FiringSolutions/CalculatedShot", solution.toString());
     Logger.recordOutput("FiringSolutions/BotPoseInput/Mag", botMagToSpeaker);
@@ -49,7 +48,5 @@ public class AutoSmartShooting extends InstantCommand {
   }
 
   @Override
-  public void end(boolean interrupted) {
-
-  }
+  public void end(boolean interrupted) {}
 }

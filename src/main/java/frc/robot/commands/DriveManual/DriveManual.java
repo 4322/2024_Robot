@@ -1,6 +1,7 @@
 package frc.robot.commands.DriveManual;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -81,11 +82,13 @@ public class DriveManual extends Command {
     if (Constants.speakerCentricEnabled) {
       switch (stateMachine.getState()) {
         case DEFAULT:
+          Logger.recordOutput("RobotHeading/State/", "Field centric");
           if (rotatePower != 0) {
             doSpinout();
           } else if (drive.isAutoRotateTuningEnabled()) {
             drive.driveAutoRotate(driveX, driveY, 0);
           } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
+            Logger.recordOutput("RobotHeading/PseudoAutoRotateHeading", pseudoAutoRotateAngle);
             drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
           } else {
             drive.drive(driveX, driveY, rotatePower);
@@ -95,8 +98,15 @@ public class DriveManual extends Command {
           Pose2d drivePose2D = drive.getPose2d();
           Translation2d speakerVec =
               FiringSolutionHelper.getVectorToSpeaker(drivePose2D.getX(), drivePose2D.getY());
-          Logger.recordOutput("SpeakerCentricHeading", speakerVec.getAngle().getDegrees());
+          Logger.recordOutput(
+              "RobotHeading/SpeakerCentricHeading/", speakerVec.getAngle().getDegrees());
+          Logger.recordOutput("RobotHeading/State", "Speaker centric");
           drive.driveAutoRotate(driveX, driveY, speakerVec.getAngle().getDegrees());
+          break;
+        case ROBOT_CENTRIC:
+          // make robot angle zero to switch to robot centric driving
+          Logger.recordOutput("RobotHeading/State", "Robot centric");
+          drive.drive(driveX, driveY, rotatePower, new Rotation2d());
           break;
       }
     } else { // do regular drive logic
@@ -105,6 +115,7 @@ public class DriveManual extends Command {
       } else if (drive.isAutoRotateTuningEnabled()) {
         drive.driveAutoRotate(driveX, driveY, 0);
       } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
+        Logger.recordOutput("RobotHeading/PseudoAutoRotateHeading", pseudoAutoRotateAngle);
         drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
       } else {
         drive.drive(driveX, driveY, rotatePower);

@@ -6,6 +6,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.drive.Drive;
 import frc.utility.OrangeMath;
+import org.littletonrobotics.junction.Logger;
 
 public class AutoAcquireNote extends Command {
 
@@ -66,6 +67,10 @@ public class AutoAcquireNote extends Command {
     desiredRobotDirectionY = Math.sin(desiredHeadingAngle);
     notePositionX = noteDistance * desiredRobotDirectionX + pose.getX();
     notePositionY = noteDistance * desiredRobotDirectionY + pose.getY();
+
+    Logger.recordOutput("AutoAcquireNote/NoteDistFromRobot", noteDistance);
+    Logger.recordOutput("AutoAcquireNote/PoseXOnField", notePositionX);
+    Logger.recordOutput("AutoAcquireNote/PoseYOnField", notePositionY);
   }
 
   @Override

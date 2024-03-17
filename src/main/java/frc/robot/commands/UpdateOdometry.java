@@ -33,10 +33,9 @@ public class UpdateOdometry extends Command {
     final boolean withinAcceptableDistance =
         distanceToBot <= LimelightConstants.visionOdometryTolerance
             || distanceToBot >= LimelightConstants.reverseOdometryOverrideTolerance;
-    final int numTargets = limelight.getNumTargets();
     if (limelight.getTargetVisible()
         && withinAcceptableDistance
-        && numTargets >= LimelightConstants.numTargetsToUseReverseOdom) {
+        && limelight.getNumTargets() >= LimelightConstants.numTargetsToUseReverseOdom) {
       Drive.getInstance()
           .updateOdometryVision(
               limelightPose, Timer.getFPGATimestamp() - (limelight.getTotalLatency() / 1000.0));
@@ -48,24 +47,19 @@ public class UpdateOdometry extends Command {
     }
 
     Logger.recordOutput(
-      Constants.LimelightConstants.outtakeLimelightName + "/BotposeBlue/OdomX",
+        Constants.LimelightConstants.outtakeLimelightName + "/BotposeBlue/OdomX",
         limelightPose.getX());
     Logger.recordOutput(
-      Constants.LimelightConstants.outtakeLimelightName + "/BotposeBlue/OdomY",
+        Constants.LimelightConstants.outtakeLimelightName + "/BotposeBlue/OdomY",
         limelightPose.getY());
     Logger.recordOutput(
-      Constants.LimelightConstants.outtakeLimelightName + "/BotposeBlue/RotationDeg",
+        Constants.LimelightConstants.outtakeLimelightName + "/BotposeBlue/RotationDeg",
         limelightPose.getRotation().getDegrees());
   }
 
   @Override
   public boolean isFinished() {
     return false;
-  }
-
-  @Override
-  public boolean runsWhenDisabled() {
-    return true;
   }
 
   // Called once the command ends or is interrupted.
