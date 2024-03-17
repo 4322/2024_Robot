@@ -54,7 +54,7 @@ public class OuttakeIOReal implements OuttakeIO {
     configOuttake(rightOuttakeMotor);
     rightOuttakeMotor.setControl(new Follower(leftOuttakeMotor.getDeviceID(), true));
     configPivot(pivotMotor);
-    if (Constants.outtakeTuningMode) {
+    if (Constants.debug) {
       tab = Shuffleboard.getTab("Outtake");
       outtakeFlywheelSpeed =
           tab.add("Desired Flywheel Velocity (RPS)", 0)
@@ -63,12 +63,15 @@ public class OuttakeIOReal implements OuttakeIO {
               .getEntry();
       pivotPosition =
           tab.add("Pivot Position (Rotations)", 0).withSize(1, 1).withPosition(1, 0).getEntry();
-      tuneOuttakeOverrideEnable =
-          tab.add("Tune Outtake Override", false)
-              .withWidget(BuiltInWidgets.kToggleButton)
-              .withSize(1, 1)
-              .withPosition(1, 1)
-              .getEntry();
+
+      if (Constants.outtakeTuningMode) {
+        tuneOuttakeOverrideEnable =
+            tab.add("Tune Outtake Override", false)
+                .withWidget(BuiltInWidgets.kToggleButton)
+                .withSize(1, 1)
+                .withPosition(1, 1)
+                .getEntry();
+      }
     }
   }
 
