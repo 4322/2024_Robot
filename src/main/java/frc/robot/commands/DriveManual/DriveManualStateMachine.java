@@ -31,13 +31,19 @@ public class DriveManualStateMachine {
         .configure(DriveManualState.SPEAKER_CENTRIC)
         .permit(DriveManualTrigger.RESET_TO_DEFAULT, DriveManualState.DEFAULT)
         .permitReentry(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC)
-        .permitReentry(DriveManualTrigger.ENABLE_ROBOT_CENTRIC); // don't want to accidentally switch to robot centric from speaker centric
-    
+        .permitReentry(
+            DriveManualTrigger
+                .ENABLE_ROBOT_CENTRIC); // don't want to accidentally switch to robot centric from
+    // speaker centric
+
     config
         .configure(DriveManualState.ROBOT_CENTRIC)
         .permit(DriveManualTrigger.RESET_TO_DEFAULT, DriveManualState.DEFAULT)
         .permitReentry(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC)
-        .permitReentry(DriveManualTrigger.ENABLE_ROBOT_CENTRIC);// don't want to accidentally switch to speaker centric from robot centric
+        .permitReentry(
+            DriveManualTrigger
+                .ENABLE_ROBOT_CENTRIC); // don't want to accidentally switch to speaker centric from
+    // robot centric
 
     stateMachine = new StateMachine<DriveManualState, DriveManualTrigger>(initialState, config);
   }
