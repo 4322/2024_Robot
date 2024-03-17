@@ -1,6 +1,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.OuttakeManual.OuttakeManual;
+import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualState;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.tunnel.Tunnel;
 
@@ -15,7 +17,7 @@ public class Shoot extends Command {
   @Override
   public void execute() {
     if (RobotCoordinator.getInstance().canShoot()
-        || RobotCoordinator.getInstance().debugOuttakeOverride()) {
+        || RobotCoordinator.getInstance().debugOuttakeOverride() || OuttakeManual.getState() == OuttakeManualState.EJECT) {
       tunnel.feed();
     }
   }

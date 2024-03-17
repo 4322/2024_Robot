@@ -14,12 +14,10 @@ import org.littletonrobotics.junction.Logger;
 public class OuttakeManual extends Command {
   private final Outtake outtake;
 
-  private final OuttakeManualStateMachine stateMachine;
+  private static final OuttakeManualStateMachine stateMachine = new OuttakeManualStateMachine(OuttakeManualState.STOP);
 
   public OuttakeManual() {
-    outtake = Outtake.getInstance();
-    stateMachine = new OuttakeManualStateMachine(OuttakeManualState.STOP);
-
+    outtake = Outtake.getInstance(); 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(outtake);
   }
@@ -78,6 +76,10 @@ public class OuttakeManual extends Command {
     } else {
       outtake.stopPivot();
     }
+  }
+
+  public static OuttakeManualState getState() {
+    return stateMachine.getState();
   }
 
   public void updateStateMachine(OuttakeManualTrigger trigger) {
