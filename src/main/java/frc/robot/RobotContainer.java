@@ -185,14 +185,14 @@ public class RobotContainer {
                     driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);
                   }));
       driveXbox
-          .rightBumper()
+          .back() // binded to back left P4 button on xbox
           .onTrue(
               Commands.runOnce(
                   () -> {
                     driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC);
                   }));
       driveXbox
-          .back() // binded to back right button on xbox
+          .start() // binded to back right P2 button on xbox
           .onTrue(
               Commands.runOnce(
                   () -> {
@@ -215,13 +215,28 @@ public class RobotContainer {
                   () -> {
                     RobotCoordinator.getInstance().setIntakeButtonState(false);
                   }));
+      driveXbox
+          .rightBumper()
+          .onTrue(
+              Commands.runOnce(
+                  () -> {
+                    RobotCoordinator.getInstance().setAutoIntakeButtonPressed(true);
+                    outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE);
+                  }));
+      driveXbox
+          .rightBumper()
+          .onFalse(
+              Commands.runOnce(
+                  () -> {
+                    RobotCoordinator.getInstance().setAutoIntakeButtonPressed(false);
+                  }));
       driveXbox.leftTrigger().whileTrue(new Shoot());
       driveXbox.povLeft().onTrue(new AtHome());
       if (Constants.shotTuningMode) {
         driveXbox.y().onTrue(writeFiringSolution);
         // right up against front of speaker with edge of robot on source side
         driveXbox
-            .start()
+            .a()
             .onTrue(
                 new SetRobotPose(
                     new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()), true));
