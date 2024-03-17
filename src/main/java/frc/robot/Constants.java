@@ -405,9 +405,11 @@ public final class Constants {
     public static final double supplyLimit = 30;
     public static final double statorLimit = 60;
 
-    public static final double desiredVoltage = 2.0;
-    public static final double desiredReverseVoltage = -2.0;
+    public static final double desiredVoltage = 4.0;
+    public static final double desiredReverseVoltage = -4.0;
     public static final double peakVoltage = 6.0;
+    public static final double pauseSec = 0.05;  // time for tunnel to stop before rewinding
+    public static final double rewindSec = 0.02;
 
     public static final class Logging {
       public static final String key = "Tunnel/";
