@@ -81,6 +81,7 @@ public class TunnelFeed extends Command {
           adjustmentTimer.restart();
           state = State.rewinding;
         }
+        break;
       case rewinding:
         if (adjustmentTimer.hasElapsed(Constants.TunnelConstants.rewindSec)) {
           tunnel.stopTunnel();
@@ -98,13 +99,15 @@ public class TunnelFeed extends Command {
             state = State.pushUp;
           }
         }
+        break;
       case pushUp:
-      if (RobotCoordinator.getInstance().noteInFiringPosition()) {
-        tunnel.stopTunnel();
-        state = State.readyToFire;
-      }
+        if (RobotCoordinator.getInstance().noteInFiringPosition()) {
+          tunnel.stopTunnel();
+          state = State.readyToFire;
+        }
+        break;
       case readyToFire:
-      break;
+        break;
     }
     Logger.recordOutput("TunnelFeed/State", state.toString());
   }
