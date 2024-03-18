@@ -53,6 +53,15 @@ public class Tunnel extends SubsystemBase {
     }
   }
 
+  public void pushUp() { // run the tunnel in the direction of the outtake
+    if (Constants.tunnelEnabled) {
+      io.setTunnel(TunnelConstants.pushUpVoltage);
+      Logger.recordOutput(
+          TunnelConstants.Logging.key + "TunnelTargetVoltage", TunnelConstants.pushUpVoltage);
+      Logger.recordOutput(TunnelConstants.Logging.key + "TunnelStopped", false);
+    }
+  }
+
   public void reverseFeed() { // run the tunnel in the direction of the intake
     if (Constants.tunnelEnabled) {
       io.setTunnel(TunnelConstants.reverseEjectVoltage);
