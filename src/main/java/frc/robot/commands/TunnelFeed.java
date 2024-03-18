@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -14,15 +16,19 @@ public class TunnelFeed extends Command {
   private final Tunnel tunnel;
 
   public enum State {
-    intakeControl,
+    waitForIntake,
     inTunnel,
     stoppingAtOuttake,
     rewinding,
-    readyToFire
+    checkOuttakeSensor,
+    pushUp,
+    readyToFire,
+    abort
   }
 
   private State state;
-  private Timer timer = new Timer();
+  private Timer adjustmentTimer = new Timer();
+  private Timer abortTimer = new Timer();
 
   public TunnelFeed() {
     tunnel = Tunnel.getInstance();
@@ -34,43 +40,73 @@ public class TunnelFeed extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    state = State.intakeControl;
+    state = State.waitForIntake;
+    abortTimer.stop();
+    abortTimer.reset();
   }
 
   @Override
   public void execute() {
 
+    if (abortTimer.hasElapsed(Constants.TunnelConstants.abortSec)) {
+      tunnel.stopTunnel();
+      state = State.abort;
+      abortTimer.stop();
+      abortTimer.reset();
+    }
+
     switch (state) {
-      case intakeControl:
+      case abort:
+        state = State.waitForIntake;
+        break;
+      case waitForIntake:
         // Accounts for note being midway between intake and tunnel sensor
         // Tunnel still runs for this case
         if (RobotCoordinator.getInstance().noteEnteringIntake()) {
           tunnel.feed();
+          abortTimer.start();
           state = State.inTunnel;
         }
         break;
       case inTunnel:
         if (RobotCoordinator.getInstance().noteInFiringPosition()) {
           tunnel.stopTunnel();
-          timer.restart();
+          adjustmentTimer.restart();
           state = State.stoppingAtOuttake;
         }
         break;
       case stoppingAtOuttake:
-        if (timer.hasElapsed(Constants.TunnelConstants.pauseSec)) {
+        if (adjustmentTimer.hasElapsed(Constants.TunnelConstants.pauseSec)) {
           tunnel.rewind(); // pull back from the outtake wheels
-          timer.restart();
+          adjustmentTimer.restart();
           state = State.rewinding;
         }
       case rewinding:
-        if (timer.hasElapsed(Constants.TunnelConstants.rewindSec)) {
+        if (adjustmentTimer.hasElapsed(Constants.TunnelConstants.rewindSec)) {
           tunnel.stopTunnel();
-          state = State.readyToFire;
+          adjustmentTimer.restart();
+          state = State.checkOuttakeSensor;
         }
         break;
+      case checkOuttakeSensor:
+        if (adjustmentTimer.hasElapsed(Constants.TunnelConstants.pauseSec)) {
+          if (RobotCoordinator.getInstance().noteInFiringPosition()) {
+            state = State.readyToFire;
+          } else {
+            tunnel.pushUp();
+            adjustmentTimer.restart();
+            state = State.pushUp;
+          }
+        }
+      case pushUp:
+      if (RobotCoordinator.getInstance().noteInFiringPosition()) {
+        tunnel.stopTunnel();
+        state = State.readyToFire;
+      }
       case readyToFire:
-        break;
+      break;
     }
+    Logger.recordOutput("TunnelFeed/State", state.toString());
   }
 
   @Override
@@ -83,5 +119,6 @@ public class TunnelFeed extends Command {
   @Override
   public void end(boolean interrupted) {
     tunnel.stopTunnel();
+    Logger.recordOutput("TunnelFeed/State", "ended");
   }
 }

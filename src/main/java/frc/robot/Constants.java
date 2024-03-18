@@ -168,7 +168,7 @@ public final class Constants {
       public static final double xboxDriveDeadband = 0.17; // was 0.1 with a better controller
       public static final double xboxRotateDeadband = 0.25;
       public static final double maxManualRotation = 0.30;
-      public static final double inhibitPseudoAutoRotateAngularVelocity = 0.05;
+      public static final double inhibitPseudoAutoRotateDegPerSec = 1.0;  // don't lock until rotation stops
 
       public static final double spinoutRotateDeadBand = 0.9;
       public static final double spinoutMinAngularVelocity =
@@ -328,7 +328,7 @@ public final class Constants {
     public static final boolean limitForwardMotion = true;
     public static final boolean limitReverseMotion = true;
     public static final double forwardSoftLimitThresholdRotations = 118;
-    public static final double reverseSoftLimitThresholdRotations = 14.5;
+    public static final double reverseSoftLimitThresholdRotations = 7;
     public static final double pivotPeakForwardVoltage = 10;
     public static final double pivotPeakReverseVoltage = -10;
 
@@ -409,9 +409,11 @@ public final class Constants {
     public static final double reverseEjectVoltage = -6.0;
     public static final double rewindVoltage =
         -2.0; // just enough to pull the note off the outtake wheels
+    public static final double pushUpVoltage = 2.0;
     public static final double peakVoltage = 6.0;
     public static final double pauseSec = 0.05; // time for tunnel to stop before rewinding
     public static final double rewindSec = 0.01;
+    public static final double abortSec = 5;
 
     public static final class Logging {
       public static final String key = "Tunnel/";
