@@ -20,8 +20,9 @@ public class TunnelFeed extends Command {
     rewinding,
     readyToFire
   }
-private State state;
-private Timer timer = new Timer();
+
+  private State state;
+  private Timer timer = new Timer();
 
   public TunnelFeed() {
     tunnel = Tunnel.getInstance();
@@ -39,7 +40,7 @@ private Timer timer = new Timer();
   @Override
   public void execute() {
 
-    switch(state) {
+    switch (state) {
       case intakeControl:
         // Accounts for note being midway between intake and tunnel sensor
         // Tunnel still runs for this case
@@ -57,15 +58,15 @@ private Timer timer = new Timer();
         break;
       case stoppingAtOuttake:
         if (timer.hasElapsed(Constants.TunnelConstants.pauseSec)) {
-          tunnel.reverseFeed();  // pull back from the outtake wheels
+          tunnel.rewind(); // pull back from the outtake wheels
           timer.restart();
-          state = State.rewinding;          
+          state = State.rewinding;
         }
       case rewinding:
-      if (timer.hasElapsed(Constants.TunnelConstants.rewindSec)) {
-        tunnel.stopTunnel();
-        state = State.readyToFire;          
-      }
+        if (timer.hasElapsed(Constants.TunnelConstants.rewindSec)) {
+          tunnel.stopTunnel();
+          state = State.readyToFire;
+        }
         break;
       case readyToFire:
         break;

@@ -405,11 +405,12 @@ public final class Constants {
     public static final double supplyLimit = 30;
     public static final double statorLimit = 60;
 
-    public static final double desiredVoltage = 4.0;
-    public static final double desiredReverseVoltage = -4.0;
+    public static final double feedVoltage = 6.0;
+    public static final double reverseEjectVoltage = -6.0;
+    public static final double rewindVoltage = -2.0; // just enough to pull the note off the outtake wheels
     public static final double peakVoltage = 6.0;
-    public static final double pauseSec = 0.05;  // time for tunnel to stop before rewinding
-    public static final double rewindSec = 0.02;
+    public static final double pauseSec = 0.05; // time for tunnel to stop before rewinding
+    public static final double rewindSec = 0.01;
 
     public static final class Logging {
       public static final String key = "Tunnel/";
@@ -502,7 +503,8 @@ public final class Constants {
     public static final FiringSolution BS = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution Eject = new FiringSolution(0, 0, 10, 50);
     // collecting note should be at lowest pivot limit
-    public static final FiringSolution CollectingNote = new FiringSolution(0, 0, 0, Constants.OuttakeConstants.reverseSoftLimitThresholdRotations);
+    public static final FiringSolution CollectingNote =
+        new FiringSolution(0, 0, 0, Constants.OuttakeConstants.reverseSoftLimitThresholdRotations);
   }
 
   public enum WheelPosition {
