@@ -57,8 +57,7 @@ public class Tunnel extends SubsystemBase {
     if (Constants.tunnelEnabled) {
       io.setTunnel(TunnelConstants.reverseEjectVoltage);
       Logger.recordOutput(
-          TunnelConstants.Logging.key + "TunnelTargetVoltage",
-          TunnelConstants.reverseEjectVoltage);
+          TunnelConstants.Logging.key + "TunnelTargetVoltage", TunnelConstants.reverseEjectVoltage);
       Logger.recordOutput(TunnelConstants.Logging.key + "TunnelStopped", false);
     }
   }
@@ -67,8 +66,7 @@ public class Tunnel extends SubsystemBase {
     if (Constants.tunnelEnabled) {
       io.setTunnel(TunnelConstants.rewindVoltage);
       Logger.recordOutput(
-          TunnelConstants.Logging.key + "TunnelTargetVoltage",
-          TunnelConstants.rewindVoltage);
+          TunnelConstants.Logging.key + "TunnelTargetVoltage", TunnelConstants.rewindVoltage);
       Logger.recordOutput(TunnelConstants.Logging.key + "TunnelStopped", false);
     }
   }
