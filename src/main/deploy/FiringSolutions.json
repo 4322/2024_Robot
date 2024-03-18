@@ -1,15 +1,9 @@
 [
   {
-    "shotMag": 3.364694169,
-    "shotDeg": -0.5810479316417732,
-    "flywheelSpeed": 60.0,
-    "shotRotations": 54.5
-  },
-  {
-    "shotMag": 2.871440222,
-    "shotDeg": -0.6504111183955062,
-    "flywheelSpeed": 60.0,
-    "shotRotations": 62.0
+    "shotMag": 1.809581132,
+    "shotDeg": -0.523426789472108,
+    "flywheelSpeed": 55.0,
+    "shotRotations": 90.0
   },
   {
     "shotMag": 2.43521634,
@@ -18,31 +12,37 @@
     "shotRotations": 70.0
   },
   {
-    "shotMag": 1.809581132,
-    "shotDeg": -0.523426789472108,
-    "flywheelSpeed": 55.0,
-    "shotRotations": 90.0
+    "shotMag": 2.871440222,
+    "shotDeg": -0.6504111183955062,
+    "flywheelSpeed": 60.0,
+    "shotRotations": 62.0
   },
   {
-    "shotMag": 6.6979965010601115,
+    "shotMag": 3.364694169,
+    "shotDeg": -0.5810479316417732,
+    "flywheelSpeed": 60.0,
+    "shotRotations": 54.5
+  },
+  {
+    "shotMag": 3.6979965010601115,
     "shotDeg": 4.0857257974874885,
-    "flywheelSpeed": 55.0,
+    "flywheelSpeed": 60.0,
     "shotRotations": 50.0
   },
   {
-    "shotMag": 7.3175444285913445,
-    "shotDeg": -5.003323349584095,
-    "flywheelSpeed": 60.0,
-    "shotRotations": 42.0
-  },
-  {
-    "shotMag": 7.135061385039121,
+    "shotMag": 4.135061385039121,
     "shotDeg": -6.052516279137386,
     "flywheelSpeed": 62.5,
     "shotRotations": 47.0
   },
   {
-    "shotMag": 7.525496406189311,
+    "shotMag": 4.3175444285913445,
+    "shotDeg": -5.003323349584095,
+    "flywheelSpeed": 65.0,
+    "shotRotations": 42.0
+  },
+  {
+    "shotMag": 4.525496406189311,
     "shotDeg": -5.377886458786737,
     "flywheelSpeed": 70.0,
     "shotRotations": 38.0
