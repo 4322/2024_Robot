@@ -328,7 +328,7 @@ public final class Constants {
     public static final boolean limitForwardMotion = true;
     public static final boolean limitReverseMotion = true;
     public static final double forwardSoftLimitThresholdRotations = 118;
-    public static final double reverseSoftLimitThresholdRotations = 14.5;
+    public static final double reverseSoftLimitThresholdRotations = 7;
     public static final double pivotPeakForwardVoltage = 10;
     public static final double pivotPeakReverseVoltage = -10;
 
