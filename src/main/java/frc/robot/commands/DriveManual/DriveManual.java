@@ -78,7 +78,7 @@ public class DriveManual extends Command {
   @Override
   public void execute() {
     updateDriveValues();
-
+    boolean pseudoAutoRotateEngaged = false;
     if (Constants.speakerCentricEnabled) {
       switch (stateMachine.getState()) {
         case DEFAULT:
@@ -88,6 +88,7 @@ public class DriveManual extends Command {
           } else if (drive.isAutoRotateTuningEnabled()) {
             drive.driveAutoRotate(driveX, driveY, 0);
           } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
+            pseudoAutoRotateEngaged = true;
             Logger.recordOutput("RobotHeading/PseudoAutoRotateHeading", pseudoAutoRotateAngle);
             drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
           } else {
@@ -98,7 +99,8 @@ public class DriveManual extends Command {
           Pose2d drivePose2D = drive.getPose2d();
           Translation2d speakerVec =
               FiringSolutionHelper.getVectorToSpeaker(drivePose2D.getX(), drivePose2D.getY());
-          Logger.recordOutput("RobotHeading/SpeakerCentricHeading/", speakerVec.getAngle().getDegrees());
+          Logger.recordOutput(
+              "RobotHeading/SpeakerCentricHeading/", speakerVec.getAngle().getDegrees());
           Logger.recordOutput("RobotHeading/State", "Speaker centric");
           drive.driveAutoRotate(driveX, driveY, speakerVec.getAngle().getDegrees());
           break;
@@ -114,12 +116,14 @@ public class DriveManual extends Command {
       } else if (drive.isAutoRotateTuningEnabled()) {
         drive.driveAutoRotate(driveX, driveY, 0);
       } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
+        pseudoAutoRotateEngaged = true;
         Logger.recordOutput("RobotHeading/PseudoAutoRotateHeading", pseudoAutoRotateAngle);
         drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
       } else {
         drive.drive(driveX, driveY, rotatePower);
       }
     }
+    Logger.recordOutput("RobotHeading/PseudoAutoRotateEngaged", pseudoAutoRotateEngaged);
   }
 
   public void updateStateMachine(DriveManualTrigger trigger) {
@@ -253,7 +257,7 @@ public class DriveManual extends Command {
       pseudoAutoRotateAngle = null;
     } else if (rotatePower == 0
         && pseudoAutoRotateAngle == null
-        && driveAbsAngularVel < Manual.inhibitPseudoAutoRotateAngularVelocity) {
+        && driveAbsAngularVel < Manual.inhibitPseudoAutoRotateDegPerSec) {
       pseudoAutoRotateAngle = drive.getAngle();
     }
   }

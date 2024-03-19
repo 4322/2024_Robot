@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -30,10 +29,8 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
  * project.
  */
 public class Robot extends LoggedRobot {
-  private static final PowerDistribution PDH = new PowerDistribution();
   private Command m_autonomousCommand;
   private ShuffleboardTab tab;
-  private ShuffleboardTab PDHTab;
   private RobotContainer m_robotContainer;
   private static Alliance allianceColor;
   Timer updateAllianceTimer;
@@ -101,7 +98,6 @@ public class Robot extends LoggedRobot {
     updateAllianceTimer.start();
 
     tab = Shuffleboard.getTab("Enabled Subsystems");
-    PDHTab = Shuffleboard.getTab("PDH Currents");
 
     subsystemEnabled("Drivebase", 1, 0, Constants.driveEnabled);
 

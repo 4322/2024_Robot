@@ -14,7 +14,9 @@ public class AutoHelper {
     TwoNoteCenter,
     ThreeNoteCenter,
     FourNoteCenter,
-    FourNoteSource
+    FourNoteSource,
+    ForwardLeaveTest,
+    DiagonalLeaveTest
   }
 
   public static void configAutoChooser(SendableChooser<Auto> chooser) {
@@ -30,6 +32,10 @@ public class AutoHelper {
     switch (auto) {
       case LeaveSourceCorner:
         return "LeaveInTheMiddleOfNowhere";
+      case ForwardLeaveTest:
+        return "ForwardLeaveTest";
+      case DiagonalLeaveTest:
+        return "DiagonalLeaveTest";
       case OneNoteCenter:
         return "OneNoteCenter";
       case OneNoteAmp:

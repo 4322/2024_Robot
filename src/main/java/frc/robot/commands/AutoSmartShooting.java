@@ -1,13 +1,12 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.utility.FiringSolutionHelper;
 import org.littletonrobotics.junction.Logger;
-
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class AutoSmartShooting extends InstantCommand {
   private final Outtake outtake;

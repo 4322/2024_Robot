@@ -17,7 +17,6 @@ public class RobotCoordinator extends SubsystemBase {
   private Outtake outtake = Outtake.getInstance();
   private Drive drive = Drive.getInstance();
   private NoteTracker noteTracker = NoteTracker.getInstance();
-  private Limelight outtakeLimelight = Limelight.getOuttakeInstance();
   private Limelight intakeLimelight = Limelight.getIntakeInstance();
 
   private static RobotCoordinator robotCoordinator;

@@ -97,7 +97,7 @@ public class Outtake extends SubsystemBase {
   }
 
   public void outtake(double targetRPS) {
-    if (Constants.outtakeEnabled) {
+    if (Constants.outtakeEnabled && pivotInitialized) {
       if (Constants.outtakeTuningMode) {
         targetRPS = inputs.debugTargetRPS;
       }

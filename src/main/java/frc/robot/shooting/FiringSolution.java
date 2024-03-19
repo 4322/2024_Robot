@@ -9,6 +9,7 @@ public class FiringSolution extends GenericFiringSolution {
   private double flywheelSpeed;
   private double shotRotations; // angle at which we should shoot (robot side view)
 
+  // Needed for json library. Might crash without it
   private FiringSolution() {
     this.shotMag = 0;
     this.shotDeg = 0;
