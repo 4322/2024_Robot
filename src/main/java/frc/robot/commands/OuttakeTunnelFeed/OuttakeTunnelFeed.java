@@ -2,8 +2,11 @@ package frc.robot.commands.OuttakeTunnelFeed;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.OuttakeManual.OuttakeManual;
+import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualState;
 import frc.robot.commands.OuttakeTunnelFeed.OuttakeTunnelFeedStateMachine.OuttakeTunnelFeedState;
 import frc.robot.commands.OuttakeTunnelFeed.OuttakeTunnelFeedStateMachine.OuttakeTunnelFeedTrigger;
+import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.noteTracker.NoteTracker;
 import frc.robot.subsystems.tunnel.Tunnel;
 
@@ -46,13 +49,16 @@ public class OuttakeTunnelFeed extends Command {
       case NOTE_IDLE_IN_TUNNEL:
         // delay of 0.5 needed before entering this state in order to stop tunnel from reversing
         // direction immediately and causing wear in pulleys
+        tunnel.feed();
         break;
     }
   }
 
   @Override
   public boolean isFinished() {
-    return stateMachine.getState() == OuttakeTunnelFeedState.NOTE_IDLE_IN_TUNNEL;
+    return (stateMachine.getState() == OuttakeTunnelFeedState.NOTE_IDLE_IN_TUNNEL
+            && RobotCoordinator.getInstance().noteInFiringPosition())
+        || (OuttakeManual.getState() != OuttakeManualState.FEED);
   }
 
   @Override
@@ -61,5 +67,6 @@ public class OuttakeTunnelFeed extends Command {
     stateMachine.fire(OuttakeTunnelFeedTrigger.ENABLE_STATE_RESET);
     tunnelDelayTimer.stop();
     tunnelDelayTimer.reset();
+    tunnel.stopTunnel();
   }
 }
