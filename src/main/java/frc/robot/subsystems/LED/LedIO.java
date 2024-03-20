@@ -20,6 +20,9 @@ public interface LedIO {
       int red, int green, int blue, double speed, int ledNum, int startOffset) {}
   ;
 
+  public default void fireAnimate(
+    double brightness, double speed, int numLED, double sparking, double cooling, boolean reverse, int offset) {}
+
   public default void clearAnimation() {}
   ;
 
