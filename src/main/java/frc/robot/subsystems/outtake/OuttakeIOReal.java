@@ -192,6 +192,9 @@ public class OuttakeIOReal implements OuttakeIO {
       inputs.targetPivotPosition = pivotPosition.getDouble(0);
       inputs.tuneOuttakeOverrideEnable = tuneOuttakeOverrideEnable.getBoolean(false);
     }
+
+    // makes logging cleaner because there won't be sharp spikes 
+    // in encoder position if it goes "below" zero point
     if (inputs.heliumAbsRotations
         > Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
       inputs.heliumAbsRotations = 0;
@@ -209,7 +212,7 @@ public class OuttakeIOReal implements OuttakeIO {
     if (heliumAbsoluteRotations
         > Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
       // Assume that abs position higher than maxValue is below the
-      // hard stop zero point of shooter/deployer
+      // hard stop zero point of shooter
       // If so, assume that position is 0 for motor internal encoder
       pivotMotor.setPosition(0);
     } else {

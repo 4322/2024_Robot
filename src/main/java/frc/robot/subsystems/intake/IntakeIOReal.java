@@ -190,7 +190,10 @@ public class IntakeIOReal implements IntakeIO {
     inputs.heliumRPS = deployEncoder.getVelocity();
 
     inputs.deployAppliedControl = deploy.getAppliedControl().toString();
-
+    
+    // If intake deployer is above threshold at 0.95 rotations, then assume it is below zero 
+    // point and as a result wraps back up to 1.0 rotations or value close to it.
+    // If this scenario occurs, then set abs value position back to 0 rotations
     if (inputs.heliumAbsRotations
         > Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
       inputs.heliumAbsRotations = 0;
