@@ -115,6 +115,18 @@ public class Limelight extends SubsystemBase {
       camMode = table.getEntry("camMode");
       pipeline = table.getEntry("pipeline");
 
+      // If speaker centric is disabled, assume we aren't using odometry in match
+      // Switch outtake limeligt to normal vision pipeline so driver can have better vision of speaker
+      if (limelightName.equals(Constants.LimelightConstants.outtakeLimelightName)) {
+        // TODO: look at LL pipeline numbers for april tags and normal vision
+        if (!Constants.speakerCentricEnabled) {
+          switchPipeline(1); // switch to normal vision pipeline
+        }
+        else {
+          switchPipeline(0); // switch to April Tag pipeline
+        }
+      }
+
       if (Constants.debug) {
         tab = Shuffleboard.getTab(name);
         targetVisible =
