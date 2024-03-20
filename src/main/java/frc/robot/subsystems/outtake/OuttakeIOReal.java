@@ -33,7 +33,7 @@ public class OuttakeIOReal implements OuttakeIO {
   ShuffleboardTab tab;
   GenericEntry outtakeFlywheelSpeed;
   GenericEntry pivotPosition;
-  GenericEntry debugOverrideEnable;
+  GenericEntry tuneOuttakeOverrideEnable;
 
   private double heliumAbsoluteRotations;
 
@@ -54,8 +54,9 @@ public class OuttakeIOReal implements OuttakeIO {
     configOuttake(rightOuttakeMotor);
     rightOuttakeMotor.setControl(new Follower(leftOuttakeMotor.getDeviceID(), true));
     configPivot(pivotMotor);
-    if (Constants.outtakeTuningMode) {
+    if (Constants.debug) {
       tab = Shuffleboard.getTab("Outtake");
+
       outtakeFlywheelSpeed =
           tab.add("Desired Flywheel Velocity (RPS)", 0)
               .withSize(1, 1)
@@ -63,12 +64,14 @@ public class OuttakeIOReal implements OuttakeIO {
               .getEntry();
       pivotPosition =
           tab.add("Pivot Position (Rotations)", 0).withSize(1, 1).withPosition(1, 0).getEntry();
-      debugOverrideEnable =
-          tab.add("debugOverride", false)
-              .withWidget(BuiltInWidgets.kToggleButton)
-              .withSize(1, 1)
-              .withPosition(1, 1)
-              .getEntry();
+      if (Constants.outtakeTuningMode) {
+        tuneOuttakeOverrideEnable =
+            tab.add("debugOverride", false)
+                .withWidget(BuiltInWidgets.kToggleButton)
+                .withSize(1, 1)
+                .withPosition(1, 1)
+                .getEntry();
+      }
     }
   }
 
@@ -187,7 +190,7 @@ public class OuttakeIOReal implements OuttakeIO {
     if (Constants.outtakeTuningMode) {
       inputs.debugTargetRPS = outtakeFlywheelSpeed.getDouble(0);
       inputs.targetPivotPosition = pivotPosition.getDouble(0);
-      inputs.debugOverrideEnable = debugOverrideEnable.getBoolean(false);
+      inputs.tuneOuttakeOverrideEnable = tuneOuttakeOverrideEnable.getBoolean(false);
     }
     if (inputs.heliumAbsRotations
         > Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
