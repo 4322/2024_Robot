@@ -68,12 +68,12 @@ public class LED extends SubsystemBase {
           && !initTimer.hasElapsed(1)) {
         initTimer.start();
         setLEDState(LEDState.initialized);
+      // below are all robot LED states listed from highest to lowest priority
       } else if (RobotCoordinator.getInstance().getAutoIntakeButtonPressed()) {
         setLEDState(LEDState.autoNoteCollection);
       } else if (RobotCoordinator.getInstance().noteIsShot()) {
         setLEDState(LEDState.noteFired);
-      } else if (RobotCoordinator.getInstance()
-          .canShoot()) { // robot LED states listed from highest to lowest priority
+      } else if (RobotCoordinator.getInstance().canShoot()) {
         setLEDState(LEDState.noteReadyToShoot);
       } else if (RobotCoordinator.getInstance().noteInFiringPosition()) {
         setLEDState(LEDState.noteInFiringPos);
