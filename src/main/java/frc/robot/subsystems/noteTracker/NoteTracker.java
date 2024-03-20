@@ -15,6 +15,7 @@ public class NoteTracker extends SubsystemBase {
 
   private boolean notePassingIntake;
   private boolean notePassingTunnel;
+  private boolean noteIsShot;
   private Timer shootTimer = new Timer();
 
   private static NoteTracker noteTracker;
@@ -58,10 +59,12 @@ public class NoteTracker extends SubsystemBase {
         notePassingTunnel = true;
       } else if (inputs.tunnelBeamBreak && notePassingTunnel && Outtake.getInstance().isOuttaking()) {
         shootTimer.start();
-        if (shootTimer.hasElapsed(0.5)) {
+        noteIsShot = true;
+        if (shootTimer.hasElapsed(0.2)) {
           notePassingTunnel = false;
           shootTimer.stop();
           shootTimer.reset();
+          noteIsShot = false;
         }
       } else if (Intake.getInstance().isEjecting()) {
         notePassingIntake = false;
@@ -83,5 +86,9 @@ public class NoteTracker extends SubsystemBase {
 
   public boolean notePassingTunnel() {
     return notePassingTunnel;
+  }
+
+  public boolean noteIsShot() {
+    return noteIsShot;
   }
 }

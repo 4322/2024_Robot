@@ -133,6 +133,10 @@ public class RobotCoordinator extends SubsystemBase {
     return noteTracker.intakeBeamBroken() && intake.isFeeding();
   }
 
+  public boolean noteIsShot() {
+    return noteTracker.noteIsShot();
+  }
+
   public boolean noteEjectingThroughIntake() {
     return noteTracker.intakeBeamBroken() && intake.isEjecting();
   }
