@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.VoltageConfigs;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -19,10 +20,12 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakeConstants.DeployConfig;
+
 import org.littletonrobotics.junction.Logger;
 
 public class IntakeIOReal implements IntakeIO {
-  private final TalonFX intake;
+  private final TalonFX rightIntakeMotor;
+  private final TalonFX leftIntakeMotor;
   private final TalonFX deploy;
   private final Canandcoder deployEncoder;
   // Shuffleboard
@@ -37,14 +40,18 @@ public class IntakeIOReal implements IntakeIO {
   GenericEntry deployerRPS;
 
   public IntakeIOReal() {
-    intake =
-        new TalonFX(IntakeConstants.intakeMotorID, Constants.DriveConstants.Drive.canivoreName);
+    rightIntakeMotor =
+        new TalonFX(IntakeConstants.rightIntakeMotorID, Constants.DriveConstants.Drive.canivoreName);
+    leftIntakeMotor = 
+        new TalonFX(IntakeConstants.leftIntakeMotorID, Constants.DriveConstants.Drive.canivoreName);
     deploy =
         new TalonFX(IntakeConstants.deployMotorID, Constants.DriveConstants.Drive.canivoreName);
     deployEncoder = new Canandcoder(IntakeConstants.deployEncoderID);
 
     configDeploy();
-    configIntake();
+    configIntake(rightIntakeMotor);
+    configIntake(leftIntakeMotor);
+    rightIntakeMotor.setControl(new Follower(leftIntakeMotor.getDeviceID(), true));
     if (Constants.debug) {
       tab = Shuffleboard.getTab("Intake");
       intakeFeederVoltage =
@@ -74,9 +81,8 @@ public class IntakeIOReal implements IntakeIO {
     }
   }
 
-  private void configIntake() {
-
-    intake.getConfigurator().apply(new TalonFXConfiguration());
+  private void configIntake(TalonFX talon) {
+    talon.getConfigurator().apply(new TalonFXConfiguration());
 
     MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
     CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
@@ -93,11 +99,11 @@ public class IntakeIOReal implements IntakeIO {
     hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
     hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
 
-    intake.getConfigurator().apply(hardwareLimitSwitchConfigs);
-    intake.getConfigurator().apply(currentLimitsConfigs);
-    intake.getConfigurator().apply(motorOutputConfigs);
+    talon.getConfigurator().apply(hardwareLimitSwitchConfigs);
+    talon.getConfigurator().apply(currentLimitsConfigs);
+    talon.getConfigurator().apply(motorOutputConfigs);
 
-    intake
+    talon
         .getVelocity()
         .setUpdateFrequency(
             IntakeConstants.IntakeConfig.updateHz, IntakeConstants.IntakeConfig.timeoutMs);
@@ -151,15 +157,26 @@ public class IntakeIOReal implements IntakeIO {
 
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
-    inputs.intakeRotations = intake.getPosition().getValue();
-    inputs.intakeRotationsPerSec = intake.getVelocity().getValue();
-    inputs.intakeAppliedVolts =
-        intake.getDutyCycle().getValue() / 2 * intake.getSupplyVoltage().getValue();
-    inputs.intakeSupplyCurrentAmps = intake.getSupplyCurrent().getValue();
-    inputs.intakeStatorCurrentAmps = intake.getStatorCurrent().getValue();
-    inputs.intakeTempC = intake.getDeviceTemp().getValue();
-    inputs.intakeIsAlive = intake.isAlive();
-    inputs.intakeSpeedPct = intake.get();
+    inputs.rightIntakeRotations = rightIntakeMotor.getPosition().getValue();
+    inputs.rightIntakeRotationsPerSec = rightIntakeMotor.getVelocity().getValue();
+    inputs.rightIntakeAppliedVolts =
+        rightIntakeMotor.getDutyCycle().getValue() / 2 * rightIntakeMotor.getSupplyVoltage().getValue();
+    inputs.rightIntakeSupplyCurrentAmps = rightIntakeMotor.getSupplyCurrent().getValue();
+    inputs.rightIntakeStatorCurrentAmps = rightIntakeMotor.getStatorCurrent().getValue();
+    inputs.rightIntakeTempC = rightIntakeMotor.getDeviceTemp().getValue();
+    inputs.rightIntakeIsAlive = rightIntakeMotor.isAlive();
+    inputs.rightIntakeSpeedPct = rightIntakeMotor.get();
+
+    inputs.leftIntakeRotations = leftIntakeMotor.getPosition().getValue();
+    inputs.leftIntakeRotationsPerSec = leftIntakeMotor.getVelocity().getValue();
+    inputs.leftIntakeAppliedVolts =
+        leftIntakeMotor.getDutyCycle().getValue() / 2 * leftIntakeMotor.getSupplyVoltage().getValue();
+    inputs.leftIntakeSupplyCurrentAmps = leftIntakeMotor.getSupplyCurrent().getValue();
+    inputs.leftIntakeStatorCurrentAmps = leftIntakeMotor.getStatorCurrent().getValue();
+    inputs.leftIntakeTempC = leftIntakeMotor.getDeviceTemp().getValue();
+    inputs.leftIntakeIsAlive = leftIntakeMotor.isAlive();
+    inputs.leftIntakeSpeedPct = leftIntakeMotor.get();
+
     inputs.deployRotations = deploy.getPosition().getValue();
     inputs.deployRotationsPerSec = deploy.getVelocity().getValue();
     inputs.deployAppliedVolts =
@@ -200,7 +217,7 @@ public class IntakeIOReal implements IntakeIO {
 
   @Override
   public void setFeedingVoltage(double voltage) {
-    intake.setVoltage(voltage);
+    rightIntakeMotor.setVoltage(voltage);
   }
 
   @Override
@@ -211,7 +228,7 @@ public class IntakeIOReal implements IntakeIO {
 
   @Override
   public void setIntakeBrakeMode() {
-    intake.setNeutralMode(NeutralModeValue.Brake);
+    rightIntakeMotor.setNeutralMode(NeutralModeValue.Brake);
     Logger.recordOutput(IntakeConstants.Logging.feederHardwareOutputsKey + "NeutralMode", "Brake");
   }
 
@@ -224,7 +241,7 @@ public class IntakeIOReal implements IntakeIO {
 
   @Override
   public void setIntakeCoastMode() {
-    intake.setNeutralMode(NeutralModeValue.Coast);
+    rightIntakeMotor.setNeutralMode(NeutralModeValue.Coast);
     Logger.recordOutput(IntakeConstants.Logging.feederHardwareOutputsKey + "NeutralMode", "Coast");
   }
 
@@ -237,7 +254,7 @@ public class IntakeIOReal implements IntakeIO {
 
   @Override
   public void stopFeeder() {
-    intake.stopMotor();
+    rightIntakeMotor.stopMotor();
   }
 
   @Override
