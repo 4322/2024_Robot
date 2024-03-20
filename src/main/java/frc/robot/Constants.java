@@ -337,7 +337,8 @@ public final class Constants {
   }
 
   public static final class IntakeConstants {
-    public static final int intakeMotorID = 7;
+    public static final int rightIntakeMotorID = 7; // TODO: configure on tunerX
+    public static final int leftIntakeMotorID = 0; // TODO: configure on tunerX
     public static final int deployMotorID = 2;
     public static final int deployEncoderID = 9;
 
