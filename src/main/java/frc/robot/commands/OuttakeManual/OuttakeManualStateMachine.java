@@ -13,7 +13,8 @@ public class OuttakeManualStateMachine {
     SUBWOOFER,
     EJECT,
     COLLECTING_NOTE,
-    STOP
+    STOP,
+    FEED
   }
 
   public enum OuttakeManualTrigger {
@@ -21,7 +22,8 @@ public class OuttakeManualStateMachine {
     ENABLE_SUBWOOFER,
     ENABLE_EJECT,
     ENABLE_COLLECTING_NOTE,
-    ENABLE_STOP
+    ENABLE_STOP,
+    ENABLE_FEED
   }
 
   public OuttakeManualStateMachine(OuttakeManualState initialState) {
@@ -31,7 +33,8 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_SUBWOOFER, OuttakeManualState.SUBWOOFER)
         .permit(OuttakeManualTrigger.ENABLE_EJECT, OuttakeManualState.EJECT)
         .permit(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE, OuttakeManualState.COLLECTING_NOTE)
-        .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP);
+        .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP)
+        .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED);
 
     config
         .configure(OuttakeManualState.SUBWOOFER)
@@ -39,7 +42,8 @@ public class OuttakeManualStateMachine {
         .permitReentry(OuttakeManualTrigger.ENABLE_SUBWOOFER)
         .permit(OuttakeManualTrigger.ENABLE_EJECT, OuttakeManualState.EJECT)
         .permit(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE, OuttakeManualState.COLLECTING_NOTE)
-        .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP);
+        .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP)
+        .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED);
 
     config
         .configure(OuttakeManualState.EJECT)
@@ -47,15 +51,22 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_SUBWOOFER, OuttakeManualState.SUBWOOFER)
         .permitReentry(OuttakeManualTrigger.ENABLE_EJECT)
         .permit(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE, OuttakeManualState.COLLECTING_NOTE)
-        .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP);
+        .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP)
+        .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED);
 
+    // lockout of presets until the note is safely in the outtake
+    // 
+    // the state will change in the OuttakeManual state machine when 
+    // either a note triggers the tunnel sensor or the command ends 
+    // from releasing the physical trigger
     config
         .configure(OuttakeManualState.COLLECTING_NOTE)
-        .permit(OuttakeManualTrigger.ENABLE_SMART_SHOOTING, OuttakeManualState.SMART_SHOOTING)
-        .permit(OuttakeManualTrigger.ENABLE_SUBWOOFER, OuttakeManualState.SUBWOOFER)
-        .permit(OuttakeManualTrigger.ENABLE_EJECT, OuttakeManualState.EJECT)
+        .permitReentry(OuttakeManualTrigger.ENABLE_SMART_SHOOTING)
+        .permitReentry(OuttakeManualTrigger.ENABLE_SUBWOOFER)
+        .permitReentry(OuttakeManualTrigger.ENABLE_EJECT)
         .permitReentry(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE)
-        .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP);
+        .permitReentry(OuttakeManualTrigger.ENABLE_STOP)
+        .permitReentry(OuttakeManualTrigger.ENABLE_FEED);
 
     config
         .configure(OuttakeManualState.STOP)
@@ -63,7 +74,18 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_SUBWOOFER, OuttakeManualState.SUBWOOFER)
         .permit(OuttakeManualTrigger.ENABLE_EJECT, OuttakeManualState.EJECT)
         .permit(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE, OuttakeManualState.COLLECTING_NOTE)
-        .permitReentry(OuttakeManualTrigger.ENABLE_STOP);
+        .permitReentry(OuttakeManualTrigger.ENABLE_STOP)
+        .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED);
+
+    config
+        .configure(OuttakeManualState.FEED)
+        .permit(OuttakeManualTrigger.ENABLE_SMART_SHOOTING, OuttakeManualState.SMART_SHOOTING)
+        .permit(OuttakeManualTrigger.ENABLE_SUBWOOFER, OuttakeManualState.SUBWOOFER)
+        .permit(OuttakeManualTrigger.ENABLE_EJECT, OuttakeManualState.EJECT)
+        .permit(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE, OuttakeManualState.COLLECTING_NOTE)
+        .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP)
+        .permitReentry(OuttakeManualTrigger.ENABLE_FEED);
+        
 
     stateMachine = new StateMachine<OuttakeManualState, OuttakeManualTrigger>(initialState, config);
   }

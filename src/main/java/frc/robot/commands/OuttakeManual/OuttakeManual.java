@@ -14,12 +14,11 @@ import org.littletonrobotics.junction.Logger;
 public class OuttakeManual extends Command {
   private final Outtake outtake;
 
-  private final OuttakeManualStateMachine stateMachine;
+  private static final OuttakeManualStateMachine stateMachine =
+      new OuttakeManualStateMachine(OuttakeManualState.STOP);
 
   public OuttakeManual() {
     outtake = Outtake.getInstance();
-    stateMachine = new OuttakeManualStateMachine(OuttakeManualState.STOP);
-
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(outtake);
   }
@@ -59,6 +58,14 @@ public class OuttakeManual extends Command {
         break;
       case COLLECTING_NOTE:
         solution = FiringSolutions.CollectingNote;
+        // lockout of presets until the note is safely in the outtake
+        // change to stopped state when note triggers the tunnel sensor 
+        if (RobotCoordinator.getInstance().noteInFiringPosition()) {
+          updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
+        }
+        break;
+      case FEED:
+        solution = FiringSolutions.Feed;
         break;
       case STOP:
       default:
@@ -78,6 +85,10 @@ public class OuttakeManual extends Command {
     } else {
       outtake.stopPivot();
     }
+  }
+
+  public static OuttakeManualState getState() {
+    return stateMachine.getState();
   }
 
   public void updateStateMachine(OuttakeManualTrigger trigger) {
