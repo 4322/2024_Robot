@@ -32,6 +32,7 @@ import frc.robot.commands.IntakeManual;
 import frc.robot.commands.IntakeStop;
 import frc.robot.commands.OuttakeManual.OuttakeManual;
 import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualTrigger;
+import frc.robot.commands.OuttakeTunnelFeed.OuttakeTunnelFeed;
 import frc.robot.commands.OuttakeStop;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetPivotsBrakeMode;
@@ -127,6 +128,10 @@ public class RobotContainer {
     Shuffleboard.getTab("Autos").add(autoChooser).withPosition(0, 0).withSize(5, 2);
 
     FiringSolutionManager.getInstance().loadSolutions();
+
+    // Records branch name and commit hash to only Driver station log (doesn't output to console)
+    System.out.println("Git branch in use: " + BuildConstants.GIT_BRANCH);
+    System.out.println("Git commit hash in use: " + BuildConstants.GIT_SHA);
 
     if (Constants.driveEnabled) {
       drive.setDefaultCommand(driveManual);
@@ -266,6 +271,10 @@ public class RobotContainer {
           .onTrue(
               Commands.runOnce(
                   () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP)));
+      operatorXbox
+          .back()
+          .onTrue(new SequentialCommandGroup(Commands.runOnce(
+                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED)), new OuttakeTunnelFeed()));
     }
   }
 

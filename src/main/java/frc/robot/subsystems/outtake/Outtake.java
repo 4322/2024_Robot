@@ -78,27 +78,20 @@ public class Outtake extends SubsystemBase {
       Logger.recordOutput("Outtake/LeftRotationsPerSecAbs", Math.abs(inputs.leftRotationsPerSec));
       Logger.recordOutput("Outtake/RightRotationsPerSecAbs", Math.abs(inputs.rightRotationsPerSec));
     }
-    if (Constants.outtakeTuningMode) {
-      if (inputs.debugOverrideEnable) {
-        if (Constants.outtakeEnabled) {
-          outtake(inputs.debugTargetRPS);
-        }
-        if (Constants.outtakePivotEnabled) {
-          pivot(inputs.targetPivotPosition);
-        }
+    if (Constants.outtakeTuningMode && inputs.tuneOuttakeOverrideEnable) {
+      if (Constants.outtakeEnabled) {
+        outtake(inputs.debugTargetRPS);
       }
-    }
-    if (pivotInitialized
-        && RobotCoordinator.getInstance().isIntakeDeploying()
-        && inputs.pivotRotations - OuttakeConstants.maxPivotForIntake
-            > OuttakeConstants.pivotToleranceRotations) {
-      pivot(OuttakeConstants.maxPivotForIntake);
+      if (Constants.outtakePivotEnabled) {
+        pivot(inputs.targetPivotPosition);
+      }
     }
   }
 
   public void outtake(double targetRPS) {
-    if (Constants.outtakeEnabled) {
-      if (Constants.outtakeTuningMode) {
+    if (Constants.outtakeEnabled && pivotInitialized) {
+      // Overrides operator shooting presets
+      if (Constants.outtakeTuningMode && inputs.tuneOuttakeOverrideEnable) {
         targetRPS = inputs.debugTargetRPS;
       }
       if (targetRPS > OuttakeConstants.maxVelRotationsPerSec) {
@@ -113,7 +106,8 @@ public class Outtake extends SubsystemBase {
 
   public void pivot(double rotations) {
     if (Constants.outtakePivotEnabled && pivotInitialized) {
-      if (Constants.outtakeTuningMode) {
+      // Overrides operator shooting presets
+      if (Constants.outtakeTuningMode && inputs.tuneOuttakeOverrideEnable) {
         rotations = inputs.targetPivotPosition;
       }
       io.setPivotTarget(rotations);
@@ -182,6 +176,14 @@ public class Outtake extends SubsystemBase {
   }
 
   public boolean getDebugOverrideEnabled() {
-    return inputs.debugOverrideEnable;
+    return inputs.tuneOuttakeOverrideEnable;
+  }
+
+  public boolean isOuttaking() {
+    return targetRPS > 0;
+  }
+
+  public boolean isFeeding() {
+    return targetRPS < 0;
   }
 }
