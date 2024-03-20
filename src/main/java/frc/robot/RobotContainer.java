@@ -31,6 +31,7 @@ import frc.robot.commands.EjectThroughIntake;
 import frc.robot.commands.IntakeManual;
 import frc.robot.commands.IntakeStop;
 import frc.robot.commands.OuttakeManual.OuttakeManual;
+import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualState;
 import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualTrigger;
 import frc.robot.commands.OuttakeTunnelFeed.OuttakeTunnelFeed;
 import frc.robot.commands.OuttakeStop;
@@ -219,6 +220,7 @@ public class RobotContainer {
               Commands.runOnce(
                   () -> {
                     RobotCoordinator.getInstance().setIntakeButtonState(false);
+                    outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
                   }));
       driveXbox
           .rightBumper()
@@ -234,6 +236,7 @@ public class RobotContainer {
               Commands.runOnce(
                   () -> {
                     RobotCoordinator.getInstance().setAutoIntakeButtonPressed(false);
+                    outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
                   }));
       driveXbox.leftTrigger().whileTrue(new Shoot());
       driveXbox.povLeft().onTrue(new AtHome());
@@ -272,7 +275,7 @@ public class RobotContainer {
               Commands.runOnce(
                   () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP)));
       operatorXbox
-          .back()
+          .povLeft()
           .onTrue(new SequentialCommandGroup(Commands.runOnce(
                   () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED)), new OuttakeTunnelFeed()));
     }
