@@ -9,14 +9,16 @@ public interface OuttakeIO {
     public double leftTempC = 0.0;
     public double leftRotationsPerSec = 0.0;
     public double debugTargetRPS = 0.0;
-    public double rightCurrentAmps = 0.0;
+    public double rightSupplyCurrentAmps = 0.0;
+    public double rightStatorCurrentAmps = 0.0;
     public double rightTempC = 0.0;
     public double rightRotationsPerSec = 0.0;
 
     public double pivotRotations = 0.0;
     public double pivotRotationsPerSec = 0.0;
     public double pivotAppliedVolts = 0.0;
-    public double pivotCurrentAmps = 0.0;
+    public double pivotSupplyCurrentAmps = 0.0;
+    public double pivotStatorCurrentAmps = 0.0;
     public double pivotTempC = 0.0;
 
     public double pivotEncoderRotations = 0.0;
@@ -30,7 +32,7 @@ public interface OuttakeIO {
     public double heliumAbsRotations = 0.0;
     public double heliumRelativeRotations = 0.0;
 
-    public boolean debugOverrideEnable = false;
+    public boolean tuneOuttakeOverrideEnable = false;
   }
 
   public default void updateInputs(OuttakeIOInputs inputs) {}

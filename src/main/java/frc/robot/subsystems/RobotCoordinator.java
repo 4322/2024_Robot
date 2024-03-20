@@ -17,7 +17,6 @@ public class RobotCoordinator extends SubsystemBase {
   private Outtake outtake = Outtake.getInstance();
   private Drive drive = Drive.getInstance();
   private NoteTracker noteTracker = NoteTracker.getInstance();
-  private Limelight outtakeLimelight = Limelight.getOuttakeInstance();
   private Limelight intakeLimelight = Limelight.getIntakeInstance();
 
   private static RobotCoordinator robotCoordinator;
@@ -47,8 +46,8 @@ public class RobotCoordinator extends SubsystemBase {
     return outtake.isFlyWheelUpToSpeed() && outtake.pivotIsAtPosition();
   }
 
-  public boolean canSpinFlywheel() { // TODO: add checks to this
-    return true;
+  public boolean canSpinFlywheel() {
+    return Outtake.getInstance().pivotIsInitialized();
   }
 
   public boolean canPivot() {
@@ -116,6 +115,14 @@ public class RobotCoordinator extends SubsystemBase {
 
   public boolean intakeIsEjecting() {
     return intake.isEjecting();
+  }
+
+  public boolean outtakeIsFeeding() {
+    return outtake.isFeeding();
+  }
+
+  public boolean outtakeIsEjecting() {
+    return outtake.isOuttaking();
   }
 
   public boolean noteInFiringPosition() {

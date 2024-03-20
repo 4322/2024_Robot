@@ -168,7 +168,8 @@ public final class Constants {
       public static final double xboxDriveDeadband = 0.17; // was 0.1 with a better controller
       public static final double xboxRotateDeadband = 0.25;
       public static final double maxManualRotation = 0.30;
-      public static final double inhibitPseudoAutoRotateAngularVelocity = 0.05;
+      public static final double inhibitPseudoAutoRotateDegPerSec =
+          1.0; // don't lock until rotation stops
 
       public static final double spinoutRotateDeadBand = 0.9;
       public static final double spinoutMinAngularVelocity =
@@ -297,8 +298,8 @@ public final class Constants {
     public static final double kP = 0.0;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
-    public static final double kV = 0.13; // kV * maxVelRotationsPerSec = max voltage
-    public static final double kS = 0.35;
+    public static final double kV = 0.131; // kV * maxVelRotationsPerSec = max voltage
+    public static final double kS = 0.465;
 
     public static final double openLoopRampSec = 0;
     public static final double closedLoopRampSec = 0;
@@ -327,8 +328,8 @@ public final class Constants {
     public static final double pivotClosedLoopSec = 0.3;
     public static final boolean limitForwardMotion = true;
     public static final boolean limitReverseMotion = true;
-    public static final double forwardSoftLimitThresholdRotations = 117;
-    public static final double reverseSoftLimitThresholdRotations = 14.5;
+    public static final double forwardSoftLimitThresholdRotations = 118;
+    public static final double reverseSoftLimitThresholdRotations = 7;
     public static final double pivotPeakForwardVoltage = 10;
     public static final double pivotPeakReverseVoltage = -10;
 
@@ -405,9 +406,15 @@ public final class Constants {
     public static final double supplyLimit = 30;
     public static final double statorLimit = 60;
 
-    public static final double desiredVoltage = 6.0;
-    public static final double desiredReverseVoltage = -6.0;
+    public static final double feedVoltage = 6.0;
+    public static final double reverseEjectVoltage = -6.0;
+    public static final double rewindVoltage =
+        -2.0; // just enough to pull the note off the outtake wheels
+    public static final double pushUpVoltage = 2.0;
     public static final double peakVoltage = 6.0;
+    public static final double pauseSec = 0.05; // time for tunnel to stop before rewinding
+    public static final double rewindSec = 0.01;
+    public static final double abortSec = 5;
 
     public static final class Logging {
       public static final String key = "Tunnel/";
@@ -499,7 +506,10 @@ public final class Constants {
     public static final FiringSolution MS = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution BS = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution Eject = new FiringSolution(0, 0, 10, 50);
-    public static final FiringSolution CollectingNote = new FiringSolution(0, 0, 0, 10);
+    // collecting note should be at lowest pivot limit
+    public static final FiringSolution CollectingNote =
+        new FiringSolution(0, 0, 0, Constants.OuttakeConstants.reverseSoftLimitThresholdRotations);
+    public static final FiringSolution Feed = new FiringSolution(0, 0, -10, 118);
   }
 
   public enum WheelPosition {

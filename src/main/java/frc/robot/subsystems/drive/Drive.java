@@ -289,8 +289,10 @@ public class Drive extends SubsystemBase {
   public void periodic() {
     if (Constants.driveEnabled) {
       // update logs
-      driveShuffleBoard.updateInputs(driveShuffleBoardInputs);
-      Logger.processInputs("DriveShuffleBoard/DriveShuffleBoardInputs", driveShuffleBoardInputs);
+      if (Constants.debug) {
+        driveShuffleBoard.updateInputs(driveShuffleBoardInputs);
+        Logger.processInputs("DriveShuffleBoard/DriveShuffleBoardInputs", driveShuffleBoardInputs);
+      }
       for (SwerveModule module : swerveModules) {
         module.periodic();
       }
@@ -533,7 +535,9 @@ public class Drive extends SubsystemBase {
 
   public Pose2d getPose2d() {
     if (Constants.driveEnabled) {
-      return poseEstimator.getEstimatedPosition();
+      if (Constants.gyroEnabled) {
+        return poseEstimator.getEstimatedPosition();
+      }
     }
     return new Pose2d();
   }

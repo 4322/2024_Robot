@@ -59,10 +59,10 @@ public class IntakeManual extends Command {
           intakeState = IntakeStates.retracting;
         } else if (coordinator.noteEnteringIntake()) {
           intakeState = IntakeStates.noteObtained;
-        } else if (Constants.autoAcquireNoteEnabled
-            && coordinator.getAutoIntakeButtonPressed()
-            && coordinator.noteInVision()) {
-          if (!autoAcquireNote.isScheduled()) {
+        } else if (Constants.autoAcquireNoteEnabled) {
+          if (coordinator.getAutoIntakeButtonPressed()
+              && coordinator.noteInVision()
+              && !autoAcquireNote.isScheduled()) {
             CommandScheduler.getInstance().schedule(autoAcquireNote);
           }
         }

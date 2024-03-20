@@ -245,12 +245,14 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
             / robotSpecificConstants.getDriveGearRatio();
     inputs.driveAppliedVolts =
         driveMotor.getDutyCycle().getValue() / 2 * driveMotor.getSupplyVoltage().getValue();
-    inputs.driveCurrentAmps = driveMotor.getSupplyCurrent().getValue();
+    inputs.driveSupplyCurrentAmps = driveMotor.getSupplyCurrent().getValue();
+    inputs.driveStatorCurrentAmps = driveMotor.getStatorCurrent().getValue();
     // turn inputs
     inputs.turnVelocityDegPerSec = Units.rotationsToDegrees(turningMotor.getVelocity().getValue());
     inputs.turnAppliedVolts =
         turningMotor.getDutyCycle().getValue() / 2 * turningMotor.getSupplyVoltage().getValue();
-    inputs.turnCurrentAmps = turningMotor.getSupplyCurrent().getValue();
+    inputs.turnSupplyCurrentAmps = turningMotor.getSupplyCurrent().getValue();
+    inputs.turnStatorCurrentAmps = turningMotor.getStatorCurrent().getValue();
     inputs.turnDegrees = Units.rotationsToDegrees(turningMotor.getPosition().getValue());
     inputs.turnRotations = turningMotor.getPosition().getValue();
     inputs.wheelDegreesTo360 =
