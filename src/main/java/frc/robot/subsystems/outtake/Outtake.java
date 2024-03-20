@@ -15,7 +15,6 @@ public class Outtake extends SubsystemBase {
   private Timer existenceTimer;
   private double pivotTarget;
   private boolean pivotInitialized;
-  private boolean canPreset;
 
   private static Outtake outtake;
 
