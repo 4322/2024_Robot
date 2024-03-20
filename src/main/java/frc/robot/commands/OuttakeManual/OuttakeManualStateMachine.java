@@ -54,14 +54,19 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP)
         .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED);
 
+    // lockout of presets until the note is safely in the outtake
+    // 
+    // the state will change in the OuttakeManual state machine when 
+    // either a note triggers the tunnel sensor or the command ends 
+    // from releasing the physical trigger
     config
         .configure(OuttakeManualState.COLLECTING_NOTE)
-        .permit(OuttakeManualTrigger.ENABLE_SMART_SHOOTING, OuttakeManualState.SMART_SHOOTING)
-        .permit(OuttakeManualTrigger.ENABLE_SUBWOOFER, OuttakeManualState.SUBWOOFER)
-        .permit(OuttakeManualTrigger.ENABLE_EJECT, OuttakeManualState.EJECT)
+        .permitReentry(OuttakeManualTrigger.ENABLE_SMART_SHOOTING)
+        .permitReentry(OuttakeManualTrigger.ENABLE_SUBWOOFER)
+        .permitReentry(OuttakeManualTrigger.ENABLE_EJECT)
         .permitReentry(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE)
-        .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP)
-        .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED);
+        .permitReentry(OuttakeManualTrigger.ENABLE_STOP)
+        .permitReentry(OuttakeManualTrigger.ENABLE_FEED);
 
     config
         .configure(OuttakeManualState.STOP)

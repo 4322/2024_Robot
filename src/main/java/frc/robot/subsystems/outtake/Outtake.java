@@ -86,12 +86,6 @@ public class Outtake extends SubsystemBase {
         pivot(inputs.targetPivotPosition);
       }
     }
-    if (pivotInitialized
-        && RobotCoordinator.getInstance().isIntakeDeploying()
-        && inputs.pivotRotations - OuttakeConstants.maxPivotForIntake
-            > OuttakeConstants.pivotToleranceRotations) {
-      pivot(OuttakeConstants.maxPivotForIntake);
-    }
   }
 
   public void outtake(double targetRPS) {
