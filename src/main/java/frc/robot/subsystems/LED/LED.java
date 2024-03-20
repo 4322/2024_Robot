@@ -16,7 +16,7 @@ public class LED extends SubsystemBase {
     notInitialized,
     initialized,
     idle,
-    deployingIntake,
+    huntingForNote,
     noteInRobot,
     noteInFiringPos,
     noteFired,
@@ -80,8 +80,8 @@ public class LED extends SubsystemBase {
       } else if (RobotCoordinator.getInstance().noteInRobot()) {
         setLEDState(LEDState.noteInRobot);
       } else if (RobotCoordinator.getInstance().isIntakeDeployed()
-          && RobotCoordinator.getInstance().isIntakeDeploying()) {
-        setLEDState(LEDState.deployingIntake);
+          || RobotCoordinator.getInstance().isIntakeDeploying()) {
+        setLEDState(LEDState.huntingForNote);
       } else {
         setLEDState(LEDState.idle);
       }
@@ -108,7 +108,7 @@ public class LED extends SubsystemBase {
         // blue
           io.setLED(0, 0, 255, 0, Constants.LED.totalLEDs);
           break;
-        case deployingIntake:
+        case huntingForNote:
         // red
           io.setLED(255, 0, 0, 0, Constants.LED.totalLEDs);
           break;
