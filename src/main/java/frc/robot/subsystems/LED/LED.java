@@ -109,8 +109,7 @@ public class LED extends SubsystemBase {
           io.setLED(0, 0, 255, 0, Constants.LED.totalLEDs);
           break;
         case huntingForNote:
-        // red
-          io.setLED(255, 0, 0, 0, Constants.LED.totalLEDs);
+          io.fireAnimate(1, 0.5, 0, 0.5, 0.5, false, 0);
           break;
         case noteInRobot:
         // purple
@@ -129,7 +128,8 @@ public class LED extends SubsystemBase {
           io.rainbowAnimate(1, 0.5, 0, Constants.LED.totalLEDs);
           break;
         case autoNoteCollection:
-          io.fireAnimate(1, 0.5, 0, 0.5, 0.5, false, 0);
+        // red
+          io.setLED(255, 0, 0, 0, Constants.LED.totalLEDs);
           break;
       }
     }
