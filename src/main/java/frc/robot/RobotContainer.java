@@ -4,8 +4,11 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.inputs.LoggedDriverStation.DriverStationInputs;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
@@ -35,7 +38,9 @@ import frc.robot.commands.IntakeManual;
 import frc.robot.commands.IntakeStop;
 import frc.robot.commands.OperatorXboxControllerRumble;
 import frc.robot.commands.OuttakeManual.OuttakeManual;
+import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualState;
 import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualTrigger;
+import frc.robot.commands.OuttakeTunnelFeed.OuttakeTunnelFeed;
 import frc.robot.commands.OuttakeStop;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetPivotsBrakeMode;
@@ -133,6 +138,10 @@ public class RobotContainer {
 
     FiringSolutionManager.getInstance().loadSolutions();
 
+    // Records branch name and commit hash to only Driver station log (doesn't output to console)
+    System.out.println("Git branch in use: " + BuildConstants.GIT_BRANCH);
+    System.out.println("Git commit hash in use: " + BuildConstants.GIT_SHA);
+
     if (Constants.driveEnabled) {
       drive.setDefaultCommand(driveManual);
     }
@@ -141,8 +150,7 @@ public class RobotContainer {
       tunnel.setDefaultCommand(tunnelFeed);
     }
 
-    if ((Constants.outtakeEnabled || Constants.outtakePivotEnabled)
-        && !Constants.outtakeTuningMode) {
+    if (Constants.outtakeEnabled || Constants.outtakePivotEnabled) {
       outtake.setDefaultCommand(outtakeManual);
     }
 
@@ -190,14 +198,14 @@ public class RobotContainer {
                     driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);
                   }));
       driveXbox
-          .rightBumper()
+          .back() // binded to back left P4 button on xbox
           .onTrue(
               Commands.runOnce(
                   () -> {
                     driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC);
                   }));
       driveXbox
-          .back() // binded to back right button on xbox
+          .start() // binded to back right P2 button on xbox
           .onTrue(
               Commands.runOnce(
                   () -> {
@@ -219,6 +227,23 @@ public class RobotContainer {
               Commands.runOnce(
                   () -> {
                     RobotCoordinator.getInstance().setIntakeButtonState(false);
+                    outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
+                  }));
+      driveXbox
+          .rightBumper()
+          .onTrue(
+              Commands.runOnce(
+                  () -> {
+                    RobotCoordinator.getInstance().setAutoIntakeButtonPressed(true);
+                    outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE);
+                  }));
+      driveXbox
+          .rightBumper()
+          .onFalse(
+              Commands.runOnce(
+                  () -> {
+                    RobotCoordinator.getInstance().setAutoIntakeButtonPressed(false);
+                    outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
                   }));
       driveXbox.leftTrigger().whileTrue(new Shoot());
       operatorXbox.rightBumper().whileTrue(new ClimberSlowRetractOverride());
@@ -251,7 +276,7 @@ public class RobotContainer {
         driveXbox.y().onTrue(writeFiringSolution);
         // right up against front of speaker with edge of robot on source side
         driveXbox
-            .start()
+            .a()
             .onTrue(
                 new SetRobotPose(
                     new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()), true));
@@ -281,6 +306,10 @@ public class RobotContainer {
           .onTrue(
               Commands.runOnce(
                   () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP)));
+      operatorXbox
+          .povLeft()
+          .onTrue(new SequentialCommandGroup(Commands.runOnce(
+                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED)), new OuttakeTunnelFeed()));
     }
   }
 
@@ -307,6 +336,11 @@ public class RobotContainer {
         outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SMART_SHOOTING);
       });*/
       onOpponentFieldSide = false;
+    }
+
+    // if the match is about to end, set to coast mode so we can coast past end of match
+    if (DriverStation.getMatchTime() <= 1 && DriverStation.isTeleop() && DriverStation.isFMSAttached()) {
+      drive.setCoastMode();
     }
   }
 

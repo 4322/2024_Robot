@@ -2,16 +2,9 @@ package frc.robot.subsystems.drive;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
-import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -114,32 +107,26 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   }
 
   private void configDrive(TalonFX talonFX, WheelPosition pos) {
-    talonFX.getConfigurator().apply(new TalonFXConfiguration());
-    TalonFXConfigurator config = talonFX.getConfigurator();
-    Slot0Configs slot0Configs = new Slot0Configs();
-    ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
-    OpenLoopRampsConfigs openLoopRampsConfigs = new OpenLoopRampsConfigs();
-    CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
-    MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-    closedLoopRampsConfigs.VoltageClosedLoopRampPeriod = DriveConstants.Drive.closedLoopRampSec;
-    openLoopRampsConfigs.VoltageOpenLoopRampPeriod = DriveConstants.Drive.openLoopRampSec;
-    currentLimitsConfigs.StatorCurrentLimit = DriveConstants.Drive.statorLimit;
-    currentLimitsConfigs.StatorCurrentLimitEnable = DriveConstants.Drive.statorEnabled;
-    currentLimitsConfigs.SupplyCurrentLimit = DriveConstants.Drive.supplyLimit;
-    currentLimitsConfigs.SupplyCurrentLimitEnable = DriveConstants.Drive.supplyEnabled;
-    currentLimitsConfigs.SupplyCurrentThreshold = DriveConstants.Drive.supplyThreshold;
-    motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
+    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    config.ClosedLoopRamps.VoltageClosedLoopRampPeriod = DriveConstants.Drive.closedLoopRampSec;
+    config.OpenLoopRamps.VoltageOpenLoopRampPeriod = DriveConstants.Drive.openLoopRampSec;
+    config.CurrentLimits.StatorCurrentLimitEnable = true;
+    config.CurrentLimits.StatorCurrentLimit = DriveConstants.Drive.statorLimit;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLimit = DriveConstants.Drive.supplyLimit;
+    config.CurrentLimits.SupplyCurrentThreshold = DriveConstants.Drive.supplyThreshold;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    config.HardwareLimitSwitch.ForwardLimitEnable = false;
+    config.HardwareLimitSwitch.ReverseLimitEnable = false;
+
     // Invert the left side modules so we can zero all modules with the bevel gears facing outward.
     // Without this code, all bevel gears would need to face right when the modules are zeroed.
     boolean isLeftSide = (pos == WheelPosition.FRONT_LEFT) || (pos == WheelPosition.BACK_LEFT);
     if (isLeftSide) {
-      motorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
+      config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     }
-    config.apply(slot0Configs);
-    config.apply(closedLoopRampsConfigs);
-    config.apply(openLoopRampsConfigs);
-    config.apply(currentLimitsConfigs);
-    config.apply(motorOutputConfigs);
+    talonFX.getConfigurator().apply(config);
 
     // need rapid velocity feedback for control logic
     talonFX
@@ -157,45 +144,30 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   }
 
   private void configRotation(TalonFX talonFX, WheelPosition wheelPos) {
-    talonFX.getConfigurator().apply(new TalonFXConfiguration());
-
-    Slot0Configs slot0Configs = new Slot0Configs();
-    ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
-    ClosedLoopGeneralConfigs closedLoopGeneralConfigs = new ClosedLoopGeneralConfigs();
-    VoltageConfigs voltageConfigs = new VoltageConfigs();
-    MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-    CANcoderConfiguration canConfig = new CANcoderConfiguration();
-    HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs = new HardwareLimitSwitchConfigs();
-    CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
-
-    slot0Configs.kP = robotSpecificConstants.getRotationkP();
-    slot0Configs.kD = robotSpecificConstants.getRotationkD();
-    closedLoopRampsConfigs.VoltageClosedLoopRampPeriod =
+    TalonFXConfiguration motorConfig = new TalonFXConfiguration();
+    CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
+    
+    motorConfig.Slot0.kP = robotSpecificConstants.getRotationkP();
+    motorConfig.Slot0.kD = robotSpecificConstants.getRotationkD();
+    motorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod =
         DriveConstants.Rotation.configCLosedLoopRamp;
-    closedLoopGeneralConfigs.ContinuousWrap = false;
-    voltageConfigs.PeakForwardVoltage = DriveConstants.Rotation.maxPower;
-    voltageConfigs.PeakReverseVoltage = -DriveConstants.Rotation.maxPower;
-    motorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
-    motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
+    motorConfig.ClosedLoopGeneral.ContinuousWrap = false;
+    motorConfig.Voltage.PeakForwardVoltage = DriveConstants.Rotation.maxPower;
+    motorConfig.Voltage.PeakReverseVoltage = -DriveConstants.Rotation.maxPower;
+    motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    motorConfig.HardwareLimitSwitch.ForwardLimitEnable = false;
+    motorConfig.HardwareLimitSwitch.ReverseLimitEnable = false;
+    motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    motorConfig.CurrentLimits.StatorCurrentLimit = Constants.DriveConstants.Rotation.statorLimit;
+    motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    motorConfig.CurrentLimits.SupplyCurrentLimit = Constants.DriveConstants.Rotation.supplyLimit;
 
-    hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
-    hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
+    encoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
 
-    currentLimitsConfigs.StatorCurrentLimitEnable = Constants.DriveConstants.Rotation.statorEnabled;
-    currentLimitsConfigs.StatorCurrentLimit = Constants.DriveConstants.Rotation.statorLimit;
-    currentLimitsConfigs.SupplyCurrentLimitEnable = Constants.DriveConstants.Rotation.supplyEnabled;
-    currentLimitsConfigs.SupplyCurrentLimit = Constants.DriveConstants.Rotation.supplyLimit;
+    encoder.getConfigurator().apply(encoderConfig);
+    talonFX.getConfigurator().apply(motorConfig);
 
-    canConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
-
-    encoder.getConfigurator().apply(canConfig);
-    talonFX.getConfigurator().apply(currentLimitsConfigs);
-    talonFX.getConfigurator().apply(slot0Configs);
-    talonFX.getConfigurator().apply(closedLoopRampsConfigs);
-    talonFX.getConfigurator().apply(closedLoopGeneralConfigs);
-    talonFX.getConfigurator().apply(voltageConfigs);
-    talonFX.getConfigurator().apply(motorOutputConfigs);
-    talonFX.getConfigurator().apply(hardwareLimitSwitchConfigs);
     // need fast initial reading from the CANCoder
     encoder
         .getPosition()

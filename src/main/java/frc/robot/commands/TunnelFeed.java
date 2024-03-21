@@ -1,8 +1,11 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.tunnel.Tunnel;
+import org.littletonrobotics.junction.Logger;
 
 public class TunnelFeed extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
@@ -11,7 +14,20 @@ public class TunnelFeed extends Command {
 
   private final Tunnel tunnel;
 
-  private boolean noteDetected;
+  public enum State {
+    waitForIntake,
+    inTunnel,
+    stoppingAtOuttake,
+    rewinding,
+    checkOuttakeSensor,
+    pushUp,
+    readyToFire,
+    abort
+  }
+
+  private State state;
+  private Timer adjustmentTimer = new Timer();
+  private Timer abortTimer = new Timer();
 
   public TunnelFeed() {
     tunnel = Tunnel.getInstance();
@@ -23,32 +39,88 @@ public class TunnelFeed extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    noteDetected = false;
+    state = State.waitForIntake;
+    abortTimer.stop();
+    abortTimer.reset();
   }
 
   @Override
   public void execute() {
-    // Accounts for note being midway between intake and tunnel sensor
-    // Tunnel still runs for this case
-    if (RobotCoordinator.getInstance().noteEnteringIntake()) {
-      noteDetected = true;
+
+    if (abortTimer.hasElapsed(Constants.TunnelConstants.abortSec)) {
+      tunnel.stopTunnel();
+      state = State.abort;
+      abortTimer.stop();
+      abortTimer.reset();
     }
 
-    if (noteDetected && !RobotCoordinator.getInstance().isClimbing()) {
-      tunnel.feed();
-    } else {
-      tunnel.stopTunnel();
+    switch (state) {
+      case abort:
+        state = State.waitForIntake;
+        break;
+      case waitForIntake:
+        // Accounts for note being midway between intake and tunnel sensor
+        // Tunnel still runs for this case
+        if (RobotCoordinator.getInstance().noteEnteringIntake()) {
+          tunnel.feed();
+          abortTimer.start();
+          state = State.inTunnel;
+        }
+        break;
+      case inTunnel:
+        if (RobotCoordinator.getInstance().noteInFiringPosition()) {
+          tunnel.stopTunnel();
+          adjustmentTimer.restart();
+          state = State.stoppingAtOuttake;
+        }
+        break;
+      case stoppingAtOuttake:
+        if (adjustmentTimer.hasElapsed(Constants.TunnelConstants.pauseSec)) {
+          tunnel.rewind(); // pull back from the outtake wheels
+          adjustmentTimer.restart();
+          state = State.rewinding;
+        }
+        break;
+      case rewinding:
+        if (adjustmentTimer.hasElapsed(Constants.TunnelConstants.rewindSec)) {
+          tunnel.stopTunnel();
+          adjustmentTimer.restart();
+          state = State.checkOuttakeSensor;
+        }
+        break;
+      case checkOuttakeSensor:
+        if (adjustmentTimer.hasElapsed(Constants.TunnelConstants.pauseSec)) {
+          if (RobotCoordinator.getInstance().noteInFiringPosition()) {
+            state = State.readyToFire;
+          } else {
+            tunnel.pushUp();
+            adjustmentTimer.restart();
+            state = State.pushUp;
+          }
+        }
+        break;
+      case pushUp:
+        if (RobotCoordinator.getInstance().noteInFiringPosition()) {
+          tunnel.stopTunnel();
+          state = State.readyToFire;
+        }
+        break;
+      case readyToFire:
+        break;
     }
+    Logger.recordOutput("TunnelFeed/State", state.toString());
   }
 
   @Override
   public boolean isFinished() {
-    return RobotCoordinator.getInstance().noteInFiringPosition();
+    // never end a default command
+    return false;
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     tunnel.stopTunnel();
+    Logger.recordOutput("TunnelFeed/State", "ended");
   }
 }

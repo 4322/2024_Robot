@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.BeamBreakConstants;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.outtake.Outtake;
+
 import org.littletonrobotics.junction.Logger;
 
 public class NoteTracker extends SubsystemBase {
@@ -13,6 +15,7 @@ public class NoteTracker extends SubsystemBase {
 
   private boolean notePassingIntake;
   private boolean notePassingTunnel;
+  private boolean noteIsShot;
   private Timer shootTimer = new Timer();
 
   private static NoteTracker noteTracker;
@@ -54,12 +57,14 @@ public class NoteTracker extends SubsystemBase {
       } else if (!inputs.tunnelBeamBreak) {
         notePassingIntake = false;
         notePassingTunnel = true;
-      } else if (inputs.tunnelBeamBreak && notePassingTunnel) {
+      } else if (inputs.tunnelBeamBreak && notePassingTunnel && Outtake.getInstance().isOuttaking()) {
         shootTimer.start();
-        if (shootTimer.hasElapsed(0.5)) {
+        noteIsShot = true;
+        if (shootTimer.hasElapsed(0.2)) {
           notePassingTunnel = false;
           shootTimer.stop();
           shootTimer.reset();
+          noteIsShot = false;
         }
       } else if (Intake.getInstance().isEjecting()) {
         notePassingIntake = false;
@@ -81,5 +86,9 @@ public class NoteTracker extends SubsystemBase {
 
   public boolean notePassingTunnel() {
     return notePassingTunnel;
+  }
+
+  public boolean noteIsShot() {
+    return noteIsShot;
   }
 }
