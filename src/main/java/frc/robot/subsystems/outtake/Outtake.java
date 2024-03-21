@@ -157,7 +157,9 @@ public class Outtake extends SubsystemBase {
   }
 
   public void overrideForwardSoftLimit() {
-    io.overrideForwardSoftLimit();
+    if (Constants.outtakePivotEnabled) {
+      io.overrideForwardSoftLimit();
+    }
   }
 
   public boolean isFlyWheelUpToSpeed() {
