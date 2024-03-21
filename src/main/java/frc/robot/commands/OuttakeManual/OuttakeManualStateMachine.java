@@ -80,8 +80,8 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_EJECT, OuttakeManualState.EJECT)
         .permit(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE, OuttakeManualState.COLLECTING_NOTE)
         .permitReentry(OuttakeManualTrigger.ENABLE_CLIMBING)
-        .permitReentry(OuttakeManualTrigger.ENABLE_STOP)
-        .permitReentry(OuttakeManualTrigger.ENABLE_FEED);
+        .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP)
+        .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED);
 
     config
         .configure(OuttakeManualState.STOP)
