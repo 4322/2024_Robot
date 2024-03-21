@@ -306,6 +306,11 @@ public class RobotContainer {
       });*/
       onOpponentFieldSide = false;
     }
+
+    // if the match is about to end, set to coast mode so we can coast past end of match
+    if (DriverStation.getMatchTime() <= 1 && DriverStation.isTeleop()) {
+      drive.setCoastMode();
+    }
   }
 
   public void enableSubsystems() {
@@ -323,13 +328,7 @@ public class RobotContainer {
     tunnel.setCoastMode();
     intake.setIntakeCoastMode();
 
-    // if the match is about to end, set to coast mode so we can coast past end of match
-    if (DriverStation.getMatchTime() <= 1) {
-      drive.setCoastMode();
-    } else {
-      driveStop.schedule(); // interrupt all drive commands
-    }
-
+    driveStop.schedule(); // interrupt all drive commands
     intakeStop.schedule(); // interrupt all intake commands
     outtakeStop.schedule(); // interrupt all outtake commands
     tunnelStop.schedule(); // interrupt all tunnel commands
