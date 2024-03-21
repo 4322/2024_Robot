@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.inputs.LoggedDriverStation.DriverStationInputs;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -308,7 +310,7 @@ public class RobotContainer {
     }
 
     // if the match is about to end, set to coast mode so we can coast past end of match
-    if (DriverStation.getMatchTime() <= 1 && DriverStation.isTeleop()) {
+    if (DriverStation.getMatchTime() <= 1 && DriverStation.isTeleop() && DriverStation.isFMSAttached()) {
       drive.setCoastMode();
     }
   }
