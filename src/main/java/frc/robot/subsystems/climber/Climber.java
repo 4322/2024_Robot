@@ -78,7 +78,7 @@ public class Climber extends SubsystemBase {
   public void stopClimb() {
     io.setBrakeMode();
     io.stopMotor();
-    Logger.recordOutput("Climber/desiredVolts", 0);
+    Logger.recordOutput("Climber/desiredVolts", 0.0);
     Logger.recordOutput("Climber/State", "Stopped");
   }
 
