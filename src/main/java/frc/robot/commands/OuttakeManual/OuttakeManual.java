@@ -69,12 +69,11 @@ public class OuttakeManual extends Command {
       case CLIMBING:
         outtake.overrideForwardSoftLimit();
         solution = FiringSolutions.Climbing;
-        RobotCoordinator.getInstance().setInClimbingMode(true);
+        break;
       case STOP:
       default:
         outtake.stopOuttake();
         outtake.stopPivot();
-        RobotCoordinator.getInstance().setInClimbingMode(false);
         return;
     }
 
