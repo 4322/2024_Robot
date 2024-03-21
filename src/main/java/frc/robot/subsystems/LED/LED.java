@@ -73,7 +73,8 @@ public class LED extends SubsystemBase {
         setLEDState(LEDState.autoNoteCollection);
       } else if (RobotCoordinator.getInstance().noteIsShot()) {
         setLEDState(LEDState.noteFired);
-      } else if (RobotCoordinator.getInstance().canShoot()) {
+      } else if (RobotCoordinator.getInstance().canShoot()
+          && RobotCoordinator.getInstance().noteInFiringPosition()) {
         setLEDState(LEDState.noteReadyToShoot);
       } else if (RobotCoordinator.getInstance().noteInFiringPosition()) {
         setLEDState(LEDState.noteInFiringPos);
