@@ -38,6 +38,7 @@ public class Climber extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
+    Logger.processInputs("Climber/", inputs);
   }
 
   public void extend() {
