@@ -468,7 +468,7 @@ public final class Constants {
   }
 
   public static final class LED {
-    public static final int totalLEDs = 20; // TODO: find umber of INDIVIDUAL LEDs mounted on robot
+    public static final int totalLEDs = 43;
     public static final int CANdleID = 3;
   }
 

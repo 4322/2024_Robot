@@ -4,8 +4,11 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.inputs.LoggedDriverStation.DriverStationInputs;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
@@ -142,8 +145,7 @@ public class RobotContainer {
       tunnel.setDefaultCommand(tunnelFeed);
     }
 
-    if ((Constants.outtakeEnabled || Constants.outtakePivotEnabled)
-        && !Constants.outtakeTuningMode) {
+    if (Constants.outtakeEnabled || Constants.outtakePivotEnabled) {
       outtake.setDefaultCommand(outtakeManual);
     }
 
@@ -304,6 +306,11 @@ public class RobotContainer {
         outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SMART_SHOOTING);
       });*/
       onOpponentFieldSide = false;
+    }
+
+    // if the match is about to end, set to coast mode so we can coast past end of match
+    if (DriverStation.getMatchTime() <= 1 && DriverStation.isTeleop() && DriverStation.isFMSAttached()) {
+      drive.setCoastMode();
     }
   }
 
