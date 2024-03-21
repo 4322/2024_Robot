@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
@@ -322,7 +323,13 @@ public class RobotContainer {
     tunnel.setCoastMode();
     intake.setIntakeCoastMode();
 
-    driveStop.schedule(); // interrupt all drive commands
+    // if the match is about to end, set to coast mode so we can coast past end of match
+    if (DriverStation.getMatchTime() <= 1) {
+      drive.setCoastMode();
+    } else {
+      driveStop.schedule(); // interrupt all drive commands
+    }
+
     intakeStop.schedule(); // interrupt all intake commands
     outtakeStop.schedule(); // interrupt all outtake commands
     tunnelStop.schedule(); // interrupt all tunnel commands
