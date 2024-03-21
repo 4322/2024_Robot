@@ -40,7 +40,7 @@ public final class Constants {
   public static final boolean debug = false;
 
   public static final boolean driveEnabled = true;
-  public static final boolean intakeEnabled = true;
+  public static final boolean intakeEnabled = false;
   public static final boolean intakeDeployerEnabled = true;
   public static final boolean gyroEnabled = true;
   public static final boolean tunnelEnabled = true;
@@ -296,7 +296,7 @@ public final class Constants {
     public static final double fastClimberVolts = 12;
     public static final double climberRotationTolerance = 1;
     public static final double retractingThreshold =
-        50; // TODO: tune depending on how chain engages with hook
+        0; // TODO: tune depending on how chain engages with hook
     public static final int peakForwardVoltage = 12;
     public static final double peakReverseVoltage = -12;
     public static final double climbingPivotRotations = 150; // for outtake pivot
