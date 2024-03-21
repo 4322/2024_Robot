@@ -75,6 +75,7 @@ public class RobotContainer {
   private JoystickButton driveButtonTwelve;
 
   private boolean onOpponentFieldSide;
+  private boolean nearMatchEndCommandsReqested;
 
   // Need to instantiate RobotCoordinator first due to a bug in the WPI command library.
   // If it gets instantiated from a subsystem periodic method, we get a concurrency
@@ -309,8 +310,12 @@ public class RobotContainer {
     }
 
     // if the match is about to end, set to coast mode so we can coast past end of match
-    if (DriverStation.getMatchTime() <= 1 && DriverStation.isTeleop() && DriverStation.isFMSAttached()) {
+    if (DriverStation.getMatchTime() <= 2 
+        && DriverStation.isTeleopEnabled() 
+        && DriverStation.isFMSAttached()
+        && !nearMatchEndCommandsReqested) {
       drive.setCoastMode();
+      nearMatchEndCommandsReqested = true;
     }
   }
 
