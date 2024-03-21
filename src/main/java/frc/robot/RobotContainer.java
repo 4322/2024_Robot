@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.AutoHelper.Auto;
 import frc.robot.centerline.CenterLineManager.CenterLineScoringStrategy;
+import frc.robot.commands.AtHome;
 import frc.robot.commands.AutoIntakeDeploy;
 import frc.robot.commands.AutoIntakeIn;
 import frc.robot.commands.AutoSetOuttakeAdjust;
@@ -245,6 +246,7 @@ public class RobotContainer {
                     outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
                   }));
       driveXbox.leftTrigger().whileTrue(new Shoot());
+      driveXbox.povLeft().onTrue(new AtHome());
       if (Constants.shotTuningMode) {
         driveXbox.y().onTrue(writeFiringSolution);
         // right up against front of speaker with edge of robot on source side
@@ -254,22 +256,26 @@ public class RobotContainer {
                 new SetRobotPose(
                     new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()), true));
       }
-    
+
       // don't want operator to accidentally use slow override in match
-      operatorXbox.rightBumper().whileTrue(new ClimberSlowRetractOverride().onlyIf(() -> !DriverStation.isFMSAttached()));
+      operatorXbox
+          .rightBumper()
+          .whileTrue(new ClimberSlowRetractOverride().onlyIf(() -> !DriverStation.isFMSAttached()));
       operatorXbox
           .leftTrigger()
           .onTrue(
               new ParallelCommandGroup(
                   new AutoIntakeDeploy(),
-                  Commands.runOnce(() -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_CLIMBING)),
+                  Commands.runOnce(
+                      () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_CLIMBING)),
                   new ClimberExtend(),
                   new SequentialCommandGroup(
                       Commands.waitUntil(() -> Climber.getInstance().isFullyExtended()),
                       new OperatorXboxControllerRumble())));
       operatorXbox
           .leftTrigger()
-          .onFalse(Commands.runOnce(() -> Climber.getInstance().stopClimb(), Climber.getInstance()));
+          .onFalse(
+              Commands.runOnce(() -> Climber.getInstance().stopClimb(), Climber.getInstance()));
       operatorXbox
           .rightTrigger()
           .whileTrue(
@@ -342,8 +348,8 @@ public class RobotContainer {
     // If the match is about to end, set to coast mode so we can coast past end of match
     // Also call climber retract so that robot is pulled up fully before match ends.
     // Makes sure that robot doesn't droop to the ground 5 seconds after match ends
-    if (DriverStation.getMatchTime() <= 2 
-        && DriverStation.isTeleopEnabled() 
+    if (DriverStation.getMatchTime() <= 2
+        && DriverStation.isTeleopEnabled()
         && DriverStation.isFMSAttached()
         && !nearMatchEndCommandsReqested) {
       drive.setCoastMode();
