@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -338,12 +339,15 @@ public class RobotContainer {
       onOpponentFieldSide = false;
     }
 
-    // if the match is about to end, set to coast mode so we can coast past end of match
+    // If the match is about to end, set to coast mode so we can coast past end of match
+    // Also call climber retract so that robot is pulled up fully before match ends.
+    // Makes sure that robot doesn't droop to the ground 5 seconds after match ends
     if (DriverStation.getMatchTime() <= 2 
         && DriverStation.isTeleopEnabled() 
         && DriverStation.isFMSAttached()
         && !nearMatchEndCommandsReqested) {
       drive.setCoastMode();
+      CommandScheduler.getInstance().schedule(new ClimberRetract());
       nearMatchEndCommandsReqested = true;
     }
   }
