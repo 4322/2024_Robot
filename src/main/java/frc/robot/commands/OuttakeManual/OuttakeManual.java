@@ -58,7 +58,7 @@ public class OuttakeManual extends Command {
       case COLLECTING_NOTE:
         solution = FiringSolutions.CollectingNote;
         // lockout of presets until the note is safely in the outtake
-        // change to stopped state when note triggers the tunnel sensor 
+        // change to stopped state when note triggers the tunnel sensor
         if (RobotCoordinator.getInstance().noteInFiringPosition()) {
           updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
         }

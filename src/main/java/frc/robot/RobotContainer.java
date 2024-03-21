@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.inputs.LoggedDriverStation.DriverStationInputs;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -38,10 +36,9 @@ import frc.robot.commands.IntakeManual;
 import frc.robot.commands.IntakeStop;
 import frc.robot.commands.OperatorXboxControllerRumble;
 import frc.robot.commands.OuttakeManual.OuttakeManual;
-import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualState;
 import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualTrigger;
-import frc.robot.commands.OuttakeTunnelFeed.OuttakeTunnelFeed;
 import frc.robot.commands.OuttakeStop;
+import frc.robot.commands.OuttakeTunnelFeed.OuttakeTunnelFeed;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetPivotsBrakeMode;
 import frc.robot.commands.SetPivotsCoastMode;
@@ -308,8 +305,11 @@ public class RobotContainer {
                   () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP)));
       operatorXbox
           .povLeft()
-          .onTrue(new SequentialCommandGroup(Commands.runOnce(
-                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED)), new OuttakeTunnelFeed()));
+          .onTrue(
+              new SequentialCommandGroup(
+                  Commands.runOnce(
+                      () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED)),
+                  new OuttakeTunnelFeed()));
     }
   }
 
@@ -339,7 +339,9 @@ public class RobotContainer {
     }
 
     // if the match is about to end, set to coast mode so we can coast past end of match
-    if (DriverStation.getMatchTime() <= 1 && DriverStation.isTeleop() && DriverStation.isFMSAttached()) {
+    if (DriverStation.getMatchTime() <= 1
+        && DriverStation.isTeleop()
+        && DriverStation.isFMSAttached()) {
       drive.setCoastMode();
     }
   }

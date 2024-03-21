@@ -2,7 +2,6 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -15,7 +14,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakeConstants.DeployConfig;
-
 import org.littletonrobotics.junction.Logger;
 
 public class IntakeIOReal implements IntakeIO {
@@ -36,8 +34,9 @@ public class IntakeIOReal implements IntakeIO {
 
   public IntakeIOReal() {
     rightIntakeMotor =
-        new TalonFX(IntakeConstants.rightIntakeMotorID, Constants.DriveConstants.Drive.canivoreName);
-    leftIntakeMotor = 
+        new TalonFX(
+            IntakeConstants.rightIntakeMotorID, Constants.DriveConstants.Drive.canivoreName);
+    leftIntakeMotor =
         new TalonFX(IntakeConstants.leftIntakeMotorID, Constants.DriveConstants.Drive.canivoreName);
     deploy =
         new TalonFX(IntakeConstants.deployMotorID, Constants.DriveConstants.Drive.canivoreName);
@@ -100,7 +99,7 @@ public class IntakeIOReal implements IntakeIO {
 
     config.OpenLoopRamps.VoltageOpenLoopRampPeriod = DeployConfig.openLoopRamp;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config.MotorOutput. Inverted = InvertedValue.Clockwise_Positive;
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     config.MotorOutput.DutyCycleNeutralDeadband = 0;
     config.CurrentLimits.StatorCurrentLimitEnable = true;
     config.CurrentLimits.StatorCurrentLimit = DeployConfig.statorLimit;
@@ -131,7 +130,9 @@ public class IntakeIOReal implements IntakeIO {
     inputs.rightIntakeRotations = rightIntakeMotor.getPosition().getValue();
     inputs.rightIntakeRotationsPerSec = rightIntakeMotor.getVelocity().getValue();
     inputs.rightIntakeAppliedVolts =
-        rightIntakeMotor.getDutyCycle().getValue() / 2 * rightIntakeMotor.getSupplyVoltage().getValue();
+        rightIntakeMotor.getDutyCycle().getValue()
+            / 2
+            * rightIntakeMotor.getSupplyVoltage().getValue();
     inputs.rightIntakeSupplyCurrentAmps = rightIntakeMotor.getSupplyCurrent().getValue();
     inputs.rightIntakeStatorCurrentAmps = rightIntakeMotor.getStatorCurrent().getValue();
     inputs.rightIntakeTempC = rightIntakeMotor.getDeviceTemp().getValue();
@@ -141,7 +142,9 @@ public class IntakeIOReal implements IntakeIO {
     inputs.leftIntakeRotations = leftIntakeMotor.getPosition().getValue();
     inputs.leftIntakeRotationsPerSec = leftIntakeMotor.getVelocity().getValue();
     inputs.leftIntakeAppliedVolts =
-        leftIntakeMotor.getDutyCycle().getValue() / 2 * leftIntakeMotor.getSupplyVoltage().getValue();
+        leftIntakeMotor.getDutyCycle().getValue()
+            / 2
+            * leftIntakeMotor.getSupplyVoltage().getValue();
     inputs.leftIntakeSupplyCurrentAmps = leftIntakeMotor.getSupplyCurrent().getValue();
     inputs.leftIntakeStatorCurrentAmps = leftIntakeMotor.getStatorCurrent().getValue();
     inputs.leftIntakeTempC = leftIntakeMotor.getDeviceTemp().getValue();
@@ -161,8 +164,8 @@ public class IntakeIOReal implements IntakeIO {
     inputs.heliumRPS = deployEncoder.getVelocity();
 
     inputs.deployAppliedControl = deploy.getAppliedControl().toString();
-    
-    // If intake deployer is above threshold at 0.95 rotations, then assume it is below zero 
+
+    // If intake deployer is above threshold at 0.95 rotations, then assume it is below zero
     // point and as a result wraps back up to 1.0 rotations or value close to it.
     // If this scenario occurs, then set abs value position back to 0 rotations
     if (inputs.heliumAbsRotations

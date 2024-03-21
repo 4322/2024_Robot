@@ -71,7 +71,7 @@ public class OuttakeIOReal implements OuttakeIO {
 
   private void configOuttake(TalonFX talon) {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    
+
     config.Slot0.kP = Constants.OuttakeConstants.kP;
     config.Slot0.kI = Constants.OuttakeConstants.kI;
     config.Slot0.kD = Constants.OuttakeConstants.kD;
@@ -164,7 +164,7 @@ public class OuttakeIOReal implements OuttakeIO {
       inputs.tuneOuttakeOverrideEnable = tuneOuttakeOverrideEnable.getBoolean(false);
     }
 
-    // makes logging cleaner because there won't be sharp spikes 
+    // makes logging cleaner because there won't be sharp spikes
     // in encoder position if it goes "below" zero point
     if (inputs.heliumAbsRotations
         > Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {

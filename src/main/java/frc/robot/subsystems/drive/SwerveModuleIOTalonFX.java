@@ -146,7 +146,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   private void configRotation(TalonFX talonFX, WheelPosition wheelPos) {
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
     CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
-    
+
     motorConfig.Slot0.kP = robotSpecificConstants.getRotationkP();
     motorConfig.Slot0.kD = robotSpecificConstants.getRotationkD();
     motorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod =

@@ -60,9 +60,9 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED);
 
     // lockout of presets until the note is safely in the outtake
-    // 
-    // the state will change in the OuttakeManual state machine when 
-    // either a note triggers the tunnel sensor or the command ends 
+    //
+    // the state will change in the OuttakeManual state machine when
+    // either a note triggers the tunnel sensor or the command ends
     // from releasing the physical trigger
     config
         .configure(OuttakeManualState.COLLECTING_NOTE)
@@ -102,7 +102,6 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE, OuttakeManualState.COLLECTING_NOTE)
         .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP)
         .permitReentry(OuttakeManualTrigger.ENABLE_FEED);
-        
 
     stateMachine = new StateMachine<OuttakeManualState, OuttakeManualTrigger>(initialState, config);
   }

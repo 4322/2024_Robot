@@ -6,7 +6,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.BeamBreakConstants;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.outtake.Outtake;
-
 import org.littletonrobotics.junction.Logger;
 
 public class NoteTracker extends SubsystemBase {
@@ -57,7 +56,9 @@ public class NoteTracker extends SubsystemBase {
       } else if (!inputs.tunnelBeamBreak) {
         notePassingIntake = false;
         notePassingTunnel = true;
-      } else if (inputs.tunnelBeamBreak && notePassingTunnel && Outtake.getInstance().isOuttaking()) {
+      } else if (inputs.tunnelBeamBreak
+          && notePassingTunnel
+          && Outtake.getInstance().isOuttaking()) {
         shootTimer.start();
         noteIsShot = true;
         if (shootTimer.hasElapsed(0.2)) {
