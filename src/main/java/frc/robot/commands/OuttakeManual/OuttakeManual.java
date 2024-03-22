@@ -66,7 +66,7 @@ public class OuttakeManual extends Command {
       case FEED:
         solution = FiringSolutions.Feed;
         break;
-      case CLIMBING: 
+      case CLIMBING:
         solution = FiringSolutions.Climbing;
         break;
       case STOP:

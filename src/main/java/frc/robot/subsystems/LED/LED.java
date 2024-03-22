@@ -71,7 +71,7 @@ public class LED extends SubsystemBase {
           && !initTimer.hasElapsed(1)) {
         initTimer.start();
         setLEDState(LEDState.initialized);
-      // below are all robot LED states listed from highest to lowest priority
+        // below are all robot LED states listed from highest to lowest priority
       } else if (RobotCoordinator.getInstance().getAutoIntakeButtonPressed()) {
         setLEDState(LEDState.autoNoteCollection);
       } else if (RobotCoordinator.getInstance().noteIsShot()) {
@@ -112,34 +112,34 @@ public class LED extends SubsystemBase {
           io.flashAnimate(255, 0, 0, 0.1, 0, Constants.LED.totalLEDs);
           break;
         case initialized:
-        // green
+          // green
           io.setLED(0, 255, 0, 0, Constants.LED.totalLEDs);
           break;
         case idle:
-        // blue
+          // blue
           io.setLED(0, 0, 255, 0, Constants.LED.totalLEDs);
           break;
         case huntingForNote:
           io.fireAnimate(1, 0.5, Constants.LED.totalLEDs, 0.5, 0.5, false, 0);
           break;
         case noteInRobot:
-        // purple
+          // purple
           io.setLED(128, 0, 128, 0, Constants.LED.totalLEDs);
           break;
         case noteInFiringPos:
-        // white
+          // white
           io.setLED(255, 255, 255, 0, Constants.LED.totalLEDs);
           break;
         case noteFired:
-        // orange
+          // orange
           io.setLED(255, 165, 0, 0, Constants.LED.totalLEDs);
           break;
         case noteReadyToShoot:
-        // green
+          // green
           io.setLED(0, 255, 0, 0, Constants.LED.totalLEDs);
           break;
         case autoNoteCollection:
-        // red
+          // red
           io.setLED(255, 0, 0, 0, Constants.LED.totalLEDs);
           break;
         case brakeMode:
