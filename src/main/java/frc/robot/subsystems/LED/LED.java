@@ -110,7 +110,7 @@ public class LED extends SubsystemBase {
           io.setLED(0, 0, 255, 0, Constants.LED.totalLEDs);
           break;
         case huntingForNote:
-          io.fireAnimate(1, 0.5, 0, 0.5, 0.5, false, 0);
+          io.fireAnimate(1, 0.5, Constants.LED.totalLEDs, 0.5, 0.5, false, 0);
           break;
         case noteInRobot:
         // purple

@@ -14,7 +14,7 @@ public interface LedIO {
   ;
 
   public default void rainbowAnimate(
-      double brightness, double speed, int ledNum, int startOffset) {}
+      double brightness, double speed, int startOffset, int ledNum) {}
 
   public default void flashAnimate(
       int red, int green, int blue, double speed, int ledNum, int startOffset) {}
