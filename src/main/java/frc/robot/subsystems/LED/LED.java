@@ -117,16 +117,16 @@ public class LED extends SubsystemBase {
           io.setLED(128, 0, 128, 0, Constants.LED.totalLEDs);
           break;
         case noteInFiringPos:
-        // green
-          io.setLED(0, 255, 0, 0, Constants.LED.totalLEDs);
+        // white
+          io.setLED(255, 255, 255, 0, Constants.LED.totalLEDs);
           break;
         case noteFired:
         // orange
           io.setLED(255, 165, 0, 0, Constants.LED.totalLEDs);
           break;
         case noteReadyToShoot:
-        // rainbow :)
-          io.rainbowAnimate(1, 0.5, 0, Constants.LED.totalLEDs);
+        // green
+          io.setLED(0, 255, 0, 0, Constants.LED.totalLEDs);
           break;
         case autoNoteCollection:
         // red
