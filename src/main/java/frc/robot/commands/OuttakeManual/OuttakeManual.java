@@ -83,7 +83,11 @@ public class OuttakeManual extends Command {
     }
 
     if (RobotCoordinator.getInstance().canPivot()) {
-      outtake.pivot(solution.getShotRotations());
+      if (stateMachine.getState() == OuttakeManualState.CLIMBING) {
+        outtake.pivot(solution.getShotRotations(), false);
+      } else {
+        outtake.pivot(solution.getShotRotations(), true);
+      }
     } else {
       outtake.stopPivot();
     }
