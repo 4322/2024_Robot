@@ -64,7 +64,6 @@ public class OuttakeManual extends Command {
         // lockout of presets until the note is safely in the outtake
         // change to stopped state when note triggers the tunnel sensor
         if (RobotCoordinator.getInstance().noteInFiringPosition()) {
-          CommandScheduler.getInstance().schedule(xBoxRumble);
           updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
         }
         break;
