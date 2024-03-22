@@ -15,6 +15,7 @@ public class Intake extends SubsystemBase {
 
   private boolean isFeeding;
   private boolean isEjecting;
+  private boolean isInCoast;
   private double desiredVolts;
   private static Intake intake;
 
@@ -158,6 +159,7 @@ public class Intake extends SubsystemBase {
 
   public void setDeployerBrakeMode() {
     if (Constants.intakeDeployerEnabled) {
+      isInCoast = false;
       io.setDeployerBrakeMode();
     }
   }
@@ -170,6 +172,7 @@ public class Intake extends SubsystemBase {
 
   public void setDeployerCoastMode() {
     if (Constants.intakeDeployerEnabled) {
+      isInCoast = true;
       io.setDeployerCoastMode();
     }
   }
@@ -250,5 +253,9 @@ public class Intake extends SubsystemBase {
 
   public boolean isEjecting() {
     return isEjecting;
+  }
+
+  public boolean deployInCoast() {
+    return isInCoast;
   }
 }

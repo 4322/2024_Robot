@@ -15,6 +15,7 @@ public class Outtake extends SubsystemBase {
   private Timer existenceTimer;
   private double pivotTarget;
   private boolean pivotInitialized;
+  private boolean isInCoast;
 
   private static Outtake outtake;
 
@@ -148,6 +149,7 @@ public class Outtake extends SubsystemBase {
 
   public void setPivotCoastMode() {
     if (Constants.outtakePivotEnabled) {
+      isInCoast = true;
       io.setPivotCoastMode();
       Logger.recordOutput("Outtake/NeutralMode", "Coast");
     }
@@ -155,6 +157,7 @@ public class Outtake extends SubsystemBase {
 
   public void setPivotBrakeMode() {
     if (Constants.outtakePivotEnabled) {
+      isInCoast = false;
       io.setPivotBrakeMode();
       Logger.recordOutput("Outtake/NeutralMode", "Brake");
     }
@@ -189,5 +192,9 @@ public class Outtake extends SubsystemBase {
 
   public boolean isFeeding() {
     return targetRPS < 0;
+  }
+
+  public boolean pivotInCoast() {
+    return isInCoast;
   }
 }

@@ -199,4 +199,12 @@ public class RobotCoordinator extends SubsystemBase {
   public boolean debugOuttakeOverride() {
     return outtake.getDebugOverrideEnabled();
   }
+
+  public boolean deployInCoast() {
+    return intake.deployInCoast();
+  }
+
+  public boolean pivotInCoast() {
+    return outtake.pivotInCoast();
+  }
 }

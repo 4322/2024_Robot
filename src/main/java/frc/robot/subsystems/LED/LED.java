@@ -1,5 +1,6 @@
 package frc.robot.subsystems.LED;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -21,7 +22,9 @@ public class LED extends SubsystemBase {
     noteInFiringPos,
     noteFired,
     noteReadyToShoot,
-    autoNoteCollection;
+    autoNoteCollection,
+    brakeMode,
+    coastMode;
   }
 
   private static LED led;
@@ -83,7 +86,14 @@ public class LED extends SubsystemBase {
       } else if (RobotCoordinator.getInstance().isIntakeDeployed()
           || RobotCoordinator.getInstance().isIntakeDeploying()) {
         setLEDState(LEDState.huntingForNote);
-      } else {
+      } else if (DriverStation.isDisabled() 
+          && RobotCoordinator.getInstance().deployInCoast() 
+          && RobotCoordinator.getInstance().pivotInCoast()) {
+        setLEDState(LEDState.coastMode);
+      } else if (DriverStation.isDisabled() 
+          && !RobotCoordinator.getInstance().deployInCoast()
+          && !RobotCoordinator.getInstance().pivotInCoast());
+      else {
         setLEDState(LEDState.idle);
       }
     }
@@ -99,7 +109,7 @@ public class LED extends SubsystemBase {
       }
       switch (currentState) {
         case notInitialized:
-          io.flashAnimate(255, 0, 0, 0.5, 0, Constants.LED.totalLEDs);
+          io.flashAnimate(255, 0, 0, 0.1, 0, Constants.LED.totalLEDs);
           break;
         case initialized:
         // green
@@ -131,6 +141,14 @@ public class LED extends SubsystemBase {
         case autoNoteCollection:
         // red
           io.setLED(255, 0, 0, 0, Constants.LED.totalLEDs);
+          break;
+        case brakeMode:
+          // red
+          io.setLED(255, 0, 0, 0, Constants.LED.totalLEDs);
+          break;
+        case coastMode:
+          // green
+          io.setLED(0, 255, 0, 0, Constants.LED.totalLEDs);
           break;
       }
     }
