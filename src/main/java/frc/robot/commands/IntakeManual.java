@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants;
@@ -96,6 +98,7 @@ public class IntakeManual extends Command {
         }
         break;
     }
+    Logger.recordOutput("Intake/ManualState/", intakeState.toString());
   }
 
   @Override
