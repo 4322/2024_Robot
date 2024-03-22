@@ -38,7 +38,7 @@ public final class Constants {
   public static double noteRadiusInches = 7;
 
   public static final boolean debug = true;
-
+ 
   public static final boolean driveEnabled = true;
   public static final boolean intakeEnabled = true;
   public static final boolean intakeDeployerEnabled = true;
@@ -48,7 +48,7 @@ public final class Constants {
   public static final boolean outtakePivotEnabled = true;
   public static final boolean sensorsEnabled = true;
   public static final boolean ledEnabled = true;
-  public static final boolean climberEnabled = false;
+  public static final boolean climberEnabled = true;
   public static final boolean joysticksEnabled = false;
   public static final boolean xboxEnabled = true;
   public static final boolean autoAcquireNoteEnabled = false;
