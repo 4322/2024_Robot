@@ -154,7 +154,7 @@ public class RobotContainer {
       outtake.setDefaultCommand(outtakeManual);
     }
 
-    if (Constants.intakeEnabled) {
+    if (Constants.intakeEnabled || Constants.intakeDeployerEnabled) {
       intake.setDefaultCommand(intakeManual);
     }
 

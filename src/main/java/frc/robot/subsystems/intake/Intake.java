@@ -39,7 +39,7 @@ public class Intake extends SubsystemBase {
   private Intake() {
     switch (Constants.currentMode) {
       case REAL:
-        if (Constants.intakeEnabled) {
+        if (Constants.intakeEnabled || Constants.intakeDeployerEnabled) {
           io = new IntakeIOReal();
         }
         break;
