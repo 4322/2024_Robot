@@ -1,7 +1,9 @@
 package frc.robot.commands.OuttakeManual;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.FiringSolutions;
+import frc.robot.commands.XboxControllerRumble;
 import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualState;
 import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualTrigger;
 import frc.robot.shooting.FiringSolution;
@@ -13,12 +15,14 @@ import org.littletonrobotics.junction.Logger;
 
 public class OuttakeManual extends Command {
   private final Outtake outtake;
+  private final XboxControllerRumble xBoxRumble;
 
   private static final OuttakeManualStateMachine stateMachine =
       new OuttakeManualStateMachine(OuttakeManualState.STOP);
 
   public OuttakeManual() {
     outtake = Outtake.getInstance();
+    xBoxRumble = new XboxControllerRumble();
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(outtake);
   }
@@ -60,6 +64,7 @@ public class OuttakeManual extends Command {
         // lockout of presets until the note is safely in the outtake
         // change to stopped state when note triggers the tunnel sensor
         if (RobotCoordinator.getInstance().noteInFiringPosition()) {
+          CommandScheduler.getInstance().schedule(xBoxRumble);
           updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
         }
         break;
