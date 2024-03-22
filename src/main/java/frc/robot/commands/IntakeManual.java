@@ -10,6 +10,7 @@ public class IntakeManual extends Command {
   public enum IntakeStates {
     retracted,
     deploying,
+    deployed,
     feeding,
     noteObtained,
     notePastIntake,
@@ -46,8 +47,16 @@ public class IntakeManual extends Command {
         if (!coordinator.getIntakeButtonPressed()) {
           intakeState = IntakeStates.retracting;
         } else if (coordinator.intakeIsDeployed() && !coordinator.noteInRobot()) {
-          intakeState = IntakeStates.feeding;
+          intakeState = IntakeStates.deployed;
         } else if (coordinator.noteInRobot() && coordinator.intakeIsDeployed()) {
+          intakeState = IntakeStates.notePastIntake;
+        }
+        break;
+      case deployed:
+        if (coordinator.getIntakeButtonPressed() && !coordinator.noteInRobot()) {
+          intakeState = IntakeStates.feeding;
+        }
+        else if (coordinator.getIntakeButtonPressed() && coordinator.noteInRobot()) {
           intakeState = IntakeStates.notePastIntake;
         }
         break;
