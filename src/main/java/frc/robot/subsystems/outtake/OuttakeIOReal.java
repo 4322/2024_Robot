@@ -104,10 +104,8 @@ public class OuttakeIOReal implements OuttakeIO {
     config.Voltage.PeakForwardVoltage = OuttakeConstants.pivotPeakForwardVoltage;
     config.Voltage.PeakReverseVoltage = OuttakeConstants.pivotPeakReverseVoltage;
     config.ClosedLoopRamps.VoltageClosedLoopRampPeriod = OuttakeConstants.pivotClosedLoopSec;
-    config.SoftwareLimitSwitch.ForwardSoftLimitEnable = OuttakeConstants.limitForwardMotion;
+    config.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
     config.SoftwareLimitSwitch.ReverseSoftLimitEnable = OuttakeConstants.limitReverseMotion;
-    config.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
-        OuttakeConstants.forwardSoftLimitThresholdRotations;
     config.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
         OuttakeConstants.reverseSoftLimitThresholdRotations;
     config.CurrentLimits.StatorCurrentLimitEnable = true;
@@ -206,14 +204,6 @@ public class OuttakeIOReal implements OuttakeIO {
   @Override
   public void setPivotTarget(double rotations) {
     pivotMotor.setControl(new PositionVoltage(rotations));
-  }
-
-  @Override
-  public void overrideForwardSoftLimit() {
-    SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
-    softwareLimitSwitchConfigs.ForwardSoftLimitEnable = false;
-    softwareLimitSwitchConfigs.ReverseSoftLimitEnable = true;
-    pivotMotor.getConfigurator().refresh(softwareLimitSwitchConfigs);
   }
 
   @Override

@@ -13,7 +13,6 @@ import org.littletonrobotics.junction.Logger;
 
 public class OuttakeManual extends Command {
   private final Outtake outtake;
-  private boolean overrideForwardSoftLimitRequested = false;
 
   private static final OuttakeManualStateMachine stateMachine =
       new OuttakeManualStateMachine(OuttakeManualState.STOP);
@@ -67,12 +66,7 @@ public class OuttakeManual extends Command {
       case FEED:
         solution = FiringSolutions.Feed;
         break;
-      case CLIMBING:
-        // only override forward soft limit once because constantly reconfiguring motor is bad
-        if (!overrideForwardSoftLimitRequested) {
-          outtake.overrideForwardSoftLimit();
-          overrideForwardSoftLimitRequested = true;
-        }
+      case CLIMBING: 
         solution = FiringSolutions.Climbing;
         break;
       case STOP:

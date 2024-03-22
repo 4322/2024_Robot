@@ -60,9 +60,6 @@ public interface OuttakeIO {
   public default void stopOuttake() {}
   ;
 
-  public default void overrideForwardSoftLimit() {}
-  ;
-
   public default void stopPivot() {}
   ;
 }
