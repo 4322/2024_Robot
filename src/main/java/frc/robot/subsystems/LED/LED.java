@@ -16,10 +16,12 @@ public class LED extends SubsystemBase {
     notInitialized,
     initialized,
     idle,
-    deployingIntake,
+    huntingForNote,
     noteInRobot,
     noteInFiringPos,
-    noteReadyToShoot;
+    noteFired,
+    noteReadyToShoot,
+    autoNoteCollection;
   }
 
   private static LED led;
@@ -66,16 +68,21 @@ public class LED extends SubsystemBase {
           && !initTimer.hasElapsed(1)) {
         initTimer.start();
         setLEDState(LEDState.initialized);
-      } else if (RobotCoordinator.getInstance()
-          .canShoot()) { // robot LED states listed from highest to lowest priority
+      // below are all robot LED states listed from highest to lowest priority
+      } else if (RobotCoordinator.getInstance().getAutoIntakeButtonPressed()) {
+        setLEDState(LEDState.autoNoteCollection);
+      } else if (RobotCoordinator.getInstance().noteIsShot()) {
+        setLEDState(LEDState.noteFired);
+      } else if (RobotCoordinator.getInstance().canShoot()
+          && RobotCoordinator.getInstance().noteInFiringPosition()) {
         setLEDState(LEDState.noteReadyToShoot);
       } else if (RobotCoordinator.getInstance().noteInFiringPosition()) {
         setLEDState(LEDState.noteInFiringPos);
       } else if (RobotCoordinator.getInstance().noteInRobot()) {
         setLEDState(LEDState.noteInRobot);
       } else if (RobotCoordinator.getInstance().isIntakeDeployed()
-          && RobotCoordinator.getInstance().isIntakeDeploying()) {
-        setLEDState(LEDState.deployingIntake);
+          || RobotCoordinator.getInstance().isIntakeDeploying()) {
+        setLEDState(LEDState.huntingForNote);
       } else {
         setLEDState(LEDState.idle);
       }
@@ -95,22 +102,35 @@ public class LED extends SubsystemBase {
           io.flashAnimate(255, 0, 0, 0.5, 0, Constants.LED.totalLEDs);
           break;
         case initialized:
+        // green
           io.setLED(0, 255, 0, 0, Constants.LED.totalLEDs);
           break;
         case idle:
+        // blue
           io.setLED(0, 0, 255, 0, Constants.LED.totalLEDs);
           break;
-        case deployingIntake:
-          io.setLED(255, 0, 0, 0, Constants.LED.totalLEDs);
+        case huntingForNote:
+          io.fireAnimate(1, 0.5, 0, 0.5, 0.5, false, 0);
           break;
         case noteInRobot:
-          io.setLED(255, 255, 255, 0, Constants.LED.totalLEDs);
+        // purple
+          io.setLED(128, 0, 128, 0, Constants.LED.totalLEDs);
           break;
         case noteInFiringPos:
-          io.setLED(0, 255, 0, 0, Constants.LED.totalLEDs);
+        // white
+          io.setLED(255, 255, 255, 0, Constants.LED.totalLEDs);
+          break;
+        case noteFired:
+        // orange
+          io.setLED(255, 165, 0, 0, Constants.LED.totalLEDs);
           break;
         case noteReadyToShoot:
-          io.rainbowAnimate(1, 0.5, 0, Constants.LED.totalLEDs);
+        // green
+          io.setLED(0, 255, 0, 0, Constants.LED.totalLEDs);
+          break;
+        case autoNoteCollection:
+        // red
+          io.setLED(255, 0, 0, 0, Constants.LED.totalLEDs);
           break;
       }
     }

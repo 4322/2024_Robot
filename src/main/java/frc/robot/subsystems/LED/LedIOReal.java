@@ -6,6 +6,7 @@ import com.ctre.phoenix.led.CANdle.VBatOutputMode;
 import com.ctre.phoenix.led.CANdleConfiguration;
 import com.ctre.phoenix.led.RainbowAnimation;
 import com.ctre.phoenix.led.StrobeAnimation;
+import com.ctre.phoenix.led.FireAnimation;
 import frc.robot.Constants;
 
 public class LedIOReal implements LedIO {
@@ -47,6 +48,14 @@ public class LedIOReal implements LedIO {
     StrobeAnimation strobeAnim =
         new StrobeAnimation(red, green, blue, 0, speed, ledNum, startOffset);
     candle.animate(strobeAnim);
+  }
+
+  @Override
+  public void fireAnimate(
+      double brightness, double speed, int numLED, double sparking, double cooling, boolean reverse, int offset) {
+    FireAnimation fireAnimation = 
+        new FireAnimation(brightness, speed, numLED, sparking, cooling, reverse, offset);
+    candle.animate(fireAnimation);
   }
 
   public void clearAnimation() {
