@@ -1,0 +1,26 @@
++button hold down if slow (robot coordinator likely)
++unwind (extend) sequential w/ pivot (hold down)
++rewind (retract)
++maybe controller rumble? can't remember
++shuffleboard variables: read position of climber + set voltage
++end command if at/above max (if at, ENTER TOLERANCE IMMEDIATELY) and vice versa for other way
++left bumper is retract, right bumper is extend
++fix extend like i did in comment- 
++add new state to outtake (climbing)
++make slowretract firing solution
++for isFinished, have it return false- they can try to go up all they want
++don't make it dependent on pivot being in position (climber extended)
++slow retract, fast retract, fast extend (slow retract button, left trigger)
++change climber gear ratio (ok, to what (to 40:44))
++put climbing intake state (what I want but also impractical) or make not climbing a state necessary for intaking/tunneling (integrate w/ robotcoordinator) (did second half)
++write command that says "emergency climber shutoff" (basically made stop button emergency stop)
+TRUE TODO:
+
+-there should be some sort of decorator that you pass in that allows you to override reverse soft limit (maybe set reverse soft limit enabled) for climber + override forward soft limit for shooter
+(working on it)
+-set all the constants
+-configure climber motor
+
+-same safety checks as outtake (or i could just use the state machines)
++preclimb state (deploying to specific state)
++climb 

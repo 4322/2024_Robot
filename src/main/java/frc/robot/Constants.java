@@ -40,7 +40,7 @@ public final class Constants {
   public static final boolean debug = false;
 
   public static final boolean driveEnabled = true;
-  public static final boolean intakeEnabled = true;
+  public static final boolean intakeEnabled = false;
   public static final boolean intakeDeployerEnabled = true;
   public static final boolean gyroEnabled = true;
   public static final boolean tunnelEnabled = true;
@@ -48,6 +48,7 @@ public final class Constants {
   public static final boolean outtakePivotEnabled = true;
   public static final boolean sensorsEnabled = true;
   public static final boolean ledEnabled = true;
+  public static final boolean climberEnabled = true;
   public static final boolean joysticksEnabled = false;
   public static final boolean xboxEnabled = true;
   public static final boolean autoAcquireNoteEnabled = false;
@@ -273,8 +274,6 @@ public final class Constants {
 
       // when supply threshold is exceeded for the time, drop the current to the limit
       public static final double statorLimit = 60;
-      public static final boolean supplyEnabled = true;
-      public static final boolean statorEnabled = true;
       public static final double supplyLimit = 40;
       public static final double supplyThreshold = 60;
       public static final double supplyTime = 2.0;
@@ -287,6 +286,26 @@ public final class Constants {
     public static final double initializedRotationsFlag = 4322.0; // must be a very high number
     public static final double initializedRotationsTolerance = 5.0;
     public static final double absEncoderMaxZeroingThreshold = 0.95;
+  }
+
+  public static final class ClimberConstants {
+    public static final int climberMotorID = 25;
+    public static final double climberMaxRotations = 149; // physical limit of climber
+    public static final double climberMinRotations = 0;
+    public static final double slowClimberVolts = 2;
+    public static final double fastClimberVolts = 12;
+    public static final double climberRotationTolerance = 1;
+    public static final double retractingThreshold =
+        0; // TODO: tune depending on how chain engages with hook
+    public static final int peakForwardVoltage = 12;
+    public static final double peakReverseVoltage = -12;
+    public static final double climbingPivotRotations = 150; // for outtake pivot
+
+    public static final double statorLimit = 60;
+    public static final double supplyLimit = 40;
+    public static final double supplyThreshold = 60;
+    public static final double supplyTime = 2.0;
+    public static final double openRampPeriod = 0.08; // TODO
   }
 
   public static final class OuttakeConstants {
@@ -308,8 +327,6 @@ public final class Constants {
         ((44.0 / 40.0)
             * 125.0); // since we likely aren't going to adjust the speed, it's likely safe to
     // not interpolate
-    public static final boolean supplyEnabled = true;
-    public static final boolean statorEnabled = true;
     public static final double shooterSupplyLimit = 40;
     public static final double shooterStatorLimit = 80;
     public static final double shooterSupplyCurrentThreshold = 50;
@@ -326,7 +343,6 @@ public final class Constants {
     public static final double maxVelRotationsPerSec = 85;
     public static final boolean enableFOC = false;
     public static final double pivotClosedLoopSec = 0.3;
-    public static final boolean limitForwardMotion = true;
     public static final boolean limitReverseMotion = true;
     public static final double forwardSoftLimitThresholdRotations = 118;
     public static final double reverseSoftLimitThresholdRotations = 7;
@@ -352,8 +368,6 @@ public final class Constants {
       public static final double timeoutMs = 50;
       public static final double intakeFeedVoltage = 11.0;
       public static final double intakeEjectVoltage = -11.0;
-      public static final boolean supplyEnabled = true;
-      public static final boolean statorEnabled = true;
       public static final double supplyLimit = 30;
       public static final double statorLimit = 45;
     }
@@ -369,8 +383,6 @@ public final class Constants {
       public static final double peakForwardVoltage = 2.5; // anything higher will slip the belt
       public static final double peakReverseVoltage = -2.5;
 
-      public static final boolean supplyEnabled = true;
-      public static final boolean statorEnabled = true;
       public static final double supplyLimit = 30;
       public static final double statorLimit = 60;
 
@@ -402,8 +414,6 @@ public final class Constants {
 
   public static final class TunnelConstants {
     public static final int tunnelMotorID = 3;
-    public static final boolean supplyEnabled = true;
-    public static final boolean statorEnabled = true;
     public static final double supplyLimit = 30;
     public static final double statorLimit = 60;
 
@@ -507,6 +517,8 @@ public final class Constants {
     public static final FiringSolution MS = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution BS = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution Eject = new FiringSolution(0, 0, 10, 50);
+    public static final FiringSolution Climbing =
+        new FiringSolution(0, 0, 0, ClimberConstants.climbingPivotRotations);
     // collecting note should be at lowest pivot limit
     public static final FiringSolution CollectingNote =
         new FiringSolution(0, 0, 0, Constants.OuttakeConstants.reverseSoftLimitThresholdRotations);

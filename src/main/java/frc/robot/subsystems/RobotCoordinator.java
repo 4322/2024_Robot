@@ -6,6 +6,7 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.commands.IntakeManual;
 import frc.robot.commands.IntakeManual.IntakeStates;
+import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.limelight.Limelight;
@@ -18,11 +19,16 @@ public class RobotCoordinator extends SubsystemBase {
   private Drive drive = Drive.getInstance();
   private NoteTracker noteTracker = NoteTracker.getInstance();
   private Limelight intakeLimelight = Limelight.getIntakeInstance();
+  private Climber climber = Climber.getInstance();
 
   private static RobotCoordinator robotCoordinator;
   private boolean intakeButtonPressed;
+  private boolean slowClimbButtonHeld;
+  private boolean notePassingIntake;
+  private boolean notePassingTunnel;
   private boolean autoIntakeButtonPressed;
   private boolean initAbsEncoderPressed;
+  private boolean outtakeInClimbState = false;
 
   public static RobotCoordinator getInstance() {
     if (robotCoordinator == null) {
@@ -180,6 +186,14 @@ public class RobotCoordinator extends SubsystemBase {
 
   public boolean pivotAtPosition() {
     return outtake.pivotIsAtPosition();
+  }
+
+  public boolean climberIsAtRetractThreshold() {
+    return (climber.isAtClimbRetractingThreshold());
+  }
+
+  public boolean climberIsFullyExtended() {
+    return (climber.isFullyExtended());
   }
 
   public boolean debugOuttakeOverride() {

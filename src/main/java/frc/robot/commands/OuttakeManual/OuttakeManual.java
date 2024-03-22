@@ -29,7 +29,6 @@ public class OuttakeManual extends Command {
   @Override
   public void execute() {
     final FiringSolution solution;
-
     switch (stateMachine.getState()) {
       case SMART_SHOOTING:
         double botMagToSpeaker =
@@ -59,13 +58,16 @@ public class OuttakeManual extends Command {
       case COLLECTING_NOTE:
         solution = FiringSolutions.CollectingNote;
         // lockout of presets until the note is safely in the outtake
-        // change to stopped state when note triggers the tunnel sensor 
+        // change to stopped state when note triggers the tunnel sensor
         if (RobotCoordinator.getInstance().noteInFiringPosition()) {
           updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
         }
         break;
       case FEED:
         solution = FiringSolutions.Feed;
+        break;
+      case CLIMBING: 
+        solution = FiringSolutions.Climbing;
         break;
       case STOP:
       default:
@@ -81,7 +83,11 @@ public class OuttakeManual extends Command {
     }
 
     if (RobotCoordinator.getInstance().canPivot()) {
-      outtake.pivot(solution.getShotRotations());
+      if (stateMachine.getState() == OuttakeManualState.CLIMBING) {
+        outtake.pivot(solution.getShotRotations(), false);
+      } else {
+        outtake.pivot(solution.getShotRotations(), true);
+      }
     } else {
       outtake.stopPivot();
     }

@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.inputs.LoggedDriverStation.DriverStationInputs;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -16,7 +14,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -27,17 +27,20 @@ import frc.robot.commands.AutoIntakeDeploy;
 import frc.robot.commands.AutoIntakeIn;
 import frc.robot.commands.AutoSetOuttakeAdjust;
 import frc.robot.commands.AutoSmartShooting;
+import frc.robot.commands.ClimberExtend;
+import frc.robot.commands.ClimberRetract;
+import frc.robot.commands.ClimberSlowRetractOverride;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.EjectThroughIntake;
 import frc.robot.commands.IntakeManual;
 import frc.robot.commands.IntakeStop;
+import frc.robot.commands.OperatorXboxControllerRumble;
 import frc.robot.commands.OuttakeManual.OuttakeManual;
-import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualState;
 import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualTrigger;
-import frc.robot.commands.OuttakeTunnelFeed.OuttakeTunnelFeed;
 import frc.robot.commands.OuttakeStop;
+import frc.robot.commands.OuttakeTunnelFeed.OuttakeTunnelFeed;
 import frc.robot.commands.ResetFieldCentric;
 import frc.robot.commands.SetPivotsBrakeMode;
 import frc.robot.commands.SetPivotsCoastMode;
@@ -50,6 +53,7 @@ import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.LED.LED;
 import frc.robot.subsystems.RobotCoordinator;
+import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.limelight.Limelight;
@@ -75,6 +79,7 @@ public class RobotContainer {
   private JoystickButton driveButtonTwelve;
 
   private boolean onOpponentFieldSide;
+  private boolean nearMatchEndCommandsReqested;
 
   // Need to instantiate RobotCoordinator first due to a bug in the WPI command library.
   // If it gets instantiated from a subsystem periodic method, we get a concurrency
@@ -145,8 +150,7 @@ public class RobotContainer {
       tunnel.setDefaultCommand(tunnelFeed);
     }
 
-    if ((Constants.outtakeEnabled || Constants.outtakePivotEnabled)
-        && !Constants.outtakeTuningMode) {
+    if (Constants.outtakeEnabled || Constants.outtakePivotEnabled) {
       outtake.setDefaultCommand(outtakeManual);
     }
 
@@ -252,6 +256,35 @@ public class RobotContainer {
                 new SetRobotPose(
                     new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()), true));
       }
+
+      // don't want operator to accidentally use slow override in match
+      operatorXbox
+          .rightBumper()
+          .whileTrue(new ClimberSlowRetractOverride().onlyIf(() -> !DriverStation.isFMSAttached()));
+      operatorXbox
+          .leftTrigger()
+          .onTrue(
+              new ParallelCommandGroup(
+                  new AutoIntakeDeploy(),
+                  Commands.runOnce(
+                      () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_CLIMBING)),
+                  new ClimberExtend(),
+                  new SequentialCommandGroup(
+                      Commands.waitUntil(() -> Climber.getInstance().isFullyExtended()),
+                      new OperatorXboxControllerRumble())));
+      operatorXbox
+          .leftTrigger()
+          .onFalse(
+              Commands.runOnce(() -> Climber.getInstance().stopClimb(), Climber.getInstance()));
+      operatorXbox
+          .rightTrigger()
+          .whileTrue(
+              new ParallelCommandGroup(
+                  new ClimberRetract(),
+                  new SequentialCommandGroup(
+                      Commands.waitUntil(
+                          () -> Climber.getInstance().isAtClimbRetractingThreshold()),
+                      new OperatorXboxControllerRumble())));
       operatorXbox.start().onTrue(new SetPivotsCoastMode());
       operatorXbox.back().onTrue(new SetPivotsBrakeMode());
       operatorXbox.povUp().whileTrue(new EjectThroughIntake());
@@ -279,8 +312,11 @@ public class RobotContainer {
                   () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP)));
       operatorXbox
           .povLeft()
-          .onTrue(new SequentialCommandGroup(Commands.runOnce(
-                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED)), new OuttakeTunnelFeed()));
+          .onTrue(
+              new SequentialCommandGroup(
+                  Commands.runOnce(
+                      () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED)),
+                  new OuttakeTunnelFeed()));
     }
   }
 
@@ -309,9 +345,13 @@ public class RobotContainer {
       onOpponentFieldSide = false;
     }
 
-    // if the match is about to end, set to coast mode so we can coast past end of match
-    if (DriverStation.getMatchTime() <= 1 && DriverStation.isTeleop() && DriverStation.isFMSAttached()) {
+    // If the match is about to end, set to coast mode so we can coast past end of match
+    if (DriverStation.getMatchTime() <= 2
+        && DriverStation.isTeleopEnabled()
+        && DriverStation.isFMSAttached()
+        && !nearMatchEndCommandsReqested) {
       drive.setCoastMode();
+      nearMatchEndCommandsReqested = true;
     }
   }
 

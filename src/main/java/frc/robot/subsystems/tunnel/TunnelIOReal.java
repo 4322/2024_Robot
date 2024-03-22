@@ -1,10 +1,7 @@
 package frc.robot.subsystems.tunnel;
 
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -22,27 +19,19 @@ public class TunnelIOReal implements TunnelIO {
   }
 
   private void configTalon() {
-    tunnel.getConfigurator().apply(new TalonFXConfiguration());
-    MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-    VoltageConfigs voltageConfigs = new VoltageConfigs();
-    CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
-    HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs = new HardwareLimitSwitchConfigs();
+    TalonFXConfiguration config = new TalonFXConfiguration();
 
-    motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
-    voltageConfigs.PeakForwardVoltage = TunnelConstants.peakVoltage;
-    voltageConfigs.PeakReverseVoltage = -TunnelConstants.peakVoltage;
-    currentLimitsConfigs.StatorCurrentLimitEnable = TunnelConstants.statorEnabled;
-    currentLimitsConfigs.StatorCurrentLimit = TunnelConstants.statorLimit;
-    currentLimitsConfigs.SupplyCurrentLimitEnable = TunnelConstants.supplyEnabled;
-    currentLimitsConfigs.SupplyCurrentLimit = TunnelConstants.supplyLimit;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    config.Voltage.PeakForwardVoltage = TunnelConstants.peakVoltage;
+    config.Voltage.PeakReverseVoltage = -TunnelConstants.peakVoltage;
+    config.CurrentLimits.StatorCurrentLimitEnable = true;
+    config.CurrentLimits.StatorCurrentLimit = TunnelConstants.statorLimit;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLimit = TunnelConstants.supplyLimit;
+    config.HardwareLimitSwitch.ForwardLimitEnable = false;
+    config.HardwareLimitSwitch.ReverseLimitEnable = false;
 
-    hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
-    hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
-
-    tunnel.getConfigurator().apply(hardwareLimitSwitchConfigs);
-    tunnel.getConfigurator().apply(currentLimitsConfigs);
-    tunnel.getConfigurator().apply(motorOutputConfigs);
-    tunnel.getConfigurator().apply(voltageConfigs);
+    tunnel.getConfigurator().apply(config);
   }
 
   @Override

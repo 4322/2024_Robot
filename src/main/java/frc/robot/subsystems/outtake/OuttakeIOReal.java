@@ -1,13 +1,7 @@
 package frc.robot.subsystems.outtake;
 
-import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
-import com.ctre.phoenix6.configs.VoltageConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -76,79 +70,54 @@ public class OuttakeIOReal implements OuttakeIO {
   }
 
   private void configOuttake(TalonFX talon) {
-    ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
-    OpenLoopRampsConfigs openLoopRampsConfigs = new OpenLoopRampsConfigs();
-    CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
-    HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs = new HardwareLimitSwitchConfigs();
-    MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-    Slot0Configs slot0Configs = new Slot0Configs();
-    slot0Configs.kP = Constants.OuttakeConstants.kP;
-    slot0Configs.kI = Constants.OuttakeConstants.kI;
-    slot0Configs.kD = Constants.OuttakeConstants.kD;
-    slot0Configs.kV = Constants.OuttakeConstants.kV;
-    slot0Configs.kS = Constants.OuttakeConstants.kS;
-    closedLoopRampsConfigs.VoltageClosedLoopRampPeriod =
+    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    config.Slot0.kP = Constants.OuttakeConstants.kP;
+    config.Slot0.kI = Constants.OuttakeConstants.kI;
+    config.Slot0.kD = Constants.OuttakeConstants.kD;
+    config.Slot0.kV = Constants.OuttakeConstants.kV;
+    config.Slot0.kS = Constants.OuttakeConstants.kS;
+    config.ClosedLoopRamps.VoltageClosedLoopRampPeriod =
         Constants.OuttakeConstants.closedLoopRampSec;
-    openLoopRampsConfigs.VoltageOpenLoopRampPeriod = Constants.OuttakeConstants.openLoopRampSec;
-    currentLimitsConfigs.StatorCurrentLimitEnable = Constants.OuttakeConstants.statorEnabled;
-    currentLimitsConfigs.StatorCurrentLimit = Constants.OuttakeConstants.shooterStatorLimit;
-    currentLimitsConfigs.SupplyCurrentLimitEnable = Constants.OuttakeConstants.supplyEnabled;
-    currentLimitsConfigs.SupplyCurrentLimit = Constants.OuttakeConstants.shooterSupplyLimit;
-    currentLimitsConfigs.SupplyCurrentThreshold =
+    config.OpenLoopRamps.VoltageOpenLoopRampPeriod = Constants.OuttakeConstants.openLoopRampSec;
+    config.CurrentLimits.StatorCurrentLimitEnable = true;
+    config.CurrentLimits.StatorCurrentLimit = Constants.OuttakeConstants.shooterStatorLimit;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLimit = Constants.OuttakeConstants.shooterSupplyLimit;
+    config.CurrentLimits.SupplyCurrentThreshold =
         Constants.OuttakeConstants.shooterSupplyCurrentThreshold;
-    currentLimitsConfigs.SupplyTimeThreshold =
+    config.CurrentLimits.SupplyTimeThreshold =
         Constants.OuttakeConstants.shooterSupplyTimeThreshold;
-    motorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
-    motorOutputConfigs.NeutralMode = NeutralModeValue.Coast;
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    config.HardwareLimitSwitch.ForwardLimitEnable = false;
+    config.HardwareLimitSwitch.ReverseLimitEnable = false;
 
-    hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
-    hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
-
-    talon.getConfigurator().apply(hardwareLimitSwitchConfigs);
-    talon.getConfigurator().apply(currentLimitsConfigs);
-    talon.getConfigurator().apply(slot0Configs);
-    talon.getConfigurator().apply(closedLoopRampsConfigs);
-    talon.getConfigurator().apply(openLoopRampsConfigs);
-    talon.getConfigurator().apply(motorOutputConfigs);
+    talon.getConfigurator().apply(config);
   }
 
   private void configPivot(TalonFX talon) {
-    Slot0Configs slot0Configs = new Slot0Configs();
-    VoltageConfigs voltageConfigs = new VoltageConfigs();
-    ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
-    MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-    SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
-    HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs = new HardwareLimitSwitchConfigs();
-    CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
-    slot0Configs.kP = Constants.OuttakeConstants.pivotkP;
-    slot0Configs.kI = OuttakeConstants.pivotkI;
-    slot0Configs.kD = OuttakeConstants.pivotkD;
-    voltageConfigs.PeakForwardVoltage = OuttakeConstants.pivotPeakForwardVoltage;
-    voltageConfigs.PeakReverseVoltage = OuttakeConstants.pivotPeakReverseVoltage;
-    closedLoopRampsConfigs.VoltageClosedLoopRampPeriod = OuttakeConstants.pivotClosedLoopSec;
-    softwareLimitSwitchConfigs.ForwardSoftLimitEnable = OuttakeConstants.limitForwardMotion;
-    softwareLimitSwitchConfigs.ReverseSoftLimitEnable = OuttakeConstants.limitReverseMotion;
-    softwareLimitSwitchConfigs.ForwardSoftLimitThreshold =
-        OuttakeConstants.forwardSoftLimitThresholdRotations;
-    softwareLimitSwitchConfigs.ReverseSoftLimitThreshold =
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    config.Slot0.kP = Constants.OuttakeConstants.pivotkP;
+    config.Slot0.kI = OuttakeConstants.pivotkI;
+    config.Slot0.kD = OuttakeConstants.pivotkD;
+    config.Voltage.PeakForwardVoltage = OuttakeConstants.pivotPeakForwardVoltage;
+    config.Voltage.PeakReverseVoltage = OuttakeConstants.pivotPeakReverseVoltage;
+    config.ClosedLoopRamps.VoltageClosedLoopRampPeriod = OuttakeConstants.pivotClosedLoopSec;
+    config.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
+    config.SoftwareLimitSwitch.ReverseSoftLimitEnable = OuttakeConstants.limitReverseMotion;
+    config.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
         OuttakeConstants.reverseSoftLimitThresholdRotations;
-    currentLimitsConfigs.StatorCurrentLimitEnable = Constants.OuttakeConstants.statorEnabled;
-    currentLimitsConfigs.StatorCurrentLimit = Constants.OuttakeConstants.pivotStatorLimit;
-    currentLimitsConfigs.SupplyCurrentLimitEnable = Constants.OuttakeConstants.supplyEnabled;
-    currentLimitsConfigs.SupplyCurrentLimit = Constants.OuttakeConstants.pivotSupplyLimit;
-    motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
-    motorOutputConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+    config.CurrentLimits.StatorCurrentLimitEnable = true;
+    config.CurrentLimits.StatorCurrentLimit = Constants.OuttakeConstants.pivotStatorLimit;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLimit = Constants.OuttakeConstants.pivotSupplyLimit;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    config.HardwareLimitSwitch.ForwardLimitEnable = false;
+    config.HardwareLimitSwitch.ReverseLimitEnable = false;
 
-    hardwareLimitSwitchConfigs.ForwardLimitEnable = false;
-    hardwareLimitSwitchConfigs.ReverseLimitEnable = false;
-
-    talon.getConfigurator().apply(hardwareLimitSwitchConfigs);
-    talon.getConfigurator().apply(currentLimitsConfigs);
-    talon.getConfigurator().apply(slot0Configs);
-    talon.getConfigurator().apply(closedLoopRampsConfigs);
-    talon.getConfigurator().apply(voltageConfigs);
-    talon.getConfigurator().apply(motorOutputConfigs);
-    talon.getConfigurator().apply(softwareLimitSwitchConfigs);
+    talon.getConfigurator().apply(config);
 
     // zero helium abs encoder on the stop bar
     // 60 degree shooting angle abs position is about 0.72 rotations
@@ -193,7 +162,7 @@ public class OuttakeIOReal implements OuttakeIO {
       inputs.tuneOuttakeOverrideEnable = tuneOuttakeOverrideEnable.getBoolean(false);
     }
 
-    // makes logging cleaner because there won't be sharp spikes 
+    // makes logging cleaner because there won't be sharp spikes
     // in encoder position if it goes "below" zero point
     if (inputs.heliumAbsRotations
         > Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
