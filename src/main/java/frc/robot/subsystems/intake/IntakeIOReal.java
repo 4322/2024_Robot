@@ -54,6 +54,7 @@ public class IntakeIOReal implements IntakeIO {
               .withPosition(0, 0)
               .getEntry();
       intakeEjectVoltage =
+
           tab.add("Intake Eject Voltage", IntakeConstants.IntakeConfig.intakeEjectVoltage)
               .withSize(1, 1)
               .withPosition(1, 0)
@@ -78,7 +79,7 @@ public class IntakeIOReal implements IntakeIO {
   private void configIntake(TalonFX talon) {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
-    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.CurrentLimits.StatorCurrentLimitEnable = true;
     config.CurrentLimits.StatorCurrentLimit = Constants.IntakeConstants.IntakeConfig.statorLimit;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;

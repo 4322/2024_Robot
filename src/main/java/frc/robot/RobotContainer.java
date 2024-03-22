@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -358,7 +357,6 @@ public class RobotContainer {
   public void enableSubsystems() {
     drive.setBrakeMode();
     tunnel.setBrakeMode();
-    intake.setIntakeBrakeMode();
     intake.setDeployerBrakeMode();
     outtake.setPivotBrakeMode();
 
@@ -368,7 +366,6 @@ public class RobotContainer {
 
   public void disableSubsystems() {
     tunnel.setCoastMode();
-    intake.setIntakeCoastMode();
 
     driveStop.schedule(); // interrupt all drive commands
     intakeStop.schedule(); // interrupt all intake commands

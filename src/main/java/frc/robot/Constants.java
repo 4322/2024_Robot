@@ -366,8 +366,8 @@ public final class Constants {
       public static final double updateHz =
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
-      public static final double intakeFeedVoltage = 11.0;
-      public static final double intakeEjectVoltage = -11.0;
+      public static final double intakeFeedVoltage = -8.0;
+      public static final double intakeEjectVoltage = 8.0;
       public static final double supplyLimit = 30;
       public static final double statorLimit = 45;
     }
