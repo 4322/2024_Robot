@@ -109,7 +109,7 @@ public class LED extends SubsystemBase {
       }
       switch (currentState) {
         case notInitialized:
-          io.flashAnimate(255, 0, 0, 0.1, 0, Constants.LED.totalLEDs);
+          io.flashAnimate(255, 0, 0, 0.02, 0, Constants.LED.totalLEDs);
           break;
         case initialized:
           // green
