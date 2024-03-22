@@ -1,12 +1,11 @@
 package frc.robot.commands;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.intake.Intake;
+import org.littletonrobotics.junction.Logger;
 
 public class IntakeManual extends Command {
   public enum IntakeStates {

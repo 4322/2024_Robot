@@ -54,7 +54,6 @@ public class IntakeIOReal implements IntakeIO {
               .withPosition(0, 0)
               .getEntry();
       intakeEjectVoltage =
-
           tab.add("Intake Eject Voltage", IntakeConstants.IntakeConfig.intakeEjectVoltage)
               .withSize(1, 1)
               .withPosition(1, 0)
