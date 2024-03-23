@@ -312,7 +312,7 @@ public class RobotContainer {
               Commands.runOnce(
                   () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP)));
       operatorXbox
-          .povLeft()
+          .povDown()
           .onTrue(
               new SequentialCommandGroup(
                   Commands.runOnce(
