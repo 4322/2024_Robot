@@ -54,7 +54,7 @@ public final class Constants {
   public static final boolean autoAcquireNoteEnabled = false;
 
   public static final boolean intakeLimeLightEnabled = true;
-  public static final boolean outtakeLimeLightEnabled = true;
+  public static final boolean outtakeLimeLightEnabled = false;
 
   public static final boolean speakerCentricEnabled = true;
   public static final boolean spinoutCenterEnabled = true; // center rotate burst of power
