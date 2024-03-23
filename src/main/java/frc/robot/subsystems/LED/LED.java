@@ -83,7 +83,8 @@ public class LED extends SubsystemBase {
         setLEDState(LEDState.noteInFiringPos);
       } else if (RobotCoordinator.getInstance().noteInRobot()) {
         setLEDState(LEDState.noteInRobot);
-      } else if (RobotCoordinator.getInstance().isIntakeDeployed()
+      } else if ((RobotCoordinator.getInstance().isIntakeDeployed()
+              && Constants.intakeDeployerEnabled)
           || RobotCoordinator.getInstance().isIntakeDeploying()) {
         setLEDState(LEDState.huntingForNote);
       } else if (DriverStation.isDisabled()
@@ -93,9 +94,8 @@ public class LED extends SubsystemBase {
       } else if (DriverStation.isDisabled()
           && !RobotCoordinator.getInstance().deployInCoast()
           && !RobotCoordinator.getInstance().pivotInCoast()) {
-            setLEDState(LEDState.brakeMode);
-          }
-      else {
+        setLEDState(LEDState.brakeMode);
+      } else {
         setLEDState(LEDState.idle);
       }
     }

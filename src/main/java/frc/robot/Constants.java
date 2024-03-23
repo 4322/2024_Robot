@@ -38,23 +38,23 @@ public final class Constants {
   public static double noteRadiusInches = 7;
 
   public static final boolean debug = true;
- 
+
   public static final boolean driveEnabled = true;
-  public static final boolean intakeEnabled = true;
-  public static final boolean intakeDeployerEnabled = true;
+  public static final boolean intakeEnabled = false;
+  public static final boolean intakeDeployerEnabled = false;
   public static final boolean gyroEnabled = true;
   public static final boolean tunnelEnabled = true;
   public static final boolean outtakeEnabled = true;
   public static final boolean outtakePivotEnabled = true;
   public static final boolean sensorsEnabled = true;
   public static final boolean ledEnabled = true;
-  public static final boolean climberEnabled = true;
+  public static final boolean climberEnabled = false;
   public static final boolean joysticksEnabled = false;
   public static final boolean xboxEnabled = true;
   public static final boolean autoAcquireNoteEnabled = false;
 
   public static final boolean intakeLimeLightEnabled = true;
-  public static final boolean outtakeLimeLightEnabled = true;
+  public static final boolean outtakeLimeLightEnabled = false;
 
   public static final boolean speakerCentricEnabled = true;
   public static final boolean spinoutCenterEnabled = true; // center rotate burst of power
@@ -241,7 +241,7 @@ public final class Constants {
         CANCoderOffsetRotations = new double[4];
         CANCoderOffsetRotations[WheelPosition.FRONT_RIGHT.wheelNumber] = 0.685791;
         CANCoderOffsetRotations[WheelPosition.FRONT_LEFT.wheelNumber] = 0.535517578125;
-        CANCoderOffsetRotations[WheelPosition.BACK_RIGHT.wheelNumber] = 0.705322265625 - 0.25;
+        CANCoderOffsetRotations[WheelPosition.BACK_RIGHT.wheelNumber] = 0.719482422;
         CANCoderOffsetRotations[WheelPosition.BACK_LEFT.wheelNumber] = 0.411376953125 + 0.25;
       }
     }
@@ -285,7 +285,8 @@ public final class Constants {
   public static final class EncoderInitializeConstants {
     public static final double initializedRotationsFlag = 4322.0; // must be a very high number
     public static final double initializedRotationsTolerance = 5.0;
-    public static final double absEncoderMaxZeroingThreshold = 0.95;
+    public static final double absEncoderAlmostZeroThreshold = 0.95; // intake use only
+    public static final double absEncoderMaxZeroingThreshold = 0.75; // outtake use only
   }
 
   public static final class ClimberConstants {
@@ -299,7 +300,8 @@ public final class Constants {
         0; // TODO: tune depending on how chain engages with hook
     public static final int peakForwardVoltage = 12;
     public static final double peakReverseVoltage = -12;
-    public static final double climbingPivotRotations = 175; // for outtake pivot
+    public static final double climbingPivotRotations =
+        150; // for outtake pivot - TODO: Needs re-tuning
 
     public static final double statorLimit = 60;
     public static final double supplyLimit = 40;
@@ -351,7 +353,7 @@ public final class Constants {
 
     public static final double defaultPivotPositionRotations = 0;
 
-    public static final double outtakeToleranceRPS = 1;
+    public static final double outtakeToleranceRPS = 3.0;
     public static final double pivotToleranceRotations = 0.5;
     public static final double maxPivotForIntake = 50;
   }

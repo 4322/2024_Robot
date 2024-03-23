@@ -46,9 +46,9 @@ public class IntakeManual extends Command {
         }
         if (!coordinator.getIntakeButtonPressed()) {
           intakeState = IntakeStates.retracting;
-        } else if (coordinator.intakeIsDeployed() && !coordinator.noteInRobot()) {
+        } else if (coordinator.isIntakeDeployed() && !coordinator.noteInRobot()) {
           intakeState = IntakeStates.feeding;
-        } else if (coordinator.noteInRobot() && coordinator.intakeIsDeployed()) {
+        } else if (coordinator.noteInRobot() && coordinator.isIntakeDeployed()) {
           intakeState = IntakeStates.notePastIntake;
         }
         break;
