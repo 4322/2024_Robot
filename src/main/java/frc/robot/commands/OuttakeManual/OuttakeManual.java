@@ -14,14 +14,12 @@ import org.littletonrobotics.junction.Logger;
 
 public class OuttakeManual extends Command {
   private final Outtake outtake;
-  private final XboxControllerRumble xBoxRumble;
 
   private static final OuttakeManualStateMachine stateMachine =
       new OuttakeManualStateMachine(OuttakeManualState.STOP);
 
   public OuttakeManual() {
     outtake = Outtake.getInstance();
-    xBoxRumble = new XboxControllerRumble();
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(outtake);
   }
