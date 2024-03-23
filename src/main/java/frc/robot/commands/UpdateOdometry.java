@@ -34,7 +34,6 @@ public class UpdateOdometry extends Command {
         distanceToBot <= LimelightConstants.visionOdometryTolerance
             || distanceToBot >= LimelightConstants.reverseOdometryOverrideTolerance;
     if (limelight.getTargetVisible()
-        && withinAcceptableDistance
         && limelight.getNumTargets() >= LimelightConstants.numTargetsToUseReverseOdom) {
       Drive.getInstance()
           .updateOdometryVision(
