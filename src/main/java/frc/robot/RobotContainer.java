@@ -31,6 +31,7 @@ import frc.robot.commands.ClimberRetract;
 import frc.robot.commands.ClimberSlowRetractOverride;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
+import frc.robot.commands.IntakeManual.IntakeStates;
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.EjectThroughIntake;
 import frc.robot.commands.IntakeManual;
@@ -265,7 +266,7 @@ public class RobotContainer {
           .leftTrigger()
           .onTrue(
               new ParallelCommandGroup(
-                  new AutoIntakeDeploy(),
+                  Commands.runOnce(() -> {IntakeManual.setIntakeState(IntakeStates.climb);}),
                   Commands.runOnce(
                       () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_CLIMBING)),
                   new ClimberExtend(),

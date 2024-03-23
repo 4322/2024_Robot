@@ -14,7 +14,8 @@ public class IntakeManual extends Command {
     feeding,
     noteObtained,
     notePastIntake,
-    retracting;
+    retracting,
+    climb;
   }
 
   private static IntakeStates intakeState = IntakeStates.retracted;
@@ -94,6 +95,13 @@ public class IntakeManual extends Command {
           intakeState = IntakeStates.deploying;
         } else if (coordinator.isIntakeRetracted()) {
           intakeState = IntakeStates.retracted;
+        }
+        break;
+      case climb:
+        // go to climb state regardless of previous intake state
+        intake.deployClimbPosition();
+        if (coordinator.getIntakeButtonPressed()) {
+          intakeState = IntakeStates.deploying;
         }
         break;
     }
