@@ -125,6 +125,10 @@ public class RobotContainer {
             new AutoSetOuttakeAdjust(Constants.FiringSolutions.SubwooferBase));
     PathPlannerManager.getInstance()
         .addEvent(
+            "SetOuttakeSubwooferSide",
+            new AutoSetOuttakeAdjust(Constants.FiringSolutions.SubwooferSide));
+    PathPlannerManager.getInstance()
+        .addEvent(
             "SetOuttakeCollectingNote",
             new AutoSetOuttakeAdjust(Constants.FiringSolutions.CollectingNote));
     PathPlannerManager.getInstance().addEvent("SetOuttakeSmartShooting", new AutoSmartShooting());

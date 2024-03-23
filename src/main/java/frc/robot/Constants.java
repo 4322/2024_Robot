@@ -512,6 +512,7 @@ public final class Constants {
     // TODO: update speeds and angles
     // shot mag/deg don't matter since these are used for setting speed/angle only
     public static final FiringSolution SubwooferBase = new FiringSolution(0, 0, 40, 113);
+    public static final FiringSolution SubwooferSide = new FiringSolution(0, 0, 40, 115);
     public static final FiringSolution N6 = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution N7 = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution N8 = new FiringSolution(0, 0, 0, 0);
