@@ -103,10 +103,6 @@ public class RobotCoordinator extends SubsystemBase {
     return intake.isRetracted();
   }
 
-  public boolean intakeIsDeployed() {
-    return intake.isDeployed();
-  }
-
   public IntakeStates getIntakeState() {
     return IntakeManual.getIntakeState();
   }
