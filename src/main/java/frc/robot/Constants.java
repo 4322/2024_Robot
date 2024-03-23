@@ -353,7 +353,7 @@ public final class Constants {
 
     public static final double defaultPivotPositionRotations = 0;
 
-    public static final double outtakeToleranceRPS = 1;
+    public static final double outtakeToleranceRPS = 3.0;
     public static final double pivotToleranceRotations = 0.5;
     public static final double maxPivotForIntake = 50;
   }
