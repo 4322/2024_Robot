@@ -81,7 +81,9 @@ public class Intake extends SubsystemBase {
           } else {
             // ramp down
             desiredVolts =
-                DeployConfig.peakReverseVoltage * inputs.heliumAbsRotations / inputs.slowPos;
+                (DeployConfig.peakReverseVoltage * inputs.heliumAbsRotations / inputs.slowPos)
+                    + DeployConfig.minReverseVoltage; // apply min voltage when fully deployed
+                                                      // to keep intake on the ground
           }
           if (isDeployFinished()) {
             state = IntakeDeployState.Deployed;
