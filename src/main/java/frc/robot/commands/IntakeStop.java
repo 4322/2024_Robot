@@ -1,7 +1,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.commands.IntakeManual.IntakeStates;
+import frc.robot.commands.IntakeManual.IntakeManual;
+import frc.robot.commands.IntakeManual.IntakeManual.IntakeStates;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.intake.Intake;
 

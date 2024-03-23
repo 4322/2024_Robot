@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
+import frc.robot.commands.IntakeManual.IntakeManual;
 import frc.robot.subsystems.RobotCoordinator;
 
 public class XboxControllerRumble extends Command {
