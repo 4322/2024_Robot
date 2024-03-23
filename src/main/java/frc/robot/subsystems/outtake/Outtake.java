@@ -14,7 +14,7 @@ public class Outtake extends SubsystemBase {
   private double targetRPS;
   private Timer existenceTimer;
   private double pivotTarget;
-  private boolean pivotInitialized;
+  private boolean pivotInitialized = true;
   private boolean isInCoast;
 
   private static Outtake outtake;
@@ -54,25 +54,7 @@ public class Outtake extends SubsystemBase {
   }
 
   public void periodic() {
-    // Check if encoders have already been initialized after power cycle
-    // If so, we don't need to reinitialize
-    if (Constants.outtakePivotEnabled
-        && !pivotInitialized
-        && OrangeMath.equalToEpsilon(
-            inputs.heliumRelativeRotations,
-            Constants.EncoderInitializeConstants.initializedRotationsFlag,
-            Constants.EncoderInitializeConstants.initializedRotationsTolerance)) {
-      pivotInitialized = true;
-    }
 
-    // initialize motor internal encoder position until the intake isn't moving
-    if (Constants.outtakePivotEnabled
-        && !pivotInitialized
-        && !existenceTimer.hasElapsed(5)
-        && RobotCoordinator.getInstance().getInitAbsEncoderPressed()) {
-      existenceTimer.start();
-      pivotInitialized = io.initPivot();
-    }
     if ((Constants.outtakeEnabled) || (Constants.outtakePivotEnabled)) {
       io.updateInputs(inputs);
       Logger.processInputs("Outtake", inputs);
