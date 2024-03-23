@@ -111,7 +111,7 @@ public class LED extends SubsystemBase {
       }
       switch (currentState) {
         case notInitialized:
-          io.setLED(255, 0, 0, 0, Constants.LED.totalLEDs);
+          io.setLED(255, 255, 0, 0, Constants.LED.totalLEDs);
           break;
         case initialized:
           // green
