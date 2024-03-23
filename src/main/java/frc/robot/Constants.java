@@ -383,8 +383,8 @@ public final class Constants {
       public static final double peakForwardVoltage = 2.5; // anything higher will slip the belt
       public static final double peakReverseVoltage = -2.5;
       public static final double minReverseVoltage = 0.5;
-      public static final double climbForwardVoltage = 1.0; // TODO
-      public static final double climbReverseVoltage = -1.0; // TODO
+      public static final double climbForwardVoltage = 2.5; // Use same constants as deploy/retract
+      public static final double climbReverseVoltage = -2.5;
 
       public static final double supplyLimit = 30;
       public static final double statorLimit = 60;
