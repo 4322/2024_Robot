@@ -21,6 +21,11 @@ public class LedIOReal implements LedIO {
     config.brightnessScalar = 1;
     config.vBatOutputMode = VBatOutputMode.On;
     candle.configAllSettings(config);
+
+    // Clear animation stored in CANdle from previous code so that when redeploying, LED configuration 
+    // will change even if we are in same LED state.
+    // *We normally only clear animation when we change LED states
+    candle.clearAnimation(0);
   }
 
   @Override

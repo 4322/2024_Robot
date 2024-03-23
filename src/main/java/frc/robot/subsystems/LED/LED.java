@@ -92,8 +92,9 @@ public class LED extends SubsystemBase {
         setLEDState(LEDState.coastMode);
       } else if (DriverStation.isDisabled()
           && !RobotCoordinator.getInstance().deployInCoast()
-          && !RobotCoordinator.getInstance().pivotInCoast())
-        ;
+          && !RobotCoordinator.getInstance().pivotInCoast()) {
+            setLEDState(LEDState.brakeMode);
+          }
       else {
         setLEDState(LEDState.idle);
       }
