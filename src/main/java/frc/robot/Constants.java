@@ -38,7 +38,7 @@ public final class Constants {
   public static double noteRadiusInches = 7;
 
   public static final boolean debug = true;
- 
+
   public static final boolean driveEnabled = true;
   public static final boolean intakeEnabled = true;
   public static final boolean intakeDeployerEnabled = true;
@@ -285,7 +285,8 @@ public final class Constants {
   public static final class EncoderInitializeConstants {
     public static final double initializedRotationsFlag = 4322.0; // must be a very high number
     public static final double initializedRotationsTolerance = 5.0;
-    public static final double absEncoderMaxZeroingThreshold = 0.95;
+    public static final double absEncoderAlmostZeroThreshold = 0.95; // intake use only
+    public static final double absEncoderMaxZeroingThreshold = 0.75; // outtake use only
   }
 
   public static final class ClimberConstants {

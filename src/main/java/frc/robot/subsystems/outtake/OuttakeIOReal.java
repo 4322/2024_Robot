@@ -164,7 +164,7 @@ public class OuttakeIOReal implements OuttakeIO {
     // makes logging cleaner because there won't be sharp spikes
     // in encoder position if it goes "below" zero point
     if (inputs.heliumAbsRotations
-        > Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
+        > Constants.EncoderInitializeConstants.absEncoderAlmostZeroThreshold) {
       inputs.heliumAbsRotations = 0;
     }
     heliumAbsoluteRotations = inputs.heliumAbsRotations;
@@ -177,23 +177,20 @@ public class OuttakeIOReal implements OuttakeIO {
 
   @Override
   public boolean initPivot() {
-    if (heliumAbsoluteRotations
-        > Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
-      // Assume that abs position higher than maxValue is below the
-      // hard stop zero point of shooter
-      // If so, assume that position is 0 for motor internal encoder
-      pivotMotor.setPosition(0);
-    } else {
+
+    // Make sure that outtake pivot is stationary
+    if (OrangeMath.equalToEpsilon(pivotEncoder.getVelocity(), 0.0, 0.1)
+        // position must be within the allowed range
+        && heliumAbsoluteRotations >= 0
+        && heliumAbsoluteRotations
+            <= Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
+
       pivotMotor.setPosition(
           heliumAbsoluteRotations * OuttakeConstants.gearReductionEncoderToMotor);
-    }
 
-    if (OrangeMath.equalToEpsilon(pivotEncoder.getVelocity(), 0.0, 0.1)) {
       // Set only relative encoder rotations of Helium encoder to a very high number after
-      // initialized
-      // once
-      // Relative encoder on Helium used only to check if we have already initialized after power
-      // cycles
+      // initialized. The relative encoder is used only to check if we have
+      // already initialized since the last power cycle.
       pivotEncoder.setPosition(Constants.EncoderInitializeConstants.initializedRotationsFlag);
       return true;
     }
