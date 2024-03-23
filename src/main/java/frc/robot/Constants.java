@@ -300,7 +300,8 @@ public final class Constants {
         0; // TODO: tune depending on how chain engages with hook
     public static final int peakForwardVoltage = 12;
     public static final double peakReverseVoltage = -12;
-    public static final double climbingPivotRotations = 175; // for outtake pivot
+    public static final double climbingPivotRotations =
+        150; // for outtake pivot - TODO: Needs re-tuning
 
     public static final double statorLimit = 60;
     public static final double supplyLimit = 40;
