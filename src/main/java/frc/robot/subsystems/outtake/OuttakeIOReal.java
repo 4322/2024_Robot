@@ -160,13 +160,6 @@ public class OuttakeIOReal implements OuttakeIO {
       inputs.targetPivotPosition = pivotPosition.getDouble(0);
       inputs.tuneOuttakeOverrideEnable = tuneOuttakeOverrideEnable.getBoolean(false);
     }
-
-    // makes logging cleaner because there won't be sharp spikes
-    // in encoder position if it goes "below" zero point
-    if (inputs.heliumAbsRotations
-        > Constants.EncoderInitializeConstants.absEncoderAlmostZeroThreshold) {
-      inputs.heliumAbsRotations = 0;
-    }
     heliumAbsoluteRotations = inputs.heliumAbsRotations;
   }
 
