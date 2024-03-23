@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakeConstants.DeployConfig;
+import frc.robot.commands.IntakeManual.IntakeStates;
 import frc.utility.OrangeMath;
 import frc.utility.OrangePIDController;
 import org.littletonrobotics.junction.Logger;
@@ -24,7 +25,9 @@ public class Intake extends SubsystemBase {
     Deployed,
     Deploying,
     Retracting,
-    Retracted
+    Retracted,
+    Climbing,
+    Climbed
   }
 
   private IntakeDeployState state;
@@ -107,6 +110,37 @@ public class Intake extends SubsystemBase {
             io.setDeployVoltage(desiredVolts);
           }
           break;
+        case Climbing:
+          if (inputs.heliumAbsRotations
+              < (IntakeConstants.DeployConfig.climbTargetPosition - inputs.slowPos)) {
+            // move pivot to climb position from deployed
+            desiredVolts = DeployConfig.climbForwardVoltage;
+          } else if (inputs.heliumAbsRotations
+              > (IntakeConstants.DeployConfig.climbTargetPosition + inputs.slowPos)) {
+            // move pivot to climb position from retracted
+            desiredVolts = DeployConfig.climbReverseVoltage;
+          } else if (inputs.heliumAbsRotations < IntakeConstants.DeployConfig.climbTargetPosition) {
+            // retract slowly if slightly past climbing position
+            desiredVolts = 
+                DeployConfig.climbForwardVoltage
+                    * (IntakeConstants.DeployConfig.climbTargetPosition
+                        - inputs.heliumAbsRotations)
+                    / inputs.slowPos;
+          } else {
+            // retract slowly if slightly above climbing position
+            desiredVolts =
+                DeployConfig.climbReverseVoltage
+                    * (inputs.heliumAbsRotations
+                        - IntakeConstants.DeployConfig.climbTargetPosition)
+                    / inputs.slowPos;
+          }
+          if (isClimbFinished()) {
+            state = IntakeDeployState.Climbed;
+            stopDeployer();
+          } else {
+            io.setDeployVoltage(desiredVolts);
+          }
+          break;
         case Deployed:
           if (!OrangeMath.equalToEpsilon(
               inputs.heliumAbsRotations,
@@ -125,6 +159,11 @@ public class Intake extends SubsystemBase {
                   .correctionTolerance)) // if intake has drooped too far while driving
           {
             retract(); // move it back into position
+          }
+          break;
+        case Climbed:
+          if (!isClimbFinished()) {
+            deployClimbPosition(); // move it back into position
           }
           break;
         default:
@@ -217,6 +256,16 @@ public class Intake extends SubsystemBase {
     }
   }
 
+  public void deployClimbPosition() {
+    if (Constants.intakeDeployerEnabled) {
+      state = IntakeDeployState.Climbing;
+      desiredVolts = 0;
+      
+      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "desiredVolts", desiredVolts);
+      Logger.recordOutput(IntakeConstants.Logging.deployerKey + "State", "Deploying");
+    }
+  }
+
   public boolean isDeployed() {
     return (state == IntakeDeployState.Deployed) || !Constants.intakeDeployerEnabled;
   }
@@ -244,6 +293,13 @@ public class Intake extends SubsystemBase {
     return OrangeMath.equalToEpsilon(
         inputs.heliumAbsRotations,
         IntakeConstants.DeployConfig.retractTargetPosition,
+        IntakeConstants.DeployConfig.atTargetTolerance);
+  }
+
+  private boolean isClimbFinished() {
+    return OrangeMath.equalToEpsilon(
+        inputs.heliumAbsRotations,
+        IntakeConstants.DeployConfig.climbTargetPosition,
         IntakeConstants.DeployConfig.atTargetTolerance);
   }
 

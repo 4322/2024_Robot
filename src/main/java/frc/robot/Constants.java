@@ -382,12 +382,15 @@ public final class Constants {
 
       public static final double peakForwardVoltage = 2.5; // anything higher will slip the belt
       public static final double peakReverseVoltage = -2.5;
+      public static final double climbForwardVoltage = 1; // TODO
+      public static final double climbReverseVoltage = -1; // TODO
 
       public static final double supplyLimit = 30;
       public static final double statorLimit = 60;
 
       public static final double deployTargetPosition = 0.0;
       public static final double retractTargetPosition = 0.53;
+      public static final double climbTargetPosition = .265; // TODO
       public static final double atTargetTolerance = 0.03;
       public static final double correctionTolerance = 0.06;
       public static final double maxRotationsPerSec = 0.2;
