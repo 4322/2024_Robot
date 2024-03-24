@@ -16,7 +16,9 @@ public class Shoot extends Command {
 
   @Override
   public void execute() {
-    tunnel.feed();
+    if (RobotCoordinator.getInstance().canShoot() || OuttakeManual.getState() == OuttakeManualState.EJECT) {
+      tunnel.feed();
+    }
   }
 
   @Override

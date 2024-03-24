@@ -72,7 +72,7 @@ public class OuttakeManual extends Command {
         solution = FiringSolutions.Climbing;
         break;
       case AMP:
-        outtake.outtake(Constants.OuttakeConstants.ampTopShooterRPS, Constants.OuttakeConstants.ampBottomShooterRPS); 
+        outtake.outtake(Constants.OuttakeConstants.ampBottomShooterRPS, Constants.OuttakeConstants.ampTopShooterRPS); 
         return;
       case STOP:
       default:
