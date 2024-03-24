@@ -15,7 +15,8 @@ public class OuttakeManualStateMachine {
     COLLECTING_NOTE,
     CLIMBING,
     STOP,
-    FEED
+    FEED,
+    AMP;
   }
 
   public enum OuttakeManualTrigger {
@@ -25,7 +26,8 @@ public class OuttakeManualStateMachine {
     ENABLE_COLLECTING_NOTE,
     ENABLE_STOP,
     ENABLE_CLIMBING,
-    ENABLE_FEED
+    ENABLE_FEED, 
+    ENABLE_AMP;
   }
 
   public OuttakeManualStateMachine(OuttakeManualState initialState) {
@@ -37,7 +39,8 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE, OuttakeManualState.COLLECTING_NOTE)
         .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP)
         .permit(OuttakeManualTrigger.ENABLE_CLIMBING, OuttakeManualState.CLIMBING)
-        .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED);
+        .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED)
+        .permit(OuttakeManualTrigger.ENABLE_AMP, OuttakeManualState.AMP);
 
     config
         .configure(OuttakeManualState.SUBWOOFER)
@@ -47,7 +50,8 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE, OuttakeManualState.COLLECTING_NOTE)
         .permit(OuttakeManualTrigger.ENABLE_CLIMBING, OuttakeManualState.CLIMBING)
         .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP)
-        .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED);
+        .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED)
+        .permit(OuttakeManualTrigger.ENABLE_AMP, OuttakeManualState.AMP);
 
     config
         .configure(OuttakeManualState.EJECT)
@@ -57,7 +61,8 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE, OuttakeManualState.COLLECTING_NOTE)
         .permit(OuttakeManualTrigger.ENABLE_CLIMBING, OuttakeManualState.CLIMBING)
         .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP)
-        .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED);
+        .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED)
+        .permit(OuttakeManualTrigger.ENABLE_AMP, OuttakeManualState.AMP);
 
     // lockout of presets until the note is safely in the outtake
     //
@@ -72,7 +77,9 @@ public class OuttakeManualStateMachine {
         .permitReentry(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE)
         .permit(OuttakeManualTrigger.ENABLE_CLIMBING, OuttakeManualState.CLIMBING)
         .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP)
-        .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED);
+        .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED)
+        .permitReentry(OuttakeManualTrigger.ENABLE_AMP);
+
     config
         .configure(OuttakeManualState.CLIMBING)
         .permit(OuttakeManualTrigger.ENABLE_SMART_SHOOTING, OuttakeManualState.SMART_SHOOTING)
@@ -81,7 +88,8 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE, OuttakeManualState.COLLECTING_NOTE)
         .permitReentry(OuttakeManualTrigger.ENABLE_CLIMBING)
         .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP)
-        .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED);
+        .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED)
+        .permit(OuttakeManualTrigger.ENABLE_AMP, OuttakeManualState.AMP);
 
     config
         .configure(OuttakeManualState.STOP)
@@ -91,7 +99,8 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_CLIMBING, OuttakeManualState.CLIMBING)
         .permit(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE, OuttakeManualState.COLLECTING_NOTE)
         .permitReentry(OuttakeManualTrigger.ENABLE_STOP)
-        .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED);
+        .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED)
+        .permit(OuttakeManualTrigger.ENABLE_AMP, OuttakeManualState.AMP);
 
     config
         .configure(OuttakeManualState.FEED)
@@ -101,7 +110,18 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_CLIMBING, OuttakeManualState.CLIMBING)
         .permit(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE, OuttakeManualState.COLLECTING_NOTE)
         .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP)
-        .permitReentry(OuttakeManualTrigger.ENABLE_FEED);
+        .permitReentry(OuttakeManualTrigger.ENABLE_FEED)
+        .permit(OuttakeManualTrigger.ENABLE_AMP, OuttakeManualState.AMP);
+
+    config.configure(OuttakeManualState.AMP)
+        .permit(OuttakeManualTrigger.ENABLE_SMART_SHOOTING, OuttakeManualState.SMART_SHOOTING)
+        .permit(OuttakeManualTrigger.ENABLE_SUBWOOFER, OuttakeManualState.SUBWOOFER)
+        .permit(OuttakeManualTrigger.ENABLE_EJECT, OuttakeManualState.EJECT)
+        .permit(OuttakeManualTrigger.ENABLE_CLIMBING, OuttakeManualState.CLIMBING)
+        .permit(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE, OuttakeManualState.COLLECTING_NOTE)
+        .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP)
+        .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.AMP)
+        .permitReentry(OuttakeManualTrigger.ENABLE_AMP);
 
     stateMachine = new StateMachine<OuttakeManualState, OuttakeManualTrigger>(initialState, config);
   }

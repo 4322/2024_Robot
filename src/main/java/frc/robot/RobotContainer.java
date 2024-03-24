@@ -322,6 +322,11 @@ public class RobotContainer {
                       () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED)),
                   new OuttakeTunnelFeed(),
                   new XboxControllerRumble()));
+      operatorXbox
+          .povRight()
+          .onTrue(
+              Commands.runOnce(
+                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_AMP)));
     }
   }
 
