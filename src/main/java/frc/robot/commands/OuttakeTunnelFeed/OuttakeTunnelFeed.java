@@ -49,7 +49,7 @@ public class OuttakeTunnelFeed extends Command {
       case NOTE_IDLE_IN_TUNNEL:
         // delay of 0.5 needed before entering this state in order to stop tunnel from reversing
         // direction immediately and causing wear in pulleys
-        tunnel.feed();
+        tunnel.pushUp();
         break;
     }
   }
