@@ -16,10 +16,7 @@ public class Shoot extends Command {
 
   @Override
   public void execute() {
-    if (RobotCoordinator.getInstance().outtakeFlyWheelUpTospeed()
-        || OuttakeManual.getState() == OuttakeManualState.EJECT) {
-      tunnel.feed();
-    }
+    tunnel.feed();
   }
 
   @Override
