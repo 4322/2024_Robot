@@ -311,8 +311,8 @@ public final class Constants {
   }
 
   public static final class OuttakeConstants {
-    public static final int topOuttakeDeviceID = 5;
-    public static final int bottomOuttakeDeviceID = 4;
+    public static final int topOuttakeDeviceID = 4;
+    public static final int bottomOuttakeDeviceID = 5;
     public static final int pivotDeviceID = 6;
     public static final int pivotEncoderID = 8;
 
