@@ -120,7 +120,7 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_CLIMBING, OuttakeManualState.CLIMBING)
         .permit(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE, OuttakeManualState.COLLECTING_NOTE)
         .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP)
-        .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.AMP)
+        .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED)
         .permitReentry(OuttakeManualTrigger.ENABLE_AMP);
 
     stateMachine = new StateMachine<OuttakeManualState, OuttakeManualTrigger>(initialState, config);
