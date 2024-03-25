@@ -1,6 +1,7 @@
 package frc.robot.subsystems.limelight;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
@@ -13,6 +14,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.LimelightConstants;
+import frc.robot.subsystems.limelight.LimelightHelpers.LimelightTarget_Fiducial;
+
 import java.util.HashMap;
 import java.util.Map;
 import org.littletonrobotics.junction.Logger;
@@ -232,6 +235,21 @@ public class Limelight extends SubsystemBase {
     } else {
       return 0;
     }
+  }
+
+  public Pose3d getTargetPose3DToBot(int aprilTagID) {
+    if (enabled && isNetworkTableConnected) {
+      if (getTargetVisible()) {
+        LimelightHelpers.LimelightResults llResults = LimelightHelpers.getLatestResults(name);
+        LimelightHelpers.LimelightTarget_Fiducial[] totalVisibleFiducialTargets = llResults.targetingResults.targets_Fiducials;
+        for (LimelightTarget_Fiducial target : totalVisibleFiducialTargets) {
+          if (aprilTagID == target.fiducialID) {
+            return target.getTargetPose_RobotSpace();
+          }     
+        }
+      }
+    }
+    return new Pose3d();
   }
 
   public double getTargetArea() {
