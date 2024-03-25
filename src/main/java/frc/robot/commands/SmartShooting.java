@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
@@ -30,10 +31,10 @@ public class SmartShooting extends Command {
         final Pose2d botPoseToSpeaker;
 
         if (Robot.isRed()) {
-            botPoseToSpeaker = outtakeLimelight.getTargetPose3DToBot(4).toPose2d();
+            botPoseToSpeaker = outtakeLimelight.getTargetPose3DToBot(Constants.FieldConstants.redSpeakerCenterTagID).toPose2d();
         }
         else {
-            botPoseToSpeaker = outtakeLimelight.getTargetPose3DToBot(7).toPose2d();
+            botPoseToSpeaker = outtakeLimelight.getTargetPose3DToBot(Constants.FieldConstants.blueSpeakerCenterTagID).toPose2d();
         }
         
         double magToSpeaker = botPoseToSpeaker.getTranslation().getNorm();
