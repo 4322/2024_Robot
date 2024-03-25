@@ -506,6 +506,9 @@ public final class Constants {
         new Translation2d(xRedSpeakerPosM, yRedSpeakerPosM);
 
     public static final double xCenterLineM = 8.2955;
+
+    public static final int redSpeakerCenterTagID = 4;
+    public static final int blueSpeakerCenterTagID = 7;
   }
 
   public static final class FiringSolutions {
