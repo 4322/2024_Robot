@@ -1,11 +1,13 @@
 package frc.robot.commands.DriveManual;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriveConstants.Manual;
 import frc.robot.Constants.DriveInputScalingStrings;
@@ -14,6 +16,7 @@ import frc.robot.RobotContainer;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualState;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.limelight.Limelight;
 import frc.utility.FiringSolutionHelper;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
@@ -38,6 +41,8 @@ public class DriveManual extends Command {
   private double rotateRaw;
   private double driveAngle;
   private double driveAbsAngularVel;
+
+  private double speakerCentricAngle;
 
   private Double pseudoAutoRotateAngle;
 
@@ -96,13 +101,18 @@ public class DriveManual extends Command {
           }
           break;
         case SPEAKER_CENTRIC:
-          Pose2d drivePose2D = drive.getPose2d();
-          Translation2d speakerVec =
-              FiringSolutionHelper.getVectorToSpeaker(drivePose2D.getX(), drivePose2D.getY());
+          if (Robot.isRed()) {
+            speakerCentricAngle = Limelight.getOuttakeInstance().getTargetPose3DToBot(0)
+              .toPose2d().getRotation().getDegrees();
+          } else {
+            speakerCentricAngle = Limelight.getOuttakeInstance().getTargetPose3DToBot(0)
+              .toPose2d().getRotation().getDegrees();
+          }
+          
           Logger.recordOutput(
-              "RobotHeading/SpeakerCentricHeading/", speakerVec.getAngle().getDegrees());
+              "RobotHeading/SpeakerCentricHeading/", speakerCentricAngle);
           Logger.recordOutput("RobotHeading/State", "Speaker centric");
-          drive.driveAutoRotate(driveX, driveY, speakerVec.getAngle().getDegrees());
+          drive.driveAutoRotate(driveX, driveY, speakerCentricAngle);
           break;
         case ROBOT_CENTRIC:
           // make robot angle zero to switch to robot centric driving
