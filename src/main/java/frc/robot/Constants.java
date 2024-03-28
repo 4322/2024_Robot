@@ -436,6 +436,7 @@ public final class Constants {
   }
 
   public static final class LimelightConstants {
+    public static final double aprilTagLossThresholdSec = 0.5;
     public static final double visionOdometryTolerance = 0.5;
     public static final double reverseOdometryOverrideTolerance = 1.0;
     public static final int numTargetsToUseReverseOdom = 2;
@@ -529,6 +530,7 @@ public final class Constants {
     public static final FiringSolution CollectingNote =
         new FiringSolution(0, 0, 0, Constants.OuttakeConstants.reverseSoftLimitThresholdRotations);
     public static final FiringSolution Feed = new FiringSolution(0, 0, -10, 118);
+    public static final FiringSolution DefaultSmartShooting = new FiringSolution(0, 0, 40, 60);
   }
 
   public enum WheelPosition {
