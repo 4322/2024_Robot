@@ -6,6 +6,8 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.commands.IntakeManual;
 import frc.robot.commands.IntakeManual.IntakeStates;
+import frc.robot.commands.OuttakeManual.OuttakeManual;
+import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualState;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
@@ -29,6 +31,7 @@ public class RobotCoordinator extends SubsystemBase {
   private boolean autoIntakeButtonPressed;
   private boolean initAbsEncoderPressed;
   private boolean outtakeInClimbState = false;
+  private OuttakeManualState previousState = OuttakeManual.getState();
 
   public static RobotCoordinator getInstance() {
     if (robotCoordinator == null) {
@@ -158,6 +161,16 @@ public class RobotCoordinator extends SubsystemBase {
     } else {
       return false;
     }
+  }
+
+  public boolean outtakePresetChanged() {
+    OuttakeManualState currentState = OuttakeManual.getState();
+    if (currentState == previousState) {
+      return false;
+    }
+    previousState = currentState;
+    return true;
+
   }
 
   public double getRobotXPos() {
