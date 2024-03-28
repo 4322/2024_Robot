@@ -15,7 +15,7 @@ public class Outtake extends SubsystemBase {
   private double bottomTargetRPS;
   private Timer existenceTimer;
   private double pivotTarget;
-  private boolean pivotInitialized = true; // Override initialized check by settint it to true always
+  private boolean pivotInitialized;
   private boolean isInCoast;
 
   private static Outtake outtake;
@@ -94,7 +94,7 @@ public class Outtake extends SubsystemBase {
     }
   }
 
-  public void outtake(double bottomTargetRPS, double topTargetRPS) {
+  public void outtake(double topTargetRPS, double bottomTargetRPS) {
     if (Constants.outtakeEnabled && pivotInitialized) {
       // Overrides operator shooting presets
       if (Constants.outtakeTuningMode && inputs.tuneOuttakeOverrideEnable) {

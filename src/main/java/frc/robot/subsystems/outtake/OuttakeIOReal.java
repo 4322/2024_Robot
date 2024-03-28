@@ -160,8 +160,8 @@ public class OuttakeIOReal implements OuttakeIO {
         pivotEncoder.getPosition(); // logged for checking if postion as been initialized
 
     if (Constants.outtakeTuningMode) {
-      inputs.topDebugTargetRPS = topOuttakeFlywheelSpeed.getDouble(OuttakeConstants.ampBottomShooterRPS);
-      inputs.bottomDebugTargetRPS = bottomOuttakeFlywheelSpeed.getDouble(OuttakeConstants.ampTopShooterRPS);
+      inputs.topDebugTargetRPS = topOuttakeFlywheelSpeed.getDouble(0);
+      inputs.bottomDebugTargetRPS = bottomOuttakeFlywheelSpeed.getDouble(0);
       inputs.targetPivotPosition = pivotPosition.getDouble(0);
       inputs.tuneOuttakeOverrideEnable = tuneOuttakeOverrideEnable.getBoolean(false);
     }
