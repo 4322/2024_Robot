@@ -320,7 +320,7 @@ public class RobotContainer {
               new SequentialCommandGroup(
                   Commands.runOnce(
                       () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED)),
-                  new OuttakeTunnelFeed()));
+                  new OuttakeTunnelFeed(), new XboxControllerRumble()));
       operatorXbox
           .povRight()
           .onTrue(

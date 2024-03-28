@@ -49,7 +49,7 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public boolean canShoot() {
-    return outtake.isFlyWheelUpToSpeed();
+    return outtake.isFlyWheelUpToSpeed() && outtake.pivotIsAtPosition();
   }
 
   public boolean canSpinFlywheel() {

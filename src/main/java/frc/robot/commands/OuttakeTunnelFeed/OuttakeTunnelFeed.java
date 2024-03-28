@@ -39,7 +39,6 @@ public class OuttakeTunnelFeed extends Command {
       case NOTE_PASSING_TUNNEL:
         tunnel.reverseFeed();
         if (!NoteTracker.getInstance().tunnelBeamBroken()) {
-          CommandScheduler.getInstance().schedule(new XboxControllerRumble());
           stateMachine.fire(OuttakeTunnelFeedTrigger.TUNNEL_BEAM_NOT_BROKEN);
         }
         break;

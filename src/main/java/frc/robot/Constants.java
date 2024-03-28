@@ -426,7 +426,7 @@ public final class Constants {
     public static final double reverseEjectVoltage = -6.0;
     public static final double rewindVoltage =
         -2.0; // just enough to pull the note off the outtake wheels
-    public static final double pushUpVoltage = 0.0;
+    public static final double pushUpVoltage = 2.0;
     public static final double peakVoltage = 6.0;
     public static final double pauseSec = 0.12; // time for tunnel to stop before rewinding
     public static final double rewindSec = 0.04;
