@@ -40,12 +40,12 @@ public final class Constants {
   public static final boolean debug = true;
 
   public static final boolean driveEnabled = true;
-  public static final boolean intakeEnabled = false;
-  public static final boolean intakeDeployerEnabled = false;
+  public static final boolean intakeEnabled = true;
+  public static final boolean intakeDeployerEnabled = true;
   public static final boolean gyroEnabled = true;
   public static final boolean tunnelEnabled = true;
   public static final boolean outtakeEnabled = true;
-  public static final boolean outtakePivotEnabled = false;
+  public static final boolean outtakePivotEnabled = true;
   public static final boolean sensorsEnabled = true;
   public static final boolean ledEnabled = true;
   public static final boolean climberEnabled = false;
@@ -357,8 +357,8 @@ public final class Constants {
     public static final double pivotToleranceRotations = 0.5;
     public static final double maxPivotForIntake = 50;
 
-    public static final double ampBottomShooterRPS = 21; // TODO
-    public static final double ampTopShooterRPS = 0.0; // TODO
+    public static final double ampBottomShooterRPS = 21;
+    public static final double ampTopShooterRPS = 0.0;
   }
 
   public static final class IntakeConstants {
