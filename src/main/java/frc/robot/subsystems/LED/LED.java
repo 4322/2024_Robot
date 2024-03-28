@@ -11,7 +11,10 @@ public class LED extends SubsystemBase {
   public LedIO io;
   private LEDState currentState = LEDState.idle;
   private Timer initTimer = new Timer();
+  private Timer outtakePresetTimer = new Timer();
   private LedIOInputsAutoLogged inputs = new LedIOInputsAutoLogged();
+
+  private boolean presetHasChanged;
 
   public enum LEDState {
     notInitialized,
@@ -64,7 +67,15 @@ public class LED extends SubsystemBase {
       if (DriverStation.isEnabled()) {
         if (RobotCoordinator.getInstance().noteIsShot()) {
           setLEDState(LEDState.noteFired);
-        } else if (RobotCoordinator.getInstance().outtakePresetChanged()) {
+        } else if (RobotCoordinator.getInstance().outtakePresetChanged() 
+          || (!outtakePresetTimer.hasElapsed(0.1) && presetHasChanged)) {
+          outtakePresetTimer.start();
+          presetHasChanged = true;
+          if (outtakePresetTimer.hasElapsed(0.1)) {
+            outtakePresetTimer.stop();
+            outtakePresetTimer.reset();
+            presetHasChanged = false;
+          }
           setLEDState(LEDState.operatorPreset);
         } else if (RobotCoordinator.getInstance().canShoot()
             && RobotCoordinator.getInstance().noteInFiringPosition()) {
