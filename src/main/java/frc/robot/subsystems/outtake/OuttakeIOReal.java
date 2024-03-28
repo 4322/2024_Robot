@@ -1,7 +1,6 @@
 package frc.robot.subsystems.outtake;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -18,42 +17,47 @@ import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
 public class OuttakeIOReal implements OuttakeIO {
-  private TalonFX leftOuttakeMotor;
-  private TalonFX rightOuttakeMotor;
+  private TalonFX topOuttakeMotor;
+  private TalonFX bottomOuttakeMotor;
   private TalonFX pivotMotor;
   private Canandcoder pivotEncoder;
   // shuffleboard
   ShuffleboardTab tab;
-  GenericEntry outtakeFlywheelSpeed;
+  GenericEntry topOuttakeFlywheelSpeed;
+  GenericEntry bottomOuttakeFlywheelSpeed;
   GenericEntry pivotPosition;
   GenericEntry tuneOuttakeOverrideEnable;
 
   private double heliumAbsoluteRotations;
 
   public OuttakeIOReal() {
-    leftOuttakeMotor =
+    topOuttakeMotor =
         new TalonFX(
-            Constants.OuttakeConstants.leftOuttakeDeviceID,
+            Constants.OuttakeConstants.topOuttakeDeviceID,
             Constants.DriveConstants.Drive.canivoreName);
-    rightOuttakeMotor =
+    bottomOuttakeMotor =
         new TalonFX(
-            Constants.OuttakeConstants.rightOuttakeDeviceID,
+            Constants.OuttakeConstants.bottomOuttakeDeviceID,
             Constants.DriveConstants.Drive.canivoreName);
     pivotMotor =
         new TalonFX(OuttakeConstants.pivotDeviceID, Constants.DriveConstants.Drive.canivoreName);
     pivotEncoder = new Canandcoder(OuttakeConstants.pivotEncoderID);
 
-    configOuttake(leftOuttakeMotor);
-    configOuttake(rightOuttakeMotor);
-    rightOuttakeMotor.setControl(new Follower(leftOuttakeMotor.getDeviceID(), true));
+    configOuttake(topOuttakeMotor);
+    configOuttake(bottomOuttakeMotor);
     configPivot(pivotMotor);
     if (Constants.debug) {
       tab = Shuffleboard.getTab("Outtake");
 
-      outtakeFlywheelSpeed =
-          tab.add("Desired Flywheel Velocity (RPS)", 0)
+      topOuttakeFlywheelSpeed =
+          tab.add("Top Desired Flywheel Velocity (RPS)", 0)
               .withSize(1, 1)
               .withPosition(0, 0)
+              .getEntry();
+      bottomOuttakeFlywheelSpeed = 
+          tab.add("Bottom Desired Flywheel Velocity (RPS)", 0)
+              .withSize(1, 1)
+              .withPosition(1, 0)
               .getEntry();
       pivotPosition =
           tab.add("Pivot Position (Rotations)", 0).withSize(1, 1).withPosition(1, 0).getEntry();
@@ -131,16 +135,16 @@ public class OuttakeIOReal implements OuttakeIO {
 
   @Override
   public void updateInputs(OuttakeIOInputs inputs) {
-    inputs.leftCurrentAmps = leftOuttakeMotor.getSupplyCurrent().getValue();
-    inputs.leftTempC = leftOuttakeMotor.getDeviceTemp().getValue();
-    inputs.leftRotationsPerSec = leftOuttakeMotor.getVelocity().getValue();
-    inputs.leftOuttakeIsAlive = leftOuttakeMotor.isAlive();
+    inputs.topCurrentAmps = topOuttakeMotor.getSupplyCurrent().getValue();
+    inputs.topTempC = topOuttakeMotor.getDeviceTemp().getValue();
+    inputs.topRotationsPerSec = topOuttakeMotor.getVelocity().getValue();
+    inputs.topOuttakeIsAlive = topOuttakeMotor.isAlive();
 
-    inputs.rightSupplyCurrentAmps = rightOuttakeMotor.getSupplyCurrent().getValue();
-    inputs.rightStatorCurrentAmps = rightOuttakeMotor.getStatorCurrent().getValue();
-    inputs.rightTempC = rightOuttakeMotor.getDeviceTemp().getValue();
-    inputs.rightRotationsPerSec = rightOuttakeMotor.getVelocity().getValue();
-    inputs.rightOuttakeIsAlive = rightOuttakeMotor.isAlive();
+    inputs.bottomSupplyCurrentAmps = bottomOuttakeMotor.getSupplyCurrent().getValue();
+    inputs.bottomStatorCurrentAmps = bottomOuttakeMotor.getStatorCurrent().getValue();
+    inputs.bottomTempC = bottomOuttakeMotor.getDeviceTemp().getValue();
+    inputs.bottomRotationsPerSec = bottomOuttakeMotor.getVelocity().getValue();
+    inputs.bottomOuttakeIsAlive = bottomOuttakeMotor.isAlive();
 
     inputs.pivotRotations = pivotMotor.getPosition().getValue();
     inputs.pivotRotationsPerSec = pivotMotor.getVelocity().getValue();
@@ -156,7 +160,8 @@ public class OuttakeIOReal implements OuttakeIO {
         pivotEncoder.getPosition(); // logged for checking if postion as been initialized
 
     if (Constants.outtakeTuningMode) {
-      inputs.debugTargetRPS = outtakeFlywheelSpeed.getDouble(0);
+      inputs.topDebugTargetRPS = topOuttakeFlywheelSpeed.getDouble(0);
+      inputs.bottomDebugTargetRPS = bottomOuttakeFlywheelSpeed.getDouble(0);
       inputs.targetPivotPosition = pivotPosition.getDouble(0);
       inputs.tuneOuttakeOverrideEnable = tuneOuttakeOverrideEnable.getBoolean(false);
     }
@@ -165,12 +170,12 @@ public class OuttakeIOReal implements OuttakeIO {
 
   @Override
   public void setOuttakeRPS(double desiredTopVelocityRPS, double desiredBottomVelocityRPS) {
-    rightOuttakeMotor.setControl(new VelocityVoltage(desiredBottomVelocityRPS));
+    bottomOuttakeMotor.setControl(new VelocityVoltage(-desiredBottomVelocityRPS));
+    topOuttakeMotor.setControl(new VelocityVoltage(desiredTopVelocityRPS));
   }
 
   @Override
   public boolean initPivot() {
-
     // Make sure that outtake pivot is stationary
     if (OrangeMath.equalToEpsilon(pivotEncoder.getVelocity(), 0.0, 0.1)
         // position must be within the allowed range
@@ -209,7 +214,8 @@ public class OuttakeIOReal implements OuttakeIO {
 
   @Override
   public void stopOuttake() {
-    rightOuttakeMotor.stopMotor();
+    bottomOuttakeMotor.stopMotor();
+    topOuttakeMotor.stopMotor();
   }
 
   @Override

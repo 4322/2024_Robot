@@ -32,13 +32,15 @@ public class OuttakeTunnelFeedStateMachine {
         .configure(OuttakeTunnelFeedState.NOTE_PASSING_TUNNEL)
         .permit(
             OuttakeTunnelFeedTrigger.TUNNEL_BEAM_NOT_BROKEN,
-            OuttakeTunnelFeedState.NOTE_PAST_TUNNEL);
+            OuttakeTunnelFeedState.NOTE_PAST_TUNNEL)
+        .permit(OuttakeTunnelFeedTrigger.ENABLE_STATE_RESET, OuttakeTunnelFeedState.NO_NOTE);
 
     config
         .configure(OuttakeTunnelFeedState.NOTE_PAST_TUNNEL)
         .permit(
             OuttakeTunnelFeedTrigger.TUNNEL_BEAM_NOT_BROKEN,
-            OuttakeTunnelFeedState.NOTE_IDLE_IN_TUNNEL);
+            OuttakeTunnelFeedState.NOTE_IDLE_IN_TUNNEL)
+        .permit(OuttakeTunnelFeedTrigger.ENABLE_STATE_RESET, OuttakeTunnelFeedState.NO_NOTE);
 
     config
         .configure(OuttakeTunnelFeedState.NOTE_IDLE_IN_TUNNEL)

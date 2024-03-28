@@ -1,6 +1,7 @@
 package frc.robot.commands.OuttakeManual;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.Constants.FiringSolutions;
 import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualState;
 import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualTrigger;
@@ -70,6 +71,9 @@ public class OuttakeManual extends Command {
       case CLIMBING:
         solution = FiringSolutions.Climbing;
         break;
+      case AMP:
+        outtake.outtake(Constants.OuttakeConstants.ampTopShooterRPS, Constants.OuttakeConstants.ampBottomShooterRPS); 
+        return;
       case STOP:
       default:
         outtake.stopOuttake();
@@ -78,7 +82,7 @@ public class OuttakeManual extends Command {
     }
 
     if (RobotCoordinator.getInstance().canSpinFlywheel()) {
-      outtake.outtake(solution.getFlywheelSpeed());
+      outtake.outtake(solution.getFlywheelSpeed(), solution.getFlywheelSpeed());
     } else {
       outtake.stopOuttake();
     }

@@ -19,7 +19,7 @@ public class XboxControllerRumble extends Command {
 
   @Override
   public void execute() {
-    if (!hasRumbled && RobotCoordinator.getInstance().noteInFiringPosition()) {
+    if (!hasRumbled) {
       rumbleTimer.start();
       RobotContainer.driveXbox.getHID().setRumble(RumbleType.kBothRumble, 1);
     }

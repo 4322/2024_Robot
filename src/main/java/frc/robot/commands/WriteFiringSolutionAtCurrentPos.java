@@ -33,7 +33,9 @@ public class WriteFiringSolutionAtCurrentPos extends InstantCommand {
       // Calculates magnitude from x and y vals
       shotMag = rawTranslation.getDistance(FiringSolutionHelper.getSpeakerTranslation2d());
       FiringSolution solution =
-          new FiringSolution(shotMag, shotAngle, outtake.getTargetRPS(), outtake.getPivotTarget());
+          // Doesn't matter if you log top or bottom target RPS to JSON.
+          // Both shooter speeds will be the same value if we are doing shot tuning for speaker
+          new FiringSolution(shotMag, shotAngle, outtake.getTopTargetRPS(), outtake.getPivotTarget());
       firingSolutionManager.writeSolution(solution);
     }
   }
