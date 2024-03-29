@@ -82,7 +82,7 @@ public class OuttakeManual extends Command {
     }
 
     if (RobotCoordinator.getInstance().canSpinFlywheel()) {
-      outtake.outtake(solution.getFlywheelSpeed(), solution.getFlywheelSpeed());
+      outtake.outtake(solution.getFlywheelSpeed());
     } else {
       outtake.stopOuttake();
     }

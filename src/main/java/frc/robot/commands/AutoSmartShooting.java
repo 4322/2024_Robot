@@ -39,7 +39,7 @@ public class AutoSmartShooting extends InstantCommand {
     Logger.recordOutput("FiringSolutions/BotPoseInput/Angle", botAngleToSpeaker);
 
     if (RobotCoordinator.getInstance().canSpinFlywheel()) {
-      outtake.outtake(solution.getFlywheelSpeed(), solution.getFlywheelSpeed());
+      outtake.outtake(solution.getFlywheelSpeed());
     }
 
     if (RobotCoordinator.getInstance().canPivot()) {

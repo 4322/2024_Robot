@@ -116,6 +116,10 @@ public class Outtake extends SubsystemBase {
     }
   }
 
+  public void outtake(double targetRPS) {
+    outtake(targetRPS, targetRPS);
+  }
+
   public void pivot(double rotations, boolean limitForwardMotion) {
     if (Constants.outtakePivotEnabled && pivotInitialized) {
       // Code that limits forward movement of shooter if requested
