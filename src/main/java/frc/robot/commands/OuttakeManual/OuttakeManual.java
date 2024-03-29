@@ -1,7 +1,6 @@
 package frc.robot.commands.OuttakeManual;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.FiringSolutions;
@@ -19,10 +18,7 @@ import org.littletonrobotics.junction.Logger;
 public class OuttakeManual extends Command {
   private final Outtake outtake;
   private final Limelight outtakeLimelight;
-
-  private Timer smartShootingLockInTimer = new Timer();
-  private boolean targetWasVisible;
-  private FiringSolution previousSolution;
+  private FiringSolution firingSolution;
 
   private static final OuttakeManualStateMachine stateMachine =
       new OuttakeManualStateMachine(OuttakeManualState.STOP);
@@ -39,64 +35,39 @@ public class OuttakeManual extends Command {
 
   @Override
   public void execute() {
-    final FiringSolution solution;
     switch (stateMachine.getState()) {
       case SMART_SHOOTING:
-        // Only calculate new firing solutions if we can see the target April tag with Limelight
-        if (outtakeLimelight.getTargetVisible()) {
-          targetWasVisible = true;
-          smartShootingLockInTimer.stop();
-          smartShootingLockInTimer.reset();
+        final int speakerAprilTagID;
+        if (Robot.isRed()) {
+          speakerAprilTagID = Constants.FieldConstants.redSpeakerCenterTagID;
+        }
+        else {
+          speakerAprilTagID = Constants.FieldConstants.blueSpeakerCenterTagID;
+        }
 
-          final Pose2d botPoseToSpeaker;
-          if (Robot.isRed()) {
-            botPoseToSpeaker = outtakeLimelight.getTargetPose3DToBot(Constants.FieldConstants.redSpeakerCenterTagID).toPose2d();
-          }
-          else {
-            botPoseToSpeaker = outtakeLimelight.getTargetPose3DToBot(Constants.FieldConstants.blueSpeakerCenterTagID).toPose2d();
-          }
+        // Only calculate new firing solutions if we can see the target April tag with Limelight.
+        // If specificed target isn't visible, then shooter stays at the previous calculated or set solution.
+        if (outtakeLimelight.getSpecifiedAprilTagVisible(speakerAprilTagID)) {
+          final Pose2d botPoseToSpeaker = outtakeLimelight.getTargetPose3DToBot(Constants.FieldConstants.redSpeakerCenterTagID).toPose2d();
           
-          // Round to two decimals to reduce noise and have a stable shooting angle and flywheel speed
-          double magToSpeaker = Math.round(botPoseToSpeaker.getTranslation().getNorm() * 100.0) / 100.0;
-          double degreesToSpeaker = Math.round(botPoseToSpeaker.getRotation().getDegrees() * 100.0) / 100.0;
-          solution = FiringSolutionManager.getInstance().calcSolution(magToSpeaker, degreesToSpeaker);
+          double magToSpeaker = botPoseToSpeaker.getTranslation().getNorm();
+          double degreesToSpeaker = botPoseToSpeaker.getRotation().getDegrees();
+          firingSolution = FiringSolutionManager.getInstance().calcSolution(magToSpeaker, degreesToSpeaker);
           
-          // Save previous solution in case there is a momentary loss of april tag detection and we want 
-          // to still keep outtake at same position.
-          previousSolution = solution;
           Logger.recordOutput("FiringSolutions/BotPoseInput/Mag", magToSpeaker);
           Logger.recordOutput("FiringSolutions/BotPoseInput/Angle", degreesToSpeaker);
         }
-        // Maintain previous firing solution for very short duration to account for momentary loss 
-        // of April Tag detection.
-        else if (targetWasVisible && !smartShootingLockInTimer.hasElapsed(Constants.LimelightConstants.aprilTagLossThresholdSec)) {
-          smartShootingLockInTimer.start();
-          solution = previousSolution;
-        }
-        // If the shooter lock in timer is past the short duration threshold, then reset the smart 
-        // shooting position to the default position in preparation for the next time an April tag is detected.
-        else {
-          smartShootingLockInTimer.stop();
-          smartShootingLockInTimer.reset();
-          targetWasVisible = false;
-          // Optimization where we prepare the shooter to go to the right 
-          // position and flywheel speed when no april tag is detected.
-          solution = Constants.FiringSolutions.DefaultSmartShooting;
-
-          Logger.recordOutput("FiringSolutions/BotPoseInput/Mag", 0.0);
-          Logger.recordOutput("FiringSolutions/BotPoseInput/Angle", 0.0);
-        }
         
-        Logger.recordOutput("FiringSolutions/CalculatedShot", solution.toString());
+        Logger.recordOutput("FiringSolutions/CalculatedShot", firingSolution.toString());
         break;
       case SUBWOOFER:
-        solution = FiringSolutions.SubwooferBase;
+        firingSolution = FiringSolutions.SubwooferBase;
         break;
       case EJECT:
-        solution = FiringSolutions.Eject;
+        firingSolution = FiringSolutions.Eject;
         break;
       case COLLECTING_NOTE:
-        solution = FiringSolutions.CollectingNote;
+        firingSolution = FiringSolutions.CollectingNote;
         // lockout of presets until the note is safely in the outtake
         // change to stopped state when note triggers the tunnel sensor
         if (RobotCoordinator.getInstance().noteInFiringPosition()) {
@@ -104,10 +75,10 @@ public class OuttakeManual extends Command {
         }
         break;
       case FEED:
-        solution = FiringSolutions.Feed;
+        firingSolution = FiringSolutions.Feed;
         break;
       case CLIMBING:
-        solution = FiringSolutions.Climbing;
+        firingSolution = FiringSolutions.Climbing;
         break;
       case STOP:
       default:
@@ -117,16 +88,16 @@ public class OuttakeManual extends Command {
     }
 
     if (RobotCoordinator.getInstance().canSpinFlywheel()) {
-      outtake.outtake(solution.getFlywheelSpeed());
+      outtake.outtake(firingSolution.getFlywheelSpeed());
     } else {
       outtake.stopOuttake();
     }
 
     if (RobotCoordinator.getInstance().canPivot()) {
       if (stateMachine.getState() == OuttakeManualState.CLIMBING) {
-        outtake.pivot(solution.getShotRotations(), false);
+        outtake.pivot(firingSolution.getShotRotations(), false);
       } else {
-        outtake.pivot(solution.getShotRotations(), true);
+        outtake.pivot(firingSolution.getShotRotations(), true);
       }
     } else {
       outtake.stopPivot();
@@ -139,6 +110,10 @@ public class OuttakeManual extends Command {
 
   public void updateStateMachine(OuttakeManualTrigger trigger) {
     stateMachine.fire(trigger);
+  }
+
+  public void setFiringSolution(FiringSolution solution) {
+    firingSolution = solution;
   }
 
   @Override
