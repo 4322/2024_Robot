@@ -237,6 +237,21 @@ public class Limelight extends SubsystemBase {
     }
   }
 
+  public boolean getSpecifiedAprilTagVisible(int aprilTagID) {
+    if (enabled && isNetworkTableConnected) {
+      if (getTargetVisible()) {
+        LimelightHelpers.LimelightResults llResults = LimelightHelpers.getLatestResults(name);
+        LimelightHelpers.LimelightTarget_Fiducial[] totalVisibleFiducialTargets = llResults.targetingResults.targets_Fiducials;
+        for (LimelightTarget_Fiducial target : totalVisibleFiducialTargets) {
+          if (aprilTagID == target.fiducialID) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
   public Pose3d getTargetPose3DToBot(int aprilTagID) {
     if (enabled && isNetworkTableConnected) {
       if (getTargetVisible()) {
