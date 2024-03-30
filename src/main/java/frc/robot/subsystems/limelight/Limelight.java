@@ -13,8 +13,10 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.subsystems.limelight.LimelightHelpers.LimelightTarget_Fiducial;
+import frc.utility.OrangeMath;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -235,6 +237,22 @@ public class Limelight extends SubsystemBase {
     } else {
       return 0;
     }
+  }
+
+  public boolean alignedWithSpeakerTag() {
+    if (enabled && isNetworkTableConnected) {
+      final int tagID;
+      if (Robot.isRed()) {
+        tagID = Constants.FieldConstants.redSpeakerCenterTagID;
+      }
+      else {
+        tagID = Constants.FieldConstants.blueSpeakerCenterTagID;
+      }
+
+      return OrangeMath.equalToEpsilon(getTargetPose3DToBot(tagID).toPose2d().getRotation().getDegrees(), 
+          0, Constants.LimelightConstants.alignToSpeakerTagRotTolerance);
+    }
+    return false;
   }
 
   public boolean getSpecifiedAprilTagVisible(int aprilTagID) {
