@@ -35,9 +35,9 @@ public class IntakeIOReal implements IntakeIO {
   public IntakeIOReal() {
     rightIntakeMotor =
         new TalonFX(
-            IntakeConstants.rightIntakeMotorID, Constants.DriveConstants.Drive.canivoreName);
+            IntakeConstants.rightIntakeMotorID);
     leftIntakeMotor =
-        new TalonFX(IntakeConstants.leftIntakeMotorID, Constants.DriveConstants.Drive.canivoreName);
+        new TalonFX(IntakeConstants.leftIntakeMotorID);
     deploy =
         new TalonFX(IntakeConstants.deployMotorID, Constants.DriveConstants.Drive.canivoreName);
     deployEncoder = new Canandcoder(IntakeConstants.deployEncoderID);
@@ -169,7 +169,7 @@ public class IntakeIOReal implements IntakeIO {
     // point and as a result wraps back up to 1.0 rotations or value close to it.
     // If this scenario occurs, then set abs value position back to 0 rotations
     if (inputs.heliumAbsRotations
-        > Constants.EncoderInitializeConstants.absEncoderAlmostZeroThreshold) {
+        > Constants.IntakeConstants.DeployConfig.absEncoderAlmostZeroThreshold) {
       inputs.heliumAbsRotations = 0;
     }
 

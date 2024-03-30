@@ -282,13 +282,6 @@ public final class Constants {
     public static final double autoFeedMoveSpeed = 1;
   }
 
-  public static final class EncoderInitializeConstants {
-    public static final double initializedRotationsFlag = 4322.0; // must be a very high number
-    public static final double initializedRotationsTolerance = 5.0;
-    public static final double absEncoderAlmostZeroThreshold = 0.95; // intake use only
-    public static final double absEncoderMaxZeroingThreshold = 0.75; // outtake use only
-  }
-
   public static final class ClimberConstants {
     public static final int climberMotorID = 25;
     public static final double climberMaxRotations = 149; // physical limit of climber
@@ -301,7 +294,7 @@ public final class Constants {
     public static final int peakForwardVoltage = 12;
     public static final double peakReverseVoltage = -12;
     public static final double climbingPivotRotations =
-        150; // for outtake pivot - TODO: Needs re-tuning
+        100; // for outtake pivot - TODO: Needs re-tuning
 
     public static final double statorLimit = 60;
     public static final double supplyLimit = 40;
@@ -346,12 +339,14 @@ public final class Constants {
     public static final boolean enableFOC = false;
     public static final double pivotClosedLoopSec = 0.3;
     public static final boolean limitReverseMotion = true;
-    public static final double forwardSoftLimitThresholdRotations = 118;
-    public static final double reverseSoftLimitThresholdRotations = 7;
+    public static final double forwardSoftLimitThresholdRotations = 236.0  / 3.0;
+    public static final double reverseSoftLimitThresholdRotations = 14.0 / 3.0;
     public static final double pivotPeakForwardVoltage = 10;
     public static final double pivotPeakReverseVoltage = -10;
 
     public static final double defaultPivotPositionRotations = 0;
+    public static final double absEncoderMaxZeroingThreshold = 0.97;
+    public static final double absEncoderAlmostZeroThreshold = 0.995;
 
     public static final double outtakeToleranceRPS = 3.0;
     public static final double pivotToleranceRotations = 0.5;
@@ -396,6 +391,8 @@ public final class Constants {
       public static final double atTargetTolerance = 0.03;
       public static final double correctionTolerance = 0.06;
       public static final double maxRotationsPerSec = 0.2;
+
+      public static final double absEncoderAlmostZeroThreshold = 0.95;
     }
 
     public static final class Logging {
@@ -517,24 +514,23 @@ public final class Constants {
   }
 
   public static final class FiringSolutions {
-    // TODO: update speeds and angles
     // shot mag/deg don't matter since these are used for setting speed/angle only
-    public static final FiringSolution SubwooferBase = new FiringSolution(0, 0, 40, 113);
-    public static final FiringSolution SubwooferSide = new FiringSolution(0, 0, 40, 115);
+    public static final FiringSolution SubwooferBase = new FiringSolution(0, 0, 40, 226.0 / 3.0);
+    public static final FiringSolution SubwooferSide = new FiringSolution(0, 0, 40, 230.0 / 3.0);
     public static final FiringSolution N6 = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution N7 = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution N8 = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution TS = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution MS = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution BS = new FiringSolution(0, 0, 0, 0);
-    public static final FiringSolution Eject = new FiringSolution(0, 0, 10, 50);
+    public static final FiringSolution Eject = new FiringSolution(0, 0, 10, 100.0 / 3.0);
     public static final FiringSolution Climbing =
         new FiringSolution(0, 0, 0, ClimberConstants.climbingPivotRotations);
     // collecting note should be at lowest pivot limit
     public static final FiringSolution CollectingNote =
         new FiringSolution(0, 0, 0, Constants.OuttakeConstants.reverseSoftLimitThresholdRotations);
-    public static final FiringSolution Feed = new FiringSolution(0, 0, -10, 118);
-    public static final FiringSolution DefaultSmartShooting = new FiringSolution(0, 0, 40, 60);
+    public static final FiringSolution Feed = new FiringSolution(0, 0, -10, 236.0 / 3.0);
+    public static final FiringSolution DefaultSmartShooting = new FiringSolution(0, 0, 40, 120.0 / 3.0);
   }
 
   public enum WheelPosition {
