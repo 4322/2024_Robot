@@ -14,7 +14,7 @@ public class OperatorPresetLED extends Command {
     }
 
     @Override
-    public void execute() {
+    public void initialize() {
         outtakePresetTimer.start();
         led.setLEDState(LED.LEDState.operatorPreset);
     }
