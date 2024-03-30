@@ -35,9 +35,9 @@ public class IntakeIOReal implements IntakeIO {
   public IntakeIOReal() {
     rightIntakeMotor =
         new TalonFX(
-            IntakeConstants.rightIntakeMotorID, Constants.DriveConstants.Drive.canivoreName);
+            IntakeConstants.rightIntakeMotorID);
     leftIntakeMotor =
-        new TalonFX(IntakeConstants.leftIntakeMotorID, Constants.DriveConstants.Drive.canivoreName);
+        new TalonFX(IntakeConstants.leftIntakeMotorID);
     deploy =
         new TalonFX(IntakeConstants.deployMotorID, Constants.DriveConstants.Drive.canivoreName);
     deployEncoder = new Canandcoder(IntakeConstants.deployEncoderID);
