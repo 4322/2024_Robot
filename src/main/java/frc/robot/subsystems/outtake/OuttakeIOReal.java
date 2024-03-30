@@ -139,13 +139,11 @@ public class OuttakeIOReal implements OuttakeIO {
     }
 
     double currentPivotPosition = pivotEncoder.getAbsPosition();
-    // Make sure that outtake pivot is stationary
-    if (OrangeMath.equalToEpsilon(pivotEncoder.getVelocity(), 0.0, 0.1)
       // The abs encoder position must not be within the specified flag range.
       // The specified range assumes that the shooter pivot is too far below 
       // the zero point and is wrapping around to 1 rotation.
-      && !(currentPivotPosition > Constants.OuttakeConstants.absEncoderMaxZeroingThreshold
-              && currentPivotPosition < Constants.OuttakeConstants.absEncoderAlmostZeroThreshold)) {
+    if (!(currentPivotPosition > Constants.OuttakeConstants.absEncoderMaxZeroingThreshold
+          && currentPivotPosition < Constants.OuttakeConstants.absEncoderAlmostZeroThreshold)) {
       DriverStation.reportWarning("Initialized shooter pivot", false);
       pivotMotor.setPosition(currentPivotPosition * OuttakeConstants.gearReductionEncoderToMotor);
       initialized = true;
