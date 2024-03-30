@@ -295,10 +295,9 @@ public class RobotContainer {
       operatorXbox
           .y()
           .onTrue(
-              Commands.runOnce(
-                  () ->
-                      outtakeManual.updateStateMachine(
-                          OuttakeManualTrigger.ENABLE_SMART_SHOOTING)));
+              Commands.runOnce(() -> {
+                outtakeManual.setFiringSolution(Constants.FiringSolutions.DefaultSmartShooting);
+                outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SMART_SHOOTING);}));
       operatorXbox
           .x()
           .onTrue(
