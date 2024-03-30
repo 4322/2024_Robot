@@ -311,8 +311,8 @@ public final class Constants {
   }
 
   public static final class OuttakeConstants {
-    public static final int leftOuttakeDeviceID = 5;
-    public static final int rightOuttakeDeviceID = 4;
+    public static final int topOuttakeDeviceID = 4;
+    public static final int bottomOuttakeDeviceID = 5;
     public static final int pivotDeviceID = 6;
     public static final int pivotEncoderID = 8;
 
@@ -356,6 +356,9 @@ public final class Constants {
     public static final double outtakeToleranceRPS = 3.0;
     public static final double pivotToleranceRotations = 0.5;
     public static final double maxPivotForIntake = 50;
+
+    public static final double ampBottomShooterRPS = 21;
+    public static final double ampTopShooterRPS = 0.0;
   }
 
   public static final class IntakeConstants {
@@ -436,6 +439,7 @@ public final class Constants {
   }
 
   public static final class LimelightConstants {
+    public static final double aprilTagLossThresholdSec = 0.5;
     public static final double visionOdometryTolerance = 0.5;
     public static final double reverseOdometryOverrideTolerance = 1.0;
     public static final int numTargetsToUseReverseOdom = 2;
@@ -529,6 +533,7 @@ public final class Constants {
     public static final FiringSolution CollectingNote =
         new FiringSolution(0, 0, 0, Constants.OuttakeConstants.reverseSoftLimitThresholdRotations);
     public static final FiringSolution Feed = new FiringSolution(0, 0, -10, 118);
+    public static final FiringSolution DefaultSmartShooting = new FiringSolution(0, 0, 40, 60);
   }
 
   public enum WheelPosition {
