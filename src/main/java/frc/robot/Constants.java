@@ -311,8 +311,8 @@ public final class Constants {
   }
 
   public static final class OuttakeConstants {
-    public static final int leftOuttakeDeviceID = 5;
-    public static final int rightOuttakeDeviceID = 4;
+    public static final int topOuttakeDeviceID = 4;
+    public static final int bottomOuttakeDeviceID = 5;
     public static final int pivotDeviceID = 6;
     public static final int pivotEncoderID = 8;
 
@@ -356,6 +356,9 @@ public final class Constants {
     public static final double outtakeToleranceRPS = 3.0;
     public static final double pivotToleranceRotations = 0.5;
     public static final double maxPivotForIntake = 50;
+
+    public static final double ampBottomShooterRPS = 21;
+    public static final double ampTopShooterRPS = 0.0;
   }
 
   public static final class IntakeConstants {
