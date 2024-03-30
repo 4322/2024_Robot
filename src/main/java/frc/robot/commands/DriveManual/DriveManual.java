@@ -86,11 +86,11 @@ public class DriveManual extends Command {
           if (rotatePower != 0) {
             doSpinout();
           } else if (drive.isAutoRotateTuningEnabled()) {
-            drive.driveAutoRotate(driveX, driveY, 0, false);
+            drive.driveAutoRotate(driveX, driveY, 0);
           } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
             pseudoAutoRotateEngaged = true;
             Logger.recordOutput("RobotHeading/PseudoAutoRotateHeading", pseudoAutoRotateAngle);
-            drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle, false);
+            drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
           } else {
             drive.drive(driveX, driveY, rotatePower);
           }
@@ -102,7 +102,7 @@ public class DriveManual extends Command {
           Logger.recordOutput(
               "RobotHeading/SpeakerCentricHeading/", speakerVec.getAngle().getDegrees());
           Logger.recordOutput("RobotHeading/State", "Speaker centric");
-          drive.driveAutoRotate(driveX, driveY, speakerVec.getAngle().getDegrees(), true);
+          drive.driveAutoRotate(driveX, driveY, speakerVec.getAngle().getDegrees());
           break;
         case ROBOT_CENTRIC:
           // make robot angle zero to switch to robot centric driving
@@ -114,11 +114,11 @@ public class DriveManual extends Command {
       if (rotatePower != 0) {
         doSpinout();
       } else if (drive.isAutoRotateTuningEnabled()) {
-        drive.driveAutoRotate(driveX, driveY, 0, false);
+        drive.driveAutoRotate(driveX, driveY, 0);
       } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
         pseudoAutoRotateEngaged = true;
         Logger.recordOutput("RobotHeading/PseudoAutoRotateHeading", pseudoAutoRotateAngle);
-        drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle, false);
+        drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
       } else {
         drive.drive(driveX, driveY, rotatePower);
       }
