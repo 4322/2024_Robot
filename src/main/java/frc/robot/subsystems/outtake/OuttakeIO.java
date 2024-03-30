@@ -44,10 +44,6 @@ public interface OuttakeIO {
       double desiredTopVelocityRPS, double desiredBottomVelocityRPS) {}
   ;
 
-  public default boolean initPivot() {
-    return false;
-  }
-
   public default void setPivotTarget(double rotations) {}
 
   public default void setPivotBrakeMode() {}
@@ -64,4 +60,6 @@ public interface OuttakeIO {
 
   public default void stopPivot() {}
   ;
+
+  public default boolean pivotIsInitialized() {return false;}
 }

@@ -6,6 +6,8 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.commands.IntakeManual;
 import frc.robot.commands.IntakeManual.IntakeStates;
+import frc.robot.commands.OuttakeManual.OuttakeManual;
+import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualState;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
@@ -27,7 +29,6 @@ public class RobotCoordinator extends SubsystemBase {
   private boolean notePassingIntake;
   private boolean notePassingTunnel;
   private boolean autoIntakeButtonPressed;
-  private boolean initAbsEncoderPressed;
   private boolean outtakeInClimbState = false;
 
   public static RobotCoordinator getInstance() {
@@ -77,14 +78,6 @@ public class RobotCoordinator extends SubsystemBase {
 
   public boolean getAutoIntakeButtonPressed() {
     return autoIntakeButtonPressed;
-  }
-
-  public void setInitAbsEncoderPressed(boolean isPressed) {
-    initAbsEncoderPressed = isPressed;
-  }
-
-  public boolean getInitAbsEncoderPressed() {
-    return initAbsEncoderPressed;
   }
 
   public boolean isIntakeDeployed() {
