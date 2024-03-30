@@ -206,13 +206,15 @@ public class RobotContainer {
                   () -> {
                     driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);
                   }));
-      driveXbox
+      if (Constants.speakerCentricEnabled) {
+        driveXbox
           .back() // binded to back left P4 button on xbox
           .onTrue(
               Commands.runOnce(
                   () -> {
                     driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC);
                   }));
+      }
       driveXbox
           .start() // binded to back right P2 button on xbox
           .onTrue(

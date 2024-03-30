@@ -83,39 +83,38 @@ public class DriveManual extends Command {
   @Override
   public void execute() {
     updateDriveValues();
-    if (Constants.speakerCentricEnabled) {
-      switch (stateMachine.getState()) {
-        case SPEAKER_CENTRIC:
-          final int speakerAprilTagID;
-          if (Robot.isRed()) {
-            speakerAprilTagID = Constants.FieldConstants.redSpeakerCenterTagID;
-          } else {
-            speakerAprilTagID = Constants.FieldConstants.blueSpeakerCenterTagID;
-          }
+    switch (stateMachine.getState()) {
+      case SPEAKER_CENTRIC:
+        final int speakerAprilTagID;
+        if (Robot.isRed()) {
+          speakerAprilTagID = Constants.FieldConstants.redSpeakerCenterTagID;
+        } else {
+          speakerAprilTagID = Constants.FieldConstants.blueSpeakerCenterTagID;
+        }
 
-          if (Limelight.getOuttakeInstance().getSpecifiedAprilTagVisible(speakerAprilTagID)) {
-            speakerCentricAngle = Limelight.getOuttakeInstance().getTargetPose3DToBot(speakerAprilTagID)
-            .toPose2d().getRotation().getDegrees();
-            drive.driveAutoRotate(driveX, driveY, speakerCentricAngle);
+        if (Limelight.getOuttakeInstance().getSpecifiedAprilTagVisible(speakerAprilTagID)) {
+          speakerCentricAngle = Limelight.getOuttakeInstance().getTargetPose3DToBot(speakerAprilTagID)
+          .toPose2d().getRotation().getDegrees();
+          drive.driveAutoRotate(driveX, driveY, speakerCentricAngle);
 
-            Logger.recordOutput("RobotHeading/PseudoAutoRotateEngaged", false);
-            Logger.recordOutput("RobotHeading/SpeakerCentricHeading/", speakerCentricAngle);
-            Logger.recordOutput("RobotHeading/State", "Speaker centric");
-            return;
-          }
-          // If limelight fails to detect april tag, then run regular drive logic
-          break;
-        case ROBOT_CENTRIC:
-          // Make robot angle zero to switch to robot centric driving
           Logger.recordOutput("RobotHeading/PseudoAutoRotateEngaged", false);
-          Logger.recordOutput("RobotHeading/State", "Robot centric");
-          drive.drive(driveX, driveY, rotatePower, new Rotation2d());
+          Logger.recordOutput("RobotHeading/SpeakerCentricHeading/", speakerCentricAngle);
+          Logger.recordOutput("RobotHeading/State", "Speaker centric");
           return;
-        case DEFAULT:
-          // Run regular drive logic
-          break;
-      }
+        }
+        // If limelight fails to detect april tag, then run regular drive logic
+        break;
+      case ROBOT_CENTRIC:
+        // Make robot angle zero to switch to robot centric driving
+        Logger.recordOutput("RobotHeading/PseudoAutoRotateEngaged", false);
+        Logger.recordOutput("RobotHeading/State", "Robot centric");
+        drive.drive(driveX, driveY, rotatePower, new Rotation2d());
+        return;
+      case DEFAULT:
+        // Run regular drive logic
+        break;
     }
+    
     // Default to regular field centric drive logic if other drive modes fail to engage
     if (rotatePower != 0) {
       doSpinout();
