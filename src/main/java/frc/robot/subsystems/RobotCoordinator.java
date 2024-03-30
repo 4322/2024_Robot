@@ -203,4 +203,8 @@ public class RobotCoordinator extends SubsystemBase {
   public boolean pivotInCoast() {
     return outtake.pivotInCoast();
   }
+
+  public boolean outtakeFlyWheelUpTospeed() {
+    return outtake.isFlyWheelUpToSpeed();
+  }
 }

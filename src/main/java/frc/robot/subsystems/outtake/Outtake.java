@@ -11,7 +11,8 @@ import org.littletonrobotics.junction.Logger;
 public class Outtake extends SubsystemBase {
   private OuttakeIO io;
   private OuttakeIOInputsAutoLogged inputs = new OuttakeIOInputsAutoLogged();
-  private double targetRPS;
+  private double topTargetRPS;
+  private double bottomTargetRPS;
   private Timer existenceTimer;
   private double pivotTarget;
   private boolean pivotInitialized;
@@ -45,8 +46,12 @@ public class Outtake extends SubsystemBase {
     existenceTimer = new Timer();
   }
 
-  public double getTargetRPS() {
-    return targetRPS;
+  public double getTopTargetRPS() {
+    return topTargetRPS;
+  }
+
+  public double getBottomTargetRPS() {
+    return bottomTargetRPS;
   }
 
   public double getPivotTarget() {
@@ -76,12 +81,12 @@ public class Outtake extends SubsystemBase {
     if ((Constants.outtakeEnabled) || (Constants.outtakePivotEnabled)) {
       io.updateInputs(inputs);
       Logger.processInputs("Outtake", inputs);
-      Logger.recordOutput("Outtake/LeftRotationsPerSecAbs", Math.abs(inputs.leftRotationsPerSec));
-      Logger.recordOutput("Outtake/RightRotationsPerSecAbs", Math.abs(inputs.rightRotationsPerSec));
+      Logger.recordOutput("Outtake/TopRotationsPerSecAbs", Math.abs(inputs.topRotationsPerSec));
+      Logger.recordOutput("Outtake/BottomRotationsPerSecAbs", Math.abs(inputs.bottomRotationsPerSec));
     }
     if (Constants.outtakeTuningMode && inputs.tuneOuttakeOverrideEnable) {
       if (Constants.outtakeEnabled) {
-        outtake(inputs.debugTargetRPS);
+        outtake(inputs.topDebugTargetRPS, inputs.bottomDebugTargetRPS);
       }
       if (Constants.outtakePivotEnabled) {
         pivot(inputs.targetPivotPosition, false);
@@ -89,20 +94,30 @@ public class Outtake extends SubsystemBase {
     }
   }
 
-  public void outtake(double targetRPS) {
+  public void outtake(double topTargetRPS, double bottomTargetRPS) {
     if (Constants.outtakeEnabled && pivotInitialized) {
       // Overrides operator shooting presets
       if (Constants.outtakeTuningMode && inputs.tuneOuttakeOverrideEnable) {
-        targetRPS = inputs.debugTargetRPS;
+        topTargetRPS = inputs.topDebugTargetRPS;
+        bottomTargetRPS = inputs.bottomDebugTargetRPS;
       }
-      if (targetRPS > OuttakeConstants.maxVelRotationsPerSec) {
-        targetRPS = OuttakeConstants.maxVelRotationsPerSec;
+      if (bottomTargetRPS > OuttakeConstants.maxVelRotationsPerSec) {
+        bottomTargetRPS = OuttakeConstants.maxVelRotationsPerSec;
       }
-      this.targetRPS = targetRPS;
-      io.setOuttakeRPS(this.targetRPS, this.targetRPS);
-      Logger.recordOutput("Outtake/OuttakeTargetSpeedRPS", this.targetRPS);
+      if (topTargetRPS > OuttakeConstants.maxVelRotationsPerSec) {
+        topTargetRPS = OuttakeConstants.maxVelRotationsPerSec;
+      }
+      this.topTargetRPS = topTargetRPS;
+      this.bottomTargetRPS = bottomTargetRPS;
+      io.setOuttakeRPS(this.topTargetRPS, this.bottomTargetRPS);
+      Logger.recordOutput("Outtake/OuttakeTopTargetSpeedRPS", this.topTargetRPS);
+      Logger.recordOutput("Outtake/OuttakeBottomTargerRPS", this.bottomTargetRPS);
       Logger.recordOutput("Outtake/OuttakeStopped", false);
     }
+  }
+
+  public void outtake(double targetRPS) {
+    outtake(targetRPS, targetRPS);
   }
 
   public void pivot(double rotations, boolean limitForwardMotion) {
@@ -166,7 +181,9 @@ public class Outtake extends SubsystemBase {
 
   public boolean isFlyWheelUpToSpeed() {
     return OrangeMath.equalToEpsilon(
-        inputs.rightRotationsPerSec, targetRPS, OuttakeConstants.outtakeToleranceRPS);
+        inputs.bottomRotationsPerSec, -bottomTargetRPS, OuttakeConstants.outtakeToleranceRPS) && 
+        OrangeMath.equalToEpsilon(
+        inputs.topRotationsPerSec, topTargetRPS, OuttakeConstants.outtakeToleranceRPS);
   }
 
   public boolean pivotIsAtPosition() {
@@ -188,11 +205,11 @@ public class Outtake extends SubsystemBase {
   }
 
   public boolean isOuttaking() {
-    return targetRPS > 0;
+    return topTargetRPS > 0 && bottomTargetRPS > 0;
   }
 
   public boolean isFeeding() {
-    return targetRPS < 0;
+    return topTargetRPS < 0 && bottomTargetRPS < 0;
   }
 
   public boolean pivotInCoast() {
