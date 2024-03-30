@@ -52,10 +52,6 @@ public class RobotCoordinator extends SubsystemBase {
     return outtake.isFlyWheelUpToSpeed() && outtake.pivotIsAtPosition();
   }
 
-  public boolean canSmartShoot() {
-    return canShoot() && drive.isAutoAligned();
-  }
-
   public boolean canSpinFlywheel() {
     return Outtake.getInstance().pivotIsInitialized();
   }

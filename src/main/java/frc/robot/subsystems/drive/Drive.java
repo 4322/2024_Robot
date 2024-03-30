@@ -48,8 +48,6 @@ public class Drive extends SubsystemBase {
   private Translation2d latestVelocityXY;
   private ChassisSpeeds latestChassisSpeeds;
   private double pitchOffset;
-  private boolean autoAlignActive;
-  private double autoRotPIDSpeed;
 
   private ArrayList<SnapshotTranslation2D> velocityHistory = new ArrayList<SnapshotTranslation2D>();
 
@@ -406,7 +404,7 @@ public class Drive extends SubsystemBase {
       Translation2d centerOfRotation,
       Rotation2d angleToZero) {
     if (Constants.driveEnabled && Constants.gyroEnabled) {
-      autoAlignActive = false;
+
       if (Constants.debug) {
         driveXTab.setDouble(driveX);
         driveYTab.setDouble(driveY);
@@ -437,7 +435,7 @@ public class Drive extends SubsystemBase {
 
   // Rotate the robot to a specific heading while driving.
   // Must be invoked periodically to reach the desired heading.
-  public void driveAutoRotate(double driveX, double driveY, double targetDeg, boolean autoAlignmentActive) {
+  public void driveAutoRotate(double driveX, double driveY, double targetDeg) {
     if (Constants.driveEnabled) {
 
       if (Constants.debug) {
@@ -447,7 +445,7 @@ public class Drive extends SubsystemBase {
 
       // Don't use absolute heading for PID controller to avoid discontinuity at +/- 180 degrees
       double headingChangeDeg = OrangeMath.boundDegrees(targetDeg - getAngle());
-      autoRotPIDSpeed = rotPID.calculate(0, headingChangeDeg);
+      double rotPIDSpeed = rotPID.calculate(0, headingChangeDeg);
       double adjMaxAutoRotatePower;
       double adjMinAutoRotatePower;
       double toleranceDeg;
@@ -469,31 +467,22 @@ public class Drive extends SubsystemBase {
       }
 
       if (Math.abs(headingChangeDeg) <= toleranceDeg) {
-        autoRotPIDSpeed = 0; // don't wiggle
-      } else if (Math.abs(autoRotPIDSpeed) < adjMinAutoRotatePower) {
-        autoRotPIDSpeed = Math.copySign(adjMinAutoRotatePower, autoRotPIDSpeed);
-      } else if (autoRotPIDSpeed > adjMaxAutoRotatePower) {
-        autoRotPIDSpeed = adjMaxAutoRotatePower;
-      } else if (autoRotPIDSpeed < -adjMaxAutoRotatePower) {
-        autoRotPIDSpeed = -adjMaxAutoRotatePower;
+        rotPIDSpeed = 0; // don't wiggle
+      } else if (Math.abs(rotPIDSpeed) < adjMinAutoRotatePower) {
+        rotPIDSpeed = Math.copySign(adjMinAutoRotatePower, rotPIDSpeed);
+      } else if (rotPIDSpeed > adjMaxAutoRotatePower) {
+        rotPIDSpeed = adjMaxAutoRotatePower;
+      } else if (rotPIDSpeed < -adjMaxAutoRotatePower) {
+        rotPIDSpeed = -adjMaxAutoRotatePower;
       }
 
-      drive(driveX, driveY, autoRotPIDSpeed);
-      // Must be below call to drive method to override it in case auto align is active
-      autoAlignActive = autoAlignmentActive;
+      drive(driveX, driveY, rotPIDSpeed);
 
       if (Constants.debug) {
         rotErrorTab.setDouble(headingChangeDeg);
-        rotSpeedTab.setDouble(autoRotPIDSpeed);
+        rotSpeedTab.setDouble(rotPIDSpeed);
       }
     }
-  }
-
-  public boolean isAutoAligned() {
-    if (autoAlignActive) {
-      return autoRotPIDSpeed == 0;
-    }
-    return false;
   }
 
   public void resetRotatePID() {
