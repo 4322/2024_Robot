@@ -84,7 +84,7 @@ public class AutoAcquireNote extends Command {
       drive.driveAutoRotate(
           approachSpeed * desiredRobotDirectionX,
           approachSpeed * desiredRobotDirectionY,
-          desiredHeadingAngle);
+          desiredHeadingAngle, true);
     }
     UpdateHeading();
   }

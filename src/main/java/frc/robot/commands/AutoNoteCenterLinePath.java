@@ -39,7 +39,7 @@ public class AutoNoteCenterLinePath extends Command {
     Pose2d pose = drive.getPose2d();
     if ((goingDown && pose.getY() < (Constants.fieldWidthMeters - stoppingDistance))
         || (!goingDown && pose.getY() > (stoppingDistance))) {
-      drive.driveAutoRotate(0, approachSpeed * desiredRobotDirectionY, desiredHeadingAngle);
+      drive.driveAutoRotate(0, approachSpeed * desiredRobotDirectionY, desiredHeadingAngle, false);
     } else {
       outsideBounds = true;
     }
