@@ -1,11 +1,13 @@
 package frc.robot.commands.DriveManual;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriveConstants.Manual;
 import frc.robot.Constants.DriveInputScalingStrings;
@@ -14,6 +16,7 @@ import frc.robot.RobotContainer;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualState;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.limelight.Limelight;
 import frc.utility.FiringSolutionHelper;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
@@ -38,6 +41,8 @@ public class DriveManual extends Command {
   private double rotateRaw;
   private double driveAngle;
   private double driveAbsAngularVel;
+
+  private double speakerCentricAngle;
 
   private Double pseudoAutoRotateAngle;
 
@@ -78,52 +83,51 @@ public class DriveManual extends Command {
   @Override
   public void execute() {
     updateDriveValues();
-    boolean pseudoAutoRotateEngaged = false;
     if (Constants.speakerCentricEnabled) {
       switch (stateMachine.getState()) {
-        case DEFAULT:
-          Logger.recordOutput("RobotHeading/State/", "Field centric");
-          if (rotatePower != 0) {
-            doSpinout();
-          } else if (drive.isAutoRotateTuningEnabled()) {
-            drive.driveAutoRotate(driveX, driveY, 0);
-          } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
-            pseudoAutoRotateEngaged = true;
-            Logger.recordOutput("RobotHeading/PseudoAutoRotateHeading", pseudoAutoRotateAngle);
-            drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
-          } else {
-            drive.drive(driveX, driveY, rotatePower);
-          }
-          break;
         case SPEAKER_CENTRIC:
-          Pose2d drivePose2D = drive.getPose2d();
-          Translation2d speakerVec =
-              FiringSolutionHelper.getVectorToSpeaker(drivePose2D.getX(), drivePose2D.getY());
-          Logger.recordOutput(
-              "RobotHeading/SpeakerCentricHeading/", speakerVec.getAngle().getDegrees());
-          Logger.recordOutput("RobotHeading/State", "Speaker centric");
-          drive.driveAutoRotate(driveX, driveY, speakerVec.getAngle().getDegrees());
+          final int speakerAprilTagID;
+          if (Robot.isRed()) {
+            speakerAprilTagID = Constants.FieldConstants.redSpeakerCenterTagID;
+          } else {
+            speakerAprilTagID = Constants.FieldConstants.blueSpeakerCenterTagID;
+          }
+
+          if (Limelight.getOuttakeInstance().getSpecifiedAprilTagVisible(speakerAprilTagID)) {
+            speakerCentricAngle = Limelight.getOuttakeInstance().getTargetPose3DToBot(speakerAprilTagID)
+            .toPose2d().getRotation().getDegrees();
+            drive.driveAutoRotate(driveX, driveY, speakerCentricAngle);
+
+            Logger.recordOutput("RobotHeading/PseudoAutoRotateEngaged", false);
+            Logger.recordOutput("RobotHeading/SpeakerCentricHeading/", speakerCentricAngle);
+            Logger.recordOutput("RobotHeading/State", "Speaker centric");
+            return;
+          }
+          // If limelight fails to detect april tag, then run regular drive logic
           break;
         case ROBOT_CENTRIC:
-          // make robot angle zero to switch to robot centric driving
+          // Make robot angle zero to switch to robot centric driving
+          Logger.recordOutput("RobotHeading/PseudoAutoRotateEngaged", false);
           Logger.recordOutput("RobotHeading/State", "Robot centric");
           drive.drive(driveX, driveY, rotatePower, new Rotation2d());
+          return;
+        case DEFAULT:
+          // Run regular drive logic
           break;
       }
-    } else { // do regular drive logic
-      if (rotatePower != 0) {
-        doSpinout();
-      } else if (drive.isAutoRotateTuningEnabled()) {
-        drive.driveAutoRotate(driveX, driveY, 0);
-      } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
-        pseudoAutoRotateEngaged = true;
-        Logger.recordOutput("RobotHeading/PseudoAutoRotateHeading", pseudoAutoRotateAngle);
-        drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
-      } else {
-        drive.drive(driveX, driveY, rotatePower);
-      }
     }
-    Logger.recordOutput("RobotHeading/PseudoAutoRotateEngaged", pseudoAutoRotateEngaged);
+    // Default to regular field centric drive logic if other drive modes fail to engage
+    if (rotatePower != 0) {
+      doSpinout();
+    } else if (drive.isAutoRotateTuningEnabled()) {
+      drive.driveAutoRotate(driveX, driveY, 0);
+    } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
+      Logger.recordOutput("RobotHeading/PseudoAutoRotateEngaged", true);
+      Logger.recordOutput("RobotHeading/PseudoAutoRotateHeading", pseudoAutoRotateAngle);
+      drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
+    } else {
+      drive.drive(driveX, driveY, rotatePower);
+    }
   }
 
   public void updateStateMachine(DriveManualTrigger trigger) {
