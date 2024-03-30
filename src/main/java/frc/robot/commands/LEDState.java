@@ -17,7 +17,7 @@ public class LEDState extends Command {
         if (DriverStation.isEnabled()) {
             if (RobotCoordinator.getInstance().noteIsShot()) {
                 led.setLEDState(LED.LEDState.noteFired);
-            } else if (RobotCoordinator.getInstance().canShoot()
+            } else if (RobotCoordinator.getInstance().canSmartShoot()
                 && RobotCoordinator.getInstance().noteInFiringPosition()) {
                 led.setLEDState(LED.LEDState.noteReadyToShoot);
             } else if (RobotCoordinator.getInstance().noteInRobot()) {
