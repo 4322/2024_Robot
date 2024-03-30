@@ -86,13 +86,9 @@ public class LED extends SubsystemBase {
           setLEDState(LEDState.idle);
         }
       } else {
-        if (!RobotCoordinator.getInstance().getInitAbsEncoderPressed()
-            && !RobotCoordinator.getInstance().isInitialized()) {
+        if (!RobotCoordinator.getInstance().isInitialized()) {
           setLEDState(LEDState.notInitialized);
-        } else if (RobotCoordinator.getInstance().getInitAbsEncoderPressed()
-            && RobotCoordinator.getInstance().isInitialized()
-            && !initTimer.hasElapsed(1)) {
-          initTimer.start();
+        } else if (RobotCoordinator.getInstance().isInitialized()) {
           setLEDState(LEDState.initialized);
         } else if (RobotCoordinator.getInstance().deployInCoast()
           && RobotCoordinator.getInstance().pivotInCoast()) {
@@ -117,8 +113,8 @@ public class LED extends SubsystemBase {
       }
       switch (currentState) {
         case notInitialized:
-          // yellow
-          io.setLED(255, 255, 0, 0, Constants.LED.totalLEDs);
+          // red
+          io.setLED(255, 0, 0, 0, Constants.LED.totalLEDs);
           break;
         case initialized:
           // green

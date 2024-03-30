@@ -29,7 +29,6 @@ public class RobotCoordinator extends SubsystemBase {
   private boolean notePassingIntake;
   private boolean notePassingTunnel;
   private boolean autoIntakeButtonPressed;
-  private boolean initAbsEncoderPressed;
   private boolean outtakeInClimbState = false;
   private OuttakeManualState previousState = OuttakeManual.getState();
 
@@ -80,14 +79,6 @@ public class RobotCoordinator extends SubsystemBase {
 
   public boolean getAutoIntakeButtonPressed() {
     return autoIntakeButtonPressed;
-  }
-
-  public void setInitAbsEncoderPressed(boolean isPressed) {
-    initAbsEncoderPressed = isPressed;
-  }
-
-  public boolean getInitAbsEncoderPressed() {
-    return initAbsEncoderPressed;
   }
 
   public boolean isIntakeDeployed() {

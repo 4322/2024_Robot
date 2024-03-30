@@ -8,6 +8,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandcoder.Canandcoder;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -28,7 +29,7 @@ public class OuttakeIOReal implements OuttakeIO {
   GenericEntry pivotPosition;
   GenericEntry tuneOuttakeOverrideEnable;
 
-  private double heliumAbsoluteRotations;
+  private boolean initialized;
 
   public OuttakeIOReal() {
     topOuttakeMotor =
@@ -131,6 +132,24 @@ public class OuttakeIOReal implements OuttakeIO {
     settings.setVelocityFramePeriod(0.050);
     settings.setStatusFramePeriod(1.0);
     pivotEncoder.setSettings(settings, 0.050);
+
+    try {
+      Thread.sleep(50); // 5 status frames to be safe
+    } catch (InterruptedException e) {
+    }
+
+    double currentPivotPosition = pivotEncoder.getAbsPosition();
+    // Make sure that outtake pivot is stationary
+    if (OrangeMath.equalToEpsilon(pivotEncoder.getVelocity(), 0.0, 0.1)
+      // The abs encoder position must not be within the specified flag range.
+      // The specified range assumes that the shooter pivot is too far below 
+      // the zero point and is wrapping around to 1 rotation.
+      && !(currentPivotPosition > Constants.OuttakeConstants.absEncoderMaxZeroingThreshold
+              && currentPivotPosition < Constants.OuttakeConstants.absEncoderAlmostZeroThreshold)) {
+      DriverStation.reportWarning("Initialized shooter pivot", false);
+      pivotMotor.setPosition(currentPivotPosition * OuttakeConstants.gearReductionEncoderToMotor);
+      initialized = true;
+    }
   }
 
   @Override
@@ -165,34 +184,12 @@ public class OuttakeIOReal implements OuttakeIO {
       inputs.targetPivotPosition = pivotPosition.getDouble(0);
       inputs.tuneOuttakeOverrideEnable = tuneOuttakeOverrideEnable.getBoolean(false);
     }
-    heliumAbsoluteRotations = inputs.heliumAbsRotations;
   }
 
   @Override
   public void setOuttakeRPS(double desiredTopVelocityRPS, double desiredBottomVelocityRPS) {
     bottomOuttakeMotor.setControl(new VelocityVoltage(-desiredBottomVelocityRPS));
     topOuttakeMotor.setControl(new VelocityVoltage(desiredTopVelocityRPS));
-  }
-
-  @Override
-  public boolean initPivot() {
-    // Make sure that outtake pivot is stationary
-    if (OrangeMath.equalToEpsilon(pivotEncoder.getVelocity(), 0.0, 0.1)
-        // position must be within the allowed range
-        && heliumAbsoluteRotations >= 0
-        && heliumAbsoluteRotations
-            <= Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
-
-      pivotMotor.setPosition(
-          heliumAbsoluteRotations * OuttakeConstants.gearReductionEncoderToMotor);
-
-      // Set only relative encoder rotations of Helium encoder to a very high number after
-      // initialized. The relative encoder is used only to check if we have
-      // already initialized since the last power cycle.
-      pivotEncoder.setPosition(Constants.EncoderInitializeConstants.initializedRotationsFlag);
-      return true;
-    }
-    return false;
   }
 
   @Override
@@ -221,5 +218,10 @@ public class OuttakeIOReal implements OuttakeIO {
   @Override
   public void stopPivot() {
     pivotMotor.stopMotor();
+  }
+
+  @Override
+  public boolean pivotIsInitialized() {
+    return initialized;
   }
 }
