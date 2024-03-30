@@ -1,10 +1,8 @@
 package frc.robot.subsystems.outtake;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.OuttakeConstants;
-import frc.robot.subsystems.RobotCoordinator;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -12,9 +10,7 @@ public class Outtake extends SubsystemBase {
   private OuttakeIO io;
   private OuttakeIOInputsAutoLogged inputs = new OuttakeIOInputsAutoLogged();
   private double targetRPS;
-  private Timer existenceTimer;
   private double pivotTarget;
-  private boolean pivotInitialized;
   private boolean isInCoast;
 
   private static Outtake outtake;
@@ -41,8 +37,6 @@ public class Outtake extends SubsystemBase {
     if (io == null) {
       io = new OuttakeIO() {};
     }
-
-    existenceTimer = new Timer();
   }
 
   public double getTargetRPS() {
@@ -54,31 +48,13 @@ public class Outtake extends SubsystemBase {
   }
 
   public void periodic() {
-    // Check if encoders have already been initialized after power cycle
-    // If so, we don't need to reinitialize
-    if (Constants.outtakePivotEnabled
-        && !pivotInitialized
-        && OrangeMath.equalToEpsilon(
-            inputs.heliumRelativeRotations,
-            Constants.EncoderInitializeConstants.initializedRotationsFlag,
-            Constants.EncoderInitializeConstants.initializedRotationsTolerance)) {
-      pivotInitialized = true;
-    }
-
-    // initialize motor internal encoder position until the intake isn't moving
-    if (Constants.outtakePivotEnabled
-        && !pivotInitialized
-        && !existenceTimer.hasElapsed(5)
-        && RobotCoordinator.getInstance().getInitAbsEncoderPressed()) {
-      existenceTimer.start();
-      pivotInitialized = io.initPivot();
-    }
     if ((Constants.outtakeEnabled) || (Constants.outtakePivotEnabled)) {
       io.updateInputs(inputs);
       Logger.processInputs("Outtake", inputs);
       Logger.recordOutput("Outtake/LeftRotationsPerSecAbs", Math.abs(inputs.leftRotationsPerSec));
       Logger.recordOutput("Outtake/RightRotationsPerSecAbs", Math.abs(inputs.rightRotationsPerSec));
     }
+ 
     if (Constants.outtakeTuningMode && inputs.tuneOuttakeOverrideEnable) {
       if (Constants.outtakeEnabled) {
         outtake(inputs.debugTargetRPS);
@@ -90,7 +66,7 @@ public class Outtake extends SubsystemBase {
   }
 
   public void outtake(double targetRPS) {
-    if (Constants.outtakeEnabled && pivotInitialized) {
+    if (Constants.outtakeEnabled && io.pivotIsInitialized()) {
       // Overrides operator shooting presets
       if (Constants.outtakeTuningMode && inputs.tuneOuttakeOverrideEnable) {
         targetRPS = inputs.debugTargetRPS;
@@ -106,7 +82,7 @@ public class Outtake extends SubsystemBase {
   }
 
   public void pivot(double rotations, boolean limitForwardMotion) {
-    if (Constants.outtakePivotEnabled && pivotInitialized) {
+    if (Constants.outtakePivotEnabled && io.pivotIsInitialized()) {
       // Code that limits forward movement of shooter if requested
       if (limitForwardMotion
           && rotations > Constants.OuttakeConstants.forwardSoftLimitThresholdRotations) {
@@ -124,7 +100,7 @@ public class Outtake extends SubsystemBase {
   }
 
   public void resetPivot() {
-    if (Constants.outtakePivotEnabled && pivotInitialized) {
+    if (Constants.outtakePivotEnabled && io.pivotIsInitialized()) {
       io.setPivotTarget(Constants.OuttakeConstants.defaultPivotPositionRotations);
       pivotTarget = Constants.OuttakeConstants.defaultPivotPositionRotations;
       Logger.recordOutput(
@@ -134,7 +110,7 @@ public class Outtake extends SubsystemBase {
   }
 
   public void stopPivot() {
-    if (Constants.outtakePivotEnabled && pivotInitialized) {
+    if (Constants.outtakePivotEnabled && io.pivotIsInitialized()) {
       io.stopPivot();
       Logger.recordOutput("Outtake/PivotStopped", true);
     }
@@ -175,7 +151,7 @@ public class Outtake extends SubsystemBase {
   }
 
   public boolean pivotIsInitialized() {
-    return pivotInitialized;
+    return io.pivotIsInitialized();
   }
 
   public boolean safeToPivot() {

@@ -282,13 +282,6 @@ public final class Constants {
     public static final double autoFeedMoveSpeed = 1;
   }
 
-  public static final class EncoderInitializeConstants {
-    public static final double initializedRotationsFlag = 4322.0; // must be a very high number
-    public static final double initializedRotationsTolerance = 5.0;
-    public static final double absEncoderAlmostZeroThreshold = 0.95; // intake use only
-    public static final double absEncoderMaxZeroingThreshold = 0.75; // outtake use only
-  }
-
   public static final class ClimberConstants {
     public static final int climberMotorID = 25;
     public static final double climberMaxRotations = 149; // physical limit of climber
@@ -352,6 +345,8 @@ public final class Constants {
     public static final double pivotPeakReverseVoltage = -10;
 
     public static final double defaultPivotPositionRotations = 0;
+    public static final double absEncoderMaxZeroingThreshold = 0.97;
+    public static final double absEncoderAlmostZeroThreshold = 0.995;
 
     public static final double outtakeToleranceRPS = 3.0;
     public static final double pivotToleranceRotations = 0.5;
@@ -393,6 +388,8 @@ public final class Constants {
       public static final double atTargetTolerance = 0.03;
       public static final double correctionTolerance = 0.06;
       public static final double maxRotationsPerSec = 0.2;
+
+      public static final double absEncoderAlmostZeroThreshold = 0.95;
     }
 
     public static final class Logging {

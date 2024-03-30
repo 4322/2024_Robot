@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.AutoHelper.Auto;
 import frc.robot.centerline.CenterLineManager.CenterLineScoringStrategy;
-import frc.robot.commands.AtHome;
 import frc.robot.commands.AutoIntakeDeploy;
 import frc.robot.commands.AutoIntakeIn;
 import frc.robot.commands.AutoSetOuttakeAdjust;
@@ -250,7 +249,6 @@ public class RobotContainer {
                     outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
                   }));
       driveXbox.leftTrigger().whileTrue(new Shoot());
-      driveXbox.povLeft().onTrue(new AtHome());
       if (Constants.shotTuningMode) {
         driveXbox.y().onTrue(writeFiringSolution);
         // right up against front of speaker with edge of robot on source side
