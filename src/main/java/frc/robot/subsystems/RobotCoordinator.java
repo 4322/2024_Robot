@@ -154,16 +154,6 @@ public class RobotCoordinator extends SubsystemBase {
     }
   }
 
-  public boolean outtakePresetChanged() {
-    OuttakeManualState currentState = OuttakeManual.getState();
-    if (currentState == previousState) {
-      return false;
-    }
-    previousState = currentState;
-    return true;
-
-  }
-
   public double getRobotXPos() {
     return drive.getPose2d().getX();
   }

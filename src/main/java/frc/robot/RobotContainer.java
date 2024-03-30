@@ -34,6 +34,8 @@ import frc.robot.commands.DriveStop;
 import frc.robot.commands.EjectThroughIntake;
 import frc.robot.commands.IntakeManual;
 import frc.robot.commands.IntakeStop;
+import frc.robot.commands.LEDState;
+import frc.robot.commands.OperatorPresetLED;
 import frc.robot.commands.OperatorXboxControllerRumble;
 import frc.robot.commands.OuttakeManual.OuttakeManual;
 import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualTrigger;
@@ -164,6 +166,10 @@ public class RobotContainer {
     if (Constants.outtakeLimeLightEnabled) {
       Limelight.getOuttakeInstance().setDefaultCommand(new UpdateOdometry());
     }
+
+    if (Constants.ledEnabled) {
+      led.setDefaultCommand(new LEDState());
+    }
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -289,40 +295,46 @@ public class RobotContainer {
                       new OperatorXboxControllerRumble())));
       operatorXbox.start().onTrue(new SetPivotsCoastMode());
       operatorXbox.back().onTrue(new SetPivotsBrakeMode());
-      operatorXbox.povUp().whileTrue(new EjectThroughIntake());
+      operatorXbox.povUp().whileTrue(new ParallelCommandGroup(new EjectThroughIntake(), new OperatorPresetLED()));
       operatorXbox
           .y()
-          .onTrue(
+          .onTrue(new ParallelCommandGroup(
               Commands.runOnce(() -> {
                 outtakeManual.setFiringSolution(Constants.FiringSolutions.DefaultSmartShooting);
-                outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SMART_SHOOTING);}));
+                outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SMART_SHOOTING);}),
+                new OperatorPresetLED()));
       operatorXbox
           .x()
-          .onTrue(
+          .onTrue(new ParallelCommandGroup(
               Commands.runOnce(
-                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_EJECT)));
+                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_EJECT)),
+                  new OperatorPresetLED()));
       operatorXbox
           .b()
-          .onTrue(
+          .onTrue(new ParallelCommandGroup(
               Commands.runOnce(
-                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SUBWOOFER)));
+                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SUBWOOFER)),
+                  new OperatorPresetLED()));
       operatorXbox
           .a()
-          .onTrue(
+          .onTrue(new ParallelCommandGroup(
               Commands.runOnce(
-                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP)));
+                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP)),
+                  new OperatorPresetLED()));
       operatorXbox
           .povDown()
-          .onTrue(
+          .onTrue(new ParallelCommandGroup(
               new SequentialCommandGroup(
                   Commands.runOnce(
                       () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED)),
-                  new OuttakeTunnelFeed(), new XboxControllerRumble()));
+                  new OuttakeTunnelFeed(), new XboxControllerRumble()),
+                  new OperatorPresetLED()));
       operatorXbox
           .povRight()
-          .onTrue(
+          .onTrue(new ParallelCommandGroup(
               Commands.runOnce(
-                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_AMP)));
+                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_AMP)),
+                  new OperatorPresetLED()));
     }
   }
 
