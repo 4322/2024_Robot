@@ -30,7 +30,6 @@ public class RobotCoordinator extends SubsystemBase {
   private boolean notePassingTunnel;
   private boolean autoIntakeButtonPressed;
   private boolean outtakeInClimbState = false;
-  private OuttakeManualState previousState = OuttakeManual.getState();
 
   public static RobotCoordinator getInstance() {
     if (robotCoordinator == null) {
