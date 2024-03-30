@@ -83,57 +83,51 @@ public class DriveManual extends Command {
   @Override
   public void execute() {
     updateDriveValues();
-    boolean pseudoAutoRotateEngaged = false;
     if (Constants.speakerCentricEnabled) {
       switch (stateMachine.getState()) {
-        case DEFAULT:
-          Logger.recordOutput("RobotHeading/State/", "Field centric");
-          if (rotatePower != 0) {
-            doSpinout();
-          } else if (drive.isAutoRotateTuningEnabled()) {
-            drive.driveAutoRotate(driveX, driveY, 0);
-          } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
-            pseudoAutoRotateEngaged = true;
-            Logger.recordOutput("RobotHeading/PseudoAutoRotateHeading", pseudoAutoRotateAngle);
-            drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
-          } else {
-            drive.drive(driveX, driveY, rotatePower);
-          }
-          break;
         case SPEAKER_CENTRIC:
+          final int speakerAprilTagID;
           if (Robot.isRed()) {
-            speakerCentricAngle = Limelight.getOuttakeInstance().getTargetPose3DToBot(0)
-              .toPose2d().getRotation().getDegrees();
+            speakerAprilTagID = Constants.FieldConstants.redSpeakerCenterTagID;
           } else {
-            speakerCentricAngle = Limelight.getOuttakeInstance().getTargetPose3DToBot(0)
-              .toPose2d().getRotation().getDegrees();
+            speakerAprilTagID = Constants.FieldConstants.blueSpeakerCenterTagID;
           }
-          
-          Logger.recordOutput(
-              "RobotHeading/SpeakerCentricHeading/", speakerCentricAngle);
-          Logger.recordOutput("RobotHeading/State", "Speaker centric");
-          drive.driveAutoRotate(driveX, driveY, speakerCentricAngle);
+
+          if (Limelight.getOuttakeInstance().getSpecifiedAprilTagVisible(speakerAprilTagID)) {
+            speakerCentricAngle = Limelight.getOuttakeInstance().getTargetPose3DToBot(speakerAprilTagID)
+            .toPose2d().getRotation().getDegrees();
+            drive.driveAutoRotate(driveX, driveY, speakerCentricAngle);
+
+            Logger.recordOutput("RobotHeading/PseudoAutoRotateEngaged", false);
+            Logger.recordOutput("RobotHeading/SpeakerCentricHeading/", speakerCentricAngle);
+            Logger.recordOutput("RobotHeading/State", "Speaker centric");
+            return;
+          }
+          // If limelight fails to detect april tag, then run regular drive logic
           break;
         case ROBOT_CENTRIC:
-          // make robot angle zero to switch to robot centric driving
+          // Make robot angle zero to switch to robot centric driving
+          Logger.recordOutput("RobotHeading/PseudoAutoRotateEngaged", false);
           Logger.recordOutput("RobotHeading/State", "Robot centric");
           drive.drive(driveX, driveY, rotatePower, new Rotation2d());
+          return;
+        case DEFAULT:
+          // Run regular drive logic
           break;
       }
-    } else { // do regular drive logic
-      if (rotatePower != 0) {
-        doSpinout();
-      } else if (drive.isAutoRotateTuningEnabled()) {
-        drive.driveAutoRotate(driveX, driveY, 0);
-      } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
-        pseudoAutoRotateEngaged = true;
-        Logger.recordOutput("RobotHeading/PseudoAutoRotateHeading", pseudoAutoRotateAngle);
-        drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
-      } else {
-        drive.drive(driveX, driveY, rotatePower);
-      }
     }
-    Logger.recordOutput("RobotHeading/PseudoAutoRotateEngaged", pseudoAutoRotateEngaged);
+    // Default to regular field centric drive logic if other drive modes fail to engage
+    if (rotatePower != 0) {
+      doSpinout();
+    } else if (drive.isAutoRotateTuningEnabled()) {
+      drive.driveAutoRotate(driveX, driveY, 0);
+    } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
+      Logger.recordOutput("RobotHeading/PseudoAutoRotateEngaged", true);
+      Logger.recordOutput("RobotHeading/PseudoAutoRotateHeading", pseudoAutoRotateAngle);
+      drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
+    } else {
+      drive.drive(driveX, driveY, rotatePower);
+    }
   }
 
   public void updateStateMachine(DriveManualTrigger trigger) {
