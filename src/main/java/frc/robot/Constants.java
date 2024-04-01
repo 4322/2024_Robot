@@ -405,8 +405,8 @@ public final class Constants {
   }
 
   public static final class BeamBreakConstants {
-    public static final int tunnelBeamBreakID = 6;
-    public static final int intakeBeamBreakID = 5;
+    public static final int tunnelBeamBreakID = 5;
+    public static final int intakeBeamBreakID = 6;
 
     public static final class Logging {
       public static final String key = "Sensors/";
