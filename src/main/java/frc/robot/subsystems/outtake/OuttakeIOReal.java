@@ -127,7 +127,7 @@ public class OuttakeIOReal implements OuttakeIO {
     // 60 degree shooting angle abs position is about 0.72 rotations
     // the encoder wraps at about 78 degrees
     Canandcoder.Settings settings = new Canandcoder.Settings();
-    settings.setInvertDirection(true);
+    settings.setInvertDirection(false);
     settings.setPositionFramePeriod(0.010);
     settings.setVelocityFramePeriod(0.050);
     settings.setStatusFramePeriod(1.0);
