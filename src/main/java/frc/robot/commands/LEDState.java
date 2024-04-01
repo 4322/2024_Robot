@@ -28,8 +28,6 @@ public class LEDState extends Command {
         } else {
             if (!RobotCoordinator.getInstance().isInitialized()) {
                 led.setLEDState(LED.LEDState.notInitialized);
-            } else if (RobotCoordinator.getInstance().isInitialized()) {
-                led.setLEDState(LED.LEDState.initialized);
             } else if (RobotCoordinator.getInstance().deployInCoast()
             && RobotCoordinator.getInstance().pivotInCoast()) {
                 led.setLEDState(LED.LEDState.coastMode);
