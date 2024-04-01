@@ -352,7 +352,7 @@ public final class Constants {
     public static final double pivotToleranceRotations = 0.5;
     public static final double maxPivotForIntake = 50;
 
-    public static final double ampBottomShooterRPS = 21;
+    public static final double ampBottomShooterRPS = 14.0;
     public static final double ampTopShooterRPS = 0.0;
   }
 

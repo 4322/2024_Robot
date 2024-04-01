@@ -81,6 +81,7 @@ public class OuttakeManual extends Command {
         firingSolution = FiringSolutions.Climbing;
         break;
       case AMP:
+        outtake.pivot(Constants.FiringSolutions.Feed.getShotRotations(), true);
         outtake.outtake(Constants.OuttakeConstants.ampTopShooterRPS, Constants.OuttakeConstants.ampBottomShooterRPS); 
         return;
       case STOP:
