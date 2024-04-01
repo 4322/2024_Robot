@@ -144,9 +144,17 @@ public class OuttakeIOReal implements OuttakeIO {
       // the zero point and is wrapping around to 1 rotation.
     if (!(currentPivotPosition > Constants.OuttakeConstants.absEncoderMaxZeroingThreshold
           && currentPivotPosition < Constants.OuttakeConstants.absEncoderAlmostZeroThreshold)) {
-      DriverStation.reportWarning("Initialized shooter pivot", false);
+      // If abs encoder is close to 1 rotation, it means that pivot is just a bit below zero point 
+      // and therefore should we should just treat it as zero
+      if (currentPivotPosition < 1 && currentPivotPosition > Constants.OuttakeConstants.absEncoderAlmostZeroThreshold) {
+        currentPivotPosition = 0;
+      }
       pivotMotor.setPosition(currentPivotPosition * OuttakeConstants.gearReductionEncoderToMotor);
+      DriverStation.reportWarning("Initialized shooter pivot", false);
       initialized = true;
+    }
+    else {
+      DriverStation.reportError("Failed to initialize shooter pivot at " + currentPivotPosition + " helium rotations", false);
     }
   }
 
