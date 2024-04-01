@@ -111,6 +111,8 @@ public class RobotContainer {
 
   private final TunnelStop tunnelStop = new TunnelStop();
 
+  private final LEDState defaultLEDStates = new LEDState();
+
   private final SendableChooser<Auto> autoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -168,7 +170,7 @@ public class RobotContainer {
     }
 
     if (Constants.ledEnabled) {
-      led.setDefaultCommand(new LEDState());
+      led.setDefaultCommand(defaultLEDStates);
     }
   }
   /**
