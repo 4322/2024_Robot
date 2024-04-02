@@ -2,6 +2,8 @@ package frc.robot.commands.DriveManual;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -92,7 +94,7 @@ public class DriveManual extends Command {
         if (Limelight.getOuttakeInstance().getSpecifiedAprilTagVisible(speakerAprilTagID)) {
           speakerCentricAngle = Limelight.getOuttakeInstance().getTargetPose3DToBot(speakerAprilTagID)
           .toPose2d().getRotation().getDegrees();
-          LED.getInstance().setDebugLed(255, 0, 255, Constants.LED.debugLed2);  // purple
+          LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kPurple), Constants.LED.debugLed2);
           drive.driveAutoRotate(driveX, driveY, speakerCentricAngle);
 
           Logger.recordOutput("RobotHeading/PseudoAutoRotateEngaged", false);
@@ -106,7 +108,7 @@ public class DriveManual extends Command {
         // Make robot angle zero to switch to robot centric driving
         Logger.recordOutput("RobotHeading/PseudoAutoRotateEngaged", false);
         Logger.recordOutput("RobotHeading/State", "Robot centric");
-        LED.getInstance().setDebugLed(255, 255, 0, Constants.LED.debugLed2);  // yellow
+        LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kYellow), Constants.LED.debugLed2);
         drive.drive(driveX, driveY, rotatePower, new Rotation2d());
         return;
       case DEFAULT:
@@ -118,15 +120,15 @@ public class DriveManual extends Command {
     if (rotatePower != 0) {
       doSpinout();
     } else if (drive.isAutoRotateTuningEnabled()) {
-      LED.getInstance().setDebugLed(255, 0, 0, Constants.LED.debugLed2);
+      LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kPink), Constants.LED.debugLed2);
       drive.driveAutoRotate(driveX, driveY, 0);
     } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
       Logger.recordOutput("RobotHeading/PseudoAutoRotateEngaged", true);
       Logger.recordOutput("RobotHeading/PseudoAutoRotateHeading", pseudoAutoRotateAngle);
-      LED.getInstance().setDebugLed(0, 0, 255, Constants.LED.debugLed2);
+      LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kBlue), Constants.LED.debugLed2);
       drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
     } else {
-      LED.getInstance().setDebugLed(255, 255, 255, Constants.LED.debugLed2);
+      LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kWhite), Constants.LED.debugLed2);
       drive.drive(driveX, driveY, rotatePower);
     }
   }
@@ -260,12 +262,12 @@ public class DriveManual extends Command {
 
     if (stateMachine.getState() != DriveManualState.DEFAULT || rotatePower != 0) {
       pseudoAutoRotateAngle = null;
-      LED.getInstance().setDebugLed(255, 255, 255, Constants.LED.debugLed1);
+      LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kWhite), Constants.LED.debugLed1);
     } else if (rotatePower == 0
         && pseudoAutoRotateAngle == null
         && driveAbsAngularVel < Manual.inhibitPseudoAutoRotateDegPerSec) {
       pseudoAutoRotateAngle = drive.getAngle();
-      LED.getInstance().setDebugLed(0, 0, 255, Constants.LED.debugLed1);
+      LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kBlue), Constants.LED.debugLed1);
     }
   }
 
@@ -352,27 +354,27 @@ public class DriveManual extends Command {
     double spinCornerPower = Math.copySign(DriveConstants.spinoutCornerPower, rotatePower);
     switch (lockedWheelState) {
       case none:
-        LED.getInstance().setDebugLed(255, 255, 255, Constants.LED.debugLed2);
+        LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kWhite), Constants.LED.debugLed2);
         drive.drive(driveX, driveY, rotatePower);
         break;
       case center:
-        LED.getInstance().setDebugLed(255, 102, 0, Constants.LED.debugLed2); // orange
+        LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kOrange), Constants.LED.debugLed2); // orange
         drive.drive(driveX, driveY, Math.copySign(DriveConstants.spinoutCenterPower, rotatePower));
         break;
       case frontLeft:
-        LED.getInstance().setDebugLed(255, 102, 0, Constants.LED.debugLed2); // orange
+        LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kOrange), Constants.LED.debugLed2); // orange
         drive.drive(driveX, driveY, spinCornerPower, DriveConstants.frontLeftWheelLocation);
         break;
       case backLeft:
-        LED.getInstance().setDebugLed(255, 102, 0, Constants.LED.debugLed2);
+        LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kOrange), Constants.LED.debugLed2);
         drive.drive(driveX, driveY, spinCornerPower, DriveConstants.backLeftWheelLocation);
         break;
       case backRight:
-        LED.getInstance().setDebugLed(255, 102, 0, Constants.LED.debugLed2);
+        LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kOrange), Constants.LED.debugLed2);
         drive.drive(driveX, driveY, spinCornerPower, DriveConstants.backRightWheelLocation);
         break;
       case frontRight:
-        LED.getInstance().setDebugLed(255, 102, 0, Constants.LED.debugLed2);
+        LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kOrange), Constants.LED.debugLed2);
         drive.drive(driveX, driveY, spinCornerPower, DriveConstants.frontRightWheelLocation);
         break;
     }
@@ -383,7 +385,7 @@ public class DriveManual extends Command {
   public void end(boolean interrupted) {
     if (interrupted) {
       pseudoAutoRotateAngle = null;
-      LED.getInstance().setDebugLed(255, 255, 255, Constants.LED.debugLed1);
+      LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kWhite), Constants.LED.debugLed1);
     }
   }
 

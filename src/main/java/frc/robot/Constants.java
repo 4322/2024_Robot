@@ -103,6 +103,7 @@ public final class Constants {
   public static final boolean steeringTuningMode = false;
   public static final boolean outtakeTuningMode = false;
   public static final boolean shotTuningMode = false;
+  public static final boolean autoRotateDebug = true;
 
   public enum DriveDegradedMode {
     normal,

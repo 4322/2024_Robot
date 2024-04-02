@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ControllerTypeStrings;
@@ -461,26 +463,26 @@ public class Drive extends SubsystemBase {
       if (isRobotMoving()) {
         adjMinAutoRotatePower = DriveConstants.Auto.minAutoRotateMovingPower;
         toleranceDeg = Constants.DriveConstants.Auto.rotateMovingToleranceDegrees;
-        LED.getInstance().setDebugLed(0, 0, 255, Constants.LED.debugLed4);
+        LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kBlue), Constants.LED.debugLed4);
       } else {
         // greater percision when lining up for something
         adjMinAutoRotatePower = DriveConstants.Auto.minAutoRotateStoppedPower;
         toleranceDeg = Constants.DriveConstants.Auto.rotateStoppedToleranceDegrees;
-        LED.getInstance().setDebugLed(0, 255, 0, Constants.LED.debugLed4);
+        LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kGreen), Constants.LED.debugLed4);
       }
 
       if (Math.abs(headingChangeDeg) <= toleranceDeg) {
         rotPIDSpeed = 0; // don't wiggle
-        LED.getInstance().setDebugLed(0, 255, 0, Constants.LED.debugLed3);
+        LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kGreen), Constants.LED.debugLed3);
       } else if (Math.abs(rotPIDSpeed) < adjMinAutoRotatePower) {
         rotPIDSpeed = Math.copySign(adjMinAutoRotatePower, rotPIDSpeed);
-        LED.getInstance().setDebugLed(0, 0, 255, Constants.LED.debugLed3);
+        LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kBlue), Constants.LED.debugLed3);
       } else if (rotPIDSpeed > adjMaxAutoRotatePower) {
         rotPIDSpeed = adjMaxAutoRotatePower;
-        LED.getInstance().setDebugLed(255, 0, 0, Constants.LED.debugLed3);
+        LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kPink), Constants.LED.debugLed3);
       } else if (rotPIDSpeed < -adjMaxAutoRotatePower) {
         rotPIDSpeed = -adjMaxAutoRotatePower;
-        LED.getInstance().setDebugLed(255, 0, 0, Constants.LED.debugLed3);
+        LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kPink), Constants.LED.debugLed3);
       }
 
       drive(driveX, driveY, rotPIDSpeed);
