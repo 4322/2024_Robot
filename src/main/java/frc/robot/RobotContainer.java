@@ -25,9 +25,6 @@ import frc.robot.commands.AutoIntakeDeploy;
 import frc.robot.commands.AutoIntakeIn;
 import frc.robot.commands.AutoSetOuttakeAdjust;
 import frc.robot.commands.AutoSmartShooting;
-import frc.robot.commands.ClimberExtend;
-import frc.robot.commands.ClimberRetract;
-import frc.robot.commands.ClimberSlowRetractOverride;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
@@ -50,11 +47,9 @@ import frc.robot.commands.TunnelFeed;
 import frc.robot.commands.TunnelStop;
 import frc.robot.commands.UpdateOdometry;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
-import frc.robot.commands.XboxControllerRumble;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.LED.LED;
 import frc.robot.subsystems.RobotCoordinator;
-import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.limelight.Limelight;
@@ -268,35 +263,6 @@ public class RobotContainer {
                 new SetRobotPose(
                     new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()), true));
       }
-
-      // don't want operator to accidentally use slow override in match
-      operatorXbox
-          .rightBumper()
-          .whileTrue(new ClimberSlowRetractOverride().onlyIf(() -> !DriverStation.isFMSAttached()));
-      operatorXbox
-          .leftTrigger()
-          .onTrue(
-              new ParallelCommandGroup(
-                  new AutoIntakeDeploy(),
-                  Commands.runOnce(
-                      () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_CLIMBING)),
-                  new ClimberExtend(),
-                  new SequentialCommandGroup(
-                      Commands.waitUntil(() -> Climber.getInstance().isFullyExtended()),
-                      new OperatorXboxControllerRumble())));
-      operatorXbox
-          .leftTrigger()
-          .onFalse(
-              Commands.runOnce(() -> Climber.getInstance().stopClimb(), Climber.getInstance()));
-      operatorXbox
-          .rightTrigger()
-          .whileTrue(
-              new ParallelCommandGroup(
-                  new ClimberRetract(),
-                  new SequentialCommandGroup(
-                      Commands.waitUntil(
-                          () -> Climber.getInstance().isAtClimbRetractingThreshold()),
-                      new OperatorXboxControllerRumble())));
       operatorXbox.start().onTrue(new SetPivotsCoastMode());
       operatorXbox.back().onTrue(new SetPivotsBrakeMode());
       operatorXbox.povUp().whileTrue(new ParallelCommandGroup(new EjectThroughIntake(), new OperatorPresetLED()));
