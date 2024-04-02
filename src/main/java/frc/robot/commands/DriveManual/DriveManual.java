@@ -137,7 +137,7 @@ public class DriveManual extends Command {
       LED.getInstance().setAutoRotateDebugLed(Color.kBlue, Constants.LED.debugLed2);
       drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
     } else {
-      LED.getInstance().setAutoRotateDebugLed(Color.kWhite, Constants.LED.debugLed2);
+      LED.getInstance().setAutoRotateDebugLed(Color.kBlack, Constants.LED.debugLed2);
       drive.drive(driveX, driveY, rotatePower);
     }
   }
@@ -271,7 +271,7 @@ public class DriveManual extends Command {
 
     if (stateMachine.getState() != DriveManualState.DEFAULT || rotatePower != 0) {
       pseudoAutoRotateAngle = null;
-      LED.getInstance().setAutoRotateDebugLed(Color.kWhite, Constants.LED.debugLed1);
+      LED.getInstance().setAutoRotateDebugLed(Color.kBlack, Constants.LED.debugLed1);
     } else if (rotatePower == 0
         && pseudoAutoRotateAngle == null
         && driveAbsAngularVel < Manual.inhibitPseudoAutoRotateDegPerSec) {
@@ -363,11 +363,11 @@ public class DriveManual extends Command {
     double spinCornerPower = Math.copySign(DriveConstants.spinoutCornerPower, rotatePower);
     switch (lockedWheelState) {
       case none:
-        LED.getInstance().setAutoRotateDebugLed(Color.kWhite, Constants.LED.debugLed2);
+        LED.getInstance().setAutoRotateDebugLed(Color.kBlack, Constants.LED.debugLed2);
         drive.drive(driveX, driveY, rotatePower);
         break;
       case center:
-        LED.getInstance().setAutoRotateDebugLed(Color.kOrange, Constants.LED.debugLed2); // orange
+        LED.getInstance().setAutoRotateDebugLed(Color.kWhite, Constants.LED.debugLed2); // orange
         drive.drive(driveX, driveY, Math.copySign(DriveConstants.spinoutCenterPower, rotatePower));
         break;
       case frontLeft:
@@ -394,7 +394,7 @@ public class DriveManual extends Command {
   public void end(boolean interrupted) {
     if (interrupted) {
       pseudoAutoRotateAngle = null;
-      LED.getInstance().setAutoRotateDebugLed(Color.kWhite, Constants.LED.debugLed1);
+      LED.getInstance().setAutoRotateDebugLed(Color.kBlack, Constants.LED.debugLed1);
     }
   }
 
