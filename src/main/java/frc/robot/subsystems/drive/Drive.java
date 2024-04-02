@@ -461,26 +461,26 @@ public class Drive extends SubsystemBase {
       if (isRobotMoving()) {
         adjMinAutoRotatePower = DriveConstants.Auto.minAutoRotateMovingPower;
         toleranceDeg = Constants.DriveConstants.Auto.rotateMovingToleranceDegrees;
-        LED.getInstance().setDebugLed(0, 0, 255, 3);
+        LED.getInstance().setDebugLed(0, 0, 255, Constants.LED.debugLed4);
       } else {
         // greater percision when lining up for something
         adjMinAutoRotatePower = DriveConstants.Auto.minAutoRotateStoppedPower;
         toleranceDeg = Constants.DriveConstants.Auto.rotateStoppedToleranceDegrees;
-        LED.getInstance().setDebugLed(0, 255, 0, 3);
+        LED.getInstance().setDebugLed(0, 255, 0, Constants.LED.debugLed4);
       }
 
       if (Math.abs(headingChangeDeg) <= toleranceDeg) {
         rotPIDSpeed = 0; // don't wiggle
-        LED.getInstance().setDebugLed(0, 255, 0, 2);
+        LED.getInstance().setDebugLed(0, 255, 0, Constants.LED.debugLed3);
       } else if (Math.abs(rotPIDSpeed) < adjMinAutoRotatePower) {
         rotPIDSpeed = Math.copySign(adjMinAutoRotatePower, rotPIDSpeed);
-        LED.getInstance().setDebugLed(0, 0, 255, 2);
+        LED.getInstance().setDebugLed(0, 0, 255, Constants.LED.debugLed3);
       } else if (rotPIDSpeed > adjMaxAutoRotatePower) {
         rotPIDSpeed = adjMaxAutoRotatePower;
-        LED.getInstance().setDebugLed(255, 0, 0, 2);
+        LED.getInstance().setDebugLed(255, 0, 0, Constants.LED.debugLed3);
       } else if (rotPIDSpeed < -adjMaxAutoRotatePower) {
         rotPIDSpeed = -adjMaxAutoRotatePower;
-        LED.getInstance().setDebugLed(255, 0, 0, 2);
+        LED.getInstance().setDebugLed(255, 0, 0, Constants.LED.debugLed3);
       }
 
       drive(driveX, driveY, rotPIDSpeed);
