@@ -81,38 +81,38 @@ public class LED extends SubsystemBase {
       switch (currentState) {
         case notInitialized:
           // red
-          io.setLED(255, 0, 0, 0, Constants.LED.totalLEDs);
+          io.setLED(255, 0, 0, firstLed, numLeds);
           break;
         case initialized:
           // green
-          io.setLED(0, 255, 0, 0, Constants.LED.totalLEDs);
+          io.setLED(0, 255, 0, firstLed, numLeds);
           break;
         case idle:
-          io.setLED(0, 255, 255, 0, Constants.LED.totalLEDs);
+          io.setLED(0, 255, 255, firstLed, numLeds);
           break;
         case noteInRobot:
           // blue
-          io.setLED(0, 0, 255, 0, Constants.LED.totalLEDs);
+          io.setLED(0, 0, 255, firstLed, numLeds);
           break;
         case noteFired:
           // orange
-          io.setLED(255, 165, 0, 0, Constants.LED.totalLEDs);
+          io.setLED(255, 165, 0, firstLed, numLeds);
           break;
         case noteReadyToShoot:
           // green
-          io.setLED(0, 255, 0, 0, Constants.LED.totalLEDs);
+          io.setLED(0, 255, 0, firstLed, numLeds);
           break;
         case brakeMode:
           // orange
-          io.setLED(255, 165, 0, 0, Constants.LED.totalLEDs);
+          io.setLED(255, 165, 0, firstLed, numLeds);
           break;
         case coastMode:
           // green
-          io.setLED(0, 255, 0, 0, Constants.LED.totalLEDs);
+          io.setLED(0, 255, 0, firstLed, numLeds);
           break;
         case operatorPreset:
           // white
-          io.setLED(255, 255, 255, 0, Constants.LED.totalLEDs);
+          io.setLED(255, 255, 255, firstLed, numLeds);
           break;
       }
     }
