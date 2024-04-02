@@ -56,6 +56,10 @@ public class OuttakeManual extends Command {
           
           Logger.recordOutput("FiringSolutions/BotPoseInput/Mag", magToSpeaker);
           Logger.recordOutput("FiringSolutions/BotPoseInput/Angle", degreesToSpeaker);
+          Logger.recordOutput("FiringSolutions/Fiducial" + speakerAprilTagID + "Visible", true);
+        }
+        else {
+          Logger.recordOutput("FiringSolutions/Fiducial" + speakerAprilTagID + "Visible", false);
         }
         
         Logger.recordOutput("FiringSolutions/CalculatedShot", firingSolution.toString());
