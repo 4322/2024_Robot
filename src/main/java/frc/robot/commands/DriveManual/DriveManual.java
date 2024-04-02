@@ -1,9 +1,6 @@
 package frc.robot.commands.DriveManual;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -17,7 +14,6 @@ import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualState;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.limelight.Limelight;
-import frc.utility.FiringSolutionHelper;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
