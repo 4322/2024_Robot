@@ -190,4 +190,8 @@ public class Outtake extends SubsystemBase {
   public boolean pivotInCoast() {
     return isInCoast;
   }
+
+  public boolean inShotTuningMode() {
+    return inputs.tuneOuttakeOverrideEnable;
+  }
 }

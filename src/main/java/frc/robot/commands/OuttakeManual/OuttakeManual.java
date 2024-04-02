@@ -37,79 +37,81 @@ public class OuttakeManual extends Command {
 
   @Override
   public void execute() {
-    switch (stateMachine.getState()) {
-      case SMART_SHOOTING:
-        final int speakerCenterAprilTagID;
-        final int speakerSideAprilTagID;
-        if (Robot.isRed()) {
-          speakerCenterAprilTagID = Constants.FieldConstants.redSpeakerCenterTagID;
-          speakerSideAprilTagID = Constants.FieldConstants.redSpeakerSideTagID;
-        }
-        else {
-          speakerCenterAprilTagID = Constants.FieldConstants.blueSpeakerCenterTagID;
-          speakerSideAprilTagID = Constants.FieldConstants.blueSpeakerSideTagID;
-        }
+    if (!RobotCoordinator.getInstance().inShotTuningMode()) {
+      switch (stateMachine.getState()) {
+        case SMART_SHOOTING:
+          final int speakerCenterAprilTagID;
+          final int speakerSideAprilTagID;
+          if (Robot.isRed()) {
+            speakerCenterAprilTagID = Constants.FieldConstants.redSpeakerCenterTagID;
+            speakerSideAprilTagID = Constants.FieldConstants.redSpeakerSideTagID;
+          }
+          else {
+            speakerCenterAprilTagID = Constants.FieldConstants.blueSpeakerCenterTagID;
+            speakerSideAprilTagID = Constants.FieldConstants.blueSpeakerSideTagID;
+          }
 
-        // Only calculate new firing solutions if we can see the target April tags with Limelight.
-        // If specificed targets aren't visible, then shooter stays at the previous calculated or set solution.
-        if (outtakeLimelight.getSpecifiedAprilTagVisible(speakerCenterAprilTagID) 
-              && outtakeLimelight.getSpecifiedAprilTagVisible(speakerSideAprilTagID)) {
-          final Pose2d botPoseFieldRelative = outtakeLimelight.getBotposeWpiBlue();
-          final Translation2d botPoseToSpeaker = FiringSolutionHelper.getVectorToSpeaker(botPoseFieldRelative.getX(), botPoseFieldRelative.getY());
+          // Only calculate new firing solutions if we can see the target April tags with Limelight.
+          // If specificed targets aren't visible, then shooter stays at the previous calculated or set solution.
+          if (outtakeLimelight.getSpecifiedAprilTagVisible(speakerCenterAprilTagID) 
+                && outtakeLimelight.getSpecifiedAprilTagVisible(speakerSideAprilTagID)) {
+            final Pose2d botPoseFieldRelative = outtakeLimelight.getBotposeWpiBlue();
+            final Translation2d botPoseToSpeaker = FiringSolutionHelper.getVectorToSpeaker(botPoseFieldRelative.getX(), botPoseFieldRelative.getY());
+            
+            double magToSpeaker = botPoseToSpeaker.getNorm();
+            double degreesToSpeaker = botPoseToSpeaker.getAngle().getDegrees();
+            firingSolution = FiringSolutionManager.getInstance().calcSolution(magToSpeaker, degreesToSpeaker);
+            
+            Logger.recordOutput("FiringSolutions/BotPoseInput/Mag", magToSpeaker);
+            Logger.recordOutput("FiringSolutions/BotPoseInput/Angle", degreesToSpeaker);
+          }
+          else {
+            Logger.recordOutput("FiringSolutions/BotPoseInput/Mag", 0.0);
+            Logger.recordOutput("FiringSolutions/BotPoseInput/Angle", 0.0);
+          }
           
-          double magToSpeaker = botPoseToSpeaker.getNorm();
-          double degreesToSpeaker = botPoseToSpeaker.getAngle().getDegrees();
-          firingSolution = FiringSolutionManager.getInstance().calcSolution(magToSpeaker, degreesToSpeaker);
-          
-          Logger.recordOutput("FiringSolutions/BotPoseInput/Mag", magToSpeaker);
-          Logger.recordOutput("FiringSolutions/BotPoseInput/Angle", degreesToSpeaker);
-        }
-        else {
-          Logger.recordOutput("FiringSolutions/BotPoseInput/Mag", 0.0);
-          Logger.recordOutput("FiringSolutions/BotPoseInput/Angle", 0.0);
-        }
-        
-        Logger.recordOutput("FiringSolutions/CalculatedShot/Flywheel", firingSolution.getFlywheelSpeed());
-        Logger.recordOutput("FiringSolutions/CalculatedShot/PivotRotations", firingSolution.getShotRotations());
-        break;
-      case SUBWOOFER:
-        firingSolution = FiringSolutions.SubwooferBase;
-        break;
-      case EJECT:
-        firingSolution = FiringSolutions.Eject;
-        break;
-      case COLLECTING_NOTE:
-        firingSolution = FiringSolutions.CollectingNote;
-        // lockout of presets until the note is safely in the outtake
-        // change to stopped state when note triggers the tunnel sensor
-        if (RobotCoordinator.getInstance().noteInFiringPosition()) {
-          updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
-        }
-        break;
-      case FEED:
-        firingSolution = FiringSolutions.Feed;
-        break;
-      case AMP:
-        outtake.pivot(Constants.FiringSolutions.Feed.getShotRotations());
-        outtake.outtake(Constants.OuttakeConstants.ampTopShooterRPS, Constants.OuttakeConstants.ampBottomShooterRPS); 
-        return;
-      case STOP:
-      default:
+          Logger.recordOutput("FiringSolutions/CalculatedShot/Flywheel", firingSolution.getFlywheelSpeed());
+          Logger.recordOutput("FiringSolutions/CalculatedShot/PivotRotations", firingSolution.getShotRotations());
+          break;
+        case SUBWOOFER:
+          firingSolution = FiringSolutions.SubwooferBase;
+          break;
+        case EJECT:
+          firingSolution = FiringSolutions.Eject;
+          break;
+        case COLLECTING_NOTE:
+          firingSolution = FiringSolutions.CollectingNote;
+          // lockout of presets until the note is safely in the outtake
+          // change to stopped state when note triggers the tunnel sensor
+          if (RobotCoordinator.getInstance().noteInFiringPosition()) {
+            updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
+          }
+          break;
+        case FEED:
+          firingSolution = FiringSolutions.Feed;
+          break;
+        case AMP:
+          outtake.pivot(Constants.FiringSolutions.Feed.getShotRotations());
+          outtake.outtake(Constants.OuttakeConstants.ampTopShooterRPS, Constants.OuttakeConstants.ampBottomShooterRPS); 
+          return;
+        case STOP:
+        default:
+          outtake.stopOuttake();
+          outtake.stopPivot();
+          return;
+      }
+
+      if (RobotCoordinator.getInstance().canSpinFlywheel()) {
+        outtake.outtake(firingSolution.getFlywheelSpeed());
+      } else {
         outtake.stopOuttake();
+      }
+
+      if (RobotCoordinator.getInstance().canPivot()) {
+        outtake.pivot(firingSolution.getShotRotations());
+      } else {
         outtake.stopPivot();
-        return;
-    }
-
-    if (RobotCoordinator.getInstance().canSpinFlywheel()) {
-      outtake.outtake(firingSolution.getFlywheelSpeed());
-    } else {
-      outtake.stopOuttake();
-    }
-
-    if (RobotCoordinator.getInstance().canPivot()) {
-      outtake.pivot(firingSolution.getShotRotations());
-    } else {
-      outtake.stopPivot();
+      }
     }
   }
 
