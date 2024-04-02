@@ -53,7 +53,7 @@ public class LED extends SubsystemBase {
 
     if (Constants.debug) {
       // reserve a few LEDs for debug feedback
-      firstLed = 4;
+      firstLed = 0;
       numLeds = Constants.LED.totalLEDs - 4;
     } else {
       firstLed = 0;
@@ -121,7 +121,8 @@ public class LED extends SubsystemBase {
   public void setDebugLed(int red, int green, int blue, int Led) {
     if (Constants.debug) {
       // last caller wins
-      io.setLED(red, green, blue, Led, 1);
+      // first 8 LEDs are on the CANdle
+      io.setLED(red, green, blue, Constants.LED.totalLEDs - Led, 1);
     }
   }
 
