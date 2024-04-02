@@ -21,12 +21,10 @@ public class IntakeManual extends Command {
   ;
   private Intake intake;
   private AutoAcquireNote autoAcquireNote;
-  private XboxControllerRumble xBoxRumble;
 
   public IntakeManual() {
     intake = Intake.getInstance();
     autoAcquireNote = new AutoAcquireNote();
-    xBoxRumble = new XboxControllerRumble();
 
     addRequirements(intake);
   }
@@ -73,7 +71,6 @@ public class IntakeManual extends Command {
           intake.intake();
         }
         if (!coordinator.noteEnteringIntake()) {
-          CommandScheduler.getInstance().schedule(xBoxRumble);
           intakeState = IntakeStates.notePastIntake;
         }
         break;
