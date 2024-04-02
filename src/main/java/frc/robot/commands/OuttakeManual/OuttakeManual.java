@@ -1,6 +1,7 @@
 package frc.robot.commands.OuttakeManual;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.FiringSolutions;
@@ -12,6 +13,7 @@ import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.outtake.Outtake;
+import frc.utility.FiringSolutionHelper;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -37,29 +39,32 @@ public class OuttakeManual extends Command {
   public void execute() {
     switch (stateMachine.getState()) {
       case SMART_SHOOTING:
-        final int speakerAprilTagID;
+        final int speakerCenterAprilTagID;
+        final int speakerSideAprilTagID;
         if (Robot.isRed()) {
-          speakerAprilTagID = Constants.FieldConstants.redSpeakerCenterTagID;
+          speakerCenterAprilTagID = Constants.FieldConstants.redSpeakerCenterTagID;
+          speakerSideAprilTagID = Constants.FieldConstants.redSpeakerSideTagID;
         }
         else {
-          speakerAprilTagID = Constants.FieldConstants.blueSpeakerCenterTagID;
+          speakerCenterAprilTagID = Constants.FieldConstants.blueSpeakerCenterTagID;
+          speakerSideAprilTagID = Constants.FieldConstants.blueSpeakerSideTagID;
         }
 
-        // Only calculate new firing solutions if we can see the target April tag with Limelight.
-        // If specificed target isn't visible, then shooter stays at the previous calculated or set solution.
-        if (outtakeLimelight.getSpecifiedAprilTagVisible(speakerAprilTagID)) {
-          final Pose2d botPoseToSpeaker = outtakeLimelight.getTargetPose3DToBot(speakerAprilTagID).toPose2d();
+        // Only calculate new firing solutions if we can see the target April tags with Limelight.
+        // If specificed targets aren't visible, then shooter stays at the previous calculated or set solution.
+        if (outtakeLimelight.getSpecifiedAprilTagVisible(speakerCenterAprilTagID) 
+              && outtakeLimelight.getSpecifiedAprilTagVisible(speakerSideAprilTagID)) {
+          final Pose2d botPoseFieldRelative = outtakeLimelight.getBotposeWpiBlue();
+          final Translation2d botPoseToSpeaker = FiringSolutionHelper.getVectorToSpeaker(botPoseFieldRelative.getX(), botPoseFieldRelative.getY());
           
-          double magToSpeaker = botPoseToSpeaker.getTranslation().getNorm();
-          double degreesToSpeaker = botPoseToSpeaker.getRotation().getDegrees();
+          double magToSpeaker = botPoseToSpeaker.getNorm();
+          double degreesToSpeaker = botPoseToSpeaker.getAngle().getDegrees();
           firingSolution = FiringSolutionManager.getInstance().calcSolution(magToSpeaker, degreesToSpeaker);
           
           Logger.recordOutput("FiringSolutions/BotPoseInput/Mag", magToSpeaker);
           Logger.recordOutput("FiringSolutions/BotPoseInput/Angle", degreesToSpeaker);
-          Logger.recordOutput("FiringSolutions/Fiducial" + speakerAprilTagID + "Visible", true);
         }
         else {
-          Logger.recordOutput("FiringSolutions/Fiducial" + speakerAprilTagID + "Visible", false);
           Logger.recordOutput("FiringSolutions/BotPoseInput/Mag", 0.0);
           Logger.recordOutput("FiringSolutions/BotPoseInput/Angle", 0.0);
         }

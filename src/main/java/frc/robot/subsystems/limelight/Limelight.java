@@ -168,8 +168,11 @@ public class Limelight extends SubsystemBase {
 
   public Pose2d getBotposeWpiBlue() {
     if (enabled && isNetworkTableConnected) {
-      final Pose2d limelightPose = LimelightHelpers.getBotPose2d_wpiBlue(name);
-      return limelightPose;
+      if (getTargetVisible()) {
+        final Pose2d limelightPose = LimelightHelpers.getBotPose2d_wpiBlue(name);
+        return limelightPose;
+      }
+
     }
     return new Pose2d();
   }
@@ -237,22 +240,6 @@ public class Limelight extends SubsystemBase {
     } else {
       return 0;
     }
-  }
-
-  public boolean alignedWithSpeakerTag() {
-    if (enabled && isNetworkTableConnected) {
-      final int tagID;
-      if (Robot.isRed()) {
-        tagID = Constants.FieldConstants.redSpeakerCenterTagID;
-      }
-      else {
-        tagID = Constants.FieldConstants.blueSpeakerCenterTagID;
-      }
-
-      return OrangeMath.equalToEpsilon(getTargetPose3DToBot(tagID).toPose2d().getRotation().getDegrees(), 
-          0, Constants.LimelightConstants.alignToSpeakerTagRotTolerance);
-    }
-    return false;
   }
 
   public boolean getSpecifiedAprilTagVisible(int aprilTagID) {

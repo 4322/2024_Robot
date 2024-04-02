@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -11,6 +13,8 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.noteTracker.NoteTracker;
 import frc.robot.subsystems.outtake.Outtake;
+import frc.utility.FiringSolutionHelper;
+import frc.utility.OrangeMath;
 
 public class RobotCoordinator extends SubsystemBase {
   private Intake intake = Intake.getInstance();
@@ -21,11 +25,7 @@ public class RobotCoordinator extends SubsystemBase {
 
   private static RobotCoordinator robotCoordinator;
   private boolean intakeButtonPressed;
-  private boolean slowClimbButtonHeld;
-  private boolean notePassingIntake;
-  private boolean notePassingTunnel;
   private boolean autoIntakeButtonPressed;
-  private boolean outtakeInClimbState = false;
 
   public static RobotCoordinator getInstance() {
     if (robotCoordinator == null) {
@@ -50,7 +50,7 @@ public class RobotCoordinator extends SubsystemBase {
   }
 
   public boolean canSmartShoot() {
-    return canShoot() && Limelight.getOuttakeInstance().alignedWithSpeakerTag();
+    return canShoot() && alignedWithSpeaker();
   }
 
   public boolean canSpinFlywheel() {
@@ -151,6 +151,30 @@ public class RobotCoordinator extends SubsystemBase {
     } else {
       return false;
     }
+  }
+
+  public boolean alignedWithSpeaker() {
+    final int centerTagID;
+    final int sideTagID;
+    if (Robot.isRed()) {
+      centerTagID = Constants.FieldConstants.redSpeakerCenterTagID;
+      sideTagID = Constants.FieldConstants.redSpeakerSideTagID;
+    }
+    else {
+      centerTagID = Constants.FieldConstants.blueSpeakerCenterTagID;
+      sideTagID = Constants.FieldConstants.blueSpeakerSideTagID;
+    }
+    if (Limelight.getOuttakeInstance().getSpecifiedAprilTagVisible(centerTagID)
+          && Limelight.getOuttakeInstance().getSpecifiedAprilTagVisible(sideTagID)) {
+        final Pose2d robotPoseFieldRelative = Limelight.getOuttakeInstance().getBotposeWpiBlue();
+        final Translation2d botPoseToSpeaker = 
+          FiringSolutionHelper.getVectorToSpeaker(robotPoseFieldRelative.getX(), robotPoseFieldRelative.getY());
+
+        // Must bound botPoseToSpeaker angle because getAnge drive method is bounded
+        return OrangeMath.equalToEpsilon(OrangeMath.boundDegrees(botPoseToSpeaker.getAngle().getDegrees()), 
+            drive.getAngle(), Constants.LimelightConstants.alignToSpeakerTagRotTolerance);
+      }
+      return false;
   }
 
   public double getRobotXPos() {
