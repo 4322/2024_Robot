@@ -2,7 +2,7 @@ package frc.robot.subsystems.LED;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import edu.wpi.first.wpilibj.util.Color8Bit;
+import edu.wpi.first.wpilibj.util.Color;
 
 public interface LedIO {
   @AutoLog
@@ -12,7 +12,7 @@ public interface LedIO {
     public double fiveVRailVoltage = 0.0;
   }
 
-  public default void setLED(Color8Bit color, int startOffset, int ledNum) {}
+  public default void setLED(Color color, int startOffset, int ledNum) {}
   ;
 
   public default void rainbowAnimate(

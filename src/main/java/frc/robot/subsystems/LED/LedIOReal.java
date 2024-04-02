@@ -4,6 +4,7 @@ import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdle.VBatOutputMode;
 
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 
 import com.ctre.phoenix.led.CANdleConfiguration;
@@ -39,8 +40,9 @@ public class LedIOReal implements LedIO {
   }
 
   @Override
-  public void setLED(Color8Bit color, int startOffset, int ledNum) {
-    candle.setLEDs(color.red, color.green, color.blue, 0, startOffset, ledNum);
+  public void setLED(Color color, int startOffset, int ledNum) {
+    Color8Bit color8bit = new Color8Bit(color);
+    candle.setLEDs(color8bit.red, color8bit.green, color8bit.blue, 0, startOffset, ledNum);
   }
 
   @Override

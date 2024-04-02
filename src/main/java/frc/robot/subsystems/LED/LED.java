@@ -1,7 +1,6 @@
 package frc.robot.subsystems.LED;
 
 import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
@@ -57,7 +56,7 @@ public class LED extends SubsystemBase {
       // reserve a few LEDs for debug feedback
       firstLed = 0;
       numLeds = Constants.LED.totalLEDs - 4;
-      io.setLED(new Color8Bit(Color.kBlack), Constants.LED.totalLEDs - 4, 4);
+      io.setLED(Color.kBlack, Constants.LED.totalLEDs - 4, 4);
     } else {
       firstLed = 0;
       numLeds = Constants.LED.totalLEDs;
@@ -83,37 +82,37 @@ public class LED extends SubsystemBase {
       }
       switch (currentState) {
         case notInitialized:
-          io.setLED(new Color8Bit(Color.kRed), firstLed, numLeds);
+          io.setLED(Color.kRed, firstLed, numLeds);
           break;
         case initialized:
-          io.setLED(new Color8Bit(Color.kIvory), firstLed, numLeds);
+          io.setLED(Color.kIvory, firstLed, numLeds);
           break;
         case idle:
-          io.setLED(new Color8Bit(Color.kCyan), firstLed, numLeds);
+          io.setLED(Color.kCyan, firstLed, numLeds);
           break;
         case noteInRobot:
-          io.setLED(new Color8Bit(Color.kPurple), firstLed, numLeds);
+          io.setLED(Color.kPurple, firstLed, numLeds);
           break;
         case noteFired:
-          io.setLED(new Color8Bit(Color.kOrange), firstLed, numLeds);
+          io.setLED(Color.kOrange, firstLed, numLeds);
           break;
         case noteReadyToShoot:
-          io.setLED(new Color8Bit(Color.kHoneydew), firstLed, numLeds);
+          io.setLED(Color.kHoneydew, firstLed, numLeds);
           break;
         case brakeMode:
-          io.setLED(new Color8Bit(Color.kOrange), firstLed, numLeds);
+          io.setLED(Color.kOrange, firstLed, numLeds);
           break;
         case coastMode:
-          io.setLED(new Color8Bit(Color.kGreen), firstLed, numLeds);
+          io.setLED(Color.kGreen, firstLed, numLeds);
           break;
         case operatorPreset:
-          io.setLED(new Color8Bit(Color.kWhite), firstLed, numLeds);
+          io.setLED(Color.kWhite, firstLed, numLeds);
           break;
       }
     }
   }
 
-  public void setAutoRotateDebugLed(Color8Bit color, int led) {
+  public void setAutoRotateDebugLed(Color color, int led) {
     if (Constants.autoRotateDebug) {
       // last caller wins
       // first 8 LEDs are on the CANdle

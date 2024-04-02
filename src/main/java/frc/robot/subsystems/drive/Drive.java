@@ -463,26 +463,26 @@ public class Drive extends SubsystemBase {
       if (isRobotMoving()) {
         adjMinAutoRotatePower = DriveConstants.Auto.minAutoRotateMovingPower;
         toleranceDeg = Constants.DriveConstants.Auto.rotateMovingToleranceDegrees;
-        LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kBlue), Constants.LED.debugLed4);
+        LED.getInstance().setAutoRotateDebugLed(Color.kBlue, Constants.LED.debugLed4);
       } else {
         // greater percision when lining up for something
         adjMinAutoRotatePower = DriveConstants.Auto.minAutoRotateStoppedPower;
         toleranceDeg = Constants.DriveConstants.Auto.rotateStoppedToleranceDegrees;
-        LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kGreen), Constants.LED.debugLed4);
+        LED.getInstance().setAutoRotateDebugLed(Color.kGreen, Constants.LED.debugLed4);
       }
 
       if (Math.abs(headingChangeDeg) <= toleranceDeg) {
         rotPIDSpeed = 0; // don't wiggle
-        LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kGreen), Constants.LED.debugLed3);
+        LED.getInstance().setAutoRotateDebugLed(Color.kGreen, Constants.LED.debugLed3);
       } else if (Math.abs(rotPIDSpeed) < adjMinAutoRotatePower) {
         rotPIDSpeed = Math.copySign(adjMinAutoRotatePower, rotPIDSpeed);
-        LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kBlue), Constants.LED.debugLed3);
+        LED.getInstance().setAutoRotateDebugLed(Color.kBlue, Constants.LED.debugLed3);
       } else if (rotPIDSpeed > adjMaxAutoRotatePower) {
         rotPIDSpeed = adjMaxAutoRotatePower;
-        LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kPink), Constants.LED.debugLed3);
+        LED.getInstance().setAutoRotateDebugLed(Color.kPink, Constants.LED.debugLed3);
       } else if (rotPIDSpeed < -adjMaxAutoRotatePower) {
         rotPIDSpeed = -adjMaxAutoRotatePower;
-        LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kPink), Constants.LED.debugLed3);
+        LED.getInstance().setAutoRotateDebugLed(Color.kPink, Constants.LED.debugLed3);
       }
 
       drive(driveX, driveY, rotPIDSpeed);
