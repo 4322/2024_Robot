@@ -33,6 +33,7 @@ public class OuttakeTunnelFeed extends Command {
     switch (stateMachine.getState()) {
       case NO_NOTE:
         if (NoteTracker.getInstance().tunnelBeamBroken()) {
+          CommandScheduler.getInstance().schedule(new XboxControllerRumble());
           stateMachine.fire(OuttakeTunnelFeedTrigger.TUNNEL_BEAM_BROKEN);
         }
         break;
