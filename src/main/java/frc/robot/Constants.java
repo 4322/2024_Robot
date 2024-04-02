@@ -495,7 +495,11 @@ public final class Constants {
     public static final double xCenterLineM = 8.2955;
 
     public static final int redSpeakerCenterTagID = 4;
+    public static final int redSpeakerSideTagID = 3;
+    
     public static final int blueSpeakerCenterTagID = 7;
+    public static final int blueSpeakerSideTagID = 8;
+    
   }
 
   public static final class FiringSolutions {

@@ -1,6 +1,8 @@
 package frc.robot.commands.DriveManual;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
@@ -17,6 +19,7 @@ import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger
 import frc.robot.subsystems.LED.LED;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.limelight.Limelight;
+import frc.utility.FiringSolutionHelper;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -84,18 +87,24 @@ public class DriveManual extends Command {
     updateDriveValues();
     switch (stateMachine.getState()) {
       case SPEAKER_CENTRIC:
-        final int speakerAprilTagID;
+        final int speakerCenterAprilTagID;
+        final int speakerSideAprilTagID;
         if (Robot.isRed()) {
-          speakerAprilTagID = Constants.FieldConstants.redSpeakerCenterTagID;
+          speakerCenterAprilTagID = Constants.FieldConstants.redSpeakerCenterTagID;
+          speakerSideAprilTagID = Constants.FieldConstants.redSpeakerSideTagID;
         } else {
-          speakerAprilTagID = Constants.FieldConstants.blueSpeakerCenterTagID;
+          speakerCenterAprilTagID = Constants.FieldConstants.blueSpeakerCenterTagID;
+          speakerSideAprilTagID = Constants.FieldConstants.blueSpeakerSideTagID;
         }
 
-        if (Limelight.getOuttakeInstance().getSpecifiedAprilTagVisible(speakerAprilTagID)) {
-          speakerCentricAngle = Limelight.getOuttakeInstance().getTargetPose3DToBot(speakerAprilTagID)
-          .toPose2d().getRotation().getDegrees();
-          LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kPurple), Constants.LED.debugLed2);
+        if (Limelight.getOuttakeInstance().getSpecifiedAprilTagVisible(speakerCenterAprilTagID) 
+              && Limelight.getOuttakeInstance().getSpecifiedAprilTagVisible(speakerSideAprilTagID)) {
+          final Pose2d botPoseFieldRelative = Limelight.getOuttakeInstance().getBotposeWpiBlue();
+          final Translation2d botPoseToSpeaker = FiringSolutionHelper.getVectorToSpeaker(botPoseFieldRelative.getX(), botPoseFieldRelative.getY());
+          
+          speakerCentricAngle = botPoseToSpeaker.getAngle().getDegrees();
           drive.driveAutoRotate(driveX, driveY, speakerCentricAngle);
+          LED.getInstance().setAutoRotateDebugLed(new Color8Bit(Color.kPurple), Constants.LED.debugLed2);
 
           Logger.recordOutput("RobotHeading/PseudoAutoRotateEngaged", false);
           Logger.recordOutput("RobotHeading/SpeakerCentricHeading/", speakerCentricAngle);
