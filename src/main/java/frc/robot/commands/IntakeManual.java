@@ -30,6 +30,11 @@ public class IntakeManual extends Command {
   }
 
   @Override
+  public void initialize() {
+    intakeState = IntakeStates.retracting;
+  }
+
+  @Override
   public void execute() {
     RobotCoordinator coordinator = RobotCoordinator.getInstance();
     switch (intakeState) {

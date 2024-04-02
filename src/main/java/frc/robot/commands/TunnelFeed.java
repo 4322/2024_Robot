@@ -62,7 +62,9 @@ public class TunnelFeed extends Command {
       case waitForIntake:
         // Accounts for note being midway between intake and tunnel sensor
         // Tunnel still runs for this case
-        if (RobotCoordinator.getInstance().noteEnteringIntake()) {
+        if (RobotCoordinator.getInstance().getIntakeButtonPressed() 
+              && RobotCoordinator.getInstance().isIntakeDeployed()    
+                && RobotCoordinator.getInstance().intakeIsFeeding()) {
           tunnel.feed();
           abortTimer.start();
           state = State.inTunnel;
