@@ -138,6 +138,8 @@ public class DriveManual extends Command {
       drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
     } else {
       LED.getInstance().setAutoRotateDebugLed(Color.kBlack, Constants.LED.debugLed2);
+      LED.getInstance().setAutoRotateDebugLed(Color.kBlack, Constants.LED.debugLed3);
+      LED.getInstance().setAutoRotateDebugLed(Color.kBlack, Constants.LED.debugLed4);
       drive.drive(driveX, driveY, rotatePower);
     }
   }
