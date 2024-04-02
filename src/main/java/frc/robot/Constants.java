@@ -282,27 +282,6 @@ public final class Constants {
     public static final double autoFeedMoveSpeed = 1;
   }
 
-  public static final class ClimberConstants {
-    public static final int climberMotorID = 25;
-    public static final double climberMaxRotations = 149; // physical limit of climber
-    public static final double climberMinRotations = 0;
-    public static final double slowClimberVolts = 2;
-    public static final double fastClimberVolts = 12;
-    public static final double climberRotationTolerance = 1;
-    public static final double retractingThreshold =
-        0; // TODO: tune depending on how chain engages with hook
-    public static final int peakForwardVoltage = 12;
-    public static final double peakReverseVoltage = -12;
-    public static final double climbingPivotRotations =
-        85; // for outtake pivot - TODO: Needs re-tuning
-
-    public static final double statorLimit = 60;
-    public static final double supplyLimit = 40;
-    public static final double supplyThreshold = 60;
-    public static final double supplyTime = 2.0;
-    public static final double openRampPeriod = 0.08; // TODO
-  }
-
   public static final class OuttakeConstants {
     public static final int topOuttakeDeviceID = 4;
     public static final int bottomOuttakeDeviceID = 5;
@@ -529,8 +508,6 @@ public final class Constants {
     public static final FiringSolution MS = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution BS = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution Eject = new FiringSolution(0, 0, 10, 85.0 / 3.0);
-    public static final FiringSolution Climbing =
-        new FiringSolution(0, 0, 0, ClimberConstants.climbingPivotRotations);
     // collecting note should be at lowest pivot limit
     public static final FiringSolution CollectingNote =
         new FiringSolution(0, 0, 0, Constants.OuttakeConstants.reverseSoftLimitThresholdRotations);

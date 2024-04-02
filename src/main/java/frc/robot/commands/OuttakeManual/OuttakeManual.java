@@ -82,11 +82,8 @@ public class OuttakeManual extends Command {
       case FEED:
         firingSolution = FiringSolutions.Feed;
         break;
-      case CLIMBING:
-        firingSolution = FiringSolutions.Climbing;
-        break;
       case AMP:
-        outtake.pivot(Constants.FiringSolutions.Feed.getShotRotations(), true);
+        outtake.pivot(Constants.FiringSolutions.Feed.getShotRotations());
         outtake.outtake(Constants.OuttakeConstants.ampTopShooterRPS, Constants.OuttakeConstants.ampBottomShooterRPS); 
         return;
       case STOP:
@@ -103,11 +100,7 @@ public class OuttakeManual extends Command {
     }
 
     if (RobotCoordinator.getInstance().canPivot()) {
-      if (stateMachine.getState() == OuttakeManualState.CLIMBING) {
-        outtake.pivot(firingSolution.getShotRotations(), false);
-      } else {
-        outtake.pivot(firingSolution.getShotRotations(), true);
-      }
+      outtake.pivot(firingSolution.getShotRotations());
     } else {
       outtake.stopPivot();
     }

@@ -65,7 +65,7 @@ public class Outtake extends SubsystemBase {
         outtake(inputs.topDebugTargetRPS, inputs.bottomDebugTargetRPS);
       }
       if (Constants.outtakePivotEnabled) {
-        pivot(inputs.targetPivotPosition, false);
+        pivot(inputs.targetPivotPosition);
       }
     }
   }
@@ -96,11 +96,10 @@ public class Outtake extends SubsystemBase {
     outtake(targetRPS, targetRPS);
   }
 
-  public void pivot(double rotations, boolean limitForwardMotion) {
+  public void pivot(double rotations) {
     if (Constants.outtakePivotEnabled && io.pivotIsInitialized()) {
       // Code that limits forward movement of shooter if requested
-      if (limitForwardMotion
-          && rotations > Constants.OuttakeConstants.forwardSoftLimitThresholdRotations) {
+      if (rotations > Constants.OuttakeConstants.forwardSoftLimitThresholdRotations) {
         rotations = Constants.OuttakeConstants.forwardSoftLimitThresholdRotations;
       }
       // Overrides operator shooting presets
