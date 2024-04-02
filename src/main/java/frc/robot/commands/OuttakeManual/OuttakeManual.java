@@ -48,7 +48,7 @@ public class OuttakeManual extends Command {
         // Only calculate new firing solutions if we can see the target April tag with Limelight.
         // If specificed target isn't visible, then shooter stays at the previous calculated or set solution.
         if (outtakeLimelight.getSpecifiedAprilTagVisible(speakerAprilTagID)) {
-          final Pose2d botPoseToSpeaker = outtakeLimelight.getTargetPose3DToBot(Constants.FieldConstants.redSpeakerCenterTagID).toPose2d();
+          final Pose2d botPoseToSpeaker = outtakeLimelight.getTargetPose3DToBot(speakerAprilTagID).toPose2d();
           
           double magToSpeaker = botPoseToSpeaker.getTranslation().getNorm();
           double degreesToSpeaker = botPoseToSpeaker.getRotation().getDegrees();
@@ -60,6 +60,8 @@ public class OuttakeManual extends Command {
         }
         else {
           Logger.recordOutput("FiringSolutions/Fiducial" + speakerAprilTagID + "Visible", false);
+          Logger.recordOutput("FiringSolutions/BotPoseInput/Mag", 0.0);
+          Logger.recordOutput("FiringSolutions/BotPoseInput/Angle", 0.0);
         }
         
         Logger.recordOutput("FiringSolutions/CalculatedShot/Flywheel", firingSolution.getFlywheelSpeed());

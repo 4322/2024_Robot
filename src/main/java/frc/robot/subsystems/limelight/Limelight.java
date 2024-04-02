@@ -277,9 +277,7 @@ public class Limelight extends SubsystemBase {
         LimelightHelpers.LimelightTarget_Fiducial[] totalVisibleFiducialTargets = llResults.targetingResults.targets_Fiducials;
         for (LimelightTarget_Fiducial target : totalVisibleFiducialTargets) {
           if (aprilTagID == target.fiducialID) {
-            Logger.recordOutput(name  + "/2dPoseTranslation", target.getTargetPose_RobotSpace().toPose2d().getTranslation().getNorm());
-            Logger.recordOutput(name  + "/2dPoseRotation", target.getTargetPose_RobotSpace().toPose2d().getRotation().getDegrees());
-            return target.getTargetPose_RobotSpace();
+            return target.getRobotPose_TargetSpace();
           }     
         }
       }
