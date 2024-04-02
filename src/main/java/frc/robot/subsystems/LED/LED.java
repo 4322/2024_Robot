@@ -8,6 +8,8 @@ public class LED extends SubsystemBase {
   public LedIO io;
   private LEDState currentState = LEDState.idle;
   private LedIOInputsAutoLogged inputs = new LedIOInputsAutoLogged();
+  private final int firstLed;
+  private final int numLeds;
 
   public enum LEDState {
     notInitialized,
@@ -47,6 +49,15 @@ public class LED extends SubsystemBase {
 
     if (io == null) {
       io = new LedIO() {};
+    }
+
+    if (Constants.debug) {
+      // reserve a few LEDs for debug feedback
+      firstLed = 4;
+      numLeds = Constants.LED.totalLEDs - 4;
+    } else {
+      firstLed = 0;
+      numLeds = Constants.LED.totalLEDs;
     }
   }
 
@@ -104,6 +115,13 @@ public class LED extends SubsystemBase {
           io.setLED(255, 255, 255, 0, Constants.LED.totalLEDs);
           break;
       }
+    }
+  }
+
+  public void setDebugLed(int red, int green, int blue, int Led) {
+    if (Constants.debug) {
+      // last caller wins
+      io.setLED(red, green, blue, Led, 1);
     }
   }
 

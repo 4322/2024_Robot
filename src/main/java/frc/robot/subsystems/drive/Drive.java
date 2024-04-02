@@ -22,6 +22,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.WheelPosition;
 import frc.robot.RobotChooser.RobotChooser;
 import frc.robot.RobotChooser.RobotChooserInterface;
+import frc.robot.subsystems.LED.LED;
 import frc.utility.OrangeMath;
 import frc.utility.SnapshotTranslation2D;
 import java.util.ArrayList;
@@ -468,12 +469,16 @@ public class Drive extends SubsystemBase {
 
       if (Math.abs(headingChangeDeg) <= toleranceDeg) {
         rotPIDSpeed = 0; // don't wiggle
+        LED.getInstance().setDebugLed(0, 255, 0, 2);
       } else if (Math.abs(rotPIDSpeed) < adjMinAutoRotatePower) {
         rotPIDSpeed = Math.copySign(adjMinAutoRotatePower, rotPIDSpeed);
+        LED.getInstance().setDebugLed(0, 0, 255, 2);
       } else if (rotPIDSpeed > adjMaxAutoRotatePower) {
         rotPIDSpeed = adjMaxAutoRotatePower;
+        LED.getInstance().setDebugLed(255, 0, 0, 2);
       } else if (rotPIDSpeed < -adjMaxAutoRotatePower) {
         rotPIDSpeed = -adjMaxAutoRotatePower;
+        LED.getInstance().setDebugLed(255, 0, 0, 2);
       }
 
       drive(driveX, driveY, rotPIDSpeed);

@@ -12,6 +12,7 @@ import frc.robot.Constants.RotateInputScalingStrings;
 import frc.robot.RobotContainer;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualState;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
+import frc.robot.subsystems.LED.LED;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.limelight.Limelight;
 import frc.utility.OrangeMath;
@@ -79,6 +80,7 @@ public class DriveManual extends Command {
   @Override
   public void execute() {
     updateDriveValues();
+    LED.getInstance().setDebugLed(255, 255, 255, 1);
     switch (stateMachine.getState()) {
       case SPEAKER_CENTRIC:
         final int speakerAprilTagID;
@@ -119,8 +121,10 @@ public class DriveManual extends Command {
     } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
       Logger.recordOutput("RobotHeading/PseudoAutoRotateEngaged", true);
       Logger.recordOutput("RobotHeading/PseudoAutoRotateHeading", pseudoAutoRotateAngle);
+      LED.getInstance().setDebugLed(0, 0, 255, 1);
       drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
     } else {
+      LED.getInstance().setDebugLed(255, 255, 255, 2);
       drive.drive(driveX, driveY, rotatePower);
     }
   }
@@ -254,10 +258,12 @@ public class DriveManual extends Command {
 
     if (stateMachine.getState() != DriveManualState.DEFAULT || rotatePower != 0) {
       pseudoAutoRotateAngle = null;
+      LED.getInstance().setDebugLed(255, 255, 255, 0);
     } else if (rotatePower == 0
         && pseudoAutoRotateAngle == null
         && driveAbsAngularVel < Manual.inhibitPseudoAutoRotateDegPerSec) {
       pseudoAutoRotateAngle = drive.getAngle();
+      LED.getInstance().setDebugLed(0, 0, 255, 0);
     }
   }
 
@@ -369,6 +375,7 @@ public class DriveManual extends Command {
   public void end(boolean interrupted) {
     if (interrupted) {
       pseudoAutoRotateAngle = null;
+      LED.getInstance().setDebugLed(255, 255, 255, 0);
     }
   }
 
