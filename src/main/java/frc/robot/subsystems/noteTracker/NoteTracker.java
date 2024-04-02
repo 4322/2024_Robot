@@ -69,6 +69,7 @@ public class NoteTracker extends SubsystemBase {
         }
       } else if (Intake.getInstance().isEjecting()) {
         notePassingIntake = false;
+        notePassingTunnel = false;
       }
     }
   }

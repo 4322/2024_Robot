@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants;
 import frc.robot.subsystems.RobotCoordinator;
+import frc.robot.subsystems.noteTracker.NoteTracker;
 import frc.robot.subsystems.tunnel.Tunnel;
 import org.littletonrobotics.junction.Logger;
 
@@ -76,6 +77,11 @@ public class TunnelFeed extends Command {
           adjustmentTimer.restart();
           CommandScheduler.getInstance().schedule(new XboxControllerRumble());
           state = State.stoppingAtOuttake;
+        }
+        // Stop tunnel if there is no note and intake button isn't pressed
+        else if (!RobotCoordinator.getInstance().getIntakeButtonPressed() && !NoteTracker.getInstance().intakeBeamBroken()) {
+          tunnel.stopTunnel();
+          state = State.waitForIntake;
         }
         break;
       case stoppingAtOuttake:
