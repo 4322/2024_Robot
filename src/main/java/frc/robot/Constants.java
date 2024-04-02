@@ -473,6 +473,11 @@ public final class Constants {
   public static final class LED {
     public static final int totalLEDs = 43;
     public static final int CANdleID = 3;
+
+    public static final int debugLed1 = totalLEDs - 1;
+    public static final int debugLed2 = totalLEDs - 2;
+    public static final int debugLed3 = totalLEDs - 3;
+    public static final int debugLed4 = totalLEDs - 4;
   }
 
   public static final class FieldConstants {
