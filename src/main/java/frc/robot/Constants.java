@@ -154,7 +154,7 @@ public final class Constants {
 
     public static final double disableBreakSec = 2.0;
 
-    public static final double stoppedVelocityThresholdMetersPerSec = 0.1524;
+    public static final double stoppedVelocityThresholdMetersPerSec = 0.035;
     public static final double movingVelocityThresholdMetersPerSec = 0.4572;
 
     public static final double spinoutCenterPower = 1.0;
