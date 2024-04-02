@@ -461,10 +461,12 @@ public class Drive extends SubsystemBase {
       if (isRobotMoving()) {
         adjMinAutoRotatePower = DriveConstants.Auto.minAutoRotateMovingPower;
         toleranceDeg = Constants.DriveConstants.Auto.rotateMovingToleranceDegrees;
+        LED.getInstance().setDebugLed(0, 0, 255, 3);
       } else {
         // greater percision when lining up for something
         adjMinAutoRotatePower = DriveConstants.Auto.minAutoRotateStoppedPower;
         toleranceDeg = Constants.DriveConstants.Auto.rotateStoppedToleranceDegrees;
+        LED.getInstance().setDebugLed(0, 255, 0, 3);
       }
 
       if (Math.abs(headingChangeDeg) <= toleranceDeg) {
