@@ -62,7 +62,8 @@ public class OuttakeManual extends Command {
           Logger.recordOutput("FiringSolutions/Fiducial" + speakerAprilTagID + "Visible", false);
         }
         
-        Logger.recordOutput("FiringSolutions/CalculatedShot", firingSolution.toString());
+        Logger.recordOutput("FiringSolutions/CalculatedShot/Flywheel", firingSolution.getFlywheelSpeed());
+        Logger.recordOutput("FiringSolutions/CalculatedShot/PivotRotations", firingSolution.getShotRotations());
         break;
       case SUBWOOFER:
         firingSolution = FiringSolutions.SubwooferBase;
