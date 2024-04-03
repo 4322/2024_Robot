@@ -335,7 +335,7 @@ public final class Constants {
     public static final double absEncoderMaxZeroingThreshold = 0.97;
     public static final double absEncoderAlmostZeroThreshold = 0.995;
 
-    public static final double outtakeToleranceRPS = 3.0;
+    public static final double outtakeToleranceRPS = 1.5;
     public static final double pivotToleranceRotations = 0.5;
     public static final double maxPivotForIntake = 50;
 
