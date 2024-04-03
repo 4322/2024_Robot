@@ -183,8 +183,7 @@ public class Limelight extends SubsystemBase {
 
   public int getNumTargets() {
     if (enabled && isNetworkTableConnected) {
-      final int numTargets =
-          LimelightHelpers.getLatestResults(name).targetingResults.targets_Fiducials.length;
+      final int numTargets = llFiducialMap.size();
       Logger.recordOutput(name + "/NumTargets", numTargets);
       return numTargets;
     }

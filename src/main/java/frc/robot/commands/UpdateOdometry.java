@@ -25,11 +25,7 @@ public class UpdateOdometry extends Command {
   @Override
   public void execute() {
     final Pose2d limelightPose = limelight.getBotposeWpiBlue();
-    final double distanceToBot =
-        Drive.getInstance()
-            .getPose2d()
-            .getTranslation()
-            .getDistance(limelightPose.getTranslation());
+
     if (limelight.getTargetVisible()
         && limelight.getNumTargets() >= LimelightConstants.numTargetsToUseReverseOdom) {
       Drive.getInstance()

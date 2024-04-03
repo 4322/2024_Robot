@@ -737,6 +737,7 @@ public class LimelightHelpers {
   }
 
   /** Parses Limelight's JSON results dump into a LimelightResults Object */
+  // Don't ever call this! It can take up to 1 second to execute!!!
   public static LimelightResults getLatestResults(String limelightName) {
 
     long start = System.nanoTime();
