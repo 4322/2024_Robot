@@ -290,11 +290,17 @@ public final class Constants {
     public static final int pivotDeviceID = 6;
     public static final int pivotEncoderID = 8;
 
-    public static final double kP = 0.0;
-    public static final double kI = 0.0;
-    public static final double kD = 0.0;
-    public static final double kV = 0.131; // kV * maxVelRotationsPerSec = max voltage
-    public static final double kS = 0.465;
+    public static final double topkP = 0.0;
+    public static final double topkI = 0.0;
+    public static final double topkD = 0.0;
+    public static final double topkV = 0.11; // kV * maxVelRotationsPerSec = max voltage
+    public static final double topkS = 0.173;
+
+    public static final double bottomkP = 0.0;
+    public static final double bottomkI = 0.0;
+    public static final double bottomkD = 0.0;
+    public static final double bottomkV = 0.113; // kV * maxVelRotationsPerSec = max voltage
+    public static final double bottomkS = 0.175;
 
     public static final double openLoopRampSec = 0;
     public static final double closedLoopRampSec = 0;
