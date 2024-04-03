@@ -254,7 +254,7 @@ public class RobotContainer {
                     outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
                   }));
       driveXbox.leftTrigger().whileTrue(new Shoot());
-      if (Constants.shotTuningMode) {
+      if (Constants.outtakeTuningMode) {
         driveXbox.y().onTrue(writeFiringSolution);
         // right up against front of speaker with edge of robot on source side
         driveXbox

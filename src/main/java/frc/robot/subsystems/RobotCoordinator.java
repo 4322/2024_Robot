@@ -66,6 +66,10 @@ public class RobotCoordinator extends SubsystemBase {
     intakeButtonPressed = isPressed;
   }
 
+  public boolean inShotTuningMode() {
+    return outtake.inShotTuningMode();
+  }
+
   public boolean getIntakeButtonPressed() {
     return intakeButtonPressed
         || getAutoIntakeButtonPressed(); // auto intake button is an identical bind so it also

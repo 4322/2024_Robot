@@ -25,7 +25,7 @@ public class WriteFiringSolutionAtCurrentPos extends InstantCommand {
 
   @Override
   public void initialize() {
-    if (Constants.shotTuningMode) {
+    if (Constants.outtakeTuningMode) {
       Translation2d rawTranslation =
           FiringSolutionHelper.getVectorToSpeaker(
               drive.getPose2d().getX(), drive.getPose2d().getY());
