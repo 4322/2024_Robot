@@ -33,7 +33,6 @@ import frc.robot.commands.IntakeManual;
 import frc.robot.commands.IntakeStop;
 import frc.robot.commands.LEDState;
 import frc.robot.commands.OperatorPresetLED;
-import frc.robot.commands.OperatorXboxControllerRumble;
 import frc.robot.commands.OuttakeManual.OuttakeManual;
 import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualTrigger;
 import frc.robot.commands.OuttakeStop;
@@ -189,36 +188,22 @@ public class RobotContainer {
     if (Constants.xboxEnabled) {
       driveXbox = new CommandXboxController(2);
       operatorXbox = new CommandXboxController(3);
-      driveXbox
-          .leftBumper()
-          .onTrue(
-              Commands.runOnce(
-                  () -> {
-                    driveManual.updateStateMachine(DriveManualTrigger.ENABLE_ROBOT_CENTRIC);
-                  }));
-      driveXbox
-          .leftBumper()
-          .onFalse(
-              Commands.runOnce(
-                  () -> {
-                    driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);
-                  }));
       if (Constants.speakerCentricEnabled) {
         driveXbox
-          .back() // binded to back left P4 button on xbox
-          .onTrue(
-              Commands.runOnce(
-                  () -> {
-                    driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC);
-                  }));
+            .start() // binded to back right P2 button on xbox
+            .onTrue(
+                Commands.runOnce(
+                    () -> {
+                      driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC);
+                    }));
+        driveXbox
+            .start()
+            .onFalse(
+                Commands.runOnce(
+                    () -> {
+                      driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);
+                    }));
       }
-      driveXbox
-          .start() // binded to back right P2 button on xbox
-          .onTrue(
-              Commands.runOnce(
-                  () -> {
-                    driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);
-                  }));
       driveXbox.x().onTrue(new ResetFieldCentric(true));
       driveXbox.povDown().onTrue(driveStop);
       driveXbox
