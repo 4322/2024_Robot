@@ -46,6 +46,7 @@ public class IntakeManual extends Command {
       case deploying:
         if (coordinator.canDeploy()) {
           intake.deploy();
+          intake.intake();  // maybe jump to feeding state instead?
         }
         if (!coordinator.getIntakeButtonPressed()) {
           intakeState = IntakeStates.retracting;

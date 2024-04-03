@@ -369,8 +369,8 @@ public final class Constants {
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
 
-      public static final double peakForwardVoltage = 2.5; // anything higher will slip the belt
-      public static final double peakReverseVoltage = -2.5;
+      public static final double peakForwardVoltage = 3.5;
+      public static final double peakReverseVoltage = -6.0;
 
       public static final double supplyLimit = 30;
       public static final double statorLimit = 60;
