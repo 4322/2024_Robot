@@ -415,7 +415,8 @@ public final class Constants {
     public static final double peakVoltage = 6.0;
     public static final double pauseSec = 0.12; // time for tunnel to stop before rewinding
     public static final double rewindSec = 0.04;
-    public static final double abortSec = 5;
+    public static final double feedAbortSec = 3;
+    public static final double totalAbortSec = 5;
 
     public static final class Logging {
       public static final String key = "Tunnel/";

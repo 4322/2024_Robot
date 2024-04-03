@@ -18,6 +18,7 @@ public class TunnelFeed extends Command {
 
   public enum State {
     waitForIntake,
+    waitForNote,
     inTunnel,
     stoppingAtOuttake,
     rewinding,
@@ -49,26 +50,28 @@ public class TunnelFeed extends Command {
   @Override
   public void execute() {
 
-    if (abortTimer.hasElapsed(Constants.TunnelConstants.abortSec)) {
-      tunnel.stopTunnel();
-      state = State.abort;
-      abortTimer.stop();
-      abortTimer.reset();
-    }
-
     switch (state) {
       case abort:
+        tunnel.stopTunnel();
+        abortTimer.stop();
+        abortTimer.reset();
         state = State.waitForIntake;
         break;
       case waitForIntake:
-        // Accounts for note being midway between intake and tunnel sensor
-        // Tunnel still runs for this case
-        if (RobotCoordinator.getInstance().getIntakeButtonPressed() 
-              && RobotCoordinator.getInstance().isIntakeDeployed()    
-                && RobotCoordinator.getInstance().intakeIsFeeding()) {
+        // start tunnel at same time as intake so it gets up to speed
+        if (RobotCoordinator.getInstance().intakeIsFeeding()) {
           tunnel.feed();
+          state = State.waitForNote;
+        }
+        break;
+      case waitForNote:
+        if (RobotCoordinator.getInstance().noteEnteringIntake()) {
           abortTimer.start();
           state = State.inTunnel;
+        } else if (!RobotCoordinator.getInstance().intakeIsFeeding()) {
+          // intake aborted without seeing a note
+          tunnel.stopTunnel();
+          initialize();
         }
         break;
       case inTunnel:
@@ -77,11 +80,8 @@ public class TunnelFeed extends Command {
           adjustmentTimer.restart();
           CommandScheduler.getInstance().schedule(new XboxControllerRumble());
           state = State.stoppingAtOuttake;
-        }
-        // Stop tunnel if there is no note and intake button isn't pressed
-        else if (!RobotCoordinator.getInstance().getIntakeButtonPressed() && !NoteTracker.getInstance().intakeBeamBroken()) {
-          tunnel.stopTunnel();
-          state = State.waitForIntake;
+        } else if (abortTimer.hasElapsed(Constants.TunnelConstants.feedAbortSec)) {
+          state = State.abort;  // don't fry the motor
         }
         break;
       case stoppingAtOuttake:
@@ -117,6 +117,9 @@ public class TunnelFeed extends Command {
         break;
       case readyToFire:
         break;
+    }
+    if (abortTimer.hasElapsed(Constants.TunnelConstants.totalAbortSec)) {
+      state = State.abort;
     }
     Logger.recordOutput("TunnelFeed/State", state.toString());
   }
