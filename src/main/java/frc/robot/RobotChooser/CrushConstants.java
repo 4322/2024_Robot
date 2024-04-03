@@ -54,12 +54,12 @@ public class CrushConstants implements RobotChooserInterface {
     return 12.2718; // physical limit of the bot
   }
 
-  public double getAutoRotatekP() { // TODO
-    return 0.008;
+  public double getAutoRotatekP() { 
+    return 0.004;
   }
 
-  public double getAutoRotatekD() { // TODO
-    return 0.0004;
+  public double getAutoRotatekD() { 
+    return 0.0;
   }
 
   // For tuning, graph Duty Cycle Position in the REV Hardware Client
