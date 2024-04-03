@@ -140,11 +140,16 @@ public class NemoConstants implements RobotChooserInterface {
 
   @Override
   public double getMinAutoRotateStoppedPower() {
-    return 0.003;
+    return 0.003;  // TODO
   }
 
   @Override
-  public double getminAutoRotateMovingPower() {
-    return 0.003;
+  public double getMinAutoRotateSlowPower() {
+    return 0.01;  // TODO
+  }
+
+  @Override
+  public double getMinAutoRotateFastPower() {
+    return 0.03;  // TODO
   }
 }

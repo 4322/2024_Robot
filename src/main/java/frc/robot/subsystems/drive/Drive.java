@@ -362,9 +362,10 @@ public class Drive extends SubsystemBase {
   }
 
   // rotation isn't considered to be movement
-  public boolean isRobotMoving() {
+  public boolean isRobotMovingSlow() {
     if (Constants.driveEnabled) {
-      return latestVelocity >= DriveConstants.stoppedVelocityThresholdMetersPerSec;
+      return (latestVelocity >= DriveConstants.slowVelocityThresholdMetersPerSec) &&
+             (latestVelocity < DriveConstants.fastVelocityThresholdMetersPerSec);
     } else {
       return false;
     }
@@ -372,7 +373,7 @@ public class Drive extends SubsystemBase {
 
   public boolean isRobotMovingFast() {
     if (Constants.driveEnabled) {
-      return latestVelocity >= DriveConstants.movingVelocityThresholdMetersPerSec;
+      return latestVelocity >= DriveConstants.fastVelocityThresholdMetersPerSec;
     } else {
       return false;
     }
@@ -452,6 +453,7 @@ public class Drive extends SubsystemBase {
       double adjMaxAutoRotatePower;
       double adjMinAutoRotatePower;
       double toleranceDeg;
+      boolean driveIputZero = (driveX == 0) && (driveY == 0);
 
       // reduce rotation power when driving fast to not lose forward momentum
       if (latestVelocity >= driveShuffleBoardInputs.fastMovingMetersPerSec) {
@@ -459,13 +461,20 @@ public class Drive extends SubsystemBase {
       } else {
         adjMaxAutoRotatePower = driveShuffleBoardInputs.slowMovingAutoRotatePower;
       }
-      // no need to maintain exact heading when driving to reduce wobble
-      if (isRobotMoving()) {
-        adjMinAutoRotatePower = DriveConstants.Auto.minAutoRotateMovingPower;
+  
+      if (isRobotMovingFast()) {
+        // no need to maintain exact heading when driving to reduce wobble
+        adjMinAutoRotatePower = DriveConstants.Auto.minAutoRotateFastPower;
+        toleranceDeg = Constants.DriveConstants.Auto.rotateMovingToleranceDegrees;
+        LED.getInstance().setAutoRotateDebugLed(Color.kOrange, Constants.LED.debugLed4);
+      } else if (isRobotMovingSlow() && !driveIputZero) {
+        // don't wiggle
+        adjMinAutoRotatePower = DriveConstants.Auto.minAutoRotateSlowPower;
         toleranceDeg = Constants.DriveConstants.Auto.rotateMovingToleranceDegrees;
         LED.getInstance().setAutoRotateDebugLed(Color.kYellow, Constants.LED.debugLed4);
       } else {
-        // greater percision when lining up for something
+        // stopped (or moving super slow)
+        // use greater percision when lining up for something
         adjMinAutoRotatePower = DriveConstants.Auto.minAutoRotateStoppedPower;
         toleranceDeg = Constants.DriveConstants.Auto.rotateStoppedToleranceDegrees;
         LED.getInstance().setAutoRotateDebugLed(Color.kBlue, Constants.LED.debugLed4);
@@ -479,10 +488,10 @@ public class Drive extends SubsystemBase {
         LED.getInstance().setAutoRotateDebugLed(Color.kViolet, Constants.LED.debugLed3);
       } else if (rotPIDSpeed > adjMaxAutoRotatePower) {
         rotPIDSpeed = adjMaxAutoRotatePower;
-        LED.getInstance().setAutoRotateDebugLed(Color.kPink, Constants.LED.debugLed3);
+        LED.getInstance().setAutoRotateDebugLed(Color.kOrange, Constants.LED.debugLed3);
       } else if (rotPIDSpeed < -adjMaxAutoRotatePower) {
         rotPIDSpeed = -adjMaxAutoRotatePower;
-        LED.getInstance().setAutoRotateDebugLed(Color.kPink, Constants.LED.debugLed3);
+        LED.getInstance().setAutoRotateDebugLed(Color.kOrange, Constants.LED.debugLed3);
       } else {
         LED.getInstance().setAutoRotateDebugLed(Color.kGreen, Constants.LED.debugLed3);
       }

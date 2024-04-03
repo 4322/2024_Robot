@@ -62,5 +62,7 @@ public interface RobotChooserInterface {
 
   public double getMinAutoRotateStoppedPower();
 
-  public double getminAutoRotateMovingPower();
+  public double getMinAutoRotateSlowPower();
+
+  public double getMinAutoRotateFastPower();
 }
