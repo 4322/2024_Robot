@@ -223,22 +223,6 @@ public class RobotContainer {
                     RobotCoordinator.getInstance().setIntakeButtonState(false);
                     outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
                   }));
-      driveXbox
-          .rightBumper()
-          .onTrue(
-              Commands.runOnce(
-                  () -> {
-                    RobotCoordinator.getInstance().setAutoIntakeButtonPressed(true);
-                    outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE);
-                  }));
-      driveXbox
-          .rightBumper()
-          .onFalse(
-              Commands.runOnce(
-                  () -> {
-                    RobotCoordinator.getInstance().setAutoIntakeButtonPressed(false);
-                    outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
-                  }));
       driveXbox.leftTrigger().whileTrue(new Shoot());
       if (Constants.outtakeTuningMode) {
         driveXbox.y().onTrue(writeFiringSolution);
