@@ -55,15 +55,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "TunnelFeed"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "TwoNoteCenter"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "TunnelFeed"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "TwoNoteCenter"
+                }
+              }
+            ]
           }
         },
         {

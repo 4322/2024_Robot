@@ -5,7 +5,7 @@
       "x": 1.3320651054382324,
       "y": 5.457383155822754
     },
-    "rotation": 1.739035346242168e-18
+    "rotation": -1.6521553991184255e-17
   },
   "command": {
     "type": "sequential",
@@ -42,7 +42,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.0
+                  "waitTime": 1.5
                 }
               }
             ]
@@ -55,21 +55,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "ThreeNoteCenter.1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SetOuttakeSubwooferBase"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ThreeNoteCenter.2"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "TunnelFeed"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "ThreeNoteCenter.1"
+                }
+              }
+            ]
           }
         },
         {
@@ -85,7 +86,39 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 1.5
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "TunnelFeed"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "ThreeNoteCenter.2"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "ThreeNoteCenter2"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -94,25 +127,7 @@
         {
           "type": "named",
           "data": {
-            "name": "SetOuttakeCollectingNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ThreeNoteCenter.3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SetOuttakeSubwooferBase"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ThreeNoteCenter.4"
+            "name": "SetOuttakeSmartShooting"
           }
         },
         {
