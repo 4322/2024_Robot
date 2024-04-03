@@ -201,7 +201,7 @@ public final class Constants {
           robotSpecificConstants.getMinAutoRotateSlowPower();
       public static final double minAutoRotateFastPower =
           robotSpecificConstants.getMinAutoRotateFastPower();
-      public static final double rotateStoppedToleranceDegrees = 0.5;
+      public static final double rotateStoppedToleranceDegrees = 0.75;
       public static final double rotateMovingToleranceDegrees = 1.5;
       public static final double slowMovingAutoRotate = 0.5;
       public static final double fastMovingAutoRotate = 0.32;
