@@ -5,7 +5,7 @@
       "x": 1.3320651054382324,
       "y": 5.457383155822754
     },
-    "rotation": -1.6521553991184255e-17
+    "rotation": -1.4992654302490883e-17
   },
   "command": {
     "type": "sequential",
@@ -74,6 +74,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "SetOuttakeSmartShooting"
+          }
+        },
+        {
           "type": "race",
           "data": {
             "commands": [
@@ -90,6 +96,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SetOuttakeCollectingNote"
           }
         },
         {
