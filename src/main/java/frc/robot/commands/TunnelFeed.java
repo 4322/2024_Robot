@@ -25,7 +25,8 @@ public class TunnelFeed extends Command {
     checkOuttakeSensor,
     pushUp,
     readyToFire,
-    abort
+    abort,
+    waitForEject
   }
 
   private State state;
@@ -55,7 +56,17 @@ public class TunnelFeed extends Command {
         tunnel.stopTunnel();
         abortTimer.stop();
         abortTimer.reset();
-        state = State.waitForIntake;
+        if (RobotCoordinator.getInstance().noteEnteringIntake()) {
+          // don't keep immediately restarting the tunnel
+          state = State.waitForEject;
+        } else {
+          state = State.waitForIntake;
+        }
+        break;
+      case waitForEject:
+        if (!RobotCoordinator.getInstance().noteEnteringIntake()) {
+          state = State.waitForIntake;
+        }
         break;
       case waitForIntake:
         // start tunnel at same time as intake so it gets up to speed
@@ -69,9 +80,7 @@ public class TunnelFeed extends Command {
           abortTimer.start();
           state = State.inTunnel;
         } else if (!RobotCoordinator.getInstance().intakeIsFeeding()) {
-          // intake aborted without seeing a note
-          tunnel.stopTunnel();
-          initialize();
+          state = State.abort;  // intake stopped without seeing a note
         }
         break;
       case inTunnel:
