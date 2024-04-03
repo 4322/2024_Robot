@@ -55,7 +55,7 @@ public class CrushConstants implements RobotChooserInterface {
   }
 
   public double getAutoRotatekP() { 
-    return 0.002;
+    return 0.004;
   }
 
   public double getAutoRotatekD() { 
