@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants;
 import frc.robot.Constants.OuttakeConstants;
-import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
 public class OuttakeIOReal implements OuttakeIO {
@@ -44,8 +43,8 @@ public class OuttakeIOReal implements OuttakeIO {
         new TalonFX(OuttakeConstants.pivotDeviceID, Constants.DriveConstants.Drive.canivoreName);
     pivotEncoder = new Canandcoder(OuttakeConstants.pivotEncoderID);
 
-    configOuttake(topOuttakeMotor);
-    configOuttake(bottomOuttakeMotor);
+    configOuttake(topOuttakeMotor, true);
+    configOuttake(bottomOuttakeMotor, false);
     configPivot(pivotMotor);
     if (Constants.debug) {
       tab = Shuffleboard.getTab("Outtake");
@@ -58,7 +57,7 @@ public class OuttakeIOReal implements OuttakeIO {
       bottomOuttakeFlywheelSpeed = 
           tab.add("Bottom Desired Flywheel Velocity (RPS)", 0)
               .withSize(1, 1)
-              .withPosition(1, 0)
+              .withPosition(2, 0)
               .getEntry();
       pivotPosition =
           tab.add("Pivot Position (Rotations)", 0).withSize(1, 1).withPosition(1, 0).getEntry();
@@ -73,14 +72,24 @@ public class OuttakeIOReal implements OuttakeIO {
     }
   }
 
-  private void configOuttake(TalonFX talon) {
+  private void configOuttake(TalonFX talon, boolean isTopOuttakeMotor) {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
-    config.Slot0.kP = Constants.OuttakeConstants.kP;
-    config.Slot0.kI = Constants.OuttakeConstants.kI;
-    config.Slot0.kD = Constants.OuttakeConstants.kD;
-    config.Slot0.kV = Constants.OuttakeConstants.kV;
-    config.Slot0.kS = Constants.OuttakeConstants.kS;
+    if (isTopOuttakeMotor) {
+      config.Slot0.kP = Constants.OuttakeConstants.topkP;
+      config.Slot0.kI = Constants.OuttakeConstants.topkI;
+      config.Slot0.kD = Constants.OuttakeConstants.topkD;
+      config.Slot0.kV = Constants.OuttakeConstants.topkV;
+      config.Slot0.kS = Constants.OuttakeConstants.topkS;
+    }
+    else {
+      config.Slot0.kP = Constants.OuttakeConstants.bottomkP;
+      config.Slot0.kI = Constants.OuttakeConstants.bottomkI;
+      config.Slot0.kD = Constants.OuttakeConstants.bottomkD;
+      config.Slot0.kV = Constants.OuttakeConstants.bottomkV;
+      config.Slot0.kS = Constants.OuttakeConstants.bottomkS;
+    }
+
     config.ClosedLoopRamps.VoltageClosedLoopRampPeriod =
         Constants.OuttakeConstants.closedLoopRampSec;
     config.OpenLoopRamps.VoltageOpenLoopRampPeriod = Constants.OuttakeConstants.openLoopRampSec;
