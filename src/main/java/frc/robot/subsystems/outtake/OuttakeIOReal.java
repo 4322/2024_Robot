@@ -58,7 +58,7 @@ public class OuttakeIOReal implements OuttakeIO {
       bottomOuttakeFlywheelSpeed = 
           tab.add("Bottom Desired Flywheel Velocity (RPS)", 0)
               .withSize(1, 1)
-              .withPosition(1, 0)
+              .withPosition(2, 0)
               .getEntry();
       pivotPosition =
           tab.add("Pivot Position (Rotations)", 0).withSize(1, 1).withPosition(1, 0).getEntry();
