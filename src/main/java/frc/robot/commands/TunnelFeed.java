@@ -94,16 +94,19 @@ public class TunnelFeed extends Command {
         break;
       case stoppingAtOuttake:
         if (adjustmentTimer.hasElapsed(Constants.TunnelConstants.pauseSec)) {
-          tunnel.rewind(); // pull back from the outtake wheels
+          tunnel.reverseFeed(); // pull back from the outtake wheels
           adjustmentTimer.restart();
           state = State.rewinding;
         }
         break;
       case rewinding:
-        if (adjustmentTimer.hasElapsed(Constants.TunnelConstants.rewindSec)) {
+        if (!RobotCoordinator.getInstance().noteInFiringPosition()) {
           tunnel.stopTunnel();
           adjustmentTimer.restart();
           state = State.checkOuttakeSensor;
+        } else if (adjustmentTimer.hasElapsed(Constants.TunnelConstants.rewindSec)) {
+          tunnel.stopTunnel();
+          state = State.abort;
         }
         break;
       case checkOuttakeSensor:
