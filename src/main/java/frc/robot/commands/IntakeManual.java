@@ -17,8 +17,7 @@ public class IntakeManual extends Command {
     retracting;
   }
 
-  private static IntakeStates intakeState = IntakeStates.retracted;
-  ;
+  private IntakeStates intakeState = IntakeStates.retracted;
   private Intake intake;
   private AutoAcquireNote autoAcquireNote;
 
@@ -75,6 +74,9 @@ public class IntakeManual extends Command {
         if (coordinator.isIntakeDeployed()) {
           intake.intake();
         }
+        if (autoAcquireNote.isScheduled()) {
+          autoAcquireNote.cancel();
+        }
         if (!coordinator.noteEnteringIntake()) {
           intakeState = IntakeStates.notePastIntake;
         }
@@ -92,6 +94,9 @@ public class IntakeManual extends Command {
         if (coordinator.canRetract()) {
           intake.retract();
         }
+        if (autoAcquireNote.isScheduled()) {
+          autoAcquireNote.cancel();
+        }
         if (coordinator.getIntakeButtonPressed()) {
           intakeState = IntakeStates.deploying;
         } else if (coordinator.isIntakeRetracted()) {
@@ -105,13 +110,5 @@ public class IntakeManual extends Command {
   @Override
   public boolean isFinished() {
     return false;
-  }
-
-  public static IntakeStates getIntakeState() {
-    return intakeState;
-  }
-
-  public static void setIntakeState(IntakeStates newState) {
-    intakeState = newState;
   }
 }

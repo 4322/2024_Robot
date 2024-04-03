@@ -24,7 +24,6 @@ public class EjectThroughIntake extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    IntakeManual.setIntakeState(IntakeStates.deploying);
     Tunnel.getInstance().stopTunnel();
   }
 }
