@@ -32,7 +32,7 @@ public class WriteFiringSolutionAtCurrentPos extends InstantCommand {
                 Limelight.getOuttakeInstance().getBotposeWpiBlue().getY());
         shotAngle = rawTranslation.getAngle().getDegrees();
         // Calculates magnitude from x and y vals
-        shotMag = rawTranslation.getDistance(FiringSolutionHelper.getSpeakerTranslation2d());
+        shotMag = rawTranslation.getNorm();
         FiringSolution solution =
             // Doesn't matter if you log top or bottom target RPS to JSON.
             // Both shooter speeds will be the same value if we are doing shot tuning for speaker
