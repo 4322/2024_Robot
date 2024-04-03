@@ -168,8 +168,8 @@ public class RobotCoordinator extends SubsystemBase {
       centerTagID = Constants.FieldConstants.blueSpeakerCenterTagID;
       sideTagID = Constants.FieldConstants.blueSpeakerSideTagID;
     }
-    if (Limelight.getOuttakeInstance().getSpecifiedAprilTagVisible(centerTagID)
-          && Limelight.getOuttakeInstance().getSpecifiedAprilTagVisible(sideTagID)) {
+    if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(centerTagID)
+          && Limelight.getOuttakeInstance().getSpecifiedTagVisible(sideTagID)) {
         final Pose2d robotPoseFieldRelative = Limelight.getOuttakeInstance().getBotposeWpiBlue();
         final Translation2d botPoseToSpeaker = 
           FiringSolutionHelper.getVectorToSpeaker(robotPoseFieldRelative.getX(), robotPoseFieldRelative.getY());

@@ -1,7 +1,6 @@
 package frc.robot.subsystems.limelight;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
@@ -13,10 +12,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Robot;
 import frc.robot.Constants.LimelightConstants;
-import frc.robot.subsystems.limelight.LimelightHelpers.LimelightTarget_Fiducial;
-import frc.utility.OrangeMath;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +45,7 @@ public class Limelight extends SubsystemBase {
   boolean isNetworkTableConnected;
   Map<Double, LimelightHelpers.LimelightTarget_Fiducial> llFiducialMap =
       new HashMap<Double, LimelightHelpers.LimelightTarget_Fiducial>();
+  Pose2d limelightPose;
 
   // the distance from where you want to calculate from
   // should always be calculated with WPI coordinates (front is positive X)
@@ -148,6 +145,12 @@ public class Limelight extends SubsystemBase {
   @Override
   public void periodic() {
     if (enabled) {
+      // Only refresh odometry for outtake limelight to know which fiducials are visible
+      if (name == Constants.LimelightConstants.outtakeLimelightName) {
+        refreshOdometry();
+        updateBotposeWpiBlue();
+      }
+      
       if (Constants.debug) {
         boolean visible = getTargetVisible();
         targetVisible.setBoolean(visible);
@@ -166,15 +169,16 @@ public class Limelight extends SubsystemBase {
     }
   }
 
-  public Pose2d getBotposeWpiBlue() {
+  public void updateBotposeWpiBlue() {
     if (enabled && isNetworkTableConnected) {
       if (getTargetVisible()) {
-        final Pose2d limelightPose = LimelightHelpers.getBotPose2d_wpiBlue(name);
-        return limelightPose;
+        limelightPose = LimelightHelpers.getBotPose2d_wpiBlue(name);
       }
-
     }
-    return new Pose2d();
+  }
+
+  public Pose2d getBotposeWpiBlue() {
+    return limelightPose;
   }
 
   public int getNumTargets() {
@@ -226,6 +230,10 @@ public class Limelight extends SubsystemBase {
     return llFiducialMap.get(fID);
   }
 
+  public boolean getSpecifiedTagVisible(int fID1) {
+    return getTag(fID1) != null;
+  }
+
   public double getHorizontalDegToTarget() {
     if (enabled && isNetworkTableConnected) {
       return tx.getDouble(0);
@@ -240,36 +248,6 @@ public class Limelight extends SubsystemBase {
     } else {
       return 0;
     }
-  }
-
-  public boolean getSpecifiedAprilTagVisible(int aprilTagID) {
-    if (enabled && isNetworkTableConnected) {
-      if (getTargetVisible()) {
-        LimelightHelpers.LimelightResults llResults = LimelightHelpers.getLatestResults(name);
-        LimelightHelpers.LimelightTarget_Fiducial[] totalVisibleFiducialTargets = llResults.targetingResults.targets_Fiducials;
-        for (LimelightTarget_Fiducial target : totalVisibleFiducialTargets) {
-          if (aprilTagID == target.fiducialID) {
-            return true;
-          }
-        }
-      }
-    }
-    return false;
-  }
-
-  public Pose3d getTargetPose3DToBot(int aprilTagID) {
-    if (enabled && isNetworkTableConnected) {
-      if (getTargetVisible()) {
-        LimelightHelpers.LimelightResults llResults = LimelightHelpers.getLatestResults(name);
-        LimelightHelpers.LimelightTarget_Fiducial[] totalVisibleFiducialTargets = llResults.targetingResults.targets_Fiducials;
-        for (LimelightTarget_Fiducial target : totalVisibleFiducialTargets) {
-          if (aprilTagID == target.fiducialID) {
-            return target.getRobotPose_TargetSpace();
-          }     
-        }
-      }
-    }
-    return new Pose3d();
   }
 
   public double getTargetArea() {

@@ -53,8 +53,8 @@ public class OuttakeManual extends Command {
 
           // Only calculate new firing solutions if we can see the target April tags with Limelight.
           // If specificed targets aren't visible, then shooter stays at the previous calculated or set solution.
-          if (outtakeLimelight.getSpecifiedAprilTagVisible(speakerCenterAprilTagID) 
-                && outtakeLimelight.getSpecifiedAprilTagVisible(speakerSideAprilTagID)) {
+          if (outtakeLimelight.getSpecifiedTagVisible(speakerCenterAprilTagID)
+                && outtakeLimelight.getSpecifiedTagVisible(speakerSideAprilTagID)) {
             final Pose2d botPoseFieldRelative = outtakeLimelight.getBotposeWpiBlue();
             final Translation2d botPoseToSpeaker = FiringSolutionHelper.getVectorToSpeaker(botPoseFieldRelative.getX(), botPoseFieldRelative.getY());
             
