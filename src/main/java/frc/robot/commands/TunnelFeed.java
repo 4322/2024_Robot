@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants;
 import frc.robot.subsystems.RobotCoordinator;
-import frc.robot.subsystems.noteTracker.NoteTracker;
 import frc.robot.subsystems.tunnel.Tunnel;
 import org.littletonrobotics.junction.Logger;
 
@@ -18,13 +17,15 @@ public class TunnelFeed extends Command {
 
   public enum State {
     waitForIntake,
+    waitForNote,
     inTunnel,
     stoppingAtOuttake,
     rewinding,
     checkOuttakeSensor,
     pushUp,
     readyToFire,
-    abort
+    abort,
+    waitForEject
   }
 
   private State state;
@@ -49,26 +50,36 @@ public class TunnelFeed extends Command {
   @Override
   public void execute() {
 
-    if (abortTimer.hasElapsed(Constants.TunnelConstants.abortSec)) {
-      tunnel.stopTunnel();
-      state = State.abort;
-      abortTimer.stop();
-      abortTimer.reset();
-    }
-
     switch (state) {
       case abort:
-        state = State.waitForIntake;
+        tunnel.stopTunnel();
+        abortTimer.stop();
+        abortTimer.reset();
+        if (RobotCoordinator.getInstance().noteEnteringIntake()) {
+          // don't keep immediately restarting the tunnel
+          state = State.waitForEject;
+        } else {
+          state = State.waitForIntake;
+        }
+        break;
+      case waitForEject:
+        if (!RobotCoordinator.getInstance().noteEnteringIntake()) {
+          state = State.waitForIntake;
+        }
         break;
       case waitForIntake:
-        // Accounts for note being midway between intake and tunnel sensor
-        // Tunnel still runs for this case
-        if (RobotCoordinator.getInstance().getIntakeButtonPressed() 
-              && RobotCoordinator.getInstance().isIntakeDeployed()    
-                && RobotCoordinator.getInstance().intakeIsFeeding()) {
+        // start tunnel at same time as intake so it gets up to speed
+        if (RobotCoordinator.getInstance().intakeIsFeeding()) {
           tunnel.feed();
+          state = State.waitForNote;
+        }
+        break;
+      case waitForNote:
+        if (RobotCoordinator.getInstance().noteEnteringIntake()) {
           abortTimer.start();
           state = State.inTunnel;
+        } else if (!RobotCoordinator.getInstance().intakeIsFeeding()) {
+          state = State.abort;  // intake stopped without seeing a note
         }
         break;
       case inTunnel:
@@ -77,11 +88,8 @@ public class TunnelFeed extends Command {
           adjustmentTimer.restart();
           CommandScheduler.getInstance().schedule(new XboxControllerRumble());
           state = State.stoppingAtOuttake;
-        }
-        // Stop tunnel if there is no note and intake button isn't pressed
-        else if (!RobotCoordinator.getInstance().getIntakeButtonPressed() && !NoteTracker.getInstance().intakeBeamBroken()) {
-          tunnel.stopTunnel();
-          state = State.waitForIntake;
+        } else if (abortTimer.hasElapsed(Constants.TunnelConstants.feedAbortSec)) {
+          state = State.abort;  // don't fry the motor
         }
         break;
       case stoppingAtOuttake:
@@ -117,6 +125,9 @@ public class TunnelFeed extends Command {
         break;
       case readyToFire:
         break;
+    }
+    if (abortTimer.hasElapsed(Constants.TunnelConstants.totalAbortSec)) {
+      state = State.abort;
     }
     Logger.recordOutput("TunnelFeed/State", state.toString());
   }
