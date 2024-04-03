@@ -453,6 +453,7 @@ public class Drive extends SubsystemBase {
       double adjMaxAutoRotatePower;
       double adjMinAutoRotatePower;
       double toleranceDeg;
+      boolean driveIputZero = (driveX == 0) && (driveY == 0);
 
       // reduce rotation power when driving fast to not lose forward momentum
       if (latestVelocity >= driveShuffleBoardInputs.fastMovingMetersPerSec) {
@@ -466,7 +467,7 @@ public class Drive extends SubsystemBase {
         adjMinAutoRotatePower = DriveConstants.Auto.minAutoRotateFastPower;
         toleranceDeg = Constants.DriveConstants.Auto.rotateMovingToleranceDegrees;
         LED.getInstance().setAutoRotateDebugLed(Color.kOrange, Constants.LED.debugLed4);
-      } else if (isRobotMovingSlow()) {
+      } else if (isRobotMovingSlow() && !driveIputZero) {
         // don't wiggle
         adjMinAutoRotatePower = DriveConstants.Auto.minAutoRotateSlowPower;
         toleranceDeg = Constants.DriveConstants.Auto.rotateMovingToleranceDegrees;
