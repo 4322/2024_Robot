@@ -155,8 +155,8 @@ public final class Constants {
 
     public static final double disableBreakSec = 2.0;
 
-    public static final double stoppedVelocityThresholdMetersPerSec = 0.035;
-    public static final double movingVelocityThresholdMetersPerSec = 0.4572;
+    public static final double slowVelocityThresholdMetersPerSec = 0.035;
+    public static final double fastVelocityThresholdMetersPerSec = 0.4;
 
     public static final double spinoutCenterPower = 1.0;
     public static final double spinoutCornerPower = 0.75;
@@ -198,8 +198,10 @@ public final class Constants {
 
       public static final double minAutoRotateStoppedPower =
           robotSpecificConstants.getMinAutoRotateStoppedPower();
-      public static final double minAutoRotateMovingPower =
-          robotSpecificConstants.getminAutoRotateMovingPower();
+      public static final double minAutoRotateSlowPower =
+          robotSpecificConstants.getMinAutoRotateSlowPower();
+      public static final double minAutoRotateFastPower =
+          robotSpecificConstants.getMinAutoRotateFastPower();
       public static final double rotateStoppedToleranceDegrees = 0.5;
       public static final double rotateMovingToleranceDegrees = 1.5;
       public static final double slowMovingAutoRotate = 0.5;

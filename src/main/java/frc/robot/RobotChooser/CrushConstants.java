@@ -137,12 +137,17 @@ public class CrushConstants implements RobotChooserInterface {
   }
 
   @Override
-  public double getMinAutoRotateStoppedPower() { // TODO
-    return 0.003;
+  public double getMinAutoRotateStoppedPower() { 
+    return 0.0033;
   }
 
   @Override
-  public double getminAutoRotateMovingPower() { // TODO
-    return 0.003;
+  public double getMinAutoRotateSlowPower() { 
+    return 0.01;
+  }
+
+  @Override
+  public double getMinAutoRotateFastPower() { 
+    return 0.03;
   }
 }

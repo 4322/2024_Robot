@@ -104,7 +104,7 @@ public class DriveManual extends Command {
           
           speakerCentricAngle = botPoseToSpeaker.getAngle().getDegrees();
           drive.driveAutoRotate(driveX, driveY, speakerCentricAngle);
-          LED.getInstance().setAutoRotateDebugLed(Color.kPurple, Constants.LED.debugLed2);
+          LED.getInstance().setAutoRotateDebugLed(Color.kViolet, Constants.LED.debugLed2);
 
           Logger.recordOutput("RobotHeading/PseudoAutoRotateEngaged", false);
           Logger.recordOutput("RobotHeading/SpeakerCentricHeading/", speakerCentricAngle);
