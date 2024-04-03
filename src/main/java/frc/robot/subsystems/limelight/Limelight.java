@@ -45,7 +45,7 @@ public class Limelight extends SubsystemBase {
   boolean isNetworkTableConnected;
   Map<Double, LimelightHelpers.LimelightTarget_Fiducial> llFiducialMap =
       new HashMap<Double, LimelightHelpers.LimelightTarget_Fiducial>();
-  Pose2d limelightPose;
+  Pose2d limelightPose = new Pose2d();
 
   // the distance from where you want to calculate from
   // should always be calculated with WPI coordinates (front is positive X)
