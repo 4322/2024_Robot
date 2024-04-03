@@ -203,8 +203,8 @@ public class OuttakeIOReal implements OuttakeIO {
 
   @Override
   public void setOuttakeRPS(double desiredTopVelocityRPS, double desiredBottomVelocityRPS) {
-    bottomOuttakeMotor.setControl(new VelocityVoltage(-desiredBottomVelocityRPS));
-    topOuttakeMotor.setControl(new VelocityVoltage(desiredTopVelocityRPS));
+    bottomOuttakeMotor.setControl(new VelocityVoltage(-desiredBottomVelocityRPS).withEnableFOC(false));
+    topOuttakeMotor.setControl(new VelocityVoltage(desiredTopVelocityRPS).withEnableFOC(false));
   }
 
   @Override
