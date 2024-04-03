@@ -98,13 +98,14 @@ public class Outtake extends SubsystemBase {
 
   public void pivot(double rotations) {
     if (Constants.outtakePivotEnabled && io.pivotIsInitialized()) {
-      // Code that limits forward movement of shooter if requested
-      if (rotations > Constants.OuttakeConstants.forwardSoftLimitThresholdRotations) {
-        rotations = Constants.OuttakeConstants.forwardSoftLimitThresholdRotations;
-      }
       // Overrides operator shooting presets
       if (Constants.outtakeTuningMode && inputs.tuneOuttakeOverrideEnable) {
         rotations = inputs.targetPivotPosition;
+      }
+      
+      // Code that limits forward movement of shooter if requested
+      if (rotations > Constants.OuttakeConstants.forwardSoftLimitThresholdRotations) {
+        rotations = Constants.OuttakeConstants.forwardSoftLimitThresholdRotations;
       }
       io.setPivotTarget(rotations);
       pivotTarget = rotations;
