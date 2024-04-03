@@ -5,7 +5,7 @@
       "x": 1.3320651054382324,
       "y": 5.457383155822754
     },
-    "rotation": 0.0
+    "rotation": -8.47361460874202e-28
   },
   "command": {
     "type": "sequential",
@@ -42,7 +42,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.0
+                  "waitTime": 1.5
                 }
               }
             ]
@@ -55,21 +55,21 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "TwoNoteCenter.1"
+            "name": "TunnelFeed"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "TwoNoteCenter.2"
+            "pathName": "TwoNoteCenter"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "SetOuttakeSubwooferBase"
+            "name": "SetOuttakeSmartShooting"
           }
         },
         {
