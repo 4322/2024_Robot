@@ -313,6 +313,7 @@ public final class Constants {
     public static final double shooterStatorLimit = 80;
     public static final double shooterSupplyCurrentThreshold = 50;
     public static final double shooterSupplyTimeThreshold = 1.5;
+    public static final double shootFeedAbortSec = 2;
 
     public static final double pivotSupplyLimit = 30;
     public static final double pivotStatorLimit = 45;
@@ -405,7 +406,7 @@ public final class Constants {
   public static final class TunnelConstants {
     public static final int tunnelMotorID = 3;
     public static final double supplyLimit = 30;
-    public static final double statorLimit = 80;
+    public static final double statorLimit = 110;
 
     public static final double feedVoltage = 6.0;
     public static final double reverseEjectVoltage = -6.0;
@@ -415,7 +416,7 @@ public final class Constants {
     public static final double peakVoltage = 6.0;
     public static final double pauseSec = 0.12; // time for tunnel to stop before rewinding
     public static final double rewindSec = 0.04;
-    public static final double feedAbortSec = 3;
+    public static final double feedAbortSec = 2;
     public static final double totalAbortSec = 5;
 
     public static final class Logging {
