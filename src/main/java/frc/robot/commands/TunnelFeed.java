@@ -29,11 +29,13 @@ public class TunnelFeed extends Command {
   }
 
   private State state;
+  private boolean runOnce;
   private Timer adjustmentTimer = new Timer();
   private Timer abortTimer = new Timer();
 
-  public TunnelFeed() {
+  public TunnelFeed(boolean runOnce) {
     tunnel = Tunnel.getInstance();
+    this.runOnce = runOnce;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(tunnel);
@@ -104,7 +106,7 @@ public class TunnelFeed extends Command {
           tunnel.stopTunnel();
           adjustmentTimer.restart();
           state = State.checkOuttakeSensor;
-        } else if (adjustmentTimer.hasElapsed(Constants.TunnelConstants.rewindSec)) {
+        } else if (adjustmentTimer.hasElapsed(Constants.TunnelConstants.rewindTimeoutSec)) {
           tunnel.stopTunnel();
           state = State.abort;
         }
@@ -137,6 +139,10 @@ public class TunnelFeed extends Command {
 
   @Override
   public boolean isFinished() {
+    if (runOnce && state == State.readyToFire) {
+      // need to end in auto
+      return true;
+    }
     // never end a default command
     return false;
   }

@@ -93,7 +93,7 @@ public class RobotContainer {
 
   private final DriveManual driveManual = new DriveManual();
 
-  private final TunnelFeed tunnelFeed = new TunnelFeed();
+  private final TunnelFeed tunnelFeedContinuous = new TunnelFeed(false);
 
   private final OuttakeManual outtakeManual = new OuttakeManual();
 
@@ -131,7 +131,7 @@ public class RobotContainer {
             "SetOuttakeCollectingNote",
             new AutoSetOuttakeAdjust(Constants.FiringSolutions.CollectingNote));
     PathPlannerManager.getInstance().addEvent("SetOuttakeSmartShooting", new AutoSmartShooting());
-    PathPlannerManager.getInstance().addEvent("TunnelFeed", new TunnelFeed());
+    PathPlannerManager.getInstance().addEvent("TunnelFeed", new TunnelFeed(true));
 
     // DO NOT MOVE OR REMOVE THIS WITHOUT KNOWING WHAT YOU'RE DOING
     PathPlannerManager.getInstance().preloadAutos();
@@ -151,7 +151,7 @@ public class RobotContainer {
     }
 
     if (Constants.tunnelEnabled) {
-      tunnel.setDefaultCommand(tunnelFeed);
+      tunnel.setDefaultCommand(tunnelFeedContinuous);
     }
 
     if (Constants.outtakeEnabled || Constants.outtakePivotEnabled) {
