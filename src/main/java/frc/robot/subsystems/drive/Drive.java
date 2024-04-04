@@ -84,6 +84,7 @@ public class Drive extends SubsystemBase {
   Timer disconnectTimer;
   private double lastClosedRampRate = DriveConstants.Drive.closedLoopRampSec;
   private double lastOpenRampRate = DriveConstants.Drive.openLoopRampSec;
+  private boolean rotationCapIsUnlocked;
 
   private static Drive drive;
 
@@ -633,11 +634,18 @@ public class Drive extends SubsystemBase {
 
   public double getMaxManualRotationEntry() {
     if (Constants.driveEnabled) {
-      if (Constants.debug) {
+      if (rotationCapIsUnlocked) {
+        return Constants.DriveConstants.Manual.unlockedMaxManualRotation;
+      }
+      else if (Constants.debug) {
         return driveShuffleBoardInputs.maxManualRotatePower;
       }
     }
     return Constants.DriveConstants.Manual.maxManualRotation;
+  }
+
+  public void unlockManualRotationCap(boolean unlockEnabled) {
+    rotationCapIsUnlocked = unlockEnabled;
   }
 
   public String getDriveInputScaling() {

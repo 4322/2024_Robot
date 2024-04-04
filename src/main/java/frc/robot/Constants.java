@@ -169,6 +169,7 @@ public final class Constants {
       public static final double xboxDriveDeadband = 0.17; // was 0.1 with a better controller
       public static final double xboxRotateDeadband = 0.25;
       public static final double maxManualRotation = 0.30;
+      public static final double unlockedMaxManualRotation = 0.70;
       public static final double inhibitPseudoAutoRotateDegPerSec =
           4.0; // don't lock until rotation stops
 
