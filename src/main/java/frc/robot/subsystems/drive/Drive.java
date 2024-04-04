@@ -644,7 +644,7 @@ public class Drive extends SubsystemBase {
     return Constants.DriveConstants.Manual.maxManualRotation;
   }
 
-  public void unlockManualRotationCap(boolean unlockEnabled) {
+  public void setManualRotationCap(boolean unlockEnabled) {
     rotationCapIsUnlocked = unlockEnabled;
   }
 

@@ -226,8 +226,8 @@ public class RobotContainer {
                     outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
                   }));
       driveXbox.leftTrigger().whileTrue(new Shoot());
-      driveXbox.leftBumper().onTrue(Commands.runOnce(() -> {drive.unlockManualRotationCap(true);}));
-      driveXbox.leftBumper().onFalse(Commands.runOnce(() -> {drive.unlockManualRotationCap(false);}));
+      driveXbox.leftBumper().onTrue(Commands.runOnce(() -> {drive.setManualRotationCap(true);}));
+      driveXbox.leftBumper().onFalse(Commands.runOnce(() -> {drive.setManualRotationCap(false);}));
       if (Constants.outtakeTuningMode) {
         driveXbox.y().onTrue(writeFiringSolution);
         // right up against front of speaker with edge of robot on source side
