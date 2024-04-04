@@ -372,8 +372,8 @@ public final class Constants {
       public static final double peakForwardVoltage = 3.5;
       public static final double peakReverseVoltage = -6.0;
 
-      public static final double supplyLimit = 30;
-      public static final double statorLimit = 60;
+      public static final double supplyLimit = 40;
+      public static final double statorLimit = 80;
 
       public static final double deployTargetPosition = 0.0;
       public static final double retractTargetPosition = 0.53;
