@@ -235,7 +235,7 @@ public class RobotContainer {
       }
       operatorXbox.start().onTrue(new SetPivotsCoastMode());
       operatorXbox.back().onTrue(new SetPivotsBrakeMode());
-      operatorXbox.povUp().whileTrue(new ParallelCommandGroup(new EjectThroughIntake(), new OperatorPresetLED()));
+      operatorXbox.povUp().whileTrue(new EjectThroughIntake());
       operatorXbox
           .y()
           .onTrue(new ParallelCommandGroup(
@@ -263,12 +263,12 @@ public class RobotContainer {
                   new OperatorPresetLED()));
       operatorXbox
           .povDown()
-          .onTrue(new ParallelCommandGroup(
+          .onTrue(
               new SequentialCommandGroup(
                   Commands.runOnce(
                       () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED)),
-                  new OuttakeTunnelFeed()),
-                  new OperatorPresetLED()));
+                  new OuttakeTunnelFeed()));
+      operatorXbox.povDown().onTrue(new OperatorPresetLED());
       operatorXbox
           .povRight()
           .onTrue(new ParallelCommandGroup(
