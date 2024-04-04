@@ -16,11 +16,17 @@ public class LEDState extends Command {
     }
 
     @Override
+    public void initialize() {
+        aprilTagLossTimer.restart();
+    }
+
+    @Override
     public void execute() {
         // LEDs while driving
         if (DriverStation.isEnabled()) {
             if (RobotCoordinator.getInstance().canSmartShoot()
                 && RobotCoordinator.getInstance().noteInFiringPosition()) {
+                aprilTagLossTimer.reset();
                 led.setLEDState(LED.LEDState.noteReadyToShoot);
             }
             // If outtake is at right pos and speed, wait for short amount of 
@@ -28,7 +34,7 @@ public class LEDState extends Command {
             else if (RobotCoordinator.getInstance().canShoot() 
                 && led.getLEDState() == LED.LEDState.noteReadyToShoot 
                     && !aprilTagLossTimer.hasElapsed(Constants.LimelightConstants.aprilTagLossThresholdSec)) {
-                aprilTagLossTimer.start();
+                led.setLEDState(LED.LEDState.noteReadyToShoot);
             }
             else if (RobotCoordinator.getInstance().canShoot() 
                 && RobotCoordinator.getInstance().noteInFiringPosition()) {
@@ -38,11 +44,6 @@ public class LEDState extends Command {
                 led.setLEDState(LED.LEDState.noteInRobot);
             } else {
                 led.setLEDState(LED.LEDState.idle);
-            }
-            // Reset timer if 50 ms has passed and LED state isn't in ready to shoot anymore
-            if (led.getLEDState() != LED.LEDState.noteReadyToShoot) {
-                aprilTagLossTimer.stop();
-                aprilTagLossTimer.reset();
             }
         } 
         // LEDs while disabled
