@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.LED.LED;
 
@@ -22,10 +23,11 @@ public class LEDState extends Command {
                 && RobotCoordinator.getInstance().noteInFiringPosition()) {
                 led.setLEDState(LED.LEDState.noteReadyToShoot);
             }
-            // If outtake is at right pos and speed, Wait for 50 ms to switch LED state from ready to shoot to stop flickering LEDs.
+            // If outtake is at right pos and speed, wait for short amount of 
+            // time to switch LED state from ready to shoot in order to stop flickering LEDs.
             else if (RobotCoordinator.getInstance().canShoot() 
                 && led.getLEDState() == LED.LEDState.noteReadyToShoot 
-                    && !aprilTagLossTimer.hasElapsed(0.05)) {
+                    && !aprilTagLossTimer.hasElapsed(Constants.LimelightConstants.aprilTagLossThresholdSec)) {
                 aprilTagLossTimer.start();
             }
             else if (RobotCoordinator.getInstance().canShoot() 

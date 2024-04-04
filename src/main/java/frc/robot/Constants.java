@@ -426,7 +426,7 @@ public final class Constants {
   }
 
   public static final class LimelightConstants {
-    public static final double aprilTagLossThresholdSec = 0.5;
+    public static final double aprilTagLossThresholdSec = 0.05;
     public static final double visionOdometryTolerance = 0.5;
     public static final double alignToSpeakerTagRotTolerance = 3.0;
     public static final double reverseOdometryOverrideTolerance = 1.0;
