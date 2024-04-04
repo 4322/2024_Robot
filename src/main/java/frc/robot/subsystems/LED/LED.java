@@ -97,13 +97,13 @@ public class LED extends SubsystemBase {
           io.setLED(Color.kRoyalBlue, numLeds, firstLed);
           break;
         case noteReadyToShoot:
-          io.setLED(Color.kHoneydew, firstLed, numLeds);
+          io.setLED(Color.kGreen, firstLed, numLeds);
           break;
         case brakeMode:
           io.setLED(Color.kOrange, firstLed, numLeds);
           break;
         case coastMode:
-          io.setLED(Color.kGreen, firstLed, numLeds);
+          io.setLED(Color.kDarkGreen, firstLed, numLeds);
           break;
         case operatorPreset:
           io.setLED(Color.kWhite, firstLed, numLeds);
