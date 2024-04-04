@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -11,7 +9,6 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.noteTracker.NoteTracker;
 import frc.robot.subsystems.outtake.Outtake;
-import frc.utility.FiringSolutionHelper;
 import frc.utility.OrangeMath;
 
 public class RobotCoordinator extends SubsystemBase {
@@ -153,25 +150,17 @@ public class RobotCoordinator extends SubsystemBase {
 
   public boolean alignedWithSpeaker() {
     final int centerTagID;
-    final int sideTagID;
     if (Robot.isRed()) {
       centerTagID = Constants.FieldConstants.redSpeakerCenterTagID;
-      sideTagID = Constants.FieldConstants.redSpeakerSideTagID;
     }
     else {
       centerTagID = Constants.FieldConstants.blueSpeakerCenterTagID;
-      sideTagID = Constants.FieldConstants.blueSpeakerSideTagID;
     }
-    if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(centerTagID)
-          && Limelight.getOuttakeInstance().getSpecifiedTagVisible(sideTagID)) {
-        final Pose2d robotPoseFieldRelative = Limelight.getOuttakeInstance().getBotposeWpiBlue();
-        final Translation2d botPoseToSpeaker = 
-          FiringSolutionHelper.getVectorToSpeaker(robotPoseFieldRelative.getX(), robotPoseFieldRelative.getY());
 
-        // Must bound botPoseToSpeaker angle because getAnge drive method is bounded
-        return OrangeMath.equalToEpsilon(OrangeMath.boundDegrees(botPoseToSpeaker.getAngle().getDegrees()), 
-            drive.getAngle(), Constants.LimelightConstants.alignToSpeakerTagRotTolerance);
-      }
+    if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(centerTagID)) {
+      return OrangeMath.equalToEpsilon(Limelight.getOuttakeInstance().getTag(centerTagID).tx, 
+          0, Constants.LimelightConstants.alignToSpeakerTagRotTolerance);
+    }
       return false;
   }
 
