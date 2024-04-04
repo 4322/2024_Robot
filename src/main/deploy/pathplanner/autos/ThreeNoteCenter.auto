@@ -5,7 +5,7 @@
       "x": 1.3320651054382324,
       "y": 5.457383155822754
     },
-    "rotation": -1.4992654302490883e-17
+    "rotation": 6.7286331667871146e-18
   },
   "command": {
     "type": "sequential",
@@ -59,15 +59,28 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "wait",
                 "data": {
-                  "name": "TunnelFeed"
+                  "waitTime": 5.0
                 }
               },
               {
-                "type": "path",
+                "type": "parallel",
                 "data": {
-                  "pathName": "ThreeNoteCenter.1"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "TunnelFeed"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "ThreeNoteCenter.1"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -109,25 +122,38 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "wait",
                 "data": {
-                  "name": "TunnelFeed"
+                  "waitTime": 5.0
                 }
               },
               {
-                "type": "sequential",
+                "type": "parallel",
                 "data": {
                   "commands": [
                     {
-                      "type": "path",
+                      "type": "named",
                       "data": {
-                        "pathName": "ThreeNoteCenter.2"
+                        "name": "TunnelFeed"
                       }
                     },
                     {
-                      "type": "path",
+                      "type": "sequential",
                       "data": {
-                        "pathName": "ThreeNoteCenter2"
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "ThreeNoteCenter.2"
+                            }
+                          },
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "ThreeNoteCenter2"
+                            }
+                          }
+                        ]
                       }
                     }
                   ]

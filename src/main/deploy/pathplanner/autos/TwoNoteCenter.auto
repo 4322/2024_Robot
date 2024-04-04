@@ -59,15 +59,28 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "wait",
                 "data": {
-                  "name": "TunnelFeed"
+                  "waitTime": 10.0
                 }
               },
               {
-                "type": "path",
+                "type": "parallel",
                 "data": {
-                  "pathName": "TwoNoteCenter"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "TunnelFeed"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "TwoNoteCenter"
+                      }
+                    }
+                  ]
                 }
               }
             ]
