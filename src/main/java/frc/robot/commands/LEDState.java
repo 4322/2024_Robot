@@ -1,12 +1,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.LED.LED;
 
 public class LEDState extends Command {
     private LED led;
+    private Timer aprilTagLossTimer = new Timer();
     public LEDState() {
         led = LED.getInstance();
         addRequirements(LED.getInstance());
@@ -14,11 +16,18 @@ public class LEDState extends Command {
 
     @Override
     public void execute() {
+        // LEDs while driving
         if (DriverStation.isEnabled()) {
             if (RobotCoordinator.getInstance().canSmartShoot()
                 && RobotCoordinator.getInstance().noteInFiringPosition()) {
                 led.setLEDState(LED.LEDState.noteReadyToShoot);
-            } 
+            }
+            // If outtake is at right pos and speed, Wait for 50 ms to switch LED state from ready to shoot to stop flickering LEDs.
+            else if (RobotCoordinator.getInstance().canShoot() 
+                && led.getLEDState() == LED.LEDState.noteReadyToShoot 
+                    && !aprilTagLossTimer.hasElapsed(0.05)) {
+                aprilTagLossTimer.start();
+            }
             else if (RobotCoordinator.getInstance().canShoot() 
                 && RobotCoordinator.getInstance().noteInFiringPosition()) {
                 led.setLEDState(LED.LEDState.outtakeAtFiringPosition);
@@ -28,7 +37,14 @@ public class LEDState extends Command {
             } else {
                 led.setLEDState(LED.LEDState.idle);
             }
-        } else {
+            // Reset timer if 50 ms has passed and LED state isn't in ready to shoot anymore
+            if (led.getLEDState() != LED.LEDState.noteReadyToShoot) {
+                aprilTagLossTimer.stop();
+                aprilTagLossTimer.reset();
+            }
+        } 
+        // LEDs while disabled
+        else {
             if (!RobotCoordinator.getInstance().isInitialized()) {
                 led.setLEDState(LED.LEDState.notInitialized);
             } else if (RobotCoordinator.getInstance().deployInCoast()
