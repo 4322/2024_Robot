@@ -143,7 +143,6 @@ public class Outtake extends SubsystemBase {
     if (Constants.outtakePivotEnabled) {
       isInCoast = true;
       io.setPivotCoastMode();
-      Logger.recordOutput("Outtake/NeutralMode", "Coast");
     }
   }
 
@@ -151,7 +150,18 @@ public class Outtake extends SubsystemBase {
     if (Constants.outtakePivotEnabled) {
       isInCoast = false;
       io.setPivotBrakeMode();
-      Logger.recordOutput("Outtake/NeutralMode", "Brake");
+    }
+  }
+
+  public void setFlywheelCoastMode() {
+    if (Constants.outtakePivotEnabled) {
+      io.setFlywheelCoastMode();
+    }
+  }
+
+  public void setFlywheelBrakeMode() {
+    if (Constants.outtakePivotEnabled) {
+      io.setFlywheelBrakeMode();
     }
   }
 

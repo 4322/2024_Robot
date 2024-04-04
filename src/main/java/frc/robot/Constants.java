@@ -302,7 +302,7 @@ public final class Constants {
     public static final double bottomkV = 0.113; // kV * maxVelRotationsPerSec = max voltage
     public static final double bottomkS = 0.175;
 
-    public static final double openLoopRampSec = 0;
+    public static final double openLoopRampSec = 0.5;
     public static final double closedLoopRampSec = 0;
     public static final int gearRatioMotorToWheel = 0;
     public static final double gearReductionEncoderToMotor =

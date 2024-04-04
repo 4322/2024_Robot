@@ -323,6 +323,7 @@ public class RobotContainer {
     tunnel.setBrakeMode();
     intake.setDeployerBrakeMode();
     outtake.setPivotBrakeMode();
+    outtake.setFlywheelBrakeMode();
 
     disableTimer.stop();
     disableTimer.reset();
@@ -330,6 +331,7 @@ public class RobotContainer {
 
   public void disableSubsystems() {
     tunnel.setCoastMode();
+    outtake.setFlywheelCoastMode();
 
     driveStop.schedule(); // interrupt all drive commands
     intakeStop.schedule(); // interrupt all intake commands

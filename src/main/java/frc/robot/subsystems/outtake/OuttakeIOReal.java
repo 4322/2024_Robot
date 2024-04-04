@@ -102,7 +102,7 @@ public class OuttakeIOReal implements OuttakeIO {
     config.CurrentLimits.SupplyTimeThreshold =
         Constants.OuttakeConstants.shooterSupplyTimeThreshold;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.HardwareLimitSwitch.ForwardLimitEnable = false;
     config.HardwareLimitSwitch.ReverseLimitEnable = false;
 
@@ -222,6 +222,20 @@ public class OuttakeIOReal implements OuttakeIO {
   public void setPivotCoastMode() {
     pivotMotor.setNeutralMode(NeutralModeValue.Coast);
     Logger.recordOutput("Outtake/Hardware/PivotNeutralMode", "Coast");
+  }
+
+  @Override
+  public void setFlywheelBrakeMode() {
+    topOuttakeMotor.setNeutralMode(NeutralModeValue.Brake);
+    bottomOuttakeMotor.setNeutralMode(NeutralModeValue.Brake);
+    Logger.recordOutput("Outtake/Hardware/FlywheelNeutralMode", "Brake");
+  }
+
+  @Override
+  public void setFlywheelCoastMode() {
+    topOuttakeMotor.setNeutralMode(NeutralModeValue.Coast);
+    bottomOuttakeMotor.setNeutralMode(NeutralModeValue.Coast);
+    Logger.recordOutput("Outtake/Hardware/FlywheelNeutralMode", "Coast");
   }
 
   @Override
