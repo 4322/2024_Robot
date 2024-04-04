@@ -90,6 +90,9 @@ public class OuttakeManual extends Command {
         case FEED:
           firingSolution = FiringSolutions.Feed;
           break;
+        case STARTING_CONFIG:
+          firingSolution = FiringSolutions.StartingConfig;
+          break;
         case AMP:
           outtake.pivot(Constants.OuttakeConstants.ampPivotRotations);
           outtake.outtake(Constants.OuttakeConstants.ampTopShooterRPS, Constants.OuttakeConstants.ampBottomShooterRPS); 

@@ -528,6 +528,7 @@ public final class Constants {
         new FiringSolution(0, 0, 0, Constants.OuttakeConstants.reverseSoftLimitThresholdRotations);
     public static final FiringSolution Feed = new FiringSolution(0, 0, -10, 221.0 / 3.0);
     public static final FiringSolution DefaultSmartShooting = new FiringSolution(0, 0, 40, 105.0 / 3.0);
+    public static final FiringSolution StartingConfig = new FiringSolution(0, 0, 0, 46.866);
   }
 
   public enum WheelPosition {

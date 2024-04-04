@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.ButtonMonitor;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -275,6 +277,7 @@ public class RobotContainer {
               Commands.runOnce(
                   () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_AMP)),
                   new OperatorPresetLED()));
+      operatorXbox.povLeft().onTrue(Commands.runOnce(() -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STARTING_CONFIG);}));
     }
   }
 
