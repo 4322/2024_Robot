@@ -17,7 +17,7 @@ public class LED extends SubsystemBase {
     initialized,
     idle,
     operatorPreset,
-    noteFired,
+    outtakeAtFiringPosition,
     noteReadyToShoot,
     noteInRobot,
     brakeMode,
@@ -88,13 +88,13 @@ public class LED extends SubsystemBase {
           io.setLED(Color.kIvory, firstLed, numLeds);
           break;
         case idle:
-          io.setLED(Color.kCyan, firstLed, numLeds);
+          io.setLED(Color.kViolet, firstLed, numLeds);
           break;
         case noteInRobot:
-          io.setLED(Color.kPurple, firstLed, numLeds);
+          io.setLED(Color.kBlack, firstLed, numLeds);
           break;
-        case noteFired:
-          io.setLED(Color.kOrange, firstLed, numLeds);
+        case outtakeAtFiringPosition:
+          io.setLED(Color.kRoyalBlue, numLeds, firstLed);
           break;
         case noteReadyToShoot:
           io.setLED(Color.kHoneydew, firstLed, numLeds);

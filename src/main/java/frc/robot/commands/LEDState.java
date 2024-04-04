@@ -15,12 +15,15 @@ public class LEDState extends Command {
     @Override
     public void execute() {
         if (DriverStation.isEnabled()) {
-            if (RobotCoordinator.getInstance().noteIsShot()) {
-                led.setLEDState(LED.LEDState.noteFired);
-            } else if (RobotCoordinator.getInstance().canSmartShoot()
+            if (RobotCoordinator.getInstance().canSmartShoot()
                 && RobotCoordinator.getInstance().noteInFiringPosition()) {
                 led.setLEDState(LED.LEDState.noteReadyToShoot);
-            } else if (RobotCoordinator.getInstance().noteInRobot()) {
+            } 
+            else if (RobotCoordinator.getInstance().canShoot() 
+                && RobotCoordinator.getInstance().noteInFiringPosition()) {
+                led.setLEDState(LED.LEDState.outtakeAtFiringPosition);
+            }
+            else if (RobotCoordinator.getInstance().noteInRobot()) {
                 led.setLEDState(LED.LEDState.noteInRobot);
             } else {
                 led.setLEDState(LED.LEDState.idle);
