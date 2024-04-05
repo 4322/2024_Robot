@@ -11,13 +11,17 @@ public class DriveManualStateMachine {
   public enum DriveManualState {
     DEFAULT,
     SPEAKER_CENTRIC,
-    ROBOT_CENTRIC
+    ROBOT_CENTRIC,
+    AMP,
+    SOURCE
   }
 
   public enum DriveManualTrigger {
     ENABLE_SPEAKER_CENTRIC,
     ENABLE_ROBOT_CENTRIC,
-    RESET_TO_DEFAULT,
+    ENABLE_AMP,
+    ENABLE_SOURCE,
+    RESET_TO_DEFAULT
   }
 
   public DriveManualStateMachine(DriveManualState initialState) {
@@ -25,6 +29,8 @@ public class DriveManualStateMachine {
         .configure(DriveManualState.DEFAULT)
         .permit(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC, DriveManualState.SPEAKER_CENTRIC)
         .permit(DriveManualTrigger.ENABLE_ROBOT_CENTRIC, DriveManualState.ROBOT_CENTRIC)
+        .permit(DriveManualTrigger.ENABLE_AMP, DriveManualState.AMP)
+        .permit(DriveManualTrigger.ENABLE_SOURCE, DriveManualState.SOURCE)
         .permitReentry(DriveManualTrigger.RESET_TO_DEFAULT);
 
     config
@@ -33,8 +39,9 @@ public class DriveManualStateMachine {
         .permitReentry(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC)
         .permitReentry(
             DriveManualTrigger
-                .ENABLE_ROBOT_CENTRIC); // don't want to accidentally switch to robot centric from
-    // speaker centric
+                .ENABLE_ROBOT_CENTRIC)
+        .permitReentry(DriveManualTrigger.ENABLE_AMP)
+        .permitReentry(DriveManualTrigger.ENABLE_SOURCE);
 
     config
         .configure(DriveManualState.ROBOT_CENTRIC)
@@ -42,8 +49,27 @@ public class DriveManualStateMachine {
         .permitReentry(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC)
         .permitReentry(
             DriveManualTrigger
-                .ENABLE_ROBOT_CENTRIC); // don't want to accidentally switch to speaker centric from
-    // robot centric
+                .ENABLE_ROBOT_CENTRIC)
+        .permitReentry(DriveManualTrigger.ENABLE_AMP)
+        .permitReentry(DriveManualTrigger.ENABLE_SOURCE);
+    
+    config.configure(DriveManualState.AMP)
+      .permit(DriveManualTrigger.RESET_TO_DEFAULT, DriveManualState.DEFAULT)
+      .permitReentry(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC)
+      .permitReentry(
+          DriveManualTrigger
+              .ENABLE_ROBOT_CENTRIC)
+      .permitReentry(DriveManualTrigger.ENABLE_AMP)
+      .permitReentry(DriveManualTrigger.ENABLE_SOURCE);
+
+    config.configure(DriveManualState.SOURCE)
+      .permit(DriveManualTrigger.RESET_TO_DEFAULT, DriveManualState.DEFAULT)
+      .permitReentry(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC)
+      .permitReentry(
+          DriveManualTrigger
+              .ENABLE_ROBOT_CENTRIC)
+      .permitReentry(DriveManualTrigger.ENABLE_AMP)
+      .permitReentry(DriveManualTrigger.ENABLE_SOURCE);
 
     stateMachine = new StateMachine<DriveManualState, DriveManualTrigger>(initialState, config);
   }
