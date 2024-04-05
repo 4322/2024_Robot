@@ -221,14 +221,12 @@ public class RobotContainer {
                       driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);
                     }));
       }
+      driveXbox.back().onTrue(new ParallelCommandGroup(
+                  Commands.runOnce(
+                    () -> {driveManual.updateStateMachine(DriveManualTrigger.ENABLE_AMP);}),
+                  Commands.runOnce(
+                    () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_AMP))));
       driveXbox
-            .back() // binded to back left P2 button on xbox
-            .onTrue(
-                Commands.runOnce(
-                    () -> {
-                      driveManual.updateStateMachine(DriveManualTrigger.ENABLE_AMP);
-                    }));
-        driveXbox
             .back()
             .onFalse(
                 Commands.runOnce(
@@ -254,7 +252,12 @@ public class RobotContainer {
                     outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
                   }));
       driveXbox.leftTrigger().whileTrue(new Shoot());
-      driveXbox.leftBumper().onTrue(Commands.runOnce(() -> {driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SOURCE);}));
+      driveXbox.leftBumper().onTrue(new ParallelCommandGroup(
+                  Commands.runOnce(
+                    () -> {driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SOURCE);}),
+                  Commands.runOnce(
+                      () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED)),
+                  new OuttakeTunnelFeed()));
       driveXbox.leftBumper().onFalse(Commands.runOnce(() -> {driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);}));
       if (Constants.outtakeTuningMode) {
         driveXbox.y().onTrue(writeFiringSolution);
