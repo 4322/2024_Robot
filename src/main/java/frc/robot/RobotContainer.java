@@ -339,14 +339,6 @@ public class RobotContainer {
       onOpponentFieldSide = false;
     }
 
-    // If the match is about to end, set to coast mode so we can coast past end of match
-    if (DriverStation.getMatchTime() <= 2
-        && DriverStation.isTeleopEnabled()
-        && DriverStation.isFMSAttached()
-        && !nearMatchEndCommandsReqested) {
-      drive.setCoastMode();
-      nearMatchEndCommandsReqested = true;
-    }
   }
 
   public void enableSubsystems() {
@@ -377,17 +369,18 @@ public class RobotContainer {
 
   // Command that should always start off every auto
   public Command getAutoInitialize() {
-    final String autoName = AutoHelper.getPathPlannerAutoName(autoChooser.getSelected());
-    if (autoName == "None") {
-      return new SequentialCommandGroup(new ResetFieldCentric(true));
-    } else {
-      return new SequentialCommandGroup(
-          new ResetFieldCentric(
-              true,
-              PathPlannerManager.getInstance()
-                  .getStartingPoseFromAutoFile(autoName)
-                  .getRotation()));
-    }
+    // final String autoName = AutoHelper.getPathPlannerAutoName(autoChooser.getSelected());
+    // if (autoName == "None") {
+    //   return new SequentialCommandGroup(new ResetFieldCentric(true));
+    // } else {
+    //   return new SequentialCommandGroup(
+    //       new ResetFieldCentric(
+    //           true,
+    //           PathPlannerManager.getInstance()
+    //               .getStartingPoseFromAutoFile(autoName)
+    //               .getRotation()));
+    // }
+    return Commands.none();
   }
 
   // Command for the auto on our side of the field (PathPlanner Auto)
