@@ -11,6 +11,7 @@ import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriveConstants.Manual;
 import frc.robot.Constants.DriveInputScalingStrings;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.RotateInputScalingStrings;
 import frc.robot.RobotContainer;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualState;
@@ -130,6 +131,20 @@ public class DriveManual extends Command {
         Logger.recordOutput("RobotHeading/State", "Robot centric");
         LED.getInstance().setAutoRotateDebugLed(Color.kYellow, Constants.LED.debugLed2);
         drive.drive(driveX, driveY, rotatePower, new Rotation2d());
+        return;
+      case AMP:
+        if (Robot.isRed()) {
+          drive.driveAutoRotate(driveX, driveY, FieldConstants.redAmpAngleDeg);
+        } else {
+          drive.driveAutoRotate(driveX, driveY, -FieldConstants.redAmpAngleDeg);
+        }
+        return;
+      case SOURCE:
+        if (Robot.isRed()) {
+          drive.driveAutoRotate(driveX, driveY, FieldConstants.redSourceAngleDeg);
+        } else {
+          drive.driveAutoRotate(driveX, driveY, -FieldConstants.redSourceAngleDeg);
+        }
         return;
       case DEFAULT:
         // Run regular drive logic
