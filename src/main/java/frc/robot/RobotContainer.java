@@ -221,6 +221,20 @@ public class RobotContainer {
                       driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);
                     }));
       }
+      driveXbox
+            .back() // binded to back right P2 button on xbox
+            .onTrue(
+                Commands.runOnce(
+                    () -> {
+                      driveManual.updateStateMachine(DriveManualTrigger.ENABLE_AMP);
+                    }));
+        driveXbox
+            .back()
+            .onFalse(
+                Commands.runOnce(
+                    () -> {
+                      driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);
+                    }));
       driveXbox.x().onTrue(new ResetFieldCentric(true));
       driveXbox.povDown().onTrue(driveStop);
       driveXbox
@@ -240,8 +254,8 @@ public class RobotContainer {
                     outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
                   }));
       driveXbox.leftTrigger().whileTrue(new Shoot());
-      driveXbox.leftBumper().onTrue(Commands.runOnce(() -> {drive.setManualRotationCap(true);}));
-      driveXbox.leftBumper().onFalse(Commands.runOnce(() -> {drive.setManualRotationCap(false);}));
+      driveXbox.leftBumper().onTrue(Commands.runOnce(() -> {driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SOURCE);}));
+      driveXbox.leftBumper().onFalse(Commands.runOnce(() -> {driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);}));
       if (Constants.outtakeTuningMode) {
         driveXbox.y().onTrue(writeFiringSolution);
         // right up against front of speaker with edge of robot on source side
