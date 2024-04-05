@@ -47,7 +47,7 @@ public class AutoSmartShooting extends InstantCommand {
 
     if (RobotCoordinator.getInstance().canPivot()) {
       // constant rotation addition to adjust for error at AVR
-      outtake.pivot(solution.getShotRotations() + 3);
+      outtake.pivot(solution.getShotRotations() + 3.5);
     }
   }
 
