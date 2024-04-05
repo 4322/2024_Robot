@@ -222,7 +222,7 @@ public class RobotContainer {
                     }));
       }
       driveXbox
-            .back() // binded to back right P2 button on xbox
+            .back() // binded to back left P2 button on xbox
             .onTrue(
                 Commands.runOnce(
                     () -> {
