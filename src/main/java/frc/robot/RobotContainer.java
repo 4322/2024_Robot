@@ -48,6 +48,7 @@ import frc.robot.commands.TunnelFeed;
 import frc.robot.commands.TunnelStop;
 import frc.robot.commands.UpdateOdometry;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
+import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.LED.LED;
 import frc.robot.subsystems.RobotCoordinator;
@@ -132,6 +133,19 @@ public class RobotContainer {
             new AutoSetOuttakeAdjust(Constants.FiringSolutions.CollectingNote));
     PathPlannerManager.getInstance().addEvent("SetOuttakeSmartShooting", new AutoSmartShooting());
     PathPlannerManager.getInstance().addEvent("TunnelFeed", new TunnelFeed(true));
+
+    PathPlannerManager.getInstance()
+        .addEvent(
+            "SetOuttakeN6",
+            new AutoSetOuttakeAdjust(new FiringSolution(0, 0, 40, 40)));
+    PathPlannerManager.getInstance()
+        .addEvent(
+            "SetOuttakeN7",
+            new AutoSetOuttakeAdjust(new FiringSolution(0, 0, 40, 40)));
+    PathPlannerManager.getInstance()
+        .addEvent(
+            "SetOuttakeN8",
+            new AutoSetOuttakeAdjust(new FiringSolution(0, 0, 40, 40)));
 
     // DO NOT MOVE OR REMOVE THIS WITHOUT KNOWING WHAT YOU'RE DOING
     PathPlannerManager.getInstance().preloadAutos();
