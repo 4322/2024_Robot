@@ -510,8 +510,8 @@ public final class Constants {
     public static final int blueSpeakerCenterTagID = 7;
     public static final int blueSpeakerSideTagID = 8;
 
-    public static final double redAmpAngleDeg = -90;
-    public static final double redSourceAngleDeg = 51.4;
+    public static final double redAmpAngleDeg = 90;
+    public static final double redSourceAngleDeg = 180 - 51.4;
   }
 
   public static final class FiringSolutions {
