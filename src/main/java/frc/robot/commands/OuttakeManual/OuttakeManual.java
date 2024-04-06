@@ -61,6 +61,13 @@ public class OuttakeManual extends Command {
             double magToSpeaker = botPoseToSpeaker.getNorm();
             double degreesToSpeaker = botPoseToSpeaker.getAngle().getDegrees();
             firingSolution = FiringSolutionManager.getInstance().calcSolution(magToSpeaker, degreesToSpeaker);
+
+            // tweak like we do for auto smart shooting
+            double adjShotRotations = firingSolution.getShotRotations();
+            if (adjShotRotations < 70) {
+              adjShotRotations += (70 - adjShotRotations) / 12.5;
+              firingSolution = new FiringSolution(0, 0, firingSolution.getFlywheelSpeed(), adjShotRotations);
+            }
             
             Logger.recordOutput("FiringSolutions/BotPoseInput/Mag", magToSpeaker);
             Logger.recordOutput("FiringSolutions/BotPoseInput/Angle", degreesToSpeaker);
