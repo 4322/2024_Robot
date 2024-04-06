@@ -12,7 +12,8 @@ public class AutoHelper {
     OneNoteAmp,
     OneNoteSource,
     TwoNoteCenter,
-    ThreeNoteCenter,
+    ThreeNoteCenterAmp,
+    ThreeNoteCenterSource,
     FourNoteCenter
   }
 
@@ -37,8 +38,10 @@ public class AutoHelper {
         return "OneNoteSource";
       case TwoNoteCenter:
         return "TwoNoteCenter";
-      case ThreeNoteCenter:
-        return "ThreeNoteCenter";
+      case ThreeNoteCenterAmp:
+        return "ThreeNoteCenterAmp";
+      case ThreeNoteCenterSource:
+        return "ThreeNoteCenterSource";
       case FourNoteCenter:
         return "FourNoteCenter";
       case None:
