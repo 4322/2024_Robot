@@ -64,10 +64,13 @@ public class OuttakeManual extends Command {
 
             // tweak like we do for auto smart shooting
             double adjShotRotations = firingSolution.getShotRotations();
-            if (adjShotRotations < 70) {
-              adjShotRotations += (70 - adjShotRotations) / 12.5;
-              firingSolution = new FiringSolution(0, 0, firingSolution.getFlywheelSpeed(), adjShotRotations);
+            if (adjShotRotations < 28) {
+              adjShotRotations += 3.5;
+            } else if (adjShotRotations < 70) {
+              adjShotRotations += (70 - adjShotRotations) / 12.0;
             }
+            firingSolution = new FiringSolution(0, 0, 
+              firingSolution.getFlywheelSpeed(), adjShotRotations);
             
             Logger.recordOutput("FiringSolutions/BotPoseInput/Mag", magToSpeaker);
             Logger.recordOutput("FiringSolutions/BotPoseInput/Angle", degreesToSpeaker);
