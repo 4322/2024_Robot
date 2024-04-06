@@ -139,7 +139,7 @@ public class TunnelFeed extends Command {
 
   @Override
   public boolean isFinished() {
-    if (runOnce && state == State.readyToFire) {
+    if (runOnce && ((state == State.readyToFire) || (state == State.abort))) {
       // need to end in auto
       return true;
     }
