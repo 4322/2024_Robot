@@ -61,11 +61,6 @@ public class IntakeIOReal implements IntakeIO {
       intakeRPS = tab.add("Intake RPS", 0).withSize(1, 1).withPosition(2, 0).getEntry();
       deployPosition = tab.add("Deployer position", 0).withSize(1, 1).withPosition(0, 1).getEntry();
       deployerRPS = tab.add("Deployer RPS", 0).withPosition(1, 1).withSize(1, 1).getEntry();
-      deployMaxRotationsPerSec =
-          tab.add("Deployer Max RPS", DeployConfig.maxRotationsPerSec)
-              .withPosition(0, 2)
-              .withSize(1, 1)
-              .getEntry();
       kP = tab.add("Deployer kP", DeployConfig.kP).withPosition(1, 2).withSize(1, 1).getEntry();
       slowPos =
           tab.add("Deployer slowing position", DeployConfig.slowPos)
@@ -178,15 +173,12 @@ public class IntakeIOReal implements IntakeIO {
           intakeFeederVoltage.getDouble(IntakeConstants.IntakeConfig.intakeFeedVoltage);
       inputs.intakeEjectVoltage =
           intakeEjectVoltage.getDouble(IntakeConstants.IntakeConfig.intakeEjectVoltage);
-      inputs.deployMaxRotationsPerSec =
-          deployMaxRotationsPerSec.getDouble(DeployConfig.maxRotationsPerSec);
       inputs.deployKp = kP.getDouble(DeployConfig.kP);
       inputs.slowPos = slowPos.getDouble(DeployConfig.slowPos);
       deployerRPS.setDouble(inputs.heliumRPS);
     } else {
       inputs.intakeFeederVoltage = IntakeConstants.IntakeConfig.intakeFeedVoltage;
       inputs.intakeEjectVoltage = IntakeConstants.IntakeConfig.intakeEjectVoltage;
-      inputs.deployMaxRotationsPerSec = DeployConfig.maxRotationsPerSec;
       inputs.deployKp = DeployConfig.kP;
       inputs.slowPos = DeployConfig.slowPos;
     }
