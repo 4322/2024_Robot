@@ -22,7 +22,7 @@ public class AutoSmartShooting extends InstantCommand {
 
   @Override
   public void initialize() {
-    final FiringSolution solution;
+    FiringSolution solution;
     final Pose2d botpose = Limelight.getOuttakeInstance().getBotposeWpiBlue();
     double botMagToSpeaker =
         FiringSolutionHelper.getVectorToSpeaker(
@@ -36,6 +36,16 @@ public class AutoSmartShooting extends InstantCommand {
             .getAngle()
             .getDegrees();
     solution = FiringSolutionManager.getInstance().calcSolution(botMagToSpeaker, botAngleToSpeaker);
+
+    // tweak like we do for auto smart shooting
+    double adjShotRotations = solution.getShotRotations();
+    if (adjShotRotations < 28) {
+      adjShotRotations += 3.5;
+    } else if (adjShotRotations < 70) {
+      adjShotRotations += (70 - adjShotRotations) / 12.0;
+    }
+    solution = new FiringSolution(0, 0, 
+      solution.getFlywheelSpeed(), adjShotRotations);
 
     Logger.recordOutput("FiringSolutions/CalculatedShot", solution.toString());
     Logger.recordOutput("FiringSolutions/BotPoseInput/Mag", botMagToSpeaker);
