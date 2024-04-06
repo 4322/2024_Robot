@@ -226,7 +226,7 @@ public class RobotContainer {
             .onTrue(
                 Commands.runOnce(
                     () -> {
-                      driveManual.updateStateMachine(DriveManualTrigger.ENABLE_AMP);
+                      driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SOURCE);
                     }));
         driveXbox
             .back()
@@ -254,8 +254,8 @@ public class RobotContainer {
                     outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
                   }));
       driveXbox.leftTrigger().whileTrue(new Shoot());
-      driveXbox.leftBumper().onTrue(Commands.runOnce(() -> {driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SOURCE);}));
-      driveXbox.leftBumper().onFalse(Commands.runOnce(() -> {driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);}));
+      driveXbox.rightBumper().onTrue(Commands.runOnce(() -> {driveManual.updateStateMachine(DriveManualTrigger.ENABLE_AMP);}));
+      driveXbox.rightBumper().onFalse(Commands.runOnce(() -> {driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);}));
       if (Constants.outtakeTuningMode) {
         driveXbox.y().onTrue(writeFiringSolution);
         // right up against front of speaker with edge of robot on source side
