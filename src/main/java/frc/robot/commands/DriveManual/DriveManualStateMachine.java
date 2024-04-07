@@ -13,7 +13,8 @@ public class DriveManualStateMachine {
     SPEAKER_CENTRIC,
     ROBOT_CENTRIC,
     AMP,
-    SOURCE
+    SOURCE,
+    PASS;
   }
 
   public enum DriveManualTrigger {
@@ -21,6 +22,7 @@ public class DriveManualStateMachine {
     ENABLE_ROBOT_CENTRIC,
     ENABLE_AMP,
     ENABLE_SOURCE,
+    ENABLE_PASS,
     RESET_TO_DEFAULT
   }
 
@@ -31,7 +33,8 @@ public class DriveManualStateMachine {
         .permit(DriveManualTrigger.ENABLE_ROBOT_CENTRIC, DriveManualState.ROBOT_CENTRIC)
         .permit(DriveManualTrigger.ENABLE_AMP, DriveManualState.AMP)
         .permit(DriveManualTrigger.ENABLE_SOURCE, DriveManualState.SOURCE)
-        .permitReentry(DriveManualTrigger.RESET_TO_DEFAULT);
+        .permitReentry(DriveManualTrigger.RESET_TO_DEFAULT)
+        .permit(DriveManualTrigger.ENABLE_PASS, DriveManualState.PASS);
 
     config
         .configure(DriveManualState.SPEAKER_CENTRIC)
@@ -41,7 +44,8 @@ public class DriveManualStateMachine {
             DriveManualTrigger
                 .ENABLE_ROBOT_CENTRIC)
         .permitReentry(DriveManualTrigger.ENABLE_AMP)
-        .permitReentry(DriveManualTrigger.ENABLE_SOURCE);
+        .permitReentry(DriveManualTrigger.ENABLE_SOURCE)
+        .permitReentry(DriveManualTrigger.ENABLE_PASS);
 
     config
         .configure(DriveManualState.ROBOT_CENTRIC)
@@ -51,7 +55,8 @@ public class DriveManualStateMachine {
             DriveManualTrigger
                 .ENABLE_ROBOT_CENTRIC)
         .permitReentry(DriveManualTrigger.ENABLE_AMP)
-        .permitReentry(DriveManualTrigger.ENABLE_SOURCE);
+        .permitReentry(DriveManualTrigger.ENABLE_SOURCE)
+        .permitReentry(DriveManualTrigger.ENABLE_PASS);
     
     config.configure(DriveManualState.AMP)
       .permit(DriveManualTrigger.RESET_TO_DEFAULT, DriveManualState.DEFAULT)
@@ -60,7 +65,8 @@ public class DriveManualStateMachine {
           DriveManualTrigger
               .ENABLE_ROBOT_CENTRIC)
       .permitReentry(DriveManualTrigger.ENABLE_AMP)
-      .permitReentry(DriveManualTrigger.ENABLE_SOURCE);
+      .permitReentry(DriveManualTrigger.ENABLE_SOURCE)
+      .permitReentry(DriveManualTrigger.ENABLE_PASS);
 
     config.configure(DriveManualState.SOURCE)
       .permit(DriveManualTrigger.RESET_TO_DEFAULT, DriveManualState.DEFAULT)
@@ -69,7 +75,18 @@ public class DriveManualStateMachine {
           DriveManualTrigger
               .ENABLE_ROBOT_CENTRIC)
       .permitReentry(DriveManualTrigger.ENABLE_AMP)
-      .permitReentry(DriveManualTrigger.ENABLE_SOURCE);
+      .permitReentry(DriveManualTrigger.ENABLE_SOURCE)
+      .permitReentry(DriveManualTrigger.ENABLE_PASS);
+    
+    config.configure(DriveManualState.PASS)
+      .permit(DriveManualTrigger.RESET_TO_DEFAULT, DriveManualState.DEFAULT)
+      .permitReentry(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC)
+      .permitReentry(
+          DriveManualTrigger
+              .ENABLE_ROBOT_CENTRIC)
+      .permitReentry(DriveManualTrigger.ENABLE_AMP)
+      .permitReentry(DriveManualTrigger.ENABLE_SOURCE)
+      .permitReentry(DriveManualTrigger.ENABLE_PASS);
 
     stateMachine = new StateMachine<DriveManualState, DriveManualTrigger>(initialState, config);
   }

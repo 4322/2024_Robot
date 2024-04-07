@@ -19,7 +19,6 @@ import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger
 import frc.robot.subsystems.LED.LED;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.limelight.Limelight;
-import frc.utility.FiringSolutionHelper;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -144,6 +143,13 @@ public class DriveManual extends Command {
           drive.driveAutoRotate(driveX, driveY, FieldConstants.redSourceAngleDeg);
         } else {
           drive.driveAutoRotate(driveX, driveY, -FieldConstants.redSourceAngleDeg);
+        }
+        return;
+      case PASS:
+        if (Robot.isRed()) {
+          drive.driveAutoRotate(driveX, driveY, FieldConstants.redPassAngleDeg);
+        } else {
+          drive.driveAutoRotate(driveX, driveY, -FieldConstants.redPassAngleDeg);
         }
         return;
       case DEFAULT:
