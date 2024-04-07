@@ -5,36 +5,40 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants;
 import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
-import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.outtake.Outtake;
 import frc.utility.FiringSolutionHelper;
 
 public class WriteFiringSolutionAtCurrentPos extends InstantCommand {
 
   private FiringSolutionManager firingSolutionManager;
-  private Drive drive;
   private Outtake outtake;
   double shotAngle;
   double shotMag;
 
   public WriteFiringSolutionAtCurrentPos() {
-    drive = Drive.getInstance();
     outtake = Outtake.getInstance();
     firingSolutionManager = FiringSolutionManager.getInstance();
   }
 
   @Override
   public void initialize() {
-    if (Constants.shotTuningMode) {
-      Translation2d rawTranslation =
+    if (Constants.outtakeTuningMode) {
+      if (Limelight.getOuttakeInstance().getTargetVisible()) {
+        Translation2d rawTranslation =
           FiringSolutionHelper.getVectorToSpeaker(
-              drive.getPose2d().getX(), drive.getPose2d().getY());
-      shotAngle = rawTranslation.getAngle().getDegrees();
-      // Calculates magnitude from x and y vals
-      shotMag = rawTranslation.getDistance(FiringSolutionHelper.getSpeakerTranslation2d());
-      FiringSolution solution =
-          new FiringSolution(shotMag, shotAngle, outtake.getTargetRPS(), outtake.getPivotTarget());
-      firingSolutionManager.writeSolution(solution);
+              Limelight.getOuttakeInstance().getBotposeWpiBlue().getX(), 
+                Limelight.getOuttakeInstance().getBotposeWpiBlue().getY());
+        shotAngle = rawTranslation.getAngle().getDegrees();
+        // Calculates magnitude from x and y vals
+        shotMag = rawTranslation.getNorm();
+        FiringSolution solution =
+            // Doesn't matter if you log top or bottom target RPS to JSON.
+            // Both shooter speeds will be the same value if we are doing shot tuning for speaker
+            new FiringSolution(shotMag, shotAngle, outtake.getTopTargetRPS(), outtake.getPivotTarget());
+        firingSolutionManager.writeSolution(solution);
+      }
+      
     }
   }
 

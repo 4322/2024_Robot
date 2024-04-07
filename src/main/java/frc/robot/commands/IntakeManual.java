@@ -17,18 +17,20 @@ public class IntakeManual extends Command {
     retracting;
   }
 
-  private static IntakeStates intakeState = IntakeStates.retracted;
-  ;
+  private IntakeStates intakeState = IntakeStates.retracted;
   private Intake intake;
   private AutoAcquireNote autoAcquireNote;
-  private XboxControllerRumble xBoxRumble;
 
   public IntakeManual() {
     intake = Intake.getInstance();
     autoAcquireNote = new AutoAcquireNote();
-    xBoxRumble = new XboxControllerRumble();
 
     addRequirements(intake);
+  }
+
+  @Override
+  public void initialize() {
+    intakeState = IntakeStates.retracting;
   }
 
   @Override
@@ -43,6 +45,7 @@ public class IntakeManual extends Command {
       case deploying:
         if (coordinator.canDeploy()) {
           intake.deploy();
+          intake.intake();  // maybe jump to feeding state instead?
         }
         if (!coordinator.getIntakeButtonPressed()) {
           intakeState = IntakeStates.retracting;
@@ -72,8 +75,10 @@ public class IntakeManual extends Command {
         if (coordinator.isIntakeDeployed()) {
           intake.intake();
         }
+        if (autoAcquireNote.isScheduled()) {
+          autoAcquireNote.cancel();
+        }
         if (!coordinator.noteEnteringIntake()) {
-          CommandScheduler.getInstance().schedule(xBoxRumble);
           intakeState = IntakeStates.notePastIntake;
         }
         break;
@@ -90,6 +95,9 @@ public class IntakeManual extends Command {
         if (coordinator.canRetract()) {
           intake.retract();
         }
+        if (autoAcquireNote.isScheduled()) {
+          autoAcquireNote.cancel();
+        }
         if (coordinator.getIntakeButtonPressed()) {
           intakeState = IntakeStates.deploying;
         } else if (coordinator.isIntakeRetracted()) {
@@ -103,13 +111,5 @@ public class IntakeManual extends Command {
   @Override
   public boolean isFinished() {
     return false;
-  }
-
-  public static IntakeStates getIntakeState() {
-    return intakeState;
-  }
-
-  public static void setIntakeState(IntakeStates newState) {
-    intakeState = newState;
   }
 }

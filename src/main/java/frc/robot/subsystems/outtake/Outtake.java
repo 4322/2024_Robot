@@ -1,20 +1,17 @@
 package frc.robot.subsystems.outtake;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.OuttakeConstants;
-import frc.robot.subsystems.RobotCoordinator;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
 public class Outtake extends SubsystemBase {
   private OuttakeIO io;
   private OuttakeIOInputsAutoLogged inputs = new OuttakeIOInputsAutoLogged();
-  private double targetRPS;
-  private Timer existenceTimer;
+  private double topTargetRPS;
+  private double bottomTargetRPS;
   private double pivotTarget;
-  private boolean pivotInitialized;
   private boolean isInCoast;
 
   private static Outtake outtake;
@@ -41,12 +38,14 @@ public class Outtake extends SubsystemBase {
     if (io == null) {
       io = new OuttakeIO() {};
     }
-
-    existenceTimer = new Timer();
   }
 
-  public double getTargetRPS() {
-    return targetRPS;
+  public double getTopTargetRPS() {
+    return topTargetRPS;
+  }
+
+  public double getBottomTargetRPS() {
+    return bottomTargetRPS;
   }
 
   public double getPivotTarget() {
@@ -54,67 +53,59 @@ public class Outtake extends SubsystemBase {
   }
 
   public void periodic() {
-    // Check if encoders have already been initialized after power cycle
-    // If so, we don't need to reinitialize
-    if (Constants.outtakePivotEnabled
-        && !pivotInitialized
-        && OrangeMath.equalToEpsilon(
-            inputs.heliumRelativeRotations,
-            Constants.EncoderInitializeConstants.initializedRotationsFlag,
-            Constants.EncoderInitializeConstants.initializedRotationsTolerance)) {
-      pivotInitialized = true;
-    }
-
-    // initialize motor internal encoder position until the intake isn't moving
-    if (Constants.outtakePivotEnabled
-        && !pivotInitialized
-        && !existenceTimer.hasElapsed(5)
-        && RobotCoordinator.getInstance().getInitAbsEncoderPressed()) {
-      existenceTimer.start();
-      pivotInitialized = io.initPivot();
-    }
     if ((Constants.outtakeEnabled) || (Constants.outtakePivotEnabled)) {
       io.updateInputs(inputs);
       Logger.processInputs("Outtake", inputs);
-      Logger.recordOutput("Outtake/LeftRotationsPerSecAbs", Math.abs(inputs.leftRotationsPerSec));
-      Logger.recordOutput("Outtake/RightRotationsPerSecAbs", Math.abs(inputs.rightRotationsPerSec));
+      Logger.recordOutput("Outtake/TopRotationsPerSecAbs", Math.abs(inputs.topRotationsPerSec));
+      Logger.recordOutput("Outtake/BottomRotationsPerSecAbs", Math.abs(inputs.bottomRotationsPerSec));
     }
+ 
     if (Constants.outtakeTuningMode && inputs.tuneOuttakeOverrideEnable) {
       if (Constants.outtakeEnabled) {
-        outtake(inputs.debugTargetRPS);
+        outtake(inputs.topDebugTargetRPS, inputs.bottomDebugTargetRPS);
       }
       if (Constants.outtakePivotEnabled) {
-        pivot(inputs.targetPivotPosition, false);
+        pivot(inputs.targetPivotPosition);
       }
     }
   }
 
-  public void outtake(double targetRPS) {
-    if (Constants.outtakeEnabled && pivotInitialized) {
+  public void outtake(double topTargetRPS, double bottomTargetRPS) {
+    if (Constants.outtakeEnabled && io.pivotIsInitialized()) {
       // Overrides operator shooting presets
       if (Constants.outtakeTuningMode && inputs.tuneOuttakeOverrideEnable) {
-        targetRPS = inputs.debugTargetRPS;
+        topTargetRPS = inputs.topDebugTargetRPS;
+        bottomTargetRPS = inputs.bottomDebugTargetRPS;
       }
-      if (targetRPS > OuttakeConstants.maxVelRotationsPerSec) {
-        targetRPS = OuttakeConstants.maxVelRotationsPerSec;
+      if (bottomTargetRPS > OuttakeConstants.maxVelRotationsPerSec) {
+        bottomTargetRPS = OuttakeConstants.maxVelRotationsPerSec;
       }
-      this.targetRPS = targetRPS;
-      io.setOuttakeRPS(this.targetRPS, this.targetRPS);
-      Logger.recordOutput("Outtake/OuttakeTargetSpeedRPS", this.targetRPS);
+      if (topTargetRPS > OuttakeConstants.maxVelRotationsPerSec) {
+        topTargetRPS = OuttakeConstants.maxVelRotationsPerSec;
+      }
+      this.topTargetRPS = topTargetRPS;
+      this.bottomTargetRPS = bottomTargetRPS;
+      io.setOuttakeRPS(this.topTargetRPS, this.bottomTargetRPS);
+      Logger.recordOutput("Outtake/OuttakeTopTargetSpeedRPS", this.topTargetRPS);
+      Logger.recordOutput("Outtake/OuttakeBottomTargerRPS", this.bottomTargetRPS);
       Logger.recordOutput("Outtake/OuttakeStopped", false);
     }
   }
 
-  public void pivot(double rotations, boolean limitForwardMotion) {
-    if (Constants.outtakePivotEnabled && pivotInitialized) {
-      // Code that limits forward movement of shooter if requested
-      if (limitForwardMotion
-          && rotations > Constants.OuttakeConstants.forwardSoftLimitThresholdRotations) {
-        rotations = Constants.OuttakeConstants.forwardSoftLimitThresholdRotations;
-      }
+  public void outtake(double targetRPS) {
+    outtake(targetRPS, targetRPS);
+  }
+
+  public void pivot(double rotations) {
+    if (Constants.outtakePivotEnabled && io.pivotIsInitialized()) {
       // Overrides operator shooting presets
       if (Constants.outtakeTuningMode && inputs.tuneOuttakeOverrideEnable) {
         rotations = inputs.targetPivotPosition;
+      }
+      
+      // Code that limits forward movement of shooter if requested
+      if (rotations > Constants.OuttakeConstants.forwardSoftLimitThresholdRotations) {
+        rotations = Constants.OuttakeConstants.forwardSoftLimitThresholdRotations;
       }
       io.setPivotTarget(rotations);
       pivotTarget = rotations;
@@ -124,7 +115,7 @@ public class Outtake extends SubsystemBase {
   }
 
   public void resetPivot() {
-    if (Constants.outtakePivotEnabled && pivotInitialized) {
+    if (Constants.outtakePivotEnabled && io.pivotIsInitialized()) {
       io.setPivotTarget(Constants.OuttakeConstants.defaultPivotPositionRotations);
       pivotTarget = Constants.OuttakeConstants.defaultPivotPositionRotations;
       Logger.recordOutput(
@@ -134,7 +125,7 @@ public class Outtake extends SubsystemBase {
   }
 
   public void stopPivot() {
-    if (Constants.outtakePivotEnabled && pivotInitialized) {
+    if (Constants.outtakePivotEnabled && io.pivotIsInitialized()) {
       io.stopPivot();
       Logger.recordOutput("Outtake/PivotStopped", true);
     }
@@ -152,7 +143,6 @@ public class Outtake extends SubsystemBase {
     if (Constants.outtakePivotEnabled) {
       isInCoast = true;
       io.setPivotCoastMode();
-      Logger.recordOutput("Outtake/NeutralMode", "Coast");
     }
   }
 
@@ -160,13 +150,26 @@ public class Outtake extends SubsystemBase {
     if (Constants.outtakePivotEnabled) {
       isInCoast = false;
       io.setPivotBrakeMode();
-      Logger.recordOutput("Outtake/NeutralMode", "Brake");
+    }
+  }
+
+  public void setFlywheelCoastMode() {
+    if (Constants.outtakePivotEnabled) {
+      io.setFlywheelCoastMode();
+    }
+  }
+
+  public void setFlywheelBrakeMode() {
+    if (Constants.outtakePivotEnabled) {
+      io.setFlywheelBrakeMode();
     }
   }
 
   public boolean isFlyWheelUpToSpeed() {
     return OrangeMath.equalToEpsilon(
-        inputs.rightRotationsPerSec, targetRPS, OuttakeConstants.outtakeToleranceRPS);
+        inputs.bottomRotationsPerSec, -bottomTargetRPS, OuttakeConstants.outtakeToleranceRPS) && 
+        OrangeMath.equalToEpsilon(
+        inputs.topRotationsPerSec, topTargetRPS, OuttakeConstants.outtakeToleranceRPS);
   }
 
   public boolean pivotIsAtPosition() {
@@ -175,7 +178,7 @@ public class Outtake extends SubsystemBase {
   }
 
   public boolean pivotIsInitialized() {
-    return pivotInitialized;
+    return io.pivotIsInitialized();
   }
 
   public boolean safeToPivot() {
@@ -188,14 +191,18 @@ public class Outtake extends SubsystemBase {
   }
 
   public boolean isOuttaking() {
-    return targetRPS > 0;
+    return topTargetRPS > 0 && bottomTargetRPS > 0;
   }
 
   public boolean isFeeding() {
-    return targetRPS < 0;
+    return topTargetRPS < 0 && bottomTargetRPS < 0;
   }
 
   public boolean pivotInCoast() {
     return isInCoast;
+  }
+
+  public boolean inShotTuningMode() {
+    return inputs.tuneOuttakeOverrideEnable;
   }
 }

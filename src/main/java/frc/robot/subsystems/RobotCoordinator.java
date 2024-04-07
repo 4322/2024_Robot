@@ -4,14 +4,12 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
-import frc.robot.commands.IntakeManual;
-import frc.robot.commands.IntakeManual.IntakeStates;
-import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.noteTracker.NoteTracker;
 import frc.robot.subsystems.outtake.Outtake;
+import frc.utility.OrangeMath;
 
 public class RobotCoordinator extends SubsystemBase {
   private Intake intake = Intake.getInstance();
@@ -19,16 +17,10 @@ public class RobotCoordinator extends SubsystemBase {
   private Drive drive = Drive.getInstance();
   private NoteTracker noteTracker = NoteTracker.getInstance();
   private Limelight intakeLimelight = Limelight.getIntakeInstance();
-  private Climber climber = Climber.getInstance();
 
   private static RobotCoordinator robotCoordinator;
   private boolean intakeButtonPressed;
-  private boolean slowClimbButtonHeld;
-  private boolean notePassingIntake;
-  private boolean notePassingTunnel;
   private boolean autoIntakeButtonPressed;
-  private boolean initAbsEncoderPressed;
-  private boolean outtakeInClimbState = false;
 
   public static RobotCoordinator getInstance() {
     if (robotCoordinator == null) {
@@ -52,6 +44,10 @@ public class RobotCoordinator extends SubsystemBase {
     return outtake.isFlyWheelUpToSpeed() && outtake.pivotIsAtPosition();
   }
 
+  public boolean canSmartShoot() {
+    return canShoot() && alignedWithSpeaker();
+  }
+
   public boolean canSpinFlywheel() {
     return Outtake.getInstance().pivotIsInitialized();
   }
@@ -63,6 +59,10 @@ public class RobotCoordinator extends SubsystemBase {
   // *****METHODS BELOW PERTAIN TO SUBSYTEM STATE INFORMATION*****
   public void setIntakeButtonState(boolean isPressed) {
     intakeButtonPressed = isPressed;
+  }
+
+  public boolean inShotTuningMode() {
+    return outtake.inShotTuningMode();
   }
 
   public boolean getIntakeButtonPressed() {
@@ -79,14 +79,6 @@ public class RobotCoordinator extends SubsystemBase {
     return autoIntakeButtonPressed;
   }
 
-  public void setInitAbsEncoderPressed(boolean isPressed) {
-    initAbsEncoderPressed = isPressed;
-  }
-
-  public boolean getInitAbsEncoderPressed() {
-    return initAbsEncoderPressed;
-  }
-
   public boolean isIntakeDeployed() {
     return intake.isDeployed();
   }
@@ -101,10 +93,6 @@ public class RobotCoordinator extends SubsystemBase {
 
   public boolean isIntakeRetracted() {
     return intake.isRetracted();
-  }
-
-  public IntakeStates getIntakeState() {
-    return IntakeManual.getIntakeState();
   }
 
   public boolean isInitialized() {
@@ -160,6 +148,22 @@ public class RobotCoordinator extends SubsystemBase {
     }
   }
 
+  public boolean alignedWithSpeaker() {
+    final int centerTagID;
+    if (Robot.isRed()) {
+      centerTagID = Constants.FieldConstants.redSpeakerCenterTagID;
+    }
+    else {
+      centerTagID = Constants.FieldConstants.blueSpeakerCenterTagID;
+    }
+
+    if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(centerTagID)) {
+      return OrangeMath.equalToEpsilon(Limelight.getOuttakeInstance().getTag(centerTagID).tx, 
+          0, Constants.LimelightConstants.alignToSpeakerTagRotTolerance);
+    }
+      return false;
+  }
+
   public double getRobotXPos() {
     return drive.getPose2d().getX();
   }
@@ -184,14 +188,6 @@ public class RobotCoordinator extends SubsystemBase {
     return outtake.pivotIsAtPosition();
   }
 
-  public boolean climberIsAtRetractThreshold() {
-    return (climber.isAtClimbRetractingThreshold());
-  }
-
-  public boolean climberIsFullyExtended() {
-    return (climber.isFullyExtended());
-  }
-
   public boolean debugOuttakeOverride() {
     return outtake.getDebugOverrideEnabled();
   }
@@ -202,5 +198,9 @@ public class RobotCoordinator extends SubsystemBase {
 
   public boolean pivotInCoast() {
     return outtake.pivotInCoast();
+  }
+
+  public boolean outtakeFlyWheelUpTospeed() {
+    return outtake.isFlyWheelUpToSpeed();
   }
 }

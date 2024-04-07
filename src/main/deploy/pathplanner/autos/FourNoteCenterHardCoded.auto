@@ -5,7 +5,7 @@
       "x": 1.3320651054382324,
       "y": 5.457383155822754
     },
-    "rotation": 6.7286331667871146e-18
+    "rotation": 1.2899878187569157e-17
   },
   "command": {
     "type": "sequential",
@@ -89,7 +89,7 @@
         {
           "type": "named",
           "data": {
-            "name": "SetOuttakeSmartShooting"
+            "name": "SetOuttakeN6"
           }
         },
         {
@@ -165,7 +165,7 @@
         {
           "type": "named",
           "data": {
-            "name": "SetOuttakeSmartShooting"
+            "name": "SetOuttakeN7"
           }
         },
         {
@@ -228,7 +228,7 @@
         {
           "type": "named",
           "data": {
-            "name": "SetOuttakeSmartShooting"
+            "name": "SetOuttakeN8"
           }
         },
         {

@@ -1,8 +1,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.commands.IntakeManual.IntakeStates;
-import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.intake.Intake;
 
 public class IntakeStop extends InstantCommand {
@@ -18,16 +16,7 @@ public class IntakeStop extends InstantCommand {
   }
 
   @Override
-  public void end(boolean interrupted) {
-    if (RobotCoordinator.getInstance().isIntakeDeployed()
-        || RobotCoordinator.getInstance().noteInFiringPosition()) {
-      IntakeManual.setIntakeState(IntakeStates.notePastIntake);
-    } else if (RobotCoordinator.getInstance().isIntakeRetracted()) {
-      IntakeManual.setIntakeState(IntakeStates.retracted);
-    } else if (RobotCoordinator.getInstance().noteEnteringIntake()) {
-      IntakeManual.setIntakeState(IntakeStates.noteObtained);
-    }
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean runsWhenDisabled() {

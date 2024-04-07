@@ -3,6 +3,10 @@ package frc.robot.subsystems.LED;
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdle.VBatOutputMode;
+
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
+
 import com.ctre.phoenix.led.CANdleConfiguration;
 import com.ctre.phoenix.led.FireAnimation;
 import com.ctre.phoenix.led.RainbowAnimation;
@@ -36,8 +40,9 @@ public class LedIOReal implements LedIO {
   }
 
   @Override
-  public void setLED(int red, int green, int blue, int startOffset, int ledNum) {
-    candle.setLEDs(red, green, blue, 0, startOffset, ledNum);
+  public void setLED(Color color, int startOffset, int ledNum) {
+    Color8Bit color8bit = new Color8Bit(color);
+    candle.setLEDs(color8bit.red, color8bit.green, color8bit.blue, 0, startOffset, ledNum);
   }
 
   @Override
@@ -69,11 +74,13 @@ public class LedIOReal implements LedIO {
     candle.animate(fireAnimation);
   }
 
+  @Override
   public void clearAnimation() {
     // clears animation slot so rainbow or strobe won't override setLED
     candle.clearAnimation(0);
   }
 
+  @Override
   public void configBrightness(double brightness) {
     candle.configBrightnessScalar(brightness);
   }

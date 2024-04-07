@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.LimelightConstants;
+
 import java.util.HashMap;
 import java.util.Map;
 import org.littletonrobotics.junction.Logger;
@@ -44,6 +45,7 @@ public class Limelight extends SubsystemBase {
   boolean isNetworkTableConnected;
   Map<Double, LimelightHelpers.LimelightTarget_Fiducial> llFiducialMap =
       new HashMap<Double, LimelightHelpers.LimelightTarget_Fiducial>();
+  Pose2d limelightPose = new Pose2d();
 
   // the distance from where you want to calculate from
   // should always be calculated with WPI coordinates (front is positive X)
@@ -143,6 +145,12 @@ public class Limelight extends SubsystemBase {
   @Override
   public void periodic() {
     if (enabled) {
+      // Only refresh odometry for outtake limelight to know which fiducials are visible
+      if (name == Constants.LimelightConstants.outtakeLimelightName) {
+        refreshOdometry();
+        updateBotposeWpiBlue();
+      }
+      
       if (Constants.debug) {
         boolean visible = getTargetVisible();
         targetVisible.setBoolean(visible);
@@ -161,18 +169,21 @@ public class Limelight extends SubsystemBase {
     }
   }
 
-  public Pose2d getBotposeWpiBlue() {
+  public void updateBotposeWpiBlue() {
     if (enabled && isNetworkTableConnected) {
-      final Pose2d limelightPose = LimelightHelpers.getBotPose2d_wpiBlue(name);
-      return limelightPose;
+      if (getTargetVisible()) {
+        limelightPose = LimelightHelpers.getBotPose2d_wpiBlue(name);
+      }
     }
-    return new Pose2d();
+  }
+
+  public Pose2d getBotposeWpiBlue() {
+    return limelightPose;
   }
 
   public int getNumTargets() {
     if (enabled && isNetworkTableConnected) {
-      final int numTargets =
-          LimelightHelpers.getLatestResults(name).targetingResults.targets_Fiducials.length;
+      final int numTargets = llFiducialMap.size();
       Logger.recordOutput(name + "/NumTargets", numTargets);
       return numTargets;
     }
@@ -216,6 +227,10 @@ public class Limelight extends SubsystemBase {
 
   public LimelightHelpers.LimelightTarget_Fiducial getTag(double fID) {
     return llFiducialMap.get(fID);
+  }
+
+  public boolean getSpecifiedTagVisible(int fID1) {
+    return getTag(fID1) != null;
   }
 
   public double getHorizontalDegToTarget() {

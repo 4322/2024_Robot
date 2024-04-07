@@ -5,7 +5,7 @@
       "x": 1.3320651054382324,
       "y": 5.457383155822754
     },
-    "rotation": 1.739035346242168e-18
+    "rotation": -8.47361460874202e-28
   },
   "command": {
     "type": "sequential",
@@ -42,7 +42,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.0
+                  "waitTime": 1.5
                 }
               }
             ]
@@ -55,21 +55,41 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "ThreeNoteCenter.1"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 5.0
+                }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "TunnelFeed"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "TwoNoteCenter"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "SetOuttakeSubwooferBase"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ThreeNoteCenter.2"
+            "name": "SetOuttakeSmartShooting"
           }
         },
         {
@@ -85,7 +105,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 1.5
                 }
               }
             ]
@@ -98,21 +118,41 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "ThreeNoteCenter.3"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 5.0
+                }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "TunnelFeed"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "FourNoteCenterFinal"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "SetOuttakeSubwooferBase"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ThreeNoteCenter.4"
+            "name": "SetOuttakeSmartShooting"
           }
         },
         {

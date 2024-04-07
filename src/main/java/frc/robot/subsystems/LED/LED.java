@@ -1,28 +1,25 @@
 package frc.robot.subsystems.LED;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.RobotCoordinator;
 import org.littletonrobotics.junction.Logger;
 
 public class LED extends SubsystemBase {
   public LedIO io;
   private LEDState currentState = LEDState.idle;
-  private Timer initTimer = new Timer();
   private LedIOInputsAutoLogged inputs = new LedIOInputsAutoLogged();
+  private final int firstLed;
+  private final int numLeds;
 
   public enum LEDState {
     notInitialized,
     initialized,
     idle,
-    huntingForNote,
-    noteInRobot,
-    noteInFiringPos,
-    noteFired,
+    operatorPreset,
+    outtakeAtFiringPosition,
     noteReadyToShoot,
-    autoNoteCollection,
+    noteInRobot,
     brakeMode,
     coastMode;
   }
@@ -54,6 +51,16 @@ public class LED extends SubsystemBase {
     if (io == null) {
       io = new LedIO() {};
     }
+
+    if (Constants.autoRotateDebug) {
+      // reserve a few LEDs for debug feedback
+      firstLed = 0;
+      numLeds = Constants.LED.totalLEDs - 4;
+      io.setLED(Color.kBlack, Constants.LED.totalLEDs - 4, 4);
+    } else {
+      firstLed = 0;
+      numLeds = Constants.LED.totalLEDs;
+    }
   }
 
   @Override
@@ -61,43 +68,7 @@ public class LED extends SubsystemBase {
     // initial check
     if (Constants.ledEnabled) {
       io.updateInputs(inputs);
-      Logger.processInputs("LED/", inputs);
-
-      if (!RobotCoordinator.getInstance().getInitAbsEncoderPressed()
-          && !RobotCoordinator.getInstance().isInitialized()) {
-        setLEDState(LEDState.notInitialized);
-      } else if (RobotCoordinator.getInstance().getInitAbsEncoderPressed()
-          && RobotCoordinator.getInstance().isInitialized()
-          && !initTimer.hasElapsed(1)) {
-        initTimer.start();
-        setLEDState(LEDState.initialized);
-        // below are all robot LED states listed from highest to lowest priority
-      } else if (RobotCoordinator.getInstance().getAutoIntakeButtonPressed()) {
-        setLEDState(LEDState.autoNoteCollection);
-      } else if (RobotCoordinator.getInstance().noteIsShot()) {
-        setLEDState(LEDState.noteFired);
-      } else if (RobotCoordinator.getInstance().canShoot()
-          && RobotCoordinator.getInstance().noteInFiringPosition()) {
-        setLEDState(LEDState.noteReadyToShoot);
-      } else if (RobotCoordinator.getInstance().noteInFiringPosition()) {
-        setLEDState(LEDState.noteInFiringPos);
-      } else if (RobotCoordinator.getInstance().noteInRobot()) {
-        setLEDState(LEDState.noteInRobot);
-      } else if ((RobotCoordinator.getInstance().isIntakeDeployed()
-              && Constants.intakeDeployerEnabled)
-          || RobotCoordinator.getInstance().isIntakeDeploying()) {
-        setLEDState(LEDState.huntingForNote);
-      } else if (DriverStation.isDisabled()
-          && RobotCoordinator.getInstance().deployInCoast()
-          && RobotCoordinator.getInstance().pivotInCoast()) {
-        setLEDState(LEDState.coastMode);
-      } else if (DriverStation.isDisabled()
-          && !RobotCoordinator.getInstance().deployInCoast()
-          && !RobotCoordinator.getInstance().pivotInCoast()) {
-        setLEDState(LEDState.brakeMode);
-      } else {
-        setLEDState(LEDState.idle);
-      }
+      Logger.processInputs("LED/", inputs); 
     }
   }
 
@@ -111,48 +82,41 @@ public class LED extends SubsystemBase {
       }
       switch (currentState) {
         case notInitialized:
-          io.setLED(255, 255, 0, 0, Constants.LED.totalLEDs);
+          io.setLED(Color.kRed, firstLed, numLeds);
           break;
         case initialized:
-          // green
-          io.setLED(0, 255, 0, 0, Constants.LED.totalLEDs);
+          io.setLED(Color.kIvory, firstLed, numLeds);
           break;
         case idle:
-          // blue
-          io.setLED(0, 0, 255, 0, Constants.LED.totalLEDs);
-          break;
-        case huntingForNote:
-          io.fireAnimate(1, 0.5, Constants.LED.totalLEDs, 0.5, 0.5, false, 0);
+          io.setLED(Color.kViolet, firstLed, numLeds);
           break;
         case noteInRobot:
-          // purple
-          io.setLED(128, 0, 128, 0, Constants.LED.totalLEDs);
+          io.setLED(Color.kBlack, firstLed, numLeds);
           break;
-        case noteInFiringPos:
-          // white
-          io.setLED(255, 255, 255, 0, Constants.LED.totalLEDs);
-          break;
-        case noteFired:
-          // orange
-          io.setLED(255, 165, 0, 0, Constants.LED.totalLEDs);
+        case outtakeAtFiringPosition:
+          io.setLED(Color.kRoyalBlue, numLeds, firstLed);
           break;
         case noteReadyToShoot:
-          // green
-          io.setLED(0, 255, 0, 0, Constants.LED.totalLEDs);
-          break;
-        case autoNoteCollection:
-          // red
-          io.setLED(255, 0, 0, 0, Constants.LED.totalLEDs);
+          io.setLED(Color.kGreen, firstLed, numLeds);
           break;
         case brakeMode:
-          // red
-          io.setLED(255, 0, 0, 0, Constants.LED.totalLEDs);
+          io.setLED(Color.kOrange, firstLed, numLeds);
           break;
         case coastMode:
-          // green
-          io.setLED(0, 255, 0, 0, Constants.LED.totalLEDs);
+          io.setLED(Color.kDarkGreen, firstLed, numLeds);
+          break;
+        case operatorPreset:
+          io.setLED(Color.kWhite, firstLed, numLeds);
           break;
       }
+    }
+  }
+
+  public void setAutoRotateDebugLed(Color color, int led) {
+    if (Constants.autoRotateDebug) {
+      // last caller wins
+      // first 8 LEDs are on the CANdle
+      io.setLED(color, led, 1);
     }
   }
 

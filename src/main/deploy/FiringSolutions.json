@@ -1,50 +1,62 @@
 [
-  {
-    "shotMag": 1.809581132,
-    "shotDeg": -0.523426789472108,
-    "flywheelSpeed": 55.0,
-    "shotRotations": 90.0
-  },
-  {
-    "shotMag": 2.43521634,
-    "shotDeg": -0.5941755097888944,
-    "flywheelSpeed": 55.0,
-    "shotRotations": 70.0
-  },
-  {
-    "shotMag": 2.871440222,
-    "shotDeg": -0.6504111183955062,
-    "flywheelSpeed": 60.0,
-    "shotRotations": 62.0
-  },
-  {
-    "shotMag": 3.364694169,
-    "shotDeg": -0.5810479316417732,
-    "flywheelSpeed": 60.0,
-    "shotRotations": 54.5
-  },
-  {
-    "shotMag": 3.6979965010601115,
-    "shotDeg": 4.0857257974874885,
-    "flywheelSpeed": 60.0,
-    "shotRotations": 50.0
-  },
-  {
-    "shotMag": 4.135061385039121,
-    "shotDeg": -6.052516279137386,
-    "flywheelSpeed": 62.5,
-    "shotRotations": 47.0
-  },
-  {
-    "shotMag": 4.3175444285913445,
-    "shotDeg": -5.003323349584095,
-    "flywheelSpeed": 65.0,
-    "shotRotations": 42.0
-  },
-  {
-    "shotMag": 4.525496406189311,
-    "shotDeg": -5.377886458786737,
-    "flywheelSpeed": 70.0,
-    "shotRotations": 38.0
-  }
+    {
+        "shotMag": 1.1384725969001273,
+        "shotDeg": -9.692842505863922,
+        "flywheelSpeed": 36.0,
+        "shotRotations": 70.0
+    },
+    {
+        "shotMag": 1.6257981512346107,
+        "shotDeg": -7.529908398031523,
+        "flywheelSpeed": 36.0,
+        "shotRotations": 59.0
+    },
+    {
+        "shotMag": 2.054424453771465,
+        "shotDeg": -5.585296398622259,
+        "flywheelSpeed": 36.0,
+        "shotRotations": 50.0
+    },
+    {
+        "shotMag": 2.4606701475183987,
+        "shotDeg": -6.222616362488212,
+        "flywheelSpeed": 45.0,
+        "shotRotations": 38.5
+    },
+    {
+        "shotMag": 3.0654452673838954,
+        "shotDeg": -5.209126333249581,
+        "flywheelSpeed": 45.0,
+        "shotRotations": 31.0
+    },
+    {
+        "shotMag": 3.4994706991353235,
+        "shotDeg": -8.562829043202376,
+        "flywheelSpeed": 60.0,
+        "shotRotations": 23.5
+    },
+    {
+        "shotMag": 3.765338835499427,
+        "shotDeg": 9.111850656227503,
+        "flywheelSpeed": 60.0,
+        "shotRotations": 23.5
+    },
+    {
+        "shotMag": 3.9296594854080182,
+        "shotDeg": -4.0634652590790274,
+        "flywheelSpeed": 60.0,
+        "shotRotations": 23.5
+    },
+    {
+        "shotMag": 4.1844152727322435,
+        "shotDeg": 6.66060011584279,
+        "flywheelSpeed": 60.0,
+        "shotRotations": 23.5
+    },
+    {
+        "shotMag": 4.447105574087297,
+        "shotDeg": -4.787846385162736,
+        "flywheelSpeed": 55.0,
+        "shotRotations": 21.5
+    }
 ]

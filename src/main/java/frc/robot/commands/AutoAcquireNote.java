@@ -95,7 +95,6 @@ public class AutoAcquireNote extends Command {
     return !initialized
         || coordinator.noteInRobot()
         || !coordinator.getAutoIntakeButtonPressed()
-        || coordinator.getIntakeState() != IntakeManual.IntakeStates.feeding
         || !coordinator.noteInVision();
   }
 

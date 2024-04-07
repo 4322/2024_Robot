@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ControllerTypeStrings;
@@ -22,6 +23,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.WheelPosition;
 import frc.robot.RobotChooser.RobotChooser;
 import frc.robot.RobotChooser.RobotChooserInterface;
+import frc.robot.subsystems.LED.LED;
 import frc.utility.OrangeMath;
 import frc.utility.SnapshotTranslation2D;
 import java.util.ArrayList;
@@ -82,6 +84,7 @@ public class Drive extends SubsystemBase {
   Timer disconnectTimer;
   private double lastClosedRampRate = DriveConstants.Drive.closedLoopRampSec;
   private double lastOpenRampRate = DriveConstants.Drive.openLoopRampSec;
+  private boolean rotationCapIsUnlocked;
 
   private static Drive drive;
 
@@ -359,9 +362,10 @@ public class Drive extends SubsystemBase {
   }
 
   // rotation isn't considered to be movement
-  public boolean isRobotMoving() {
+  public boolean isRobotMovingSlow() {
     if (Constants.driveEnabled) {
-      return latestVelocity >= DriveConstants.stoppedVelocityThresholdMetersPerSec;
+      return (latestVelocity >= DriveConstants.slowVelocityThresholdMetersPerSec) &&
+             (latestVelocity < DriveConstants.fastVelocityThresholdMetersPerSec);
     } else {
       return false;
     }
@@ -369,7 +373,7 @@ public class Drive extends SubsystemBase {
 
   public boolean isRobotMovingFast() {
     if (Constants.driveEnabled) {
-      return latestVelocity >= DriveConstants.movingVelocityThresholdMetersPerSec;
+      return latestVelocity >= DriveConstants.fastVelocityThresholdMetersPerSec;
     } else {
       return false;
     }
@@ -449,6 +453,7 @@ public class Drive extends SubsystemBase {
       double adjMaxAutoRotatePower;
       double adjMinAutoRotatePower;
       double toleranceDeg;
+      boolean driveIputZero = (driveX == 0) && (driveY == 0);
 
       // reduce rotation power when driving fast to not lose forward momentum
       if (latestVelocity >= driveShuffleBoardInputs.fastMovingMetersPerSec) {
@@ -456,24 +461,39 @@ public class Drive extends SubsystemBase {
       } else {
         adjMaxAutoRotatePower = driveShuffleBoardInputs.slowMovingAutoRotatePower;
       }
-      // no need to maintain exact heading when driving to reduce wobble
-      if (isRobotMoving()) {
-        adjMinAutoRotatePower = DriveConstants.Auto.minAutoRotateMovingPower;
+  
+      if (isRobotMovingFast()) {
+        // no need to maintain exact heading when driving to reduce wobble
+        adjMinAutoRotatePower = DriveConstants.Auto.minAutoRotateFastPower;
         toleranceDeg = Constants.DriveConstants.Auto.rotateMovingToleranceDegrees;
+        LED.getInstance().setAutoRotateDebugLed(Color.kOrange, Constants.LED.debugLed4);
+      } else if (isRobotMovingSlow() && !driveIputZero) {
+        // don't wiggle
+        adjMinAutoRotatePower = DriveConstants.Auto.minAutoRotateSlowPower;
+        toleranceDeg = Constants.DriveConstants.Auto.rotateMovingToleranceDegrees;
+        LED.getInstance().setAutoRotateDebugLed(Color.kYellow, Constants.LED.debugLed4);
       } else {
-        // greater percision when lining up for something
+        // stopped (or moving super slow)
+        // use greater percision when lining up for something
         adjMinAutoRotatePower = DriveConstants.Auto.minAutoRotateStoppedPower;
         toleranceDeg = Constants.DriveConstants.Auto.rotateStoppedToleranceDegrees;
+        LED.getInstance().setAutoRotateDebugLed(Color.kBlue, Constants.LED.debugLed4);
       }
 
       if (Math.abs(headingChangeDeg) <= toleranceDeg) {
         rotPIDSpeed = 0; // don't wiggle
+        LED.getInstance().setAutoRotateDebugLed(Color.kBlue, Constants.LED.debugLed3);
       } else if (Math.abs(rotPIDSpeed) < adjMinAutoRotatePower) {
         rotPIDSpeed = Math.copySign(adjMinAutoRotatePower, rotPIDSpeed);
+        LED.getInstance().setAutoRotateDebugLed(Color.kViolet, Constants.LED.debugLed3);
       } else if (rotPIDSpeed > adjMaxAutoRotatePower) {
         rotPIDSpeed = adjMaxAutoRotatePower;
+        LED.getInstance().setAutoRotateDebugLed(Color.kOrange, Constants.LED.debugLed3);
       } else if (rotPIDSpeed < -adjMaxAutoRotatePower) {
         rotPIDSpeed = -adjMaxAutoRotatePower;
+        LED.getInstance().setAutoRotateDebugLed(Color.kOrange, Constants.LED.debugLed3);
+      } else {
+        LED.getInstance().setAutoRotateDebugLed(Color.kGreen, Constants.LED.debugLed3);
       }
 
       drive(driveX, driveY, rotPIDSpeed);
@@ -614,11 +634,18 @@ public class Drive extends SubsystemBase {
 
   public double getMaxManualRotationEntry() {
     if (Constants.driveEnabled) {
-      if (Constants.debug) {
+      if (rotationCapIsUnlocked) {
+        return Constants.DriveConstants.Manual.unlockedMaxManualRotation;
+      }
+      else if (Constants.debug) {
         return driveShuffleBoardInputs.maxManualRotatePower;
       }
     }
     return Constants.DriveConstants.Manual.maxManualRotation;
+  }
+
+  public void setManualRotationCap(boolean unlockEnabled) {
+    rotationCapIsUnlocked = unlockEnabled;
   }
 
   public String getDriveInputScaling() {

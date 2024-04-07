@@ -1,7 +1,6 @@
 package frc.robot.subsystems.outtake;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -9,51 +8,56 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandcoder.Canandcoder;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants;
 import frc.robot.Constants.OuttakeConstants;
-import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
 public class OuttakeIOReal implements OuttakeIO {
-  private TalonFX leftOuttakeMotor;
-  private TalonFX rightOuttakeMotor;
+  private TalonFX topOuttakeMotor;
+  private TalonFX bottomOuttakeMotor;
   private TalonFX pivotMotor;
   private Canandcoder pivotEncoder;
   // shuffleboard
   ShuffleboardTab tab;
-  GenericEntry outtakeFlywheelSpeed;
+  GenericEntry topOuttakeFlywheelSpeed;
+  GenericEntry bottomOuttakeFlywheelSpeed;
   GenericEntry pivotPosition;
   GenericEntry tuneOuttakeOverrideEnable;
 
-  private double heliumAbsoluteRotations;
+  private boolean initialized;
 
   public OuttakeIOReal() {
-    leftOuttakeMotor =
+    topOuttakeMotor =
         new TalonFX(
-            Constants.OuttakeConstants.leftOuttakeDeviceID,
+            Constants.OuttakeConstants.topOuttakeDeviceID,
             Constants.DriveConstants.Drive.canivoreName);
-    rightOuttakeMotor =
+    bottomOuttakeMotor =
         new TalonFX(
-            Constants.OuttakeConstants.rightOuttakeDeviceID,
+            Constants.OuttakeConstants.bottomOuttakeDeviceID,
             Constants.DriveConstants.Drive.canivoreName);
     pivotMotor =
         new TalonFX(OuttakeConstants.pivotDeviceID, Constants.DriveConstants.Drive.canivoreName);
     pivotEncoder = new Canandcoder(OuttakeConstants.pivotEncoderID);
 
-    configOuttake(leftOuttakeMotor);
-    configOuttake(rightOuttakeMotor);
-    rightOuttakeMotor.setControl(new Follower(leftOuttakeMotor.getDeviceID(), true));
+    configOuttake(topOuttakeMotor, true);
+    configOuttake(bottomOuttakeMotor, false);
     configPivot(pivotMotor);
     if (Constants.debug) {
       tab = Shuffleboard.getTab("Outtake");
 
-      outtakeFlywheelSpeed =
-          tab.add("Desired Flywheel Velocity (RPS)", 0)
+      topOuttakeFlywheelSpeed =
+          tab.add("Top Desired Flywheel Velocity (RPS)", 0)
               .withSize(1, 1)
               .withPosition(0, 0)
+              .getEntry();
+      bottomOuttakeFlywheelSpeed = 
+          tab.add("Bottom Desired Flywheel Velocity (RPS)", 0)
+              .withSize(1, 1)
+              .withPosition(2, 0)
               .getEntry();
       pivotPosition =
           tab.add("Pivot Position (Rotations)", 0).withSize(1, 1).withPosition(1, 0).getEntry();
@@ -68,14 +72,24 @@ public class OuttakeIOReal implements OuttakeIO {
     }
   }
 
-  private void configOuttake(TalonFX talon) {
+  private void configOuttake(TalonFX talon, boolean isTopOuttakeMotor) {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
-    config.Slot0.kP = Constants.OuttakeConstants.kP;
-    config.Slot0.kI = Constants.OuttakeConstants.kI;
-    config.Slot0.kD = Constants.OuttakeConstants.kD;
-    config.Slot0.kV = Constants.OuttakeConstants.kV;
-    config.Slot0.kS = Constants.OuttakeConstants.kS;
+    if (isTopOuttakeMotor) {
+      config.Slot0.kP = Constants.OuttakeConstants.topkP;
+      config.Slot0.kI = Constants.OuttakeConstants.topkI;
+      config.Slot0.kD = Constants.OuttakeConstants.topkD;
+      config.Slot0.kV = Constants.OuttakeConstants.topkV;
+      config.Slot0.kS = Constants.OuttakeConstants.topkS;
+    }
+    else {
+      config.Slot0.kP = Constants.OuttakeConstants.bottomkP;
+      config.Slot0.kI = Constants.OuttakeConstants.bottomkI;
+      config.Slot0.kD = Constants.OuttakeConstants.bottomkD;
+      config.Slot0.kV = Constants.OuttakeConstants.bottomkV;
+      config.Slot0.kS = Constants.OuttakeConstants.bottomkS;
+    }
+
     config.ClosedLoopRamps.VoltageClosedLoopRampPeriod =
         Constants.OuttakeConstants.closedLoopRampSec;
     config.OpenLoopRamps.VoltageOpenLoopRampPeriod = Constants.OuttakeConstants.openLoopRampSec;
@@ -88,7 +102,7 @@ public class OuttakeIOReal implements OuttakeIO {
     config.CurrentLimits.SupplyTimeThreshold =
         Constants.OuttakeConstants.shooterSupplyTimeThreshold;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.HardwareLimitSwitch.ForwardLimitEnable = false;
     config.HardwareLimitSwitch.ReverseLimitEnable = false;
 
@@ -112,7 +126,7 @@ public class OuttakeIOReal implements OuttakeIO {
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.CurrentLimits.SupplyCurrentLimit = Constants.OuttakeConstants.pivotSupplyLimit;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     config.HardwareLimitSwitch.ForwardLimitEnable = false;
     config.HardwareLimitSwitch.ReverseLimitEnable = false;
 
@@ -122,25 +136,49 @@ public class OuttakeIOReal implements OuttakeIO {
     // 60 degree shooting angle abs position is about 0.72 rotations
     // the encoder wraps at about 78 degrees
     Canandcoder.Settings settings = new Canandcoder.Settings();
-    settings.setInvertDirection(true);
+    settings.setInvertDirection(false);
     settings.setPositionFramePeriod(0.010);
     settings.setVelocityFramePeriod(0.050);
     settings.setStatusFramePeriod(1.0);
     pivotEncoder.setSettings(settings, 0.050);
+
+    try {
+      Thread.sleep(50); // 5 status frames to be safe
+    } catch (InterruptedException e) {
+    }
+
+    double currentPivotPosition = pivotEncoder.getAbsPosition();
+      // The abs encoder position must not be within the specified flag range.
+      // The specified range assumes that the shooter pivot is too far below 
+      // the zero point and is wrapping around to 1 rotation.
+    if (!(currentPivotPosition > Constants.OuttakeConstants.absEncoderMaxZeroingThreshold
+          && currentPivotPosition < Constants.OuttakeConstants.absEncoderAlmostZeroThreshold)) {
+      // If abs encoder is close to 1 rotation, it means that pivot is just a bit below zero point 
+      // and therefore should we should just treat it as zero
+      if (currentPivotPosition < 1 && currentPivotPosition > Constants.OuttakeConstants.absEncoderAlmostZeroThreshold) {
+        currentPivotPosition = 0;
+      }
+      pivotMotor.setPosition(currentPivotPosition * OuttakeConstants.gearReductionEncoderToMotor);
+      DriverStation.reportWarning("Initialized shooter pivot", false);
+      initialized = true;
+    }
+    else {
+      DriverStation.reportError("Failed to initialize shooter pivot at " + currentPivotPosition + " helium rotations", false);
+    }
   }
 
   @Override
   public void updateInputs(OuttakeIOInputs inputs) {
-    inputs.leftCurrentAmps = leftOuttakeMotor.getSupplyCurrent().getValue();
-    inputs.leftTempC = leftOuttakeMotor.getDeviceTemp().getValue();
-    inputs.leftRotationsPerSec = leftOuttakeMotor.getVelocity().getValue();
-    inputs.leftOuttakeIsAlive = leftOuttakeMotor.isAlive();
+    inputs.topCurrentAmps = topOuttakeMotor.getSupplyCurrent().getValue();
+    inputs.topTempC = topOuttakeMotor.getDeviceTemp().getValue();
+    inputs.topRotationsPerSec = topOuttakeMotor.getVelocity().getValue();
+    inputs.topOuttakeIsAlive = topOuttakeMotor.isAlive();
 
-    inputs.rightSupplyCurrentAmps = rightOuttakeMotor.getSupplyCurrent().getValue();
-    inputs.rightStatorCurrentAmps = rightOuttakeMotor.getStatorCurrent().getValue();
-    inputs.rightTempC = rightOuttakeMotor.getDeviceTemp().getValue();
-    inputs.rightRotationsPerSec = rightOuttakeMotor.getVelocity().getValue();
-    inputs.rightOuttakeIsAlive = rightOuttakeMotor.isAlive();
+    inputs.bottomSupplyCurrentAmps = bottomOuttakeMotor.getSupplyCurrent().getValue();
+    inputs.bottomStatorCurrentAmps = bottomOuttakeMotor.getStatorCurrent().getValue();
+    inputs.bottomTempC = bottomOuttakeMotor.getDeviceTemp().getValue();
+    inputs.bottomRotationsPerSec = bottomOuttakeMotor.getVelocity().getValue();
+    inputs.bottomOuttakeIsAlive = bottomOuttakeMotor.isAlive();
 
     inputs.pivotRotations = pivotMotor.getPosition().getValue();
     inputs.pivotRotationsPerSec = pivotMotor.getVelocity().getValue();
@@ -156,38 +194,17 @@ public class OuttakeIOReal implements OuttakeIO {
         pivotEncoder.getPosition(); // logged for checking if postion as been initialized
 
     if (Constants.outtakeTuningMode) {
-      inputs.debugTargetRPS = outtakeFlywheelSpeed.getDouble(0);
+      inputs.topDebugTargetRPS = topOuttakeFlywheelSpeed.getDouble(0);
+      inputs.bottomDebugTargetRPS = bottomOuttakeFlywheelSpeed.getDouble(0);
       inputs.targetPivotPosition = pivotPosition.getDouble(0);
       inputs.tuneOuttakeOverrideEnable = tuneOuttakeOverrideEnable.getBoolean(false);
     }
-    heliumAbsoluteRotations = inputs.heliumAbsRotations;
   }
 
   @Override
   public void setOuttakeRPS(double desiredTopVelocityRPS, double desiredBottomVelocityRPS) {
-    rightOuttakeMotor.setControl(new VelocityVoltage(desiredBottomVelocityRPS));
-  }
-
-  @Override
-  public boolean initPivot() {
-
-    // Make sure that outtake pivot is stationary
-    if (OrangeMath.equalToEpsilon(pivotEncoder.getVelocity(), 0.0, 0.1)
-        // position must be within the allowed range
-        && heliumAbsoluteRotations >= 0
-        && heliumAbsoluteRotations
-            <= Constants.EncoderInitializeConstants.absEncoderMaxZeroingThreshold) {
-
-      pivotMotor.setPosition(
-          heliumAbsoluteRotations * OuttakeConstants.gearReductionEncoderToMotor);
-
-      // Set only relative encoder rotations of Helium encoder to a very high number after
-      // initialized. The relative encoder is used only to check if we have
-      // already initialized since the last power cycle.
-      pivotEncoder.setPosition(Constants.EncoderInitializeConstants.initializedRotationsFlag);
-      return true;
-    }
-    return false;
+    bottomOuttakeMotor.setControl(new VelocityVoltage(-desiredBottomVelocityRPS).withEnableFOC(false));
+    topOuttakeMotor.setControl(new VelocityVoltage(desiredTopVelocityRPS).withEnableFOC(false));
   }
 
   @Override
@@ -208,12 +225,32 @@ public class OuttakeIOReal implements OuttakeIO {
   }
 
   @Override
+  public void setFlywheelBrakeMode() {
+    topOuttakeMotor.setNeutralMode(NeutralModeValue.Brake);
+    bottomOuttakeMotor.setNeutralMode(NeutralModeValue.Brake);
+    Logger.recordOutput("Outtake/Hardware/FlywheelNeutralMode", "Brake");
+  }
+
+  @Override
+  public void setFlywheelCoastMode() {
+    topOuttakeMotor.setNeutralMode(NeutralModeValue.Coast);
+    bottomOuttakeMotor.setNeutralMode(NeutralModeValue.Coast);
+    Logger.recordOutput("Outtake/Hardware/FlywheelNeutralMode", "Coast");
+  }
+
+  @Override
   public void stopOuttake() {
-    rightOuttakeMotor.stopMotor();
+    bottomOuttakeMotor.stopMotor();
+    topOuttakeMotor.stopMotor();
   }
 
   @Override
   public void stopPivot() {
     pivotMotor.stopMotor();
+  }
+
+  @Override
+  public boolean pivotIsInitialized() {
+    return initialized;
   }
 }

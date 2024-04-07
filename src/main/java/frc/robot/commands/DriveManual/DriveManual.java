@@ -4,16 +4,21 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriveConstants.Manual;
 import frc.robot.Constants.DriveInputScalingStrings;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.RotateInputScalingStrings;
 import frc.robot.RobotContainer;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualState;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
+import frc.robot.subsystems.LED.LED;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.limelight.Limelight;
 import frc.utility.FiringSolutionHelper;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
@@ -38,6 +43,8 @@ public class DriveManual extends Command {
   private double rotateRaw;
   private double driveAngle;
   private double driveAbsAngularVel;
+
+  private double speakerCentricAngle;
 
   private Double pseudoAutoRotateAngle;
 
@@ -78,52 +85,89 @@ public class DriveManual extends Command {
   @Override
   public void execute() {
     updateDriveValues();
-    boolean pseudoAutoRotateEngaged = false;
-    if (Constants.speakerCentricEnabled) {
-      switch (stateMachine.getState()) {
-        case DEFAULT:
-          Logger.recordOutput("RobotHeading/State/", "Field centric");
-          if (rotatePower != 0) {
-            doSpinout();
-          } else if (drive.isAutoRotateTuningEnabled()) {
-            drive.driveAutoRotate(driveX, driveY, 0);
-          } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
-            pseudoAutoRotateEngaged = true;
-            Logger.recordOutput("RobotHeading/PseudoAutoRotateHeading", pseudoAutoRotateAngle);
-            drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
-          } else {
-            drive.drive(driveX, driveY, rotatePower);
-          }
-          break;
-        case SPEAKER_CENTRIC:
-          Pose2d drivePose2D = drive.getPose2d();
-          Translation2d speakerVec =
-              FiringSolutionHelper.getVectorToSpeaker(drivePose2D.getX(), drivePose2D.getY());
-          Logger.recordOutput(
-              "RobotHeading/SpeakerCentricHeading/", speakerVec.getAngle().getDegrees());
-          Logger.recordOutput("RobotHeading/State", "Speaker centric");
-          drive.driveAutoRotate(driveX, driveY, speakerVec.getAngle().getDegrees());
-          break;
-        case ROBOT_CENTRIC:
-          // make robot angle zero to switch to robot centric driving
-          Logger.recordOutput("RobotHeading/State", "Robot centric");
-          drive.drive(driveX, driveY, rotatePower, new Rotation2d());
-          break;
-      }
-    } else { // do regular drive logic
-      if (rotatePower != 0) {
-        doSpinout();
-      } else if (drive.isAutoRotateTuningEnabled()) {
-        drive.driveAutoRotate(driveX, driveY, 0);
-      } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
-        pseudoAutoRotateEngaged = true;
-        Logger.recordOutput("RobotHeading/PseudoAutoRotateHeading", pseudoAutoRotateAngle);
-        drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
-      } else {
-        drive.drive(driveX, driveY, rotatePower);
-      }
+    switch (stateMachine.getState()) {
+      case SPEAKER_CENTRIC:
+        final int speakerCenterAprilTagID;
+        final int speakerSideAprilTagID;
+        if (Robot.isRed()) {
+          speakerCenterAprilTagID = Constants.FieldConstants.redSpeakerCenterTagID;
+          speakerSideAprilTagID = Constants.FieldConstants.redSpeakerSideTagID;
+        } else {
+          speakerCenterAprilTagID = Constants.FieldConstants.blueSpeakerCenterTagID;
+          speakerSideAprilTagID = Constants.FieldConstants.blueSpeakerSideTagID;
+        }
+
+        // rotate directly to center tag if we can see it
+        if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(speakerCenterAprilTagID)) {
+          speakerCentricAngle = Drive.getInstance().getAngle() - 
+            Limelight.getOuttakeInstance().getTag(speakerCenterAprilTagID).tx;
+          drive.driveAutoRotate(driveX, driveY, speakerCentricAngle);
+          LED.getInstance().setAutoRotateDebugLed(Color.kDarkViolet, Constants.LED.debugLed2);
+
+          Logger.recordOutput("RobotHeading/PseudoAutoRotateEngaged", false);
+          Logger.recordOutput("RobotHeading/SpeakerCentricHeading/", speakerCentricAngle);
+          Logger.recordOutput("RobotHeading/State", "Speaker centric search left");
+          return;
+        }
+
+        // if we can see the side tag, rotate to it so that we can eventually see the center tag
+        if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(speakerSideAprilTagID)) {
+          speakerCentricAngle = Drive.getInstance().getAngle() - 
+            Limelight.getOuttakeInstance().getTag(speakerSideAprilTagID).tx;
+          drive.driveAutoRotate(driveX, driveY, speakerCentricAngle);
+          LED.getInstance().setAutoRotateDebugLed(Color.kDarkViolet, Constants.LED.debugLed2);
+
+          Logger.recordOutput("RobotHeading/PseudoAutoRotateEngaged", false);
+          Logger.recordOutput("RobotHeading/SpeakerCentricHeading/", speakerCentricAngle);
+          Logger.recordOutput("RobotHeading/State", "Speaker centric search right");
+          return;
+        }
+
+        // If limelight fails to detect an april tag, then run regular drive logic
+        break;
+      case ROBOT_CENTRIC:
+        // Make robot angle zero to switch to robot centric driving
+        Logger.recordOutput("RobotHeading/PseudoAutoRotateEngaged", false);
+        Logger.recordOutput("RobotHeading/State", "Robot centric");
+        LED.getInstance().setAutoRotateDebugLed(Color.kYellow, Constants.LED.debugLed2);
+        drive.drive(driveX, driveY, rotatePower, new Rotation2d());
+        return;
+      case AMP:
+        if (Robot.isRed()) {
+          drive.driveAutoRotate(driveX, driveY, FieldConstants.redAmpAngleDeg);
+        } else {
+          drive.driveAutoRotate(driveX, driveY, -FieldConstants.redAmpAngleDeg);
+        }
+        return;
+      case SOURCE:
+        if (Robot.isRed()) {
+          drive.driveAutoRotate(driveX, driveY, FieldConstants.redSourceAngleDeg);
+        } else {
+          drive.driveAutoRotate(driveX, driveY, -FieldConstants.redSourceAngleDeg);
+        }
+        return;
+      case DEFAULT:
+        // Run regular drive logic
+        break;
     }
-    Logger.recordOutput("RobotHeading/PseudoAutoRotateEngaged", pseudoAutoRotateEngaged);
+    
+    // Default to regular field centric drive logic if other drive modes fail to engage
+    if (rotatePower != 0) {
+      doSpinout();
+    } else if (drive.isAutoRotateTuningEnabled()) {
+      LED.getInstance().setAutoRotateDebugLed(Color.kPink, Constants.LED.debugLed2);
+      drive.driveAutoRotate(driveX, driveY, 0);
+    } else if (drive.isPseudoAutoRotateEnabled() && pseudoAutoRotateAngle != null) {
+      Logger.recordOutput("RobotHeading/PseudoAutoRotateEngaged", true);
+      Logger.recordOutput("RobotHeading/PseudoAutoRotateHeading", pseudoAutoRotateAngle);
+      LED.getInstance().setAutoRotateDebugLed(Color.kBlue, Constants.LED.debugLed2);
+      drive.driveAutoRotate(driveX, driveY, pseudoAutoRotateAngle);
+    } else {
+      LED.getInstance().setAutoRotateDebugLed(Color.kBlack, Constants.LED.debugLed2);
+      LED.getInstance().setAutoRotateDebugLed(Color.kBlack, Constants.LED.debugLed3);
+      LED.getInstance().setAutoRotateDebugLed(Color.kBlack, Constants.LED.debugLed4);
+      drive.drive(driveX, driveY, rotatePower);
+    }
   }
 
   public void updateStateMachine(DriveManualTrigger trigger) {
@@ -255,10 +299,12 @@ public class DriveManual extends Command {
 
     if (stateMachine.getState() != DriveManualState.DEFAULT || rotatePower != 0) {
       pseudoAutoRotateAngle = null;
+      LED.getInstance().setAutoRotateDebugLed(Color.kBlack, Constants.LED.debugLed1);
     } else if (rotatePower == 0
         && pseudoAutoRotateAngle == null
         && driveAbsAngularVel < Manual.inhibitPseudoAutoRotateDegPerSec) {
       pseudoAutoRotateAngle = drive.getAngle();
+      LED.getInstance().setAutoRotateDebugLed(Color.kBlue, Constants.LED.debugLed1);
     }
   }
 
@@ -345,21 +391,27 @@ public class DriveManual extends Command {
     double spinCornerPower = Math.copySign(DriveConstants.spinoutCornerPower, rotatePower);
     switch (lockedWheelState) {
       case none:
+        LED.getInstance().setAutoRotateDebugLed(Color.kBlack, Constants.LED.debugLed2);
         drive.drive(driveX, driveY, rotatePower);
         break;
       case center:
+        LED.getInstance().setAutoRotateDebugLed(Color.kWhite, Constants.LED.debugLed2); // orange
         drive.drive(driveX, driveY, Math.copySign(DriveConstants.spinoutCenterPower, rotatePower));
         break;
       case frontLeft:
+        LED.getInstance().setAutoRotateDebugLed(Color.kOrange, Constants.LED.debugLed2); // orange
         drive.drive(driveX, driveY, spinCornerPower, DriveConstants.frontLeftWheelLocation);
         break;
       case backLeft:
+        LED.getInstance().setAutoRotateDebugLed(Color.kOrange, Constants.LED.debugLed2);
         drive.drive(driveX, driveY, spinCornerPower, DriveConstants.backLeftWheelLocation);
         break;
       case backRight:
+        LED.getInstance().setAutoRotateDebugLed(Color.kOrange, Constants.LED.debugLed2);
         drive.drive(driveX, driveY, spinCornerPower, DriveConstants.backRightWheelLocation);
         break;
       case frontRight:
+        LED.getInstance().setAutoRotateDebugLed(Color.kOrange, Constants.LED.debugLed2);
         drive.drive(driveX, driveY, spinCornerPower, DriveConstants.frontRightWheelLocation);
         break;
     }
@@ -370,6 +422,7 @@ public class DriveManual extends Command {
   public void end(boolean interrupted) {
     if (interrupted) {
       pseudoAutoRotateAngle = null;
+      LED.getInstance().setAutoRotateDebugLed(Color.kBlack, Constants.LED.debugLed1);
     }
   }
 

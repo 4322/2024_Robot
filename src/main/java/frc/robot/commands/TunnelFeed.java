@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.tunnel.Tunnel;
@@ -16,21 +17,25 @@ public class TunnelFeed extends Command {
 
   public enum State {
     waitForIntake,
+    waitForNote,
     inTunnel,
     stoppingAtOuttake,
     rewinding,
     checkOuttakeSensor,
     pushUp,
     readyToFire,
-    abort
+    abort,
+    waitForEject
   }
 
   private State state;
+  private boolean runOnce;
   private Timer adjustmentTimer = new Timer();
   private Timer abortTimer = new Timer();
 
-  public TunnelFeed() {
+  public TunnelFeed(boolean runOnce) {
     tunnel = Tunnel.getInstance();
+    this.runOnce = runOnce;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(tunnel);
@@ -47,45 +52,63 @@ public class TunnelFeed extends Command {
   @Override
   public void execute() {
 
-    if (abortTimer.hasElapsed(Constants.TunnelConstants.abortSec)) {
-      tunnel.stopTunnel();
-      state = State.abort;
-      abortTimer.stop();
-      abortTimer.reset();
-    }
-
     switch (state) {
       case abort:
-        state = State.waitForIntake;
+        tunnel.stopTunnel();
+        abortTimer.stop();
+        abortTimer.reset();
+        if (RobotCoordinator.getInstance().noteEnteringIntake()) {
+          // don't keep immediately restarting the tunnel
+          state = State.waitForEject;
+        } else {
+          state = State.waitForIntake;
+        }
+        break;
+      case waitForEject:
+        if (!RobotCoordinator.getInstance().noteEnteringIntake()) {
+          state = State.waitForIntake;
+        }
         break;
       case waitForIntake:
-        // Accounts for note being midway between intake and tunnel sensor
-        // Tunnel still runs for this case
-        if (RobotCoordinator.getInstance().noteEnteringIntake()) {
+        // start tunnel at same time as intake so it gets up to speed
+        if (RobotCoordinator.getInstance().intakeIsFeeding()) {
           tunnel.feed();
+          state = State.waitForNote;
+        }
+        break;
+      case waitForNote:
+        if (RobotCoordinator.getInstance().noteEnteringIntake()) {
           abortTimer.start();
           state = State.inTunnel;
+        } else if (!RobotCoordinator.getInstance().intakeIsFeeding()) {
+          state = State.abort;  // intake stopped without seeing a note
         }
         break;
       case inTunnel:
         if (RobotCoordinator.getInstance().noteInFiringPosition()) {
           tunnel.stopTunnel();
           adjustmentTimer.restart();
+          CommandScheduler.getInstance().schedule(new XboxControllerRumble());
           state = State.stoppingAtOuttake;
+        } else if (abortTimer.hasElapsed(Constants.TunnelConstants.feedAbortSec)) {
+          state = State.abort;  // don't fry the motor
         }
         break;
       case stoppingAtOuttake:
         if (adjustmentTimer.hasElapsed(Constants.TunnelConstants.pauseSec)) {
-          tunnel.rewind(); // pull back from the outtake wheels
+          tunnel.reverseFeed(); // pull back from the outtake wheels
           adjustmentTimer.restart();
           state = State.rewinding;
         }
         break;
       case rewinding:
-        if (adjustmentTimer.hasElapsed(Constants.TunnelConstants.rewindSec)) {
+        if (!RobotCoordinator.getInstance().noteInFiringPosition()) {
           tunnel.stopTunnel();
           adjustmentTimer.restart();
           state = State.checkOuttakeSensor;
+        } else if (adjustmentTimer.hasElapsed(Constants.TunnelConstants.rewindTimeoutSec)) {
+          tunnel.stopTunnel();
+          state = State.abort;
         }
         break;
       case checkOuttakeSensor:
@@ -108,11 +131,18 @@ public class TunnelFeed extends Command {
       case readyToFire:
         break;
     }
+    if (abortTimer.hasElapsed(Constants.TunnelConstants.totalAbortSec)) {
+      state = State.abort;
+    }
     Logger.recordOutput("TunnelFeed/State", state.toString());
   }
 
   @Override
   public boolean isFinished() {
+    if (runOnce && ((state == State.readyToFire) || (state == State.abort))) {
+      // need to end in auto
+      return true;
+    }
     // never end a default command
     return false;
   }

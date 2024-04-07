@@ -37,7 +37,7 @@ public final class Constants {
       RobotChooser.getInstance().getConstants();
   public static double noteRadiusInches = 7;
 
-  public static final boolean debug = true;
+  public static final boolean debug = true;  // leave on unti we make pseudo auto rotate work without it
 
   public static final boolean driveEnabled = true;
   public static final boolean intakeEnabled = true;
@@ -48,7 +48,6 @@ public final class Constants {
   public static final boolean outtakePivotEnabled = true;
   public static final boolean sensorsEnabled = true;
   public static final boolean ledEnabled = true;
-  public static final boolean climberEnabled = false;
   public static final boolean joysticksEnabled = false;
   public static final boolean xboxEnabled = true;
   public static final boolean autoAcquireNoteEnabled = false;
@@ -102,7 +101,7 @@ public final class Constants {
   public static final boolean driveTuningMode = false;
   public static final boolean steeringTuningMode = false;
   public static final boolean outtakeTuningMode = false;
-  public static final boolean shotTuningMode = false;
+  public static final boolean autoRotateDebug = false;
 
   public enum DriveDegradedMode {
     normal,
@@ -154,8 +153,8 @@ public final class Constants {
 
     public static final double disableBreakSec = 2.0;
 
-    public static final double stoppedVelocityThresholdMetersPerSec = 0.1524;
-    public static final double movingVelocityThresholdMetersPerSec = 0.4572;
+    public static final double slowVelocityThresholdMetersPerSec = 0.035;
+    public static final double fastVelocityThresholdMetersPerSec = 0.4;
 
     public static final double spinoutCenterPower = 1.0;
     public static final double spinoutCornerPower = 0.75;
@@ -169,8 +168,9 @@ public final class Constants {
       public static final double xboxDriveDeadband = 0.17; // was 0.1 with a better controller
       public static final double xboxRotateDeadband = 0.25;
       public static final double maxManualRotation = 0.30;
+      public static final double unlockedMaxManualRotation = 0.70;
       public static final double inhibitPseudoAutoRotateDegPerSec =
-          1.0; // don't lock until rotation stops
+          4.0; // don't lock until rotation stops
 
       public static final double spinoutRotateDeadBand = 0.9;
       public static final double spinoutMinAngularVelocity =
@@ -197,9 +197,11 @@ public final class Constants {
 
       public static final double minAutoRotateStoppedPower =
           robotSpecificConstants.getMinAutoRotateStoppedPower();
-      public static final double minAutoRotateMovingPower =
-          robotSpecificConstants.getminAutoRotateMovingPower();
-      public static final double rotateStoppedToleranceDegrees = 0.5;
+      public static final double minAutoRotateSlowPower =
+          robotSpecificConstants.getMinAutoRotateSlowPower();
+      public static final double minAutoRotateFastPower =
+          robotSpecificConstants.getMinAutoRotateFastPower();
+      public static final double rotateStoppedToleranceDegrees = 0.75;
       public static final double rotateMovingToleranceDegrees = 1.5;
       public static final double slowMovingAutoRotate = 0.5;
       public static final double fastMovingAutoRotate = 0.32;
@@ -282,47 +284,25 @@ public final class Constants {
     public static final double autoFeedMoveSpeed = 1;
   }
 
-  public static final class EncoderInitializeConstants {
-    public static final double initializedRotationsFlag = 4322.0; // must be a very high number
-    public static final double initializedRotationsTolerance = 5.0;
-    public static final double absEncoderAlmostZeroThreshold = 0.95; // intake use only
-    public static final double absEncoderMaxZeroingThreshold = 0.75; // outtake use only
-  }
-
-  public static final class ClimberConstants {
-    public static final int climberMotorID = 25;
-    public static final double climberMaxRotations = 149; // physical limit of climber
-    public static final double climberMinRotations = 0;
-    public static final double slowClimberVolts = 2;
-    public static final double fastClimberVolts = 12;
-    public static final double climberRotationTolerance = 1;
-    public static final double retractingThreshold =
-        0; // TODO: tune depending on how chain engages with hook
-    public static final int peakForwardVoltage = 12;
-    public static final double peakReverseVoltage = -12;
-    public static final double climbingPivotRotations =
-        150; // for outtake pivot - TODO: Needs re-tuning
-
-    public static final double statorLimit = 60;
-    public static final double supplyLimit = 40;
-    public static final double supplyThreshold = 60;
-    public static final double supplyTime = 2.0;
-    public static final double openRampPeriod = 0.08; // TODO
-  }
-
   public static final class OuttakeConstants {
-    public static final int leftOuttakeDeviceID = 5;
-    public static final int rightOuttakeDeviceID = 4;
+    public static final int topOuttakeDeviceID = 4;
+    public static final int bottomOuttakeDeviceID = 5;
     public static final int pivotDeviceID = 6;
     public static final int pivotEncoderID = 8;
 
-    public static final double kP = 0.0;
-    public static final double kI = 0.0;
-    public static final double kD = 0.0;
-    public static final double kV = 0.131; // kV * maxVelRotationsPerSec = max voltage
-    public static final double kS = 0.465;
+    public static final double topkP = 0.0;
+    public static final double topkI = 0.0;
+    public static final double topkD = 0.0;
+    public static final double topkV = 0.11; // kV * maxVelRotationsPerSec = max voltage
+    public static final double topkS = 0.173;
 
-    public static final double openLoopRampSec = 0;
+    public static final double bottomkP = 0.0;
+    public static final double bottomkI = 0.0;
+    public static final double bottomkD = 0.0;
+    public static final double bottomkV = 0.113; // kV * maxVelRotationsPerSec = max voltage
+    public static final double bottomkS = 0.175;
+
+    public static final double openLoopRampSec = 0.5;
     public static final double closedLoopRampSec = 0;
     public static final int gearRatioMotorToWheel = 0;
     public static final double gearReductionEncoderToMotor =
@@ -333,6 +313,7 @@ public final class Constants {
     public static final double shooterStatorLimit = 80;
     public static final double shooterSupplyCurrentThreshold = 50;
     public static final double shooterSupplyTimeThreshold = 1.5;
+    public static final double shootFeedAbortSec = 2;
 
     public static final double pivotSupplyLimit = 30;
     public static final double pivotStatorLimit = 45;
@@ -346,16 +327,22 @@ public final class Constants {
     public static final boolean enableFOC = false;
     public static final double pivotClosedLoopSec = 0.3;
     public static final boolean limitReverseMotion = true;
-    public static final double forwardSoftLimitThresholdRotations = 118;
-    public static final double reverseSoftLimitThresholdRotations = 7;
+    public static final double forwardSoftLimitThresholdRotations = 221.0  / 3.0;
+    public static final double reverseSoftLimitThresholdRotations = 3.0;
     public static final double pivotPeakForwardVoltage = 10;
     public static final double pivotPeakReverseVoltage = -10;
 
     public static final double defaultPivotPositionRotations = 0;
+    public static final double absEncoderMaxZeroingThreshold = 0.97;
+    public static final double absEncoderAlmostZeroThreshold = 0.995;
 
-    public static final double outtakeToleranceRPS = 3.0;
+    public static final double outtakeToleranceRPS = 1.5;
     public static final double pivotToleranceRotations = 0.5;
     public static final double maxPivotForIntake = 50;
+
+    public static final double ampPivotRotations = 54.0;
+    public static final double ampBottomShooterRPS = 28.0;
+    public static final double ampTopShooterRPS = 0.0;
   }
 
   public static final class IntakeConstants {
@@ -376,23 +363,24 @@ public final class Constants {
 
     public static final class DeployConfig {
       public static final double kP = 8.0;
-      public static final double slowPos = 0.1;
+      public static final double slowPos = 0.07;
       public static final double openLoopRamp = 0;
       public static final double updateHz =
           OrangeMath.msAndHzConverter(CanBusUtil.nextSlowStatusPeriodMs());
       public static final double timeoutMs = 50;
 
-      public static final double peakForwardVoltage = 2.5; // anything higher will slip the belt
-      public static final double peakReverseVoltage = -2.5;
+      public static final double peakForwardVoltage = 3.0;
+      public static final double peakReverseVoltage = -5.0;
 
-      public static final double supplyLimit = 30;
-      public static final double statorLimit = 60;
+      public static final double supplyLimit = 40;
+      public static final double statorLimit = 80;
 
       public static final double deployTargetPosition = 0.0;
       public static final double retractTargetPosition = 0.53;
-      public static final double atTargetTolerance = 0.03;
-      public static final double correctionTolerance = 0.06;
-      public static final double maxRotationsPerSec = 0.2;
+      public static final double atTargetTolerance = 0.01;
+      public static final double correctionTolerance = 0.025;
+
+      public static final double absEncoderAlmostZeroThreshold = 0.95;
     }
 
     public static final class Logging {
@@ -405,8 +393,8 @@ public final class Constants {
   }
 
   public static final class BeamBreakConstants {
-    public static final int tunnelBeamBreakID = 6;
-    public static final int intakeBeamBreakID = 5;
+    public static final int tunnelBeamBreakID = 5;
+    public static final int intakeBeamBreakID = 6;
 
     public static final class Logging {
       public static final String key = "Sensors/";
@@ -417,17 +405,18 @@ public final class Constants {
   public static final class TunnelConstants {
     public static final int tunnelMotorID = 3;
     public static final double supplyLimit = 30;
-    public static final double statorLimit = 80;
+    public static final double statorLimit = 110;
 
     public static final double feedVoltage = 6.0;
     public static final double reverseEjectVoltage = -6.0;
     public static final double rewindVoltage =
-        -2.0; // just enough to pull the note off the outtake wheels
+        -3.5; // just enough to pull the note off the outtake wheels
     public static final double pushUpVoltage = 2.0;
     public static final double peakVoltage = 6.0;
-    public static final double pauseSec = 0.12; // time for tunnel to stop before rewinding
-    public static final double rewindSec = 0.04;
-    public static final double abortSec = 5;
+    public static final double pauseSec = 0; // time for tunnel to stop before rewinding
+    public static final double rewindTimeoutSec = 0.7;
+    public static final double feedAbortSec = 2.8;
+    public static final double totalAbortSec = 4;
 
     public static final class Logging {
       public static final String key = "Tunnel/";
@@ -436,14 +425,16 @@ public final class Constants {
   }
 
   public static final class LimelightConstants {
+    public static final double aprilTagLossThresholdSec = 0.05;
     public static final double visionOdometryTolerance = 0.5;
+    public static final double alignToSpeakerTagRotTolerance = 3.0;
     public static final double reverseOdometryOverrideTolerance = 1.0;
     public static final int numTargetsToUseReverseOdom = 2;
     // TODO: Values need to be updated to the limelight itself.
     public static final double outtakeLimelightAngle = 25;
     public static final double outtakeLimelightHeight = OrangeMath.inchesToMeters(26.231);
     public static final double outtakeLimelightXOffsetMeters = 0.0;
-    public static final double outtakeLimelightYOffsetMeters = OrangeMath.inchesToMeters(3.887);
+    public static final double outtakeLimelightYOffsetMeters = OrangeMath.inchesToMeters(3.5);
     public static final String outtakeLimelightName = "limelight-speaker";
 
     public static final double intakeLimelightAngle = -25;
@@ -492,6 +483,11 @@ public final class Constants {
   public static final class LED {
     public static final int totalLEDs = 43;
     public static final int CANdleID = 3;
+
+    public static final int debugLed1 = totalLEDs - 1;
+    public static final int debugLed2 = totalLEDs - 2;
+    public static final int debugLed3 = totalLEDs - 3;
+    public static final int debugLed4 = totalLEDs - 4;
   }
 
   public static final class FieldConstants {
@@ -506,26 +502,34 @@ public final class Constants {
         new Translation2d(xRedSpeakerPosM, yRedSpeakerPosM);
 
     public static final double xCenterLineM = 8.2955;
+
+    public static final int redSpeakerCenterTagID = 4;
+    public static final int redSpeakerSideTagID = 3;
+    
+    public static final int blueSpeakerCenterTagID = 7;
+    public static final int blueSpeakerSideTagID = 8;
+
+    public static final double redAmpAngleDeg = 90;
+    public static final double redSourceAngleDeg = -(180 - 51.4);
   }
 
   public static final class FiringSolutions {
-    // TODO: update speeds and angles
     // shot mag/deg don't matter since these are used for setting speed/angle only
-    public static final FiringSolution SubwooferBase = new FiringSolution(0, 0, 40, 113);
-    public static final FiringSolution SubwooferSide = new FiringSolution(0, 0, 40, 115);
+    public static final FiringSolution SubwooferBase = new FiringSolution(0, 0, 40, 211.0 / 3.0);
+    public static final FiringSolution SubwooferSide = new FiringSolution(0, 0, 40, 215.0 / 3.0);
     public static final FiringSolution N6 = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution N7 = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution N8 = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution TS = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution MS = new FiringSolution(0, 0, 0, 0);
     public static final FiringSolution BS = new FiringSolution(0, 0, 0, 0);
-    public static final FiringSolution Eject = new FiringSolution(0, 0, 10, 50);
-    public static final FiringSolution Climbing =
-        new FiringSolution(0, 0, 0, ClimberConstants.climbingPivotRotations);
+    public static final FiringSolution Eject = new FiringSolution(0, 0, 10, 85.0 / 3.0);
     // collecting note should be at lowest pivot limit
     public static final FiringSolution CollectingNote =
         new FiringSolution(0, 0, 0, Constants.OuttakeConstants.reverseSoftLimitThresholdRotations);
-    public static final FiringSolution Feed = new FiringSolution(0, 0, -10, 118);
+    public static final FiringSolution Feed = new FiringSolution(0, 0, -10, 221.0 / 3.0);
+    public static final FiringSolution DefaultSmartShooting = new FiringSolution(0, 0, 40, 105.0 / 3.0);
+    public static final FiringSolution StartingConfig = new FiringSolution(0, 0, 0, 46.866);
   }
 
   public enum WheelPosition {

@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.ButtonMonitor;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -21,21 +23,18 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.AutoHelper.Auto;
 import frc.robot.centerline.CenterLineManager.CenterLineScoringStrategy;
-import frc.robot.commands.AtHome;
 import frc.robot.commands.AutoIntakeDeploy;
 import frc.robot.commands.AutoIntakeIn;
 import frc.robot.commands.AutoSetOuttakeAdjust;
 import frc.robot.commands.AutoSmartShooting;
-import frc.robot.commands.ClimberExtend;
-import frc.robot.commands.ClimberRetract;
-import frc.robot.commands.ClimberSlowRetractOverride;
 import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.EjectThroughIntake;
 import frc.robot.commands.IntakeManual;
 import frc.robot.commands.IntakeStop;
-import frc.robot.commands.OperatorXboxControllerRumble;
+import frc.robot.commands.LEDState;
+import frc.robot.commands.OperatorPresetLED;
 import frc.robot.commands.OuttakeManual.OuttakeManual;
 import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualTrigger;
 import frc.robot.commands.OuttakeStop;
@@ -49,11 +48,10 @@ import frc.robot.commands.TunnelFeed;
 import frc.robot.commands.TunnelStop;
 import frc.robot.commands.UpdateOdometry;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
-import frc.robot.commands.XboxControllerRumble;
+import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.LED.LED;
 import frc.robot.subsystems.RobotCoordinator;
-import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.limelight.Limelight;
@@ -96,7 +94,7 @@ public class RobotContainer {
 
   private final DriveManual driveManual = new DriveManual();
 
-  private final TunnelFeed tunnelFeed = new TunnelFeed();
+  private final TunnelFeed tunnelFeedContinuous = new TunnelFeed(false);
 
   private final OuttakeManual outtakeManual = new OuttakeManual();
 
@@ -109,6 +107,8 @@ public class RobotContainer {
   private final OuttakeStop outtakeStop = new OuttakeStop();
 
   private final TunnelStop tunnelStop = new TunnelStop();
+
+  private final LEDState defaultLEDStates = new LEDState();
 
   private final SendableChooser<Auto> autoChooser;
 
@@ -132,6 +132,20 @@ public class RobotContainer {
             "SetOuttakeCollectingNote",
             new AutoSetOuttakeAdjust(Constants.FiringSolutions.CollectingNote));
     PathPlannerManager.getInstance().addEvent("SetOuttakeSmartShooting", new AutoSmartShooting());
+    PathPlannerManager.getInstance().addEvent("TunnelFeed", new TunnelFeed(true));
+
+    PathPlannerManager.getInstance()
+        .addEvent(
+            "SetOuttakeN6",
+            new AutoSetOuttakeAdjust(new FiringSolution(0, 0, 40, 40)));
+    PathPlannerManager.getInstance()
+        .addEvent(
+            "SetOuttakeN7",
+            new AutoSetOuttakeAdjust(new FiringSolution(0, 0, 40, 40)));
+    PathPlannerManager.getInstance()
+        .addEvent(
+            "SetOuttakeN8",
+            new AutoSetOuttakeAdjust(new FiringSolution(0, 0, 40, 40)));
 
     // DO NOT MOVE OR REMOVE THIS WITHOUT KNOWING WHAT YOU'RE DOING
     PathPlannerManager.getInstance().preloadAutos();
@@ -151,7 +165,7 @@ public class RobotContainer {
     }
 
     if (Constants.tunnelEnabled) {
-      tunnel.setDefaultCommand(tunnelFeed);
+      tunnel.setDefaultCommand(tunnelFeedContinuous);
     }
 
     if (Constants.outtakeEnabled || Constants.outtakePivotEnabled) {
@@ -164,6 +178,10 @@ public class RobotContainer {
 
     if (Constants.outtakeLimeLightEnabled) {
       Limelight.getOuttakeInstance().setDefaultCommand(new UpdateOdometry());
+    }
+
+    if (Constants.ledEnabled) {
+      led.setDefaultCommand(defaultLEDStates);
     }
   }
   /**
@@ -187,34 +205,36 @@ public class RobotContainer {
     if (Constants.xboxEnabled) {
       driveXbox = new CommandXboxController(2);
       operatorXbox = new CommandXboxController(3);
+      if (Constants.speakerCentricEnabled) {
+        driveXbox
+            .start() // binded to back right P2 button on xbox
+            .onTrue(
+                Commands.runOnce(
+                    () -> {
+                      driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC);
+                    }));
+        driveXbox
+            .start()
+            .onFalse(
+                Commands.runOnce(
+                    () -> {
+                      driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);
+                    }));
+      }
       driveXbox
-          .leftBumper()
-          .onTrue(
-              Commands.runOnce(
-                  () -> {
-                    driveManual.updateStateMachine(DriveManualTrigger.ENABLE_ROBOT_CENTRIC);
-                  }));
-      driveXbox
-          .leftBumper()
-          .onFalse(
-              Commands.runOnce(
-                  () -> {
-                    driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);
-                  }));
-      driveXbox
-          .back() // binded to back left P4 button on xbox
-          .onTrue(
-              Commands.runOnce(
-                  () -> {
-                    driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC);
-                  }));
-      driveXbox
-          .start() // binded to back right P2 button on xbox
-          .onTrue(
-              Commands.runOnce(
-                  () -> {
-                    driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);
-                  }));
+            .back() // binded to back left P2 button on xbox
+            .onTrue(
+                Commands.runOnce(
+                    () -> {
+                      driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SOURCE);
+                    }));
+        driveXbox
+            .back()
+            .onFalse(
+                Commands.runOnce(
+                    () -> {
+                      driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);
+                    }));
       driveXbox.x().onTrue(new ResetFieldCentric(true));
       driveXbox.povDown().onTrue(driveStop);
       driveXbox
@@ -233,25 +253,10 @@ public class RobotContainer {
                     RobotCoordinator.getInstance().setIntakeButtonState(false);
                     outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
                   }));
-      driveXbox
-          .rightBumper()
-          .onTrue(
-              Commands.runOnce(
-                  () -> {
-                    RobotCoordinator.getInstance().setAutoIntakeButtonPressed(true);
-                    outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE);
-                  }));
-      driveXbox
-          .rightBumper()
-          .onFalse(
-              Commands.runOnce(
-                  () -> {
-                    RobotCoordinator.getInstance().setAutoIntakeButtonPressed(false);
-                    outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
-                  }));
       driveXbox.leftTrigger().whileTrue(new Shoot());
-      driveXbox.povLeft().onTrue(new AtHome());
-      if (Constants.shotTuningMode) {
+      driveXbox.rightBumper().onTrue(Commands.runOnce(() -> {driveManual.updateStateMachine(DriveManualTrigger.ENABLE_AMP);}));
+      driveXbox.rightBumper().onFalse(Commands.runOnce(() -> {driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);}));
+      if (Constants.outtakeTuningMode) {
         driveXbox.y().onTrue(writeFiringSolution);
         // right up against front of speaker with edge of robot on source side
         driveXbox
@@ -260,68 +265,49 @@ public class RobotContainer {
                 new SetRobotPose(
                     new Pose2d(1.3766260147094727, 5.414320468902588, new Rotation2d()), true));
       }
-
-      // don't want operator to accidentally use slow override in match
-      operatorXbox
-          .rightBumper()
-          .whileTrue(new ClimberSlowRetractOverride().onlyIf(() -> !DriverStation.isFMSAttached()));
-      operatorXbox
-          .leftTrigger()
-          .onTrue(
-              new ParallelCommandGroup(
-                  new AutoIntakeDeploy(),
-                  Commands.runOnce(
-                      () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_CLIMBING)),
-                  new ClimberExtend(),
-                  new SequentialCommandGroup(
-                      Commands.waitUntil(() -> Climber.getInstance().isFullyExtended()),
-                      new OperatorXboxControllerRumble())));
-      operatorXbox
-          .leftTrigger()
-          .onFalse(
-              Commands.runOnce(() -> Climber.getInstance().stopClimb(), Climber.getInstance()));
-      operatorXbox
-          .rightTrigger()
-          .whileTrue(
-              new ParallelCommandGroup(
-                  new ClimberRetract(),
-                  new SequentialCommandGroup(
-                      Commands.waitUntil(
-                          () -> Climber.getInstance().isAtClimbRetractingThreshold()),
-                      new OperatorXboxControllerRumble())));
       operatorXbox.start().onTrue(new SetPivotsCoastMode());
       operatorXbox.back().onTrue(new SetPivotsBrakeMode());
       operatorXbox.povUp().whileTrue(new EjectThroughIntake());
       operatorXbox
           .y()
-          .onTrue(
-              Commands.runOnce(
-                  () ->
-                      outtakeManual.updateStateMachine(
-                          OuttakeManualTrigger.ENABLE_SMART_SHOOTING)));
+          .onTrue(new ParallelCommandGroup(
+              Commands.runOnce(() -> {
+                outtakeManual.setFiringSolution(Constants.FiringSolutions.DefaultSmartShooting);
+                outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SMART_SHOOTING);}),
+                new OperatorPresetLED()));
       operatorXbox
           .x()
-          .onTrue(
+          .onTrue(new ParallelCommandGroup(
               Commands.runOnce(
-                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_EJECT)));
+                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_EJECT)),
+                  new OperatorPresetLED()));
       operatorXbox
           .b()
-          .onTrue(
+          .onTrue(new ParallelCommandGroup(
               Commands.runOnce(
-                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SUBWOOFER)));
+                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SUBWOOFER)),
+                  new OperatorPresetLED()));
       operatorXbox
           .a()
-          .onTrue(
+          .onTrue(new ParallelCommandGroup(
               Commands.runOnce(
-                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP)));
+                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP)),
+                  new OperatorPresetLED()));
       operatorXbox
           .povDown()
           .onTrue(
               new SequentialCommandGroup(
                   Commands.runOnce(
                       () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED)),
-                  new OuttakeTunnelFeed(),
-                  new XboxControllerRumble()));
+                  new OuttakeTunnelFeed()));
+      operatorXbox.povDown().onTrue(new OperatorPresetLED());
+      operatorXbox
+          .povRight()
+          .onTrue(new ParallelCommandGroup(
+              Commands.runOnce(
+                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_AMP)),
+                  new OperatorPresetLED()));
+      operatorXbox.povLeft().onTrue(Commands.runOnce(() -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STARTING_CONFIG);}));
     }
   }
 
@@ -350,14 +336,6 @@ public class RobotContainer {
       onOpponentFieldSide = false;
     }
 
-    // If the match is about to end, set to coast mode so we can coast past end of match
-    if (DriverStation.getMatchTime() <= 2
-        && DriverStation.isTeleopEnabled()
-        && DriverStation.isFMSAttached()
-        && !nearMatchEndCommandsReqested) {
-      drive.setCoastMode();
-      nearMatchEndCommandsReqested = true;
-    }
   }
 
   public void enableSubsystems() {
@@ -365,6 +343,7 @@ public class RobotContainer {
     tunnel.setBrakeMode();
     intake.setDeployerBrakeMode();
     outtake.setPivotBrakeMode();
+    outtake.setFlywheelBrakeMode();
 
     disableTimer.stop();
     disableTimer.reset();
@@ -372,6 +351,7 @@ public class RobotContainer {
 
   public void disableSubsystems() {
     tunnel.setCoastMode();
+    outtake.setFlywheelCoastMode();
 
     driveStop.schedule(); // interrupt all drive commands
     intakeStop.schedule(); // interrupt all intake commands
@@ -386,17 +366,18 @@ public class RobotContainer {
 
   // Command that should always start off every auto
   public Command getAutoInitialize() {
-    final String autoName = AutoHelper.getPathPlannerAutoName(autoChooser.getSelected());
-    if (autoName == "None") {
-      return new SequentialCommandGroup(new ResetFieldCentric(true));
-    } else {
-      return new SequentialCommandGroup(
-          new ResetFieldCentric(
-              true,
-              PathPlannerManager.getInstance()
-                  .getStartingPoseFromAutoFile(autoName)
-                  .getRotation()));
-    }
+    // final String autoName = AutoHelper.getPathPlannerAutoName(autoChooser.getSelected());
+    // if (autoName == "None") {
+    //   return new SequentialCommandGroup(new ResetFieldCentric(true));
+    // } else {
+    //   return new SequentialCommandGroup(
+    //       new ResetFieldCentric(
+    //           true,
+    //           PathPlannerManager.getInstance()
+    //               .getStartingPoseFromAutoFile(autoName)
+    //               .getRotation()));
+    // }
+    return Commands.none();
   }
 
   // Command for the auto on our side of the field (PathPlanner Auto)

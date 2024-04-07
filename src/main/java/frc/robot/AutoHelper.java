@@ -12,9 +12,9 @@ public class AutoHelper {
     OneNoteAmp,
     OneNoteSource,
     TwoNoteCenter,
-    ThreeNoteCenter,
-    FourNoteCenter,
-    FourNoteSource
+    ThreeNoteCenterAmp,
+    ThreeNoteCenterSource,
+    FourNoteCenter
   }
 
   public static void configAutoChooser(SendableChooser<Auto> chooser) {
@@ -38,12 +38,12 @@ public class AutoHelper {
         return "OneNoteSource";
       case TwoNoteCenter:
         return "TwoNoteCenter";
-      case ThreeNoteCenter:
-        return "ThreeNoteCenter";
+      case ThreeNoteCenterAmp:
+        return "ThreeNoteCenterAmp";
+      case ThreeNoteCenterSource:
+        return "ThreeNoteCenterSource";
       case FourNoteCenter:
         return "FourNoteCenter";
-      case FourNoteSource:
-        return "FourNoteSource";
       case None:
       default:
         return "None";

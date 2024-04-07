@@ -5,6 +5,7 @@ import com.pathplanner.lib.auto.CommandUtil;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.GeometryUtil;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -74,7 +75,11 @@ public class PathPlannerManager {
   }
 
   public Pose2d getStartingPoseFromAutoFile(String autoName) {
-    return PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
+    if (Robot.isRed()) {
+      return GeometryUtil.flipFieldPose(PathPlannerAuto.getStaringPoseFromAutoFile(autoName));
+    } else {
+      return PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
+    }
   }
 
   public Command followChoreoPath(String pathName) {
