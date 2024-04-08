@@ -70,7 +70,7 @@ public class OuttakeManual extends Command {
               adjShotRotations += (70 - adjShotRotations) / 12.0;
             }
             firingSolution = new FiringSolution(0, 0, 
-              firingSolution.getFlywheelSpeed(), adjShotRotations);
+              firingSolution.getFlywheelSpeed(), adjShotRotations + outtake.getPivotOffset());
             
             Logger.recordOutput("FiringSolutions/BotPoseInput/Mag", magToSpeaker);
             Logger.recordOutput("FiringSolutions/BotPoseInput/Angle", degreesToSpeaker);
@@ -124,7 +124,7 @@ public class OuttakeManual extends Command {
       }
 
       if (RobotCoordinator.getInstance().canPivot()) {
-        outtake.pivot(firingSolution.getShotRotations() + outtake.getPivotOffset());
+        outtake.pivot(firingSolution.getShotRotations());
       } else {
         outtake.stopPivot();
       }
