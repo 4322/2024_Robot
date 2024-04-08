@@ -237,9 +237,9 @@ public class RobotContainer {
                       driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);
                     }));
       driveXbox.x().onTrue(new ResetFieldCentric(true));
-      driveXbox.povRight().onTrue(driveStop);
-      driveXbox.povUp().onTrue(new AdjustOuttakeOffset(0.0014));
-      driveXbox.povDown().onTrue(new AdjustOuttakeOffset(-0.0014));
+      driveXbox.povDown().onTrue(driveStop);
+      //driveXbox.povUp().onTrue(new AdjustOuttakeOffset(0.0014));
+      //driveXbox.povDown().onTrue(new AdjustOuttakeOffset(-0.0014));
       driveXbox
           .rightTrigger()
           .onTrue(
