@@ -40,8 +40,8 @@ public final class Constants {
   public static final boolean debug = true;  // leave on unti we make pseudo auto rotate work without it
 
   public static final boolean driveEnabled = true;
-  public static final boolean intakeEnabled = true;
-  public static final boolean intakeDeployerEnabled = true;
+  public static final boolean intakeEnabled = false;
+  public static final boolean intakeDeployerEnabled = false;
   public static final boolean gyroEnabled = true;
   public static final boolean tunnelEnabled = true;
   public static final boolean outtakeEnabled = true;
@@ -51,6 +51,7 @@ public final class Constants {
   public static final boolean joysticksEnabled = false;
   public static final boolean xboxEnabled = true;
   public static final boolean autoAcquireNoteEnabled = false;
+  public static final boolean ampAlignmentActive = false;
 
   public static final boolean intakeLimeLightEnabled = true;
   public static final boolean outtakeLimeLightEnabled = true;
@@ -100,7 +101,7 @@ public final class Constants {
 
   public static final boolean driveTuningMode = false;
   public static final boolean steeringTuningMode = false;
-  public static final boolean outtakeTuningMode = false;
+  public static final boolean outtakeTuningMode = true;
   public static final boolean autoRotateDebug = false;
 
   public enum DriveDegradedMode {
@@ -505,9 +506,11 @@ public final class Constants {
 
     public static final int redSpeakerCenterTagID = 4;
     public static final int redSpeakerSideTagID = 3;
+    public static final int redAmpTagID = 5;
     
     public static final int blueSpeakerCenterTagID = 7;
     public static final int blueSpeakerSideTagID = 8;
+    public static final int blueAmpTagID = 6;
 
     public static final double redAmpAngleDeg = 90;
     public static final double redSourceAngleDeg = -(180 - 51.4);

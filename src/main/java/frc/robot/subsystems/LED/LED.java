@@ -20,6 +20,8 @@ public class LED extends SubsystemBase {
     outtakeAtFiringPosition,
     noteReadyToShoot,
     noteInRobot,
+    alignedWithAmp,
+    aligningWithAmp,
     brakeMode,
     coastMode;
   }
@@ -107,6 +109,12 @@ public class LED extends SubsystemBase {
           break;
         case operatorPreset:
           io.setLED(Color.kWhite, firstLed, numLeds);
+          break;
+        case aligningWithAmp:
+          io.setLED(Color.kBlue, firstLed, numLeds);
+          break;
+        case alignedWithAmp:
+          io.setLED(Color.kGreen, firstLed, numLeds);
           break;
       }
     }

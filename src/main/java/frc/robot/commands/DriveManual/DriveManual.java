@@ -132,10 +132,32 @@ public class DriveManual extends Command {
         drive.drive(driveX, driveY, rotatePower, new Rotation2d());
         return;
       case AMP:
+        final double ampAngleDeg;
+        final int tagID;
         if (Robot.isRed()) {
-          drive.driveAutoRotate(driveX, driveY, FieldConstants.redAmpAngleDeg);
-        } else {
-          drive.driveAutoRotate(driveX, driveY, -FieldConstants.redAmpAngleDeg);
+          ampAngleDeg = FieldConstants.redAmpAngleDeg;
+          tagID = FieldConstants.redAmpTagID;
+        }
+        else {
+          ampAngleDeg = -FieldConstants.redAmpAngleDeg;
+          tagID = FieldConstants.blueAmpTagID;
+        }
+
+        if (Constants.ampAlignmentActive) {
+          if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(tagID)) {
+            if (Limelight.getOuttakeInstance().getTag(tagID).tx > 5.0) {
+              drive.driveAutoRotate(-0.05, driveY, ampAngleDeg);
+            }
+            else if (Limelight.getOuttakeInstance().getTag(tagID).tx < -5.0) {
+              drive.driveAutoRotate(0.05, driveY, ampAngleDeg);
+            }
+          }
+          else {
+            drive.driveAutoRotate(driveX, driveY, ampAngleDeg);
+          }
+        }
+        else {
+          drive.driveAutoRotate(driveX, driveY, ampAngleDeg);
         }
         return;
       case SOURCE:
@@ -421,6 +443,10 @@ public class DriveManual extends Command {
         drive.drive(driveX, driveY, spinCornerPower, DriveConstants.frontRightWheelLocation);
         break;
     }
+  }
+
+  public DriveManualState getState() {
+    return stateMachine.getState();
   }
 
   // Called once the command ends or is interrupted.
