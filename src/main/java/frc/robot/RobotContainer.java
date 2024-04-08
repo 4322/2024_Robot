@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.AutoHelper.Auto;
 import frc.robot.centerline.CenterLineManager.CenterLineScoringStrategy;
+import frc.robot.commands.AdjustOuttakeOffset;
 import frc.robot.commands.AutoIntakeDeploy;
 import frc.robot.commands.AutoIntakeIn;
 import frc.robot.commands.AutoSetOuttakeAdjust;
@@ -236,7 +237,9 @@ public class RobotContainer {
                       driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);
                     }));
       driveXbox.x().onTrue(new ResetFieldCentric(true));
-      driveXbox.povDown().onTrue(driveStop);
+      driveXbox.povRight().onTrue(driveStop);
+      driveXbox.povUp().onTrue(new AdjustOuttakeOffset(0.0014));
+      driveXbox.povDown().onTrue(new AdjustOuttakeOffset(-0.0014));
       driveXbox
           .rightTrigger()
           .onTrue(

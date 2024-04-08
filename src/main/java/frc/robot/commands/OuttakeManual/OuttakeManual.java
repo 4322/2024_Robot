@@ -124,7 +124,7 @@ public class OuttakeManual extends Command {
       }
 
       if (RobotCoordinator.getInstance().canPivot()) {
-        outtake.pivot(firingSolution.getShotRotations());
+        outtake.pivot(firingSolution.getShotRotations() + outtake.getPivotOffset());
       } else {
         outtake.stopPivot();
       }
