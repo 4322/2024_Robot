@@ -4,11 +4,8 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.ButtonMonitor;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
@@ -226,7 +223,7 @@ public class RobotContainer {
             .onTrue(
                 Commands.runOnce(
                     () -> {
-                      driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SOURCE);
+                      driveManual.updateStateMachine(DriveManualTrigger.ENABLE_PASS);
                     }));
         driveXbox
             .back()
@@ -256,6 +253,8 @@ public class RobotContainer {
       driveXbox.leftTrigger().whileTrue(new Shoot());
       driveXbox.rightBumper().onTrue(Commands.runOnce(() -> {driveManual.updateStateMachine(DriveManualTrigger.ENABLE_AMP);}));
       driveXbox.rightBumper().onFalse(Commands.runOnce(() -> {driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);}));
+      driveXbox.leftBumper().onTrue(Commands.runOnce(() -> {driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SOURCE);}));
+      driveXbox.leftBumper().onFalse(Commands.runOnce(() -> {driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);}));
       if (Constants.outtakeTuningMode) {
         driveXbox.y().onTrue(writeFiringSolution);
         // right up against front of speaker with edge of robot on source side
