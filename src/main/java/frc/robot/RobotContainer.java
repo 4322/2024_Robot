@@ -46,6 +46,7 @@ import frc.robot.commands.TunnelFeed;
 import frc.robot.commands.TunnelStop;
 import frc.robot.commands.UpdateOdometry;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
+import frc.robot.commands.XboxControllerRumble;
 import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.LED.LED;
@@ -301,7 +302,8 @@ public class RobotContainer {
               new SequentialCommandGroup(
                   Commands.runOnce(
                       () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED)),
-                  new OuttakeTunnelFeed()));
+                  new OuttakeTunnelFeed(),
+                  new XboxControllerRumble()));
       operatorXbox.povDown().onTrue(new OperatorPresetLED());
       operatorXbox
           .povRight()
