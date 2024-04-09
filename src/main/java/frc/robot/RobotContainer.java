@@ -234,8 +234,6 @@ public class RobotContainer {
                     }));
       driveXbox.x().onTrue(new ResetFieldCentric(true));
       driveXbox.povDown().onTrue(driveStop);
-      //driveXbox.povUp().onTrue(new AdjustOuttakeOffset(0.0014));
-      //driveXbox.povDown().onTrue(new AdjustOuttakeOffset(-0.0014));
       driveXbox
           .rightTrigger()
           .onTrue(
