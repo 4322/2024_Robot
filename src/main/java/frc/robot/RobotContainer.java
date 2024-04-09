@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.AutoHelper.Auto;
 import frc.robot.centerline.CenterLineManager.CenterLineScoringStrategy;
-import frc.robot.commands.AdjustOuttakeOffset;
 import frc.robot.commands.AutoIntakeDeploy;
 import frc.robot.commands.AutoIntakeIn;
 import frc.robot.commands.AutoSetOuttakeAdjust;
@@ -76,7 +75,6 @@ public class RobotContainer {
   private JoystickButton driveButtonTwelve;
 
   private boolean onOpponentFieldSide;
-  private boolean nearMatchEndCommandsReqested;
 
   // Need to instantiate RobotCoordinator first due to a bug in the WPI command library.
   // If it gets instantiated from a subsystem periodic method, we get a concurrency
@@ -313,6 +311,7 @@ public class RobotContainer {
                   new OperatorPresetLED()));
       operatorXbox.povLeft().onTrue(Commands.runOnce(() -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STARTING_CONFIG);}));
       operatorXbox.leftBumper().onTrue(Commands.runOnce(() -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_PASS);}));
+      operatorXbox.rightBumper().onTrue(Commands.runOnce(() -> {outtakeManual.addOffset(0.5);}));
     }
   }
 
