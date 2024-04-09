@@ -309,7 +309,9 @@ public class RobotContainer {
                   new OperatorPresetLED()));
       operatorXbox.povLeft().onTrue(Commands.runOnce(() -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STARTING_CONFIG);}));
       operatorXbox.leftBumper().onTrue(Commands.runOnce(() -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_PASS);}));
-      operatorXbox.rightBumper().onTrue(Commands.runOnce(() -> {outtakeManual.addOffset(0.5);}));
+      operatorXbox.leftTrigger().onTrue(Commands.runOnce(() -> {outtakeManual.addOffset(0.5);}));
+      operatorXbox.rightTrigger().onTrue(Commands.runOnce(() -> {outtakeManual.addOffset(-0.5);}));
+
     }
   }
 
