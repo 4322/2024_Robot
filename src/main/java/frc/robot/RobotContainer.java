@@ -20,12 +20,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.AutoHelper.Auto;
 import frc.robot.centerline.CenterLineManager.CenterLineScoringStrategy;
+import frc.robot.commands.AmpAlignmentLED;
 import frc.robot.commands.AutoIntakeDeploy;
 import frc.robot.commands.AutoIntakeIn;
 import frc.robot.commands.AutoSetOuttakeAdjust;
 import frc.robot.commands.AutoSmartShooting;
 import frc.robot.commands.DriveManual.DriveManual;
-import frc.robot.commands.DriveManual.AmpAlignmentLED;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
 import frc.robot.commands.EjectThroughIntake;
@@ -273,7 +273,8 @@ public class RobotContainer {
           .onTrue(new ParallelCommandGroup(
               Commands.runOnce(() -> {
                 outtakeManual.setFiringSolution(Constants.FiringSolutions.DefaultSmartShooting);
-                outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SMART_SHOOTING);}),
+                outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SMART_SHOOTING);
+                  Limelight.getOuttakeInstance().activateAprilTag3D();}),
                 new OperatorPresetLED()));
       operatorXbox
           .x()
@@ -298,7 +299,8 @@ public class RobotContainer {
           .onTrue(
               new SequentialCommandGroup(
                   Commands.runOnce(
-                      () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED)),
+                      () -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED);
+                              Limelight.getOuttakeInstance().activateAprilTag2D();}),
                   new OuttakeTunnelFeed(),
                   new XboxControllerRumble()));
       operatorXbox.povDown().onTrue(new OperatorPresetLED());
@@ -306,7 +308,8 @@ public class RobotContainer {
           .povRight()
           .onTrue(new ParallelCommandGroup(
               Commands.runOnce(
-                  () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_AMP)),
+                  () -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_AMP);
+                          Limelight.getOuttakeInstance().activateAprilTag2D();}),
                   new OperatorPresetLED()));
       operatorXbox.povLeft().onTrue(Commands.runOnce(() -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STARTING_CONFIG);}));
       operatorXbox.leftBumper().onTrue(Commands.runOnce(() -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_PASS);}));

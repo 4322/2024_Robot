@@ -1,8 +1,9 @@
-package frc.robot.commands.DriveManual;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualState;
 import frc.robot.subsystems.LED.LED;
 import frc.robot.subsystems.limelight.Limelight;
