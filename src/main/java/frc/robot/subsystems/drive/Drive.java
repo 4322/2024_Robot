@@ -292,10 +292,9 @@ public class Drive extends SubsystemBase {
   public void periodic() {
     if (Constants.driveEnabled) {
       // update logs
-      if (Constants.debug) {
-        driveShuffleBoard.updateInputs(driveShuffleBoardInputs);
-        Logger.processInputs("DriveShuffleBoard/DriveShuffleBoardInputs", driveShuffleBoardInputs);
-      }
+      driveShuffleBoard.updateInputs(driveShuffleBoardInputs);
+      Logger.processInputs("DriveShuffleBoard/DriveShuffleBoardInputs", driveShuffleBoardInputs);
+      
       for (SwerveModule module : swerveModules) {
         module.periodic();
       }
