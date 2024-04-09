@@ -26,6 +26,7 @@ import frc.robot.commands.AutoIntakeIn;
 import frc.robot.commands.AutoSetOuttakeAdjust;
 import frc.robot.commands.AutoSmartShooting;
 import frc.robot.commands.DriveManual.DriveManual;
+import frc.robot.commands.DriveManual.SourceAlignmentLED;
 import frc.robot.commands.DriveManual.AmpAlignmentLED;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualTrigger;
 import frc.robot.commands.DriveStop;
@@ -257,7 +258,7 @@ public class RobotContainer {
       driveXbox.leftTrigger().whileTrue(new Shoot());
       driveXbox.rightBumper().onTrue(new SequentialCommandGroup(Commands.runOnce(() -> {driveManual.updateStateMachine(DriveManualTrigger.ENABLE_AMP);}), new AmpAlignmentLED(driveManual)));
       driveXbox.rightBumper().onFalse(Commands.runOnce(() -> {driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);}));
-      driveXbox.leftBumper().onTrue(Commands.runOnce(() -> {driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SOURCE);}));
+      driveXbox.leftBumper().onTrue(new SequentialCommandGroup(Commands.runOnce(() -> {driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SOURCE);}), new SourceAlignmentLED(driveManual)));
       driveXbox.leftBumper().onFalse(Commands.runOnce(() -> {driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);}));
       if (Constants.outtakeTuningMode) {
         driveXbox.y().onTrue(writeFiringSolution);

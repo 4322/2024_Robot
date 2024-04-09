@@ -22,6 +22,8 @@ public class LED extends SubsystemBase {
     noteInRobot,
     alignedWithAmp,
     aligningWithAmp,
+    alignedWithSource,
+    aligningWithSource,
     brakeMode,
     coastMode;
   }
@@ -111,10 +113,16 @@ public class LED extends SubsystemBase {
           io.setLED(Color.kWhite, firstLed, numLeds);
           break;
         case aligningWithAmp:
-          io.setLED(Color.kBlue, firstLed, numLeds);
+          io.setLED(Color.kPink, firstLed, numLeds);
           break;
         case alignedWithAmp:
-          io.setLED(Color.kGreen, firstLed, numLeds);
+          io.setLED(Color.kBlue, firstLed, numLeds);
+          break;
+        case aligningWithSource:
+          io.setLED(Color.kPink, firstLed, numLeds);
+          break;
+        case alignedWithSource:
+          io.setLED(Color.kBlue, firstLed, numLeds);
           break;
       }
     }

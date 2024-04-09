@@ -52,6 +52,7 @@ public final class Constants {
   public static final boolean xboxEnabled = true;
   public static final boolean autoAcquireNoteEnabled = false;
   public static final boolean ampAlignmentActive = false;
+  public static final boolean sourceAlignmentActive = false;
 
   public static final boolean intakeLimeLightEnabled = true;
   public static final boolean outtakeLimeLightEnabled = true;
@@ -507,10 +508,14 @@ public final class Constants {
     public static final int redSpeakerCenterTagID = 4;
     public static final int redSpeakerSideTagID = 3;
     public static final int redAmpTagID = 5;
+    public static final int redLeftSourceTagID = 10;
+    public static final int redRightSourceTagID = 9;
     
     public static final int blueSpeakerCenterTagID = 7;
     public static final int blueSpeakerSideTagID = 8;
     public static final int blueAmpTagID = 6;
+    public static final int blueLeftSourceTagID = 2;
+    public static final int blueRightSourceTagID = 1;
 
     public static final double redAmpAngleDeg = 90;
     public static final double redSourceAngleDeg = -(180 - 51.4);

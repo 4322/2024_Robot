@@ -22,6 +22,8 @@ import frc.robot.subsystems.limelight.Limelight;
 import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
+
 public class DriveManual extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   /**
@@ -161,10 +163,43 @@ public class DriveManual extends Command {
         }
         return;
       case SOURCE:
+        final double sourceAngleDeg;
+        final int sourceTagID;
+
+        // determine which source april tag to lock onto
         if (Robot.isRed()) {
-          drive.driveAutoRotate(driveX, driveY, FieldConstants.redSourceAngleDeg);
+          sourceAngleDeg = FieldConstants.redSourceAngleDeg;
+          if (Math.abs(Limelight.getOuttakeInstance().getTag(FieldConstants.redLeftSourceTagID).tx) < 
+              Math.abs(Limelight.getOuttakeInstance().getTag(FieldConstants.redRightSourceTagID).tx)) {
+            sourceTagID = FieldConstants.redLeftSourceTagID;
+          } else {
+            sourceTagID = FieldConstants.redRightSourceTagID;
+          }
         } else {
-          drive.driveAutoRotate(driveX, driveY, -FieldConstants.redSourceAngleDeg);
+          sourceAngleDeg = -FieldConstants.redSourceAngleDeg;
+          if (Math.abs(Limelight.getOuttakeInstance().getTag(FieldConstants.blueLeftSourceTagID).tx) < 
+              Math.abs(Limelight.getOuttakeInstance().getTag(FieldConstants.blueRightSourceTagID).tx)) {
+            sourceTagID = FieldConstants.blueLeftSourceTagID;
+          } else {
+            sourceTagID = FieldConstants.blueRightSourceTagID;
+          }
+        }
+
+        if (Constants.sourceAlignmentActive) {
+          if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(sourceTagID)) {
+            if (Limelight.getOuttakeInstance().getTag(sourceTagID).tx > 5.0) {
+              drive.driveAutoRotate(-0.05, driveY, sourceAngleDeg);
+            }
+            else if (Limelight.getOuttakeInstance().getTag(sourceTagID).tx < -5.0) {
+              drive.driveAutoRotate(0.05, driveY, sourceAngleDeg);
+            }
+          }
+          else {
+            drive.driveAutoRotate(driveX, driveY, sourceAngleDeg);
+          }
+        }
+        else {
+          drive.driveAutoRotate(driveX, driveY, sourceAngleDeg);
         }
         return;
       case PASS:
