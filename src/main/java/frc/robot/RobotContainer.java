@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.AutoHelper.Auto;
 import frc.robot.centerline.CenterLineManager.CenterLineScoringStrategy;
-import frc.robot.commands.AdjustOuttakeOffset;
 import frc.robot.commands.AutoIntakeDeploy;
 import frc.robot.commands.AutoIntakeIn;
 import frc.robot.commands.AutoSetOuttakeAdjust;
@@ -47,6 +46,7 @@ import frc.robot.commands.TunnelFeed;
 import frc.robot.commands.TunnelStop;
 import frc.robot.commands.UpdateOdometry;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
+import frc.robot.commands.XboxControllerRumble;
 import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.LED.LED;
@@ -76,7 +76,6 @@ public class RobotContainer {
   private JoystickButton driveButtonTwelve;
 
   private boolean onOpponentFieldSide;
-  private boolean nearMatchEndCommandsReqested;
 
   // Need to instantiate RobotCoordinator first due to a bug in the WPI command library.
   // If it gets instantiated from a subsystem periodic method, we get a concurrency
@@ -236,8 +235,6 @@ public class RobotContainer {
                     }));
       driveXbox.x().onTrue(new ResetFieldCentric(true));
       driveXbox.povDown().onTrue(driveStop);
-      //driveXbox.povUp().onTrue(new AdjustOuttakeOffset(0.0014));
-      //driveXbox.povDown().onTrue(new AdjustOuttakeOffset(-0.0014));
       driveXbox
           .rightTrigger()
           .onTrue(
@@ -302,7 +299,8 @@ public class RobotContainer {
               new SequentialCommandGroup(
                   Commands.runOnce(
                       () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED)),
-                  new OuttakeTunnelFeed()));
+                  new OuttakeTunnelFeed(),
+                  new XboxControllerRumble()));
       operatorXbox.povDown().onTrue(new OperatorPresetLED());
       operatorXbox
           .povRight()
@@ -312,6 +310,9 @@ public class RobotContainer {
                   new OperatorPresetLED()));
       operatorXbox.povLeft().onTrue(Commands.runOnce(() -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STARTING_CONFIG);}));
       operatorXbox.leftBumper().onTrue(Commands.runOnce(() -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_PASS);}));
+      operatorXbox.leftTrigger().onTrue(Commands.runOnce(() -> {outtakeManual.addOffset(0.5);}));
+      operatorXbox.rightTrigger().onTrue(Commands.runOnce(() -> {outtakeManual.addOffset(-0.5);}));
+
     }
   }
 

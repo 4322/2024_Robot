@@ -344,6 +344,8 @@ public final class Constants {
     public static final double ampPivotRotations = 54.0;
     public static final double ampBottomShooterRPS = 28.0;
     public static final double ampTopShooterRPS = 0.0;
+
+    public static final double pivotSmartShootingOffset = 3.5;
   }
 
   public static final class IntakeConstants {

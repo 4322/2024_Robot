@@ -12,7 +12,6 @@ public class Outtake extends SubsystemBase {
   private double topTargetRPS;
   private double bottomTargetRPS;
   private double pivotTarget;
-  private double pivotOffset = 0;
   private boolean isInCoast;
 
   private static Outtake outtake;
@@ -51,9 +50,6 @@ public class Outtake extends SubsystemBase {
 
   public double getPivotTarget() {
     return pivotTarget;
-  }
-   public double getPivotOffset() {
-    return pivotOffset;
   }
 
   public void periodic() {
@@ -99,11 +95,7 @@ public class Outtake extends SubsystemBase {
   public void outtake(double targetRPS) {
     outtake(targetRPS, targetRPS);
   }
-  public void adjustOffset(double offsetAdjust)
-  {
-    pivotOffset += offsetAdjust;
-    Logger.recordOutput("Outtake/PivotOffset", pivotOffset);
-  }
+
   public void pivot(double rotations) {
     if (Constants.outtakePivotEnabled && io.pivotIsInitialized()) {
       // Overrides operator shooting presets
