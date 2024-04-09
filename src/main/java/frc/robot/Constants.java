@@ -345,6 +345,8 @@ public final class Constants {
     public static final double ampPivotRotations = 54.0;
     public static final double ampBottomShooterRPS = 28.0;
     public static final double ampTopShooterRPS = 0.0;
+
+    public static final double pivotSmartShootingOffset = 3.5;
   }
 
   public static final class IntakeConstants {
@@ -480,6 +482,11 @@ public final class Constants {
             Map.entry(14, stageAprilTagHeight),
             Map.entry(15, stageAprilTagHeight),
             Map.entry(16, stageAprilTagHeight));
+  }
+
+  public static final class AutoAlignmentConstants {
+    public static final double ampAlignemntToleranceDeg = 5.0; // tx tolerance for limelight
+    public static final double ampAlignmentDrivePower = 0.05; // drive adjustment power upfield and downfield
   }
 
   public static final class LED {

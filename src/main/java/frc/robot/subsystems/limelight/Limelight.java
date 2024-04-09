@@ -331,12 +331,12 @@ public class Limelight extends SubsystemBase {
     return distanceY;
   }
 
-  public void activateRetroReflective() {
-    switchPipeline(0);
+  public void activateAprilTag2D() {
+    switchPipeline(1);
   }
 
-  public void activateAprilTag() {
-    switchPipeline(1);
+  public void activateAprilTag3D() {
+    switchPipeline(0);
   }
 
   private void switchPipeline(int pipelineIdx) {
