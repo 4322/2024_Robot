@@ -321,10 +321,12 @@ public class Drive extends SubsystemBase {
 
       if (Constants.gyroEnabled) {
         updateOdometry();
-        Logger.recordOutput("Drive/Odometry/WheelEncoderPoseX", getPose2d().getX());
-        Logger.recordOutput("Drive/Odometry/WheelEncoderPoseY", getPose2d().getY());
+        Logger.recordOutput("Drive/Odometry/PoseX", getPose2d().getX());
+        Logger.recordOutput("Drive/Odometry/PoseY", getPose2d().getY());
         Logger.recordOutput(
             "Drive/Odometry/WheelEncoderPoseDeg", getPose2d().getRotation().getDegrees());
+        Logger.recordOutput("Drive/Odometry/Pose2D", getPose2d());
+        
       }
 
       if (Constants.debug) {

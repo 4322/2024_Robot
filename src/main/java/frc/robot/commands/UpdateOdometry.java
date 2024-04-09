@@ -28,9 +28,8 @@ public class UpdateOdometry extends Command {
 
     if (limelight.getTargetVisible()
         && limelight.getNumTargets() >= LimelightConstants.numTargetsToUseReverseOdom) {
-      Drive.getInstance()
-          .updateOdometryVision(
-              limelightPose, Timer.getFPGATimestamp() - (limelight.getTotalLatency() / 1000.0));
+      Drive.getInstance().resetOdometry(limelightPose);
+      
       Logger.recordOutput(
           Constants.LimelightConstants.outtakeLimelightName + "/IsAddingVisonMeasurement", true);
     } else {
@@ -47,6 +46,9 @@ public class UpdateOdometry extends Command {
     Logger.recordOutput(
         Constants.LimelightConstants.outtakeLimelightName + "/BotposeBlue/RotationDeg",
         limelightPose.getRotation().getDegrees());
+    Logger.recordOutput(
+        Constants.LimelightConstants.outtakeLimelightName + "/BotposeBlue/LLPose2D",
+        limelightPose);
   }
 
   @Override
