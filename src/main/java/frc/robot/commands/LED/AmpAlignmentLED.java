@@ -1,9 +1,4 @@
-<<<<<<<< HEAD:src/main/java/frc/robot/commands/LED/AmpAlignmentLED.java
 package frc.robot.commands.LED;
-========
-package frc.robot.commands;
->>>>>>>> origin/ChampsAmpAlignment:src/main/java/frc/robot/commands/AmpAlignmentLED.java
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Robot;

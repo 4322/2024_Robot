@@ -487,6 +487,8 @@ public final class Constants {
   public static final class AutoAlignmentConstants {
     public static final double ampAlignemntToleranceDeg = 5.0; // tx tolerance for limelight
     public static final double ampAlignmentDrivePower = 0.05; // drive adjustment power upfield and downfield
+    public static final double sourceAlignmentToleranceDeg = 5.0;
+    public static final double sourceAlignmentDrivePower = 0.05;
   }
 
   public static final class LED {
