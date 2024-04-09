@@ -483,6 +483,11 @@ public final class Constants {
             Map.entry(16, stageAprilTagHeight));
   }
 
+  public static final class AutoAlignmentConstants {
+    public static final double ampAlignemntToleranceDeg = 5.0; // tx tolerance for limelight
+    public static final double ampAlignmentDrivePower = 0.05; // drive adjustment power upfield and downfield
+  }
+
   public static final class LED {
     public static final int totalLEDs = 43;
     public static final int CANdleID = 3;

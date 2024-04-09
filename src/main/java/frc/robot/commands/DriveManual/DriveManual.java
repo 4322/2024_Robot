@@ -145,11 +145,11 @@ public class DriveManual extends Command {
 
         if (Constants.ampAlignmentActive) {
           if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(tagID)) {
-            if (Limelight.getOuttakeInstance().getTag(tagID).tx > 5.0) {
-              drive.driveAutoRotate(-0.05, driveY, ampAngleDeg);
+            if (Limelight.getOuttakeInstance().getTag(tagID).tx > Constants.AutoAlignmentConstants.ampAlignemntToleranceDeg) {
+              drive.driveAutoRotate(-Constants.AutoAlignmentConstants.ampAlignmentDrivePower, driveY, ampAngleDeg);
             }
-            else if (Limelight.getOuttakeInstance().getTag(tagID).tx < -5.0) {
-              drive.driveAutoRotate(0.05, driveY, ampAngleDeg);
+            else if (Limelight.getOuttakeInstance().getTag(tagID).tx < -Constants.AutoAlignmentConstants.ampAlignemntToleranceDeg) {
+              drive.driveAutoRotate(Constants.AutoAlignmentConstants.ampAlignmentDrivePower, driveY, ampAngleDeg);
             }
           }
           else {
