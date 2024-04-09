@@ -1,16 +1,17 @@
-package frc.robot.commands.DriveManual;
+package frc.robot.commands.LED;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.commands.DriveManual.DriveManual;
 import frc.robot.commands.DriveManual.DriveManualStateMachine.DriveManualState;
 import frc.robot.subsystems.LED.LED;
 import frc.robot.subsystems.limelight.Limelight;
 
-public class SourceAlignmentLED extends Command {
+public class AmpAlignmentLED extends Command {
     private DriveManual driveManual;
 
-    public SourceAlignmentLED(DriveManual driveManual) {
+    public AmpAlignmentLED(DriveManual driveManual) {
         this.driveManual = driveManual;
         addRequirements(LED.getInstance());
     }
@@ -22,21 +23,16 @@ public class SourceAlignmentLED extends Command {
 
     @Override
     public void execute() {
-        final int leftTagID;
-        final int rightTagID;
+        final int tagID;
         if (Robot.isRed()) {
-            leftTagID = Constants.FieldConstants.redLeftSourceTagID;
-            rightTagID = Constants.FieldConstants.redRightSourceTagID;
+            tagID = Constants.FieldConstants.redAmpTagID;
         }
         else {
-            leftTagID = Constants.FieldConstants.blueLeftSourceTagID;
-            rightTagID = Constants.FieldConstants.blueRightSourceTagID;
+            tagID = Constants.FieldConstants.blueAmpTagID;
         }
 
-        if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(leftTagID) 
-            || Limelight.getOuttakeInstance().getSpecifiedTagVisible(rightTagID)) {
-            if (Math.abs(Limelight.getOuttakeInstance().getTag(leftTagID).tx) <= 5.0 
-                || Math.abs(Limelight.getOuttakeInstance().getTag(rightTagID).tx) <= 5.0) {
+        if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(tagID)) {
+            if (Math.abs(Limelight.getOuttakeInstance().getTag(tagID).tx) <= 5.0 ) {
                 LED.getInstance().setLEDState(LED.LEDState.alignedWithAmp);
             }
             else {
