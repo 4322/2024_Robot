@@ -4,11 +4,8 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.ButtonMonitor;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
@@ -48,6 +45,7 @@ import frc.robot.commands.TunnelFeed;
 import frc.robot.commands.TunnelStop;
 import frc.robot.commands.UpdateOdometry;
 import frc.robot.commands.WriteFiringSolutionAtCurrentPos;
+import frc.robot.commands.XboxControllerRumble;
 import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.LED.LED;
@@ -77,7 +75,6 @@ public class RobotContainer {
   private JoystickButton driveButtonTwelve;
 
   private boolean onOpponentFieldSide;
-  private boolean nearMatchEndCommandsReqested;
 
   // Need to instantiate RobotCoordinator first due to a bug in the WPI command library.
   // If it gets instantiated from a subsystem periodic method, we get a concurrency
@@ -226,7 +223,7 @@ public class RobotContainer {
             .onTrue(
                 Commands.runOnce(
                     () -> {
-                      driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SOURCE);
+                      driveManual.updateStateMachine(DriveManualTrigger.ENABLE_PASS);
                     }));
         driveXbox
             .back()
@@ -256,6 +253,8 @@ public class RobotContainer {
       driveXbox.leftTrigger().whileTrue(new Shoot());
       driveXbox.rightBumper().onTrue(Commands.runOnce(() -> {driveManual.updateStateMachine(DriveManualTrigger.ENABLE_AMP);}));
       driveXbox.rightBumper().onFalse(Commands.runOnce(() -> {driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);}));
+      driveXbox.leftBumper().onTrue(Commands.runOnce(() -> {driveManual.updateStateMachine(DriveManualTrigger.ENABLE_SOURCE);}));
+      driveXbox.leftBumper().onFalse(Commands.runOnce(() -> {driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);}));
       if (Constants.outtakeTuningMode) {
         driveXbox.y().onTrue(writeFiringSolution);
         // right up against front of speaker with edge of robot on source side
@@ -299,7 +298,8 @@ public class RobotContainer {
               new SequentialCommandGroup(
                   Commands.runOnce(
                       () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED)),
-                  new OuttakeTunnelFeed()));
+                  new OuttakeTunnelFeed(),
+                  new XboxControllerRumble()));
       operatorXbox.povDown().onTrue(new OperatorPresetLED());
       operatorXbox
           .povRight()
@@ -308,6 +308,10 @@ public class RobotContainer {
                   () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_AMP)),
                   new OperatorPresetLED()));
       operatorXbox.povLeft().onTrue(Commands.runOnce(() -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STARTING_CONFIG);}));
+      operatorXbox.leftBumper().onTrue(Commands.runOnce(() -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_PASS);}));
+      operatorXbox.leftTrigger().onTrue(Commands.runOnce(() -> {outtakeManual.addOffset(0.5);}));
+      operatorXbox.rightTrigger().onTrue(Commands.runOnce(() -> {outtakeManual.addOffset(-0.5);}));
+
     }
   }
 

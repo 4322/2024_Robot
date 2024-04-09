@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.Constants;
 import frc.robot.shooting.FiringSolution;
 import frc.robot.shooting.FiringSolutionManager;
 import frc.robot.subsystems.RobotCoordinator;
@@ -38,14 +39,8 @@ public class AutoSmartShooting extends InstantCommand {
     solution = FiringSolutionManager.getInstance().calcSolution(botMagToSpeaker, botAngleToSpeaker);
 
     // tweak like we do for auto smart shooting
-    double adjShotRotations = solution.getShotRotations();
-    if (adjShotRotations < 28) {
-      adjShotRotations += 3.5;
-    } else if (adjShotRotations < 70) {
-      adjShotRotations += (70 - adjShotRotations) / 12.0;
-    }
-    solution = new FiringSolution(0, 0, 
-      solution.getFlywheelSpeed(), adjShotRotations);
+    double adjShotRotations = solution.getShotRotations() + Constants.OuttakeConstants.pivotSmartShootingOffset;
+    solution = new FiringSolution(0, 0, solution.getFlywheelSpeed(), adjShotRotations);
 
     Logger.recordOutput("FiringSolutions/CalculatedShot", solution.toString());
     Logger.recordOutput("FiringSolutions/BotPoseInput/Mag", botMagToSpeaker);

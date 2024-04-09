@@ -21,6 +21,7 @@ public class OuttakeManual extends Command {
   private final Outtake outtake;
   private final Limelight outtakeLimelight;
   private FiringSolution firingSolution;
+  private double smartShootingOffset = Constants.OuttakeConstants.pivotSmartShootingOffset;
 
   private static final OuttakeManualStateMachine stateMachine =
       new OuttakeManualStateMachine(OuttakeManualState.STOP);
@@ -62,15 +63,9 @@ public class OuttakeManual extends Command {
             double degreesToSpeaker = botPoseToSpeaker.getAngle().getDegrees();
             firingSolution = FiringSolutionManager.getInstance().calcSolution(magToSpeaker, degreesToSpeaker);
 
-            // tweak like we do for auto smart shooting
-            double adjShotRotations = firingSolution.getShotRotations();
-            if (adjShotRotations < 28) {
-              adjShotRotations += 3.5;
-            } else if (adjShotRotations < 70) {
-              adjShotRotations += (70 - adjShotRotations) / 12.0;
-            }
-            firingSolution = new FiringSolution(0, 0, 
-              firingSolution.getFlywheelSpeed(), adjShotRotations);
+            double adjShotRotations = firingSolution.getShotRotations() + smartShootingOffset;
+
+            firingSolution = new FiringSolution(0, 0, firingSolution.getFlywheelSpeed(), adjShotRotations);
             
             Logger.recordOutput("FiringSolutions/BotPoseInput/Mag", magToSpeaker);
             Logger.recordOutput("FiringSolutions/BotPoseInput/Angle", degreesToSpeaker);
@@ -102,6 +97,9 @@ public class OuttakeManual extends Command {
           break;
         case STARTING_CONFIG:
           firingSolution = FiringSolutions.StartingConfig;
+          break;
+        case PASS:
+          firingSolution = FiringSolutions.Pass;
           break;
         case AMP:
           outtake.pivot(Constants.OuttakeConstants.ampPivotRotations);
@@ -138,6 +136,10 @@ public class OuttakeManual extends Command {
 
   public void setFiringSolution(FiringSolution solution) {
     firingSolution = solution;
+  }
+
+  public void addOffset(double offsetValue) {
+    smartShootingOffset += offsetValue;
   }
 
   @Override

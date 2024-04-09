@@ -343,6 +343,8 @@ public final class Constants {
     public static final double ampPivotRotations = 54.0;
     public static final double ampBottomShooterRPS = 28.0;
     public static final double ampTopShooterRPS = 0.0;
+
+    public static final double pivotSmartShootingOffset = 3.5;
   }
 
   public static final class IntakeConstants {
@@ -511,6 +513,7 @@ public final class Constants {
 
     public static final double redAmpAngleDeg = 90;
     public static final double redSourceAngleDeg = -(180 - 51.4);
+    public static final double redPassAngleDeg = 34.73;
   }
 
   public static final class FiringSolutions {
@@ -530,6 +533,8 @@ public final class Constants {
     public static final FiringSolution Feed = new FiringSolution(0, 0, -10, 221.0 / 3.0);
     public static final FiringSolution DefaultSmartShooting = new FiringSolution(0, 0, 40, 105.0 / 3.0);
     public static final FiringSolution StartingConfig = new FiringSolution(0, 0, 0, 46.866);
+    public static final FiringSolution Pass = new FiringSolution(0, 0, 53, 50);
+    
   }
 
   public enum WheelPosition {
