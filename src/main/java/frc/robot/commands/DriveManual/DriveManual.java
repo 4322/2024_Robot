@@ -164,6 +164,7 @@ public class DriveManual extends Command {
         return;
       case SOURCE:
         final double sourceAngleDeg;
+        final double signedDriveMag = Math.signum(driveY)* Math.sqrt((driveX*driveX+driveY*driveY));
         final int sourceTagID;
 
         // determine which source april tag to lock onto
@@ -188,10 +189,10 @@ public class DriveManual extends Command {
         if (Constants.sourceAlignmentActive) {
           if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(sourceTagID)) {
             if (Limelight.getOuttakeInstance().getTag(sourceTagID).tx > 5.0) {
-              drive.driveAutoRotate(-0.05, driveY, sourceAngleDeg);
+              drive.driveAutoRotate(signedDriveMag*0.62115 - Constants.AutoAlignmentConstants.sourceAlignmentDrivePower*0.78369, 0.78369*signedDriveMag + Constants.AutoAlignmentConstants.sourceAlignmentDrivePower*0.62115, sourceAngleDeg);
             }
             else if (Limelight.getOuttakeInstance().getTag(sourceTagID).tx < -5.0) {
-              drive.driveAutoRotate(0.05, driveY, sourceAngleDeg);
+              drive.driveAutoRotate(signedDriveMag*0.62115 + Constants.AutoAlignmentConstants.sourceAlignmentDrivePower*0.78369, 0.78369*signedDriveMag - Constants.AutoAlignmentConstants.sourceAlignmentDrivePower*0.62115, sourceAngleDeg);
             }
           }
           else {
