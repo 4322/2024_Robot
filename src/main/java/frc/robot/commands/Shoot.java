@@ -42,6 +42,9 @@ public class Shoot extends Command {
 
   @Override
   public boolean isFinished() {
+    if (DriverStation.isAutonomous()) {
+      return !RobotCoordinator.getInstance().noteInRobot();
+    }
     return false;
   }
 
