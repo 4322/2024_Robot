@@ -14,16 +14,10 @@ public class AutoHelper {
     TwoNoteCenterStraightBack,
     TwoNoteCenterToAmp,
     TwoNoteCenterToSource,
-    TwoNoteAmp,
-    TwoNoteSource,
     ThreeNoteCenterToAmp,
     ThreeNoteCenterToSource,
-    ThreeNoteAmp,
-    ThreeNoteSource,
     FourNoteCenterToAmp,
     FourNoteCenterToSource,
-    FourNoteAmp,
-    FourNoteSource,
   }
 
   public static void configAutoChooser(SendableChooser<Auto> chooser) {
