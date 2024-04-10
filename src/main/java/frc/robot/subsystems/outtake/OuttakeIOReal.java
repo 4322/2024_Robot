@@ -106,7 +106,7 @@ public class OuttakeIOReal implements OuttakeIO {
     config.HardwareLimitSwitch.ForwardLimitEnable = false;
     config.HardwareLimitSwitch.ReverseLimitEnable = false;
 
-    talon.getConfigurator().apply(config);
+    talon.getConfigurator().apply(config, OuttakeConstants.configTimeoutSeconds);
   }
 
   private void configPivot(TalonFX talon) {
