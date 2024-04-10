@@ -51,26 +51,14 @@ public class AutoHelper {
         return "TwoNoteCenterToAmp";
       case TwoNoteCenterToSource:
         return "TwoNoteCenterToSource";
-      case TwoNoteAmp:
-        return "TwoNoteAmp";
-      case TwoNoteSource:
-        return "TwoNoteSource";
       case ThreeNoteCenterToAmp:
         return "ThreeNoteCenterToAmp";
       case ThreeNoteCenterToSource:
         return "ThreeNoteCenterToSource";
-      case ThreeNoteAmp:
-        return "ThreeNoteAmp";
-      case ThreeNoteSource:
-        return "ThreeNoteSource";
       case FourNoteCenterToAmp:
         return "FourNoteCenterToAmp";
       case FourNoteCenterToSource:
         return "FourNoteCenterToSource";
-      case FourNoteAmp:
-        return "FourNoteAmp";
-      case FourNoteSource:
-        return "FourNoteSource";
       case None:
       default:
         return "None";
