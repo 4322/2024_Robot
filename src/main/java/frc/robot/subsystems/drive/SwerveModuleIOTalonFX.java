@@ -165,8 +165,15 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
 
     encoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
 
-    encoder.getConfigurator().apply(encoderConfig);
-    talonFX.getConfigurator().apply(motorConfig);
+    StatusCode encoderConfigStatus = encoder.getConfigurator().apply(encoderConfig);
+    StatusCode motorConfigStatus = talonFX.getConfigurator().apply(motorConfig);
+
+    if (encoderConfigStatus.isError()) {
+      DriverStation.reportError("CANCoder " + encoder.getDeviceID() + " error: " + motorConfigStatus.getDescription(), false);
+    }
+    if (motorConfigStatus.isError()) {
+      DriverStation.reportError("Talon " + talonFX.getDeviceID() + " error: " + motorConfigStatus.getDescription(), false);
+    }
 
     // need fast initial reading from the CANCoder
     encoder
