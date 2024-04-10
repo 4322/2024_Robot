@@ -5,12 +5,12 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 
-public class XboxControllerRumble extends Command {
+public class DriverXboxControllerRumble extends Command {
 
   private Timer rumbleTimer = new Timer();
   private boolean hasRumbled;
 
-  public XboxControllerRumble() {}
+  public DriverXboxControllerRumble() {}
 
   // Called when the command is initially scheduled.
   @Override

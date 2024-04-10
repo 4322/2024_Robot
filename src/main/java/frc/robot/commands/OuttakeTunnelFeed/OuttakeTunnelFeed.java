@@ -3,7 +3,7 @@ package frc.robot.commands.OuttakeTunnelFeed;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.XboxControllerRumble;
+import frc.robot.commands.DriverXboxControllerRumble;
 import frc.robot.commands.OuttakeManual.OuttakeManual;
 import frc.robot.commands.OuttakeManual.OuttakeManualStateMachine.OuttakeManualState;
 import frc.robot.commands.OuttakeTunnelFeed.OuttakeTunnelFeedStateMachine.OuttakeTunnelFeedState;
@@ -32,7 +32,7 @@ public class OuttakeTunnelFeed extends Command {
     switch (stateMachine.getState()) {
       case NO_NOTE:
         if (NoteTracker.getInstance().tunnelBeamBroken()) {
-          CommandScheduler.getInstance().schedule(new XboxControllerRumble());
+          CommandScheduler.getInstance().schedule(new DriverXboxControllerRumble());
           stateMachine.fire(OuttakeTunnelFeedTrigger.TUNNEL_BEAM_BROKEN);
         }
         break;
