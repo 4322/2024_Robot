@@ -37,7 +37,7 @@ public final class Constants {
       RobotChooser.getInstance().getConstants();
   public static double noteRadiusInches = 7;
 
-  public static final boolean debug = true;  // leave on unti we make pseudo auto rotate work without it
+  public static final boolean debug = false;  // leave on unti we make pseudo auto rotate work without it
 
   public static final boolean driveEnabled = true;
   public static final boolean intakeEnabled = true;
