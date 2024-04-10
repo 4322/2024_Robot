@@ -1,5 +1,6 @@
 package frc.robot.subsystems.intake;
 
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -9,6 +10,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandcoder.Canandcoder;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants;
@@ -81,7 +83,11 @@ public class IntakeIOReal implements IntakeIO {
     config.HardwareLimitSwitch.ForwardLimitEnable = false;
     config.HardwareLimitSwitch.ReverseLimitEnable = false;
 
-    talon.getConfigurator().apply(config);
+    StatusCode configStatus = talon.getConfigurator().apply(config);
+
+    if (configStatus.isError()) {
+      DriverStation.reportError("Talon " + talon.getDeviceID() + " error: " + configStatus.getDescription(), false);
+    }
 
     talon
         .getVelocity()
@@ -105,7 +111,11 @@ public class IntakeIOReal implements IntakeIO {
     config.HardwareLimitSwitch.ForwardLimitEnable = false;
     config.HardwareLimitSwitch.ReverseLimitEnable = false;
 
-    deploy.getConfigurator().apply(config);
+    StatusCode configStatus = deploy.getConfigurator().apply(config);
+
+    if (configStatus.isError()) {
+      DriverStation.reportError("Talon " + deploy.getDeviceID() + " error: " + configStatus.getDescription(), false);
+    }
 
     // don't need rapid position update because we use the abs encoder
     deploy.getPosition().setUpdateFrequency(DeployConfig.updateHz, DeployConfig.timeoutMs);

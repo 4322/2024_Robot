@@ -1,10 +1,13 @@
 package frc.robot.subsystems.tunnel;
 
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants;
 import frc.robot.Constants.TunnelConstants;
 import org.littletonrobotics.junction.Logger;
@@ -31,7 +34,11 @@ public class TunnelIOReal implements TunnelIO {
     config.HardwareLimitSwitch.ForwardLimitEnable = false;
     config.HardwareLimitSwitch.ReverseLimitEnable = false;
 
-    tunnel.getConfigurator().apply(config);
+    StatusCode configStatus = tunnel.getConfigurator().apply(config);
+
+    if (configStatus.isError()) {
+      DriverStation.reportError("Talon " + tunnel.getDeviceID() + " error: " + configStatus.getDescription(), false);
+    }
   }
 
   @Override

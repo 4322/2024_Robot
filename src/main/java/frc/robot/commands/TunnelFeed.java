@@ -88,7 +88,7 @@ public class TunnelFeed extends Command {
         if (RobotCoordinator.getInstance().noteInFiringPosition()) {
           tunnel.stopTunnel();
           adjustmentTimer.restart();
-          CommandScheduler.getInstance().schedule(new XboxControllerRumble());
+          CommandScheduler.getInstance().schedule(new DriverXboxControllerRumble());
           state = State.stoppingAtOuttake;
         } else if (abortTimer.hasElapsed(Constants.TunnelConstants.feedAbortSec)) {
           state = State.abort;  // don't fry the motor

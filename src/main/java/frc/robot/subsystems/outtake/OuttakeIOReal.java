@@ -1,5 +1,6 @@
 package frc.robot.subsystems.outtake;
 
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -7,6 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandcoder.Canandcoder;
+
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -14,6 +16,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants;
 import frc.robot.Constants.OuttakeConstants;
+
 import org.littletonrobotics.junction.Logger;
 
 public class OuttakeIOReal implements OuttakeIO {
@@ -106,7 +109,11 @@ public class OuttakeIOReal implements OuttakeIO {
     config.HardwareLimitSwitch.ForwardLimitEnable = false;
     config.HardwareLimitSwitch.ReverseLimitEnable = false;
 
-    talon.getConfigurator().apply(config);
+    StatusCode configStatus = talon.getConfigurator().apply(config, OuttakeConstants.configTimeoutSeconds);
+
+    if (configStatus.isError()) {
+      DriverStation.reportError("Talon " + talon.getDeviceID() + " error: " + configStatus.getDescription(), false);
+    }
   }
 
   private void configPivot(TalonFX talon) {
@@ -130,7 +137,11 @@ public class OuttakeIOReal implements OuttakeIO {
     config.HardwareLimitSwitch.ForwardLimitEnable = false;
     config.HardwareLimitSwitch.ReverseLimitEnable = false;
 
-    talon.getConfigurator().apply(config);
+    StatusCode configStatus = talon.getConfigurator().apply(config);
+
+    if (configStatus.isError()) {
+      DriverStation.reportError("Talon " + talon.getDeviceID() + " error: " + configStatus.getDescription(), false);
+    }
 
     // zero helium abs encoder on the stop bar
     // 60 degree shooting angle abs position is about 0.72 rotations
