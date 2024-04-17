@@ -154,7 +154,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     motorConfig.ClosedLoopGeneral.ContinuousWrap = false;
     motorConfig.Voltage.PeakForwardVoltage = DriveConstants.Rotation.maxPower;
     motorConfig.Voltage.PeakReverseVoltage = -DriveConstants.Rotation.maxPower;
-    motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     motorConfig.HardwareLimitSwitch.ForwardLimitEnable = false;
     motorConfig.HardwareLimitSwitch.ReverseLimitEnable = false;
@@ -255,7 +255,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     turningMotor.setControl(
         new PositionVoltage(
             currentMotorRotations
-                + (OrangeMath.boundDegrees(desiredAngle - currentWheelDegrees))
+                - (OrangeMath.boundDegrees(desiredAngle - currentWheelDegrees))
                     / 360.0
                     * robotSpecificConstants.getRotationGearRatio()));
   }
