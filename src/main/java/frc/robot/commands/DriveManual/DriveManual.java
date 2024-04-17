@@ -139,28 +139,22 @@ public class DriveManual extends Command {
         if (Robot.isRed()) {
           ampAngleDeg = FieldConstants.redAmpAngleDeg;
           tagID = FieldConstants.redAmpTagID;
-        }
-        else {
+        } else {
           ampAngleDeg = -FieldConstants.redAmpAngleDeg;
           tagID = FieldConstants.blueAmpTagID;
         }
-
         if (Constants.ampAlignmentActive) {
           if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(tagID)) {
             if (Limelight.getOuttakeInstance().getTag(tagID).tx > Constants.AutoAlignmentConstants.ampAlignemntToleranceDeg) {
               drive.driveAutoRotate(-Constants.AutoAlignmentConstants.ampAlignmentDrivePower, driveY, ampAngleDeg);
-            }
-            else if (Limelight.getOuttakeInstance().getTag(tagID).tx < -Constants.AutoAlignmentConstants.ampAlignemntToleranceDeg) {
+              return;
+            } else if (Limelight.getOuttakeInstance().getTag(tagID).tx < -Constants.AutoAlignmentConstants.ampAlignemntToleranceDeg) {
               drive.driveAutoRotate(Constants.AutoAlignmentConstants.ampAlignmentDrivePower, driveY, ampAngleDeg);
+              return;
             }
           }
-          else {
-            drive.driveAutoRotate(driveX, driveY, ampAngleDeg);
-          }
         }
-        else {
-          drive.driveAutoRotate(driveX, driveY, ampAngleDeg);
-        }
+        drive.driveAutoRotate(driveX, driveY, ampAngleDeg);
         return;
       case SOURCE:
         final double sourceAngleDeg;
