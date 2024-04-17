@@ -185,23 +185,24 @@ public class DriveManual extends Command {
             sourceTagID = FieldConstants.blueRightSourceTagID;
           }
         }
-
         if (Constants.sourceAlignmentActive) {
           if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(sourceTagID)) {
             if (Limelight.getOuttakeInstance().getTag(sourceTagID).tx > 5.0) {
-              drive.driveAutoRotate(signedDriveMag*0.62115 - Constants.AutoAlignmentConstants.sourceAlignmentDrivePower*0.78369, 0.78369*signedDriveMag + Constants.AutoAlignmentConstants.sourceAlignmentDrivePower*0.62115, sourceAngleDeg);
-            }
-            else if (Limelight.getOuttakeInstance().getTag(sourceTagID).tx < -5.0) {
-              drive.driveAutoRotate(signedDriveMag*0.62115 + Constants.AutoAlignmentConstants.sourceAlignmentDrivePower*0.78369, 0.78369*signedDriveMag - Constants.AutoAlignmentConstants.sourceAlignmentDrivePower*0.62115, sourceAngleDeg);
+              drive.driveAutoRotate(signedDriveMag * 0.62115 
+                - Constants.AutoAlignmentConstants.sourceAlignmentDrivePower * 0.78369, 
+                0.78369 * signedDriveMag + Constants.AutoAlignmentConstants.sourceAlignmentDrivePower * 0.62115, 
+                sourceAngleDeg);
+                return;
+            } else if (Limelight.getOuttakeInstance().getTag(sourceTagID).tx < -5.0) {
+              drive.driveAutoRotate(signedDriveMag * 0.62115 
+                + Constants.AutoAlignmentConstants.sourceAlignmentDrivePower * 0.78369, 
+                0.78369 * signedDriveMag - Constants.AutoAlignmentConstants.sourceAlignmentDrivePower * 0.62115, 
+                sourceAngleDeg);
+                return;
             }
           }
-          else {
-            drive.driveAutoRotate(driveX, driveY, sourceAngleDeg);
-          }
         }
-        else {
-          drive.driveAutoRotate(driveX, driveY, sourceAngleDeg);
-        }
+        drive.driveAutoRotate(driveX, driveY, sourceAngleDeg);
         return;
       case PASS:
         if (Robot.isRed()) {
