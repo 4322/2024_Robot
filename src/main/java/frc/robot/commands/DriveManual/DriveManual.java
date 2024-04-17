@@ -162,23 +162,35 @@ public class DriveManual extends Command {
         final int sourceTagID;
 
         // determine which source april tag to lock onto
-        if (Robot.isRed()) {
-          sourceAngleDeg = FieldConstants.redSourceAngleDeg;
-          if (Math.abs(Limelight.getOuttakeInstance().getTag(FieldConstants.redLeftSourceTagID).tx) < 
-              Math.abs(Limelight.getOuttakeInstance().getTag(FieldConstants.redRightSourceTagID).tx)) {
-            sourceTagID = FieldConstants.redLeftSourceTagID;
+        if (Limelight.getOuttakeInstance().getTargetVisible()) {
+          if (Robot.isRed()) {
+            sourceAngleDeg = FieldConstants.redSourceAngleDeg;
+            if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(FieldConstants.redLeftSourceTagID) &&
+                Limelight.getOuttakeInstance().getSpecifiedTagVisible(FieldConstants.redRightSourceTagID)) {
+                  if (Math.abs(Limelight.getOuttakeInstance().getTag(FieldConstants.redLeftSourceTagID).tx) < 
+                      Math.abs(Limelight.getOuttakeInstance().getTag(FieldConstants.redRightSourceTagID).tx)) {
+                    sourceTagID = FieldConstants.redLeftSourceTagID;
+                  } else {
+                    sourceTagID = FieldConstants.redRightSourceTagID;
+                  }
+                } else if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(FieldConstants.redLeftSourceTagID)) {
+                  sourceTagID = FieldConstants.redLeftSourceTagID;
+                } else if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(FieldConstants.redRightSourceTagID)) {
+                  
+                }
           } else {
-            sourceTagID = FieldConstants.redRightSourceTagID;
+            sourceAngleDeg = -FieldConstants.redSourceAngleDeg;
+            if (Math.abs(Limelight.getOuttakeInstance().getTag(FieldConstants.blueLeftSourceTagID).tx) < 
+                Math.abs(Limelight.getOuttakeInstance().getTag(FieldConstants.blueRightSourceTagID).tx)) {
+              sourceTagID = FieldConstants.blueLeftSourceTagID;
+            } else {
+              sourceTagID = FieldConstants.blueRightSourceTagID;
+            }
           }
         } else {
-          sourceAngleDeg = -FieldConstants.redSourceAngleDeg;
-          if (Math.abs(Limelight.getOuttakeInstance().getTag(FieldConstants.blueLeftSourceTagID).tx) < 
-              Math.abs(Limelight.getOuttakeInstance().getTag(FieldConstants.blueRightSourceTagID).tx)) {
-            sourceTagID = FieldConstants.blueLeftSourceTagID;
-          } else {
-            sourceTagID = FieldConstants.blueRightSourceTagID;
-          }
+          return;
         }
+        
         if (Constants.sourceAlignmentActive) {
           if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(sourceTagID)) {
             if (Limelight.getOuttakeInstance().getTag(sourceTagID).tx > 5.0) {
