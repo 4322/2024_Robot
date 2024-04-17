@@ -104,7 +104,7 @@ public class OuttakeIOReal implements OuttakeIO {
         Constants.OuttakeConstants.shooterSupplyCurrentThreshold;
     config.CurrentLimits.SupplyTimeThreshold =
         Constants.OuttakeConstants.shooterSupplyTimeThreshold;
-    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.HardwareLimitSwitch.ForwardLimitEnable = false;
     config.HardwareLimitSwitch.ReverseLimitEnable = false;
@@ -214,8 +214,8 @@ public class OuttakeIOReal implements OuttakeIO {
 
   @Override
   public void setOuttakeRPS(double desiredTopVelocityRPS, double desiredBottomVelocityRPS) {
-    bottomOuttakeMotor.setControl(new VelocityVoltage(-desiredBottomVelocityRPS).withEnableFOC(false));
-    topOuttakeMotor.setControl(new VelocityVoltage(desiredTopVelocityRPS).withEnableFOC(false));
+    bottomOuttakeMotor.setControl(new VelocityVoltage(desiredBottomVelocityRPS).withEnableFOC(false));
+    topOuttakeMotor.setControl(new VelocityVoltage(-desiredTopVelocityRPS).withEnableFOC(false));
   }
 
   @Override
