@@ -44,8 +44,8 @@ public class LEDState extends Command {
             }
             // Stop flickering LEDs by adding a debouce timer
             else if (RobotCoordinator.getInstance().canShoot() && led.getLEDState() == LED.LEDState.outtakeAtFiringPosition
-                    && !readyToShootDebounceTimer.hasElapsed(0.125)) {
-                led.setLEDState(LED.LEDState.outtakeAtFiringPosition);
+                    && !readyToShootDebounceTimer.hasElapsed(0.250)) {
+                return;
             }
             else if (RobotCoordinator.getInstance().noteInRobot()) {
                 led.setLEDState(LED.LEDState.noteInRobot);
