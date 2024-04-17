@@ -111,7 +111,7 @@ public class OuttakeIOReal implements OuttakeIO {
 
     StatusCode configStatus = talon.getConfigurator().apply(config, OuttakeConstants.configTimeoutSeconds);
 
-    if (configStatus.isError()) {
+    if (configStatus != StatusCode.OK) {
       DriverStation.reportError("Talon " + talon.getDeviceID() + " error: " + configStatus.getDescription(), false);
     }
   }
@@ -139,7 +139,7 @@ public class OuttakeIOReal implements OuttakeIO {
 
     StatusCode configStatus = talon.getConfigurator().apply(config);
 
-    if (configStatus.isError()) {
+    if (configStatus != StatusCode.OK) {
       DriverStation.reportError("Talon " + talon.getDeviceID() + " error: " + configStatus.getDescription(), false);
     }
 
