@@ -1,9 +1,11 @@
 package frc.robot.subsystems.LED;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdle.VBatOutputMode;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 
@@ -24,7 +26,11 @@ public class LedIOReal implements LedIO {
     config.stripType = LEDStripType.RGB;
     config.brightnessScalar = 1;
     config.vBatOutputMode = VBatOutputMode.On;
-    candle.configAllSettings(config);
+    ErrorCode configStatus = candle.configAllSettings(config);
+
+    if (configStatus != ErrorCode.OK) {
+      DriverStation.reportError("Candle error: " + configStatus.toString(), false);
+    }
 
     // Clear animation stored in CANdle from previous code so that when redeploying,
     // LED configuration will change even if we are in same LED state.
