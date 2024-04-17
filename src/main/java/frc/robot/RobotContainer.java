@@ -274,8 +274,7 @@ public class RobotContainer {
           .onTrue(new ParallelCommandGroup(
               Commands.runOnce(() -> {
                 outtakeManual.setFiringSolution(Constants.FiringSolutions.DefaultSmartShooting);
-                outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SMART_SHOOTING);
-                  Limelight.getOuttakeInstance().activateAprilTag3D();}),
+                outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SMART_SHOOTING);}),
                 new OperatorPresetLED()));
       operatorXbox
           .x()
@@ -300,8 +299,7 @@ public class RobotContainer {
           .onTrue(
               new SequentialCommandGroup(
                   Commands.runOnce(
-                      () -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED);
-                              Limelight.getOuttakeInstance().activateAprilTag2D();}),
+                      () -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED);}),
                   new OuttakeTunnelFeed(),
                   new OperatorXboxControllerRumble()));
       operatorXbox.povDown().onTrue(new OperatorPresetLED());
@@ -309,8 +307,7 @@ public class RobotContainer {
           .povRight()
           .onTrue(new ParallelCommandGroup(
               Commands.runOnce(
-                  () -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_AMP);
-                          Limelight.getOuttakeInstance().activateAprilTag2D();}),
+                  () -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_AMP);}),
                   new OperatorPresetLED()));
       operatorXbox.povLeft().onTrue(Commands.runOnce(() -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STARTING_CONFIG);}));
       operatorXbox.leftBumper().onTrue(Commands.runOnce(() -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_PASS);}));
