@@ -19,6 +19,18 @@ import java.util.Map;
 import org.littletonrobotics.junction.Logger;
 
 public class Limelight extends SubsystemBase {
+  private enum PipelineIndex {
+    AprilTag3DMode(0), 
+    NormalVisionMode(1),
+    AprilTag2DMode(2);
+
+    public int pipelineNum;
+
+    PipelineIndex(int num) {
+      pipelineNum = num;
+    }
+  }
+
   NetworkTable table;
 
   NetworkTableEntry tx;
@@ -121,11 +133,10 @@ public class Limelight extends SubsystemBase {
       // Switch outtake limeligt to normal vision pipeline so driver can have better vision of
       // speaker
       if (limelightName.equals(Constants.LimelightConstants.outtakeLimelightName)) {
-        // TODO: look at LL pipeline numbers for april tags and normal vision
         if (!Constants.speakerCentricEnabled) {
-          switchPipeline(1); // switch to normal vision pipeline
+          switchPipeline(PipelineIndex.NormalVisionMode.pipelineNum); // switch to normal vision pipeline
         } else {
-          switchPipeline(0); // switch to April Tag pipeline
+          switchPipeline(PipelineIndex.AprilTag3DMode.pipelineNum); // switch to April Tag 3d pipeline
         }
       }
 
@@ -332,11 +343,11 @@ public class Limelight extends SubsystemBase {
   }
 
   public void activateAprilTag2D() {
-    switchPipeline(1);
+    switchPipeline(PipelineIndex.AprilTag2DMode.pipelineNum);
   }
 
   public void activateAprilTag3D() {
-    switchPipeline(0);
+    switchPipeline(PipelineIndex.AprilTag3DMode.pipelineNum);
   }
 
   private void switchPipeline(int pipelineIdx) {
