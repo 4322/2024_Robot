@@ -85,7 +85,7 @@ public class IntakeIOReal implements IntakeIO {
 
     StatusCode configStatus = talon.getConfigurator().apply(config);
 
-    if (configStatus.isError()) {
+    if (configStatus != StatusCode.OK) {
       DriverStation.reportError("Talon " + talon.getDeviceID() + " error: " + configStatus.getDescription(), false);
     }
 
@@ -113,7 +113,7 @@ public class IntakeIOReal implements IntakeIO {
 
     StatusCode configStatus = deploy.getConfigurator().apply(config);
 
-    if (configStatus.isError()) {
+    if (configStatus != StatusCode.OK) {
       DriverStation.reportError("Talon " + deploy.getDeviceID() + " error: " + configStatus.getDescription(), false);
     }
 

@@ -168,10 +168,10 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     StatusCode encoderConfigStatus = encoder.getConfigurator().apply(encoderConfig);
     StatusCode motorConfigStatus = talonFX.getConfigurator().apply(motorConfig);
 
-    if (encoderConfigStatus.isError()) {
+    if (encoderConfigStatus != StatusCode.OK) {
       DriverStation.reportError("CANCoder " + encoder.getDeviceID() + " error: " + motorConfigStatus.getDescription(), false);
     }
-    if (motorConfigStatus.isError()) {
+    if (motorConfigStatus != StatusCode.OK) {
       DriverStation.reportError("Talon " + talonFX.getDeviceID() + " error: " + motorConfigStatus.getDescription(), false);
     }
 

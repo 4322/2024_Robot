@@ -38,7 +38,7 @@ public class TunnelIOReal implements TunnelIO {
 
     StatusCode configStatus = tunnel.getConfigurator().apply(config);
 
-    if (configStatus.isError()) {
+    if (configStatus != StatusCode.OK) {
       DriverStation.reportError("Talon " + tunnel.getDeviceID() + " error: " + configStatus.getDescription(), false);
     }
   }
