@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -25,6 +26,7 @@ public class TunnelIOReal implements TunnelIO {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     config.Voltage.PeakForwardVoltage = TunnelConstants.peakVoltage;
     config.Voltage.PeakReverseVoltage = -TunnelConstants.peakVoltage;
     config.CurrentLimits.StatorCurrentLimitEnable = true;
