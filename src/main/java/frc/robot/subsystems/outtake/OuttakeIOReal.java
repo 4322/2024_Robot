@@ -104,7 +104,7 @@ public class OuttakeIOReal implements OuttakeIO {
         Constants.OuttakeConstants.shooterSupplyCurrentThreshold;
     config.CurrentLimits.SupplyTimeThreshold =
         Constants.OuttakeConstants.shooterSupplyTimeThreshold;
-    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;  // Falcons fail at inversion
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.HardwareLimitSwitch.ForwardLimitEnable = false;
     config.HardwareLimitSwitch.ReverseLimitEnable = false;

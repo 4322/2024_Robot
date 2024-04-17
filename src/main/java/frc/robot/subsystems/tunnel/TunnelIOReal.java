@@ -26,7 +26,7 @@ public class TunnelIOReal implements TunnelIO {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;  // Falcons fail at inversion
     config.Voltage.PeakForwardVoltage = TunnelConstants.peakVoltage;
     config.Voltage.PeakReverseVoltage = -TunnelConstants.peakVoltage;
     config.CurrentLimits.StatorCurrentLimitEnable = true;
