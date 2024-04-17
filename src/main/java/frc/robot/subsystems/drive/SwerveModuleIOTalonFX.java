@@ -189,7 +189,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
         (encoder.getAbsolutePosition().getValueAsDouble()
                 - DriveConstants.Rotation.CANCoderOffsetRotations[wheelPos.wheelNumber])
             * robotSpecificConstants.getRotationGearRatio();
-    StatusCode error = talonFX.setPosition(count, Constants.controllerConfigTimeoutMs);
+    StatusCode error = talonFX.setPosition(-count, Constants.controllerConfigTimeoutMs);
     if (error != StatusCode.OK) {
       DriverStation.reportError(
           "Error " + error.value + " initializing Talon FX " + talonFX.getDeviceID() + " position ",
