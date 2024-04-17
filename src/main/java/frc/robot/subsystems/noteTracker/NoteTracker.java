@@ -61,7 +61,7 @@ public class NoteTracker extends SubsystemBase {
           && Outtake.getInstance().isOuttaking()) {
         shootTimer.start();
         noteIsShot = true;
-        if (shootTimer.hasElapsed(0.2)) {
+        if (shootTimer.hasElapsed(0.1)) {
           notePassingTunnel = false;
           shootTimer.stop();
           shootTimer.reset();

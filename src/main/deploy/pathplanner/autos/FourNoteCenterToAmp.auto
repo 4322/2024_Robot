@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7601419687271118,
-      "y": 4.464605808258057
+      "x": 1.3320651054382324,
+      "y": 5.457383155822754
     },
-    "rotation": -60.00002571454078
+    "rotation": 6.502970449980744e-19
   },
   "command": {
     "type": "sequential",
@@ -77,7 +77,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "FourNoteSource.1"
+                        "pathName": "FourNoteCenterToAmp.1"
                       }
                     }
                   ]
@@ -140,7 +140,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "FourNoteSource.2"
+                        "pathName": "FourNoteCenterToAmp.2"
                       }
                     }
                   ]
@@ -203,7 +203,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "FourNoteSource.3"
+                        "pathName": "FourNoteCenterToAmp.3"
                       }
                     }
                   ]

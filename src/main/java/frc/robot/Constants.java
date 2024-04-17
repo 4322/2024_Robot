@@ -11,7 +11,7 @@ import frc.robot.shooting.FiringSolution;
 import frc.utility.CanBusUtil;
 import frc.utility.OrangeMath;
 import java.util.Map;
-
+   
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -37,7 +37,7 @@ public final class Constants {
       RobotChooser.getInstance().getConstants();
   public static double noteRadiusInches = 7;
 
-  public static final boolean debug = true;  // leave on unti we make pseudo auto rotate work without it
+  public static final boolean debug = false;  // leave on unti we make pseudo auto rotate work without it
 
   public static final boolean driveEnabled = true;
   public static final boolean intakeEnabled = false;
@@ -325,6 +325,7 @@ public final class Constants {
     public static final double pivotkP = 0.9;
     public static final double pivotkFF = 0;
 
+    public static final double configTimeoutSeconds = 0.1;
     public static final double maxVelRotationsPerSec = 85;
     public static final boolean enableFOC = false;
     public static final double pivotClosedLoopSec = 0.3;
@@ -346,7 +347,7 @@ public final class Constants {
     public static final double ampBottomShooterRPS = 28.0;
     public static final double ampTopShooterRPS = 0.0;
 
-    public static final double pivotSmartShootingOffset = 3.5;
+    public static final double pivotSmartShootingOffset = 0;
   }
 
   public static final class IntakeConstants {
