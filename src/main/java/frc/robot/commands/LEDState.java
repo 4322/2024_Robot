@@ -10,6 +10,7 @@ import frc.robot.subsystems.LED.LED;
 public class LEDState extends Command {
     private LED led;
     private Timer aprilTagLossTimer = new Timer();
+    private Timer readyToShootDebounceTimer  = new Timer();
     public LEDState() {
         led = LED.getInstance();
         addRequirements(LED.getInstance());
@@ -38,6 +39,12 @@ public class LEDState extends Command {
             }
             else if (RobotCoordinator.getInstance().canShoot() 
                 && RobotCoordinator.getInstance().noteInFiringPosition()) {
+                readyToShootDebounceTimer.reset();
+                led.setLEDState(LED.LEDState.outtakeAtFiringPosition);
+            }
+            // Stop flickering LEDs by adding a debouce timer
+            else if (RobotCoordinator.getInstance().canShoot() && led.getLEDState() == LED.LEDState.outtakeAtFiringPosition
+                    && !readyToShootDebounceTimer.hasElapsed(0.125)) {
                 led.setLEDState(LED.LEDState.outtakeAtFiringPosition);
             }
             else if (RobotCoordinator.getInstance().noteInRobot()) {

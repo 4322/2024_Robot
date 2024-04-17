@@ -94,7 +94,7 @@ public class LED extends SubsystemBase {
           io.setLED(Color.kBlack, firstLed, numLeds);
           break;
         case outtakeAtFiringPosition:
-          io.setLED(Color.kRoyalBlue, numLeds, firstLed);
+          io.setLED(Color.kBlue, firstLed, numLeds);
           break;
         case noteReadyToShoot:
           io.setLED(Color.kGreen, firstLed, numLeds);
