@@ -162,49 +162,97 @@ public class DriveManual extends Command {
         final int sourceTagID;
 
         // determine which source april tag to lock onto
-        if (Limelight.getOuttakeInstance().getTargetVisible()) {
-          if (Robot.isRed()) {
-            sourceAngleDeg = FieldConstants.redSourceAngleDeg;
+        if (Robot.isRed()) {
+          sourceAngleDeg = FieldConstants.redSourceAngleDeg;
+          if (Limelight.getOuttakeInstance().getTargetVisible()) {
             if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(FieldConstants.redLeftSourceTagID) &&
                 Limelight.getOuttakeInstance().getSpecifiedTagVisible(FieldConstants.redRightSourceTagID)) {
-                  if (Math.abs(Limelight.getOuttakeInstance().getTag(FieldConstants.redLeftSourceTagID).tx) < 
-                      Math.abs(Limelight.getOuttakeInstance().getTag(FieldConstants.redRightSourceTagID).tx)) {
-                    sourceTagID = FieldConstants.redLeftSourceTagID;
-                  } else {
-                    sourceTagID = FieldConstants.redRightSourceTagID;
-                  }
-                } else if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(FieldConstants.redLeftSourceTagID)) {
-                  sourceTagID = FieldConstants.redLeftSourceTagID;
-                } else if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(FieldConstants.redRightSourceTagID)) {
-                  
-                }
-          } else {
-            sourceAngleDeg = -FieldConstants.redSourceAngleDeg;
-            if (Math.abs(Limelight.getOuttakeInstance().getTag(FieldConstants.blueLeftSourceTagID).tx) < 
-                Math.abs(Limelight.getOuttakeInstance().getTag(FieldConstants.blueRightSourceTagID).tx)) {
-              sourceTagID = FieldConstants.blueLeftSourceTagID;
+              if (Math.abs(Limelight.getOuttakeInstance().getTag(FieldConstants.redLeftSourceTagID).tx) < 
+                  Math.abs(Limelight.getOuttakeInstance().getTag(FieldConstants.redRightSourceTagID).tx)) {
+                sourceTagID = FieldConstants.redLeftSourceTagID;
+              } else {
+                sourceTagID = FieldConstants.redRightSourceTagID;
+              }
+            } else if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(FieldConstants.redRightSourceTagID)) {
+              sourceTagID = FieldConstants.redRightSourceTagID;
             } else {
-              sourceTagID = FieldConstants.blueRightSourceTagID;
-            }
+              // if neither tag is being seen, then default to left since that is the
+              // one that is most likely to be closest (closest to center of field)
+              sourceTagID = FieldConstants.redLeftSourceTagID;
+            } 
+          } else {
+            drive.driveAutoRotate(driveX, driveY, FieldConstants.redSourceAngleDeg);
           }
         } else {
-          return;
+          sourceAngleDeg = -FieldConstants.redSourceAngleDeg;
+          if (Limelight.getOuttakeInstance().getTargetVisible()) {
+            if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(FieldConstants.blueLeftSourceTagID) &&
+                Limelight.getOuttakeInstance().getSpecifiedTagVisible(FieldConstants.blueRightSourceTagID)) {
+              if (Math.abs(Limelight.getOuttakeInstance().getTag(FieldConstants.blueLeftSourceTagID).tx) < 
+                  Math.abs(Limelight.getOuttakeInstance().getTag(FieldConstants.blueRightSourceTagID).tx)) {
+                sourceTagID = FieldConstants.blueLeftSourceTagID;
+              } else {
+                sourceTagID = FieldConstants.blueRightSourceTagID;
+              }
+            } else if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(FieldConstants.blueLeftSourceTagID)) {
+              sourceTagID = FieldConstants.blueLeftSourceTagID;
+            } else {
+              // if neither tag is seen, default to right tag
+              sourceTagID = FieldConstants.blueRightSourceTagID;
+            } 
+          } else {
+            // if no tag is seen default to right tag
+            sourceTagID = FieldConstants.blueRightSourceTagID;
+          }
         }
-        
         if (Constants.sourceAlignmentActive) {
-          if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(sourceTagID)) {
-            if (Limelight.getOuttakeInstance().getTag(sourceTagID).tx > 5.0) {
-              drive.driveAutoRotate(signedDriveMag * 0.62115 
-                - Constants.AutoAlignmentConstants.sourceAlignmentDrivePower * 0.78369, 
-                0.78369 * signedDriveMag + Constants.AutoAlignmentConstants.sourceAlignmentDrivePower * 0.62115, 
-                sourceAngleDeg);
-                return;
-            } else if (Limelight.getOuttakeInstance().getTag(sourceTagID).tx < -5.0) {
-              drive.driveAutoRotate(signedDriveMag * 0.62115 
-                + Constants.AutoAlignmentConstants.sourceAlignmentDrivePower * 0.78369, 
-                0.78369 * signedDriveMag - Constants.AutoAlignmentConstants.sourceAlignmentDrivePower * 0.62115, 
-                sourceAngleDeg);
-                return;
+          if (Robot.isRed()) {
+            if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(sourceTagID)) {
+              if (Limelight.getOuttakeInstance().getTag(sourceTagID).tx > 5.0) {
+                drive.driveAutoRotate(
+                  signedDriveMag * Math.sin(FieldConstants.redSourceAngleDeg) 
+                  + Constants.AutoAlignmentConstants.sourceAlignmentDrivePower 
+                  * Math.cos(FieldConstants.redSourceAngleDeg), 
+                  signedDriveMag * Math.cos(FieldConstants.redSourceAngleDeg) 
+                  + Constants.AutoAlignmentConstants.sourceAlignmentDrivePower 
+                  * Math.sin(FieldConstants.redSourceAngleDeg), 
+                  sourceAngleDeg);
+                  return;
+              } else if (Limelight.getOuttakeInstance().getTag(sourceTagID).tx < -5.0) {
+                drive.driveAutoRotate(
+                  signedDriveMag * Math.sin(FieldConstants.redSourceAngleDeg) 
+                  - Constants.AutoAlignmentConstants.sourceAlignmentDrivePower 
+                  * Math.cos(FieldConstants.redSourceAngleDeg), 
+                  signedDriveMag * Math.cos(FieldConstants.redSourceAngleDeg) 
+                  - Constants.AutoAlignmentConstants.sourceAlignmentDrivePower 
+                  * Math.sin(FieldConstants.redSourceAngleDeg), 
+                  sourceAngleDeg);
+                  return;
+              }
+            }
+          } else {
+            if (Limelight.getOuttakeInstance().getSpecifiedTagVisible(sourceTagID)) {
+              if (Limelight.getOuttakeInstance().getTag(sourceTagID).tx > 5.0) {
+                drive.driveAutoRotate(
+                  signedDriveMag * Math.sin(-FieldConstants.redSourceAngleDeg) 
+                  + Constants.AutoAlignmentConstants.sourceAlignmentDrivePower 
+                  * Math.cos(-FieldConstants.redSourceAngleDeg), 
+                  signedDriveMag * Math.cos(-FieldConstants.redSourceAngleDeg) 
+                  + Constants.AutoAlignmentConstants.sourceAlignmentDrivePower 
+                  * Math.sin(-FieldConstants.redSourceAngleDeg), 
+                  sourceAngleDeg);
+                  return;
+              } else if (Limelight.getOuttakeInstance().getTag(sourceTagID).tx < -5.0) {
+                drive.driveAutoRotate(
+                  signedDriveMag * Math.sin(-FieldConstants.redSourceAngleDeg) 
+                  - Constants.AutoAlignmentConstants.sourceAlignmentDrivePower 
+                  * Math.cos(-FieldConstants.redSourceAngleDeg), 
+                  signedDriveMag * Math.cos(-FieldConstants.redSourceAngleDeg) 
+                  - Constants.AutoAlignmentConstants.sourceAlignmentDrivePower 
+                  * Math.sin(-FieldConstants.redSourceAngleDeg), 
+                  sourceAngleDeg);
+                  return;
+              }
             }
           }
         }
@@ -486,6 +534,10 @@ public class DriveManual extends Command {
         drive.drive(driveX, driveY, spinCornerPower, DriveConstants.frontRightWheelLocation);
         break;
     }
+  }
+
+  private void sourceAlign() {
+    
   }
 
   public DriveManualState getState() {
