@@ -128,8 +128,6 @@ public class IntakeIOReal implements IntakeIO {
     settings.setVelocityFramePeriod(0.010);
     settings.setStatusFramePeriod(1.0);
     deployEncoder.setSettings(settings, 0.050);
-
-    Logger.recordOutput("DriverStationMessages/IntakeDeployConfig", "Configured abs encoder at " + deployEncoder.getAbsPosition());
   }
 
   @Override
