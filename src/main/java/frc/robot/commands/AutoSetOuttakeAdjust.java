@@ -28,8 +28,8 @@ public class AutoSetOuttakeAdjust extends InstantCommand {
       }
       else {
         outtake.outtake(flywheelSpeed);
-        outtake.pivot(pivotRotations);
       }
+      outtake.pivot(pivotRotations);
     }
   }
 
