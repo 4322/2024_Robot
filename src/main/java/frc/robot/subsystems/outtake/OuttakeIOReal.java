@@ -151,10 +151,12 @@ public class OuttakeIOReal implements OuttakeIO {
     settings.setPositionFramePeriod(0.010);
     settings.setVelocityFramePeriod(0.050);
     settings.setStatusFramePeriod(1.0);
-    pivotEncoder.setSettings(settings, 0.050);
+    boolean isAbsEncoderConfigured = pivotEncoder.setSettings(settings, 0.050);
+
+    Logger.recordOutput("DriverStationMessages/OuttakePivotConfig", "Configured abs encoder at " + pivotEncoder.getAbsPosition());
 
     try {
-      Thread.sleep(50); // 5 status frames to be safe
+      Thread.sleep(200); // 5 status frames to be safe
     } catch (InterruptedException e) {
     }
 
@@ -162,7 +164,7 @@ public class OuttakeIOReal implements OuttakeIO {
       // The abs encoder position must not be within the specified flag range.
       // The specified range assumes that the shooter pivot is too far below 
       // the zero point and is wrapping around to 1 rotation.
-    if (!(currentPivotPosition > Constants.OuttakeConstants.absEncoderMaxZeroingThreshold
+    if (isAbsEncoderConfigured && !(currentPivotPosition > Constants.OuttakeConstants.absEncoderMaxZeroingThreshold
           && currentPivotPosition < Constants.OuttakeConstants.absEncoderAlmostZeroThreshold)) {
       // If abs encoder is close to 1 rotation, it means that pivot is just a bit below zero point 
       // and therefore should we should just treat it as zero
@@ -170,7 +172,8 @@ public class OuttakeIOReal implements OuttakeIO {
         currentPivotPosition = 0;
       }
       pivotMotor.setPosition(currentPivotPosition * OuttakeConstants.gearReductionEncoderToMotor);
-      DriverStation.reportWarning("Initialized shooter pivot", false);
+      DriverStation.reportWarning("Initialized shooter pivot at " + pivotMotor.getPosition(), false);
+      Logger.recordOutput("DriverStationMessages/OuttakePivotConfig", "Initialized shooter pivot at " + pivotMotor.getPosition());
       initialized = true;
     }
     else {
