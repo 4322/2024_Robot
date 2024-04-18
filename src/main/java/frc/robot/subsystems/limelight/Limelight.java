@@ -19,7 +19,7 @@ import java.util.Map;
 import org.littletonrobotics.junction.Logger;
 
 public class Limelight extends SubsystemBase {
-  private enum PipelineIndex {
+  public static enum PipelineIndex {
     AprilTag3DMode(0), 
     NormalVisionMode(1),
     AprilTag2DMode(2);
@@ -350,7 +350,7 @@ public class Limelight extends SubsystemBase {
     switchPipeline(PipelineIndex.AprilTag3DMode.pipelineNum);
   }
 
-  private void switchPipeline(int pipelineIdx) {
+  public void switchPipeline(int pipelineIdx) {
     if (enabled && (currentPipeline != pipelineIdx) && isNetworkTableConnected) {
       pipeline.setNumber(pipelineIdx);
       currentPipeline = pipelineIdx;

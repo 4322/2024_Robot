@@ -2,6 +2,7 @@ package frc.robot.commands.OuttakeManual;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.FiringSolutions;
@@ -38,6 +39,18 @@ public class OuttakeManual extends Command {
 
   @Override
   public void execute() {
+    // Determine limelight pipeline initially because return call in switch statement 
+    // would result in skipping pipeline switch check
+
+    // Only checks in teleop because auto needs 3d mode for auto smart shooting command
+    if (DriverStation.isTeleopEnabled())  {
+      // Pipeline switch is ignored if requested pipeline is same as current pipeline
+      if (stateMachine.getState() == OuttakeManualState.SMART_SHOOTING) {
+        Limelight.getOuttakeInstance().switchPipeline(Limelight.PipelineIndex.AprilTag3DMode.pipelineNum);
+      } else {
+        Limelight.getOuttakeInstance().switchPipeline(Limelight.PipelineIndex.AprilTag2DMode.pipelineNum);
+      }
+    }
     if (!RobotCoordinator.getInstance().inShotTuningMode()) {
       switch (stateMachine.getState()) {
         case SMART_SHOOTING:
