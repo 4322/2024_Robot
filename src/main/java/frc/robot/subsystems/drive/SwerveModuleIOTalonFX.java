@@ -154,7 +154,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     motorConfig.ClosedLoopGeneral.ContinuousWrap = false;
     motorConfig.Voltage.PeakForwardVoltage = DriveConstants.Rotation.maxPower;
     motorConfig.Voltage.PeakReverseVoltage = -DriveConstants.Rotation.maxPower;
-    motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;  // Falcons fail at inversion
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     motorConfig.HardwareLimitSwitch.ForwardLimitEnable = false;
     motorConfig.HardwareLimitSwitch.ReverseLimitEnable = false;
@@ -189,7 +189,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
         (encoder.getAbsolutePosition().getValueAsDouble()
                 - DriveConstants.Rotation.CANCoderOffsetRotations[wheelPos.wheelNumber])
             * robotSpecificConstants.getRotationGearRatio();
-    StatusCode error = talonFX.setPosition(count, Constants.controllerConfigTimeoutMs);
+    StatusCode error = talonFX.setPosition(-count, Constants.controllerConfigTimeoutMs);
     if (error != StatusCode.OK) {
       DriverStation.reportError(
           "Error " + error.value + " initializing Talon FX " + talonFX.getDeviceID() + " position ",
@@ -227,13 +227,15 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     inputs.driveSupplyCurrentAmps = driveMotor.getSupplyCurrent().getValue();
     inputs.driveStatorCurrentAmps = driveMotor.getStatorCurrent().getValue();
     // turn inputs
-    inputs.turnVelocityDegPerSec = Units.rotationsToDegrees(turningMotor.getVelocity().getValue());
     inputs.turnAppliedVolts =
         turningMotor.getDutyCycle().getValue() / 2 * turningMotor.getSupplyVoltage().getValue();
     inputs.turnSupplyCurrentAmps = turningMotor.getSupplyCurrent().getValue();
     inputs.turnStatorCurrentAmps = turningMotor.getStatorCurrent().getValue();
-    inputs.turnDegrees = Units.rotationsToDegrees(turningMotor.getPosition().getValue());
-    inputs.turnRotations = turningMotor.getPosition().getValue();
+
+    // turn motors should be inverted, but Falcons fail at that, so pretend that it is so
+    inputs.turnVelocityDegPerSec = -Units.rotationsToDegrees(turningMotor.getVelocity().getValue());
+    inputs.turnDegrees = -Units.rotationsToDegrees(turningMotor.getPosition().getValue());
+    inputs.turnRotations = -turningMotor.getPosition().getValue();
     inputs.wheelDegreesTo360 =
         MathUtil.inputModulus(
             inputs.turnDegrees / robotSpecificConstants.getRotationGearRatio(), 0, 360);
@@ -243,6 +245,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
 
     inputs.absEncoderRotations = encoder.getAbsolutePosition().getValueAsDouble();
 
+    // save values for later use by this class
     currentMotorRotations = inputs.turnRotations;
     currentWheelDegrees = inputs.wheelDegreesTo360;
   }
@@ -251,11 +254,12 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   @Override
   public void setTurnAngle(double desiredAngle) {
     // Calculates change in degrees and adds to current position after converting to encoder
-    // rotations
+    // rotations.
+    // Turn motors should be inverted, but Falcons fail at that, so pretend that it is so.
     turningMotor.setControl(
         new PositionVoltage(
-            currentMotorRotations
-                + (OrangeMath.boundDegrees(desiredAngle - currentWheelDegrees))
+            -currentMotorRotations
+                - (OrangeMath.boundDegrees(desiredAngle - currentWheelDegrees))
                     / 360.0
                     * robotSpecificConstants.getRotationGearRatio()));
   }
