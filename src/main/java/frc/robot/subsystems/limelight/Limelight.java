@@ -349,4 +349,8 @@ public class Limelight extends SubsystemBase {
       currentPipeline = pipelineIdx;
     }
   }
+
+  public boolean isNetworkTableConnected() {
+    return isNetworkTableConnected;
+  }
 }
