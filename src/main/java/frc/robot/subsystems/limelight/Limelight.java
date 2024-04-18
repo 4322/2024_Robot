@@ -28,6 +28,7 @@ public class Limelight extends SubsystemBase {
   NetworkTableEntry ledMode;
   NetworkTableEntry camMode;
   NetworkTableEntry pipeline;
+  NetworkTableEntry heartBeat;
 
   // SHUFFLEBOARD
   ShuffleboardTab tab;
@@ -161,10 +162,13 @@ public class Limelight extends SubsystemBase {
         }
       }
 
-      if (table == null) {
+      // heartbeat increments once every iteration
+      if (heartBeat == table.getEntry("hb")) {
         isNetworkTableConnected = false;
+        heartBeat = table.getEntry("hb");
       } else {
         isNetworkTableConnected = true;
+        heartBeat = table.getEntry("hb");
       }
     }
   }
