@@ -4,6 +4,7 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -105,7 +106,7 @@ public class OuttakeIOReal implements OuttakeIO {
     config.CurrentLimits.SupplyTimeThreshold =
         Constants.OuttakeConstants.shooterSupplyTimeThreshold;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;  // Falcons fail at inversion
-    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.HardwareLimitSwitch.ForwardLimitEnable = false;
     config.HardwareLimitSwitch.ReverseLimitEnable = false;
 
@@ -253,9 +254,13 @@ public class OuttakeIOReal implements OuttakeIO {
   }
 
   @Override
-  public void stopOuttake() {
-    bottomOuttakeMotor.stopMotor();
-    topOuttakeMotor.stopMotor();
+  public void stopOuttake() { 
+    // Force brake mode to get around amp shot requiring flywheels to be in coast mode.
+    // Can't always put flywheels in coast mode because tunnel feed through intake requies note hitting 
+    // flywheels before pulling note back into tunnel.
+    // USE STOP IN ALL CASES WHERE WE SET FLYWHEELS TO ZERO EXCEPT FOR AMP SHOT
+    bottomOuttakeMotor.setControl(new VoltageOut(0).withOverrideBrakeDurNeutral(true));
+    topOuttakeMotor.setControl(new VoltageOut(0).withOverrideBrakeDurNeutral(true));
   }
 
   @Override
