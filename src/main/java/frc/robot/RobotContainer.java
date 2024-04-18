@@ -348,7 +348,6 @@ public class RobotContainer {
     tunnel.setBrakeMode();
     intake.setDeployerBrakeMode();
     outtake.setPivotBrakeMode();
-    outtake.setFlywheelBrakeMode();
 
     disableTimer.stop();
     disableTimer.reset();

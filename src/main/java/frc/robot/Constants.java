@@ -343,7 +343,7 @@ public final class Constants {
 
     public static final double ampPivotRotations = 54.0;
     public static final double ampBottomShooterRPS = 28.0;
-    public static final double ampTopShooterRPS = 0.0;
+    public static final double ampTopShooterRPS = 0.0001; // take out of brake mode (emulate coast)
 
     public static final double pivotSmartShootingOffset = 0;
   }

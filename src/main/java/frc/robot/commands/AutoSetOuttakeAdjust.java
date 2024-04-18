@@ -21,7 +21,14 @@ public class AutoSetOuttakeAdjust extends InstantCommand {
   @Override
   public void initialize() {
     if (RobotCoordinator.getInstance().canPivot()) {
-      outtake.outtake(flywheelSpeed);
+      // Call stop instead of setting to 0 rps in order to force 
+      // brake mode and avoid tunnel feed command issue explained in stop method.
+      if (flywheelSpeed == 0) { 
+        outtake.stopOuttake();
+      }
+      else {
+        outtake.outtake(flywheelSpeed);
+      }
       outtake.pivot(pivotRotations);
     }
   }
