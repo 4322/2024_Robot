@@ -125,6 +125,7 @@ public class TunnelFeed extends Command {
       case pushUp:
         if (RobotCoordinator.getInstance().noteInFiringPosition()) {
           tunnel.stopTunnel();
+          CommandScheduler.getInstance().schedule(new OperatorXboxControllerRumble(0.75));
           state = State.readyToFire;
         }
         break;
