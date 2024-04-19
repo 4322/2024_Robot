@@ -98,8 +98,11 @@ public class OuttakeManual extends Command {
         case STARTING_CONFIG:
           firingSolution = FiringSolutions.StartingConfig;
           break;
-        case PASS:
-          firingSolution = FiringSolutions.Pass;
+        case WING_LINE_PASS:
+          firingSolution = FiringSolutions.WingLinePass;
+          break;
+        case FLAT_PASS:
+          firingSolution = FiringSolutions.FlatPass;
           break;
         case AMP:
           outtake.pivot(Constants.OuttakeConstants.ampPivotRotations);

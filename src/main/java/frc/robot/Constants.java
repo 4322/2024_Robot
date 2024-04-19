@@ -84,6 +84,12 @@ public final class Constants {
     public static final String joysticks = "Joysticks";
   }
 
+  public static final class ControllerRumbleTimes {
+    // seconds
+    public static final double longRumbleTime = 0.75;
+    public static final double shortRumbleTime = 0.25;
+  }
+
   public static final class Demo {
     public enum DriveMode {
       OFF,
@@ -534,7 +540,8 @@ public final class Constants {
     public static final FiringSolution Feed = new FiringSolution(0, 0, -10, 221.0 / 3.0);
     public static final FiringSolution DefaultSmartShooting = new FiringSolution(0, 0, 40, 105.0 / 3.0);
     public static final FiringSolution StartingConfig = new FiringSolution(0, 0, 0, 46.866);
-    public static final FiringSolution Pass = new FiringSolution(0, 0, 53, 50);
+    public static final FiringSolution WingLinePass = new FiringSolution(0, 0, 53, 50);
+    public static final FiringSolution FlatPass = new FiringSolution(0, 0, 55, 3);
     
   }
 

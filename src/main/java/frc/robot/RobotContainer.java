@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.AutoHelper.Auto;
+import frc.robot.Constants.ControllerRumbleTimes;
 import frc.robot.centerline.CenterLineManager.CenterLineScoringStrategy;
 import frc.robot.commands.AutoIntakeDeploy;
 import frc.robot.commands.AutoIntakeIn;
@@ -274,25 +275,25 @@ public class RobotContainer {
               Commands.runOnce(() -> {
                 outtakeManual.setFiringSolution(Constants.FiringSolutions.DefaultSmartShooting);
                 outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SMART_SHOOTING);}),
-                new OperatorPresetLED()));
+                new OperatorXboxControllerRumble(ControllerRumbleTimes.shortRumbleTime)));
       operatorXbox
           .x()
           .onTrue(new ParallelCommandGroup(
               Commands.runOnce(
                   () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_EJECT)),
-                  new OperatorPresetLED()));
+                  new OperatorXboxControllerRumble(ControllerRumbleTimes.shortRumbleTime)));
       operatorXbox
           .b()
           .onTrue(new ParallelCommandGroup(
               Commands.runOnce(
                   () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_SUBWOOFER)),
-                  new OperatorPresetLED()));
+                  new OperatorXboxControllerRumble(ControllerRumbleTimes.shortRumbleTime)));
       operatorXbox
           .a()
           .onTrue(new ParallelCommandGroup(
               Commands.runOnce(
                   () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP)),
-                  new OperatorPresetLED()));
+                  new OperatorXboxControllerRumble(ControllerRumbleTimes.shortRumbleTime)));
       operatorXbox
           .povDown()
           .onTrue(
@@ -300,16 +301,19 @@ public class RobotContainer {
                   Commands.runOnce(
                       () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FEED)),
                   new OuttakeTunnelFeed(),
-                  new OperatorXboxControllerRumble()));
-      operatorXbox.povDown().onTrue(new OperatorPresetLED());
+                  new OperatorXboxControllerRumble(ControllerRumbleTimes.longRumbleTime)));
+      operatorXbox.povDown().onTrue(new OperatorXboxControllerRumble(ControllerRumbleTimes.shortRumbleTime));
       operatorXbox
           .povRight()
           .onTrue(new ParallelCommandGroup(
               Commands.runOnce(
                   () -> outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_AMP)),
-                  new OperatorPresetLED()));
+                  new OperatorXboxControllerRumble(ControllerRumbleTimes.shortRumbleTime)));
       operatorXbox.povLeft().onTrue(Commands.runOnce(() -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STARTING_CONFIG);}));
-      operatorXbox.leftBumper().onTrue(Commands.runOnce(() -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_PASS);}));
+      operatorXbox.leftBumper().onTrue(new SequentialCommandGroup(Commands.runOnce(() -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_WING_LINE_PASS);}), 
+                  new OperatorXboxControllerRumble(ControllerRumbleTimes.shortRumbleTime)));
+      operatorXbox.rightBumper().onTrue(new SequentialCommandGroup(Commands.runOnce(() -> {outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_FLAT_PASS);}),
+                  new OperatorXboxControllerRumble(ControllerRumbleTimes.shortRumbleTime)));
       operatorXbox.leftTrigger().onTrue(Commands.runOnce(() -> {outtakeManual.addOffset(0.5);}));
       operatorXbox.rightTrigger().onTrue(Commands.runOnce(() -> {outtakeManual.addOffset(-0.5);}));
 
@@ -363,6 +367,7 @@ public class RobotContainer {
     tunnelStop.schedule(); // interrupt all tunnel commands
 
     driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);
+    outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
 
     disableTimer.reset();
     disableTimer.start();

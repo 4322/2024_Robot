@@ -7,8 +7,11 @@ import frc.robot.RobotContainer;
 
 public class OperatorXboxControllerRumble extends Command {
   private Timer rumbleTimer = new Timer();
+  private double rumbleTime;
 
-  public OperatorXboxControllerRumble() {}
+  public OperatorXboxControllerRumble(double time) {
+    rumbleTime = time;
+  }
 
   // Called when the command is initially scheduled.
   @Override
@@ -22,7 +25,7 @@ public class OperatorXboxControllerRumble extends Command {
 
   @Override
   public boolean isFinished() {
-    return rumbleTimer.hasElapsed(0.75);
+    return rumbleTimer.hasElapsed(rumbleTime);
   }
 
   // Called once the command ends or is interrupted.
