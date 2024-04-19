@@ -514,7 +514,7 @@ public final class Constants {
 
     public static final double redAmpAngleDeg = 90;
     public static final double redSourceAngleDeg = -(180 - 51.4);
-    public static final double redPassAngleDeg = 40;
+    public static final double redPassAngleDeg = 34.73;
   }
 
   public static final class FiringSolutions {
