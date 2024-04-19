@@ -14,7 +14,8 @@ public class DriveManualStateMachine {
     ROBOT_CENTRIC,
     AMP,
     SOURCE,
-    PASS;
+    WING_PASS,
+    STRAIGHT_PASS
   }
 
   public enum DriveManualTrigger {
@@ -22,8 +23,9 @@ public class DriveManualStateMachine {
     ENABLE_ROBOT_CENTRIC,
     ENABLE_AMP,
     ENABLE_SOURCE,
-    ENABLE_PASS,
-    RESET_TO_DEFAULT
+    ENABLE_WING_PASS,
+    RESET_TO_DEFAULT,
+    ENABLE_STRAIGHT_PASS
   }
 
   public DriveManualStateMachine(DriveManualState initialState) {
@@ -34,7 +36,8 @@ public class DriveManualStateMachine {
         .permit(DriveManualTrigger.ENABLE_AMP, DriveManualState.AMP)
         .permit(DriveManualTrigger.ENABLE_SOURCE, DriveManualState.SOURCE)
         .permitReentry(DriveManualTrigger.RESET_TO_DEFAULT)
-        .permit(DriveManualTrigger.ENABLE_PASS, DriveManualState.PASS);
+        .permit(DriveManualTrigger.ENABLE_WING_PASS, DriveManualState.WING_PASS)
+        .permit(DriveManualTrigger.ENABLE_STRAIGHT_PASS, DriveManualState.STRAIGHT_PASS);
 
     config
         .configure(DriveManualState.SPEAKER_CENTRIC)
@@ -45,7 +48,8 @@ public class DriveManualStateMachine {
                 .ENABLE_ROBOT_CENTRIC)
         .permitReentry(DriveManualTrigger.ENABLE_AMP)
         .permitReentry(DriveManualTrigger.ENABLE_SOURCE)
-        .permitReentry(DriveManualTrigger.ENABLE_PASS);
+        .permitReentry(DriveManualTrigger.ENABLE_WING_PASS)
+        .permitReentry(DriveManualTrigger.ENABLE_STRAIGHT_PASS);
 
     config
         .configure(DriveManualState.ROBOT_CENTRIC)
@@ -56,7 +60,8 @@ public class DriveManualStateMachine {
                 .ENABLE_ROBOT_CENTRIC)
         .permitReentry(DriveManualTrigger.ENABLE_AMP)
         .permitReentry(DriveManualTrigger.ENABLE_SOURCE)
-        .permitReentry(DriveManualTrigger.ENABLE_PASS);
+        .permitReentry(DriveManualTrigger.ENABLE_WING_PASS)
+        .permitReentry(DriveManualTrigger.ENABLE_STRAIGHT_PASS);
     
     config.configure(DriveManualState.AMP)
       .permit(DriveManualTrigger.RESET_TO_DEFAULT, DriveManualState.DEFAULT)
@@ -66,7 +71,8 @@ public class DriveManualStateMachine {
               .ENABLE_ROBOT_CENTRIC)
       .permitReentry(DriveManualTrigger.ENABLE_AMP)
       .permitReentry(DriveManualTrigger.ENABLE_SOURCE)
-      .permitReentry(DriveManualTrigger.ENABLE_PASS);
+      .permitReentry(DriveManualTrigger.ENABLE_WING_PASS)
+      .permitReentry(DriveManualTrigger.ENABLE_STRAIGHT_PASS);
 
     config.configure(DriveManualState.SOURCE)
       .permit(DriveManualTrigger.RESET_TO_DEFAULT, DriveManualState.DEFAULT)
@@ -76,9 +82,10 @@ public class DriveManualStateMachine {
               .ENABLE_ROBOT_CENTRIC)
       .permitReentry(DriveManualTrigger.ENABLE_AMP)
       .permitReentry(DriveManualTrigger.ENABLE_SOURCE)
-      .permitReentry(DriveManualTrigger.ENABLE_PASS);
+      .permitReentry(DriveManualTrigger.ENABLE_WING_PASS)
+      .permitReentry(DriveManualTrigger.ENABLE_STRAIGHT_PASS);
     
-    config.configure(DriveManualState.PASS)
+    config.configure(DriveManualState.WING_PASS)
       .permit(DriveManualTrigger.RESET_TO_DEFAULT, DriveManualState.DEFAULT)
       .permitReentry(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC)
       .permitReentry(
@@ -86,7 +93,19 @@ public class DriveManualStateMachine {
               .ENABLE_ROBOT_CENTRIC)
       .permitReentry(DriveManualTrigger.ENABLE_AMP)
       .permitReentry(DriveManualTrigger.ENABLE_SOURCE)
-      .permitReentry(DriveManualTrigger.ENABLE_PASS);
+      .permitReentry(DriveManualTrigger.ENABLE_WING_PASS)
+      .permitReentry(DriveManualTrigger.ENABLE_STRAIGHT_PASS);
+
+    config.configure(DriveManualState.STRAIGHT_PASS)
+      .permit(DriveManualTrigger.RESET_TO_DEFAULT, DriveManualState.DEFAULT)
+      .permitReentry(DriveManualTrigger.ENABLE_SPEAKER_CENTRIC)
+      .permitReentry(
+          DriveManualTrigger
+              .ENABLE_ROBOT_CENTRIC)
+      .permitReentry(DriveManualTrigger.ENABLE_AMP)
+      .permitReentry(DriveManualTrigger.ENABLE_SOURCE)
+      .permitReentry(DriveManualTrigger.ENABLE_WING_PASS)
+      .permitReentry(DriveManualTrigger.ENABLE_STRAIGHT_PASS);
 
     stateMachine = new StateMachine<DriveManualState, DriveManualTrigger>(initialState, config);
   }

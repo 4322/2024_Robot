@@ -145,12 +145,15 @@ public class DriveManual extends Command {
           drive.driveAutoRotate(driveX, driveY, -FieldConstants.redSourceAngleDeg);
         }
         return;
-      case PASS:
+      case WING_PASS:
         if (Robot.isRed()) {
           drive.driveAutoRotate(driveX, driveY, FieldConstants.redPassAngleDeg);
         } else {
           drive.driveAutoRotate(driveX, driveY, -FieldConstants.redPassAngleDeg);
         }
+        return;
+      case STRAIGHT_PASS:
+        drive.driveAutoRotate(driveX, driveY, 0);
         return;
       case DEFAULT:
         // Run regular drive logic
