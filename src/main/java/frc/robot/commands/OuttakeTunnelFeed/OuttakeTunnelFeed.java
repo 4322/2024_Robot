@@ -17,6 +17,7 @@ public class OuttakeTunnelFeed extends Command {
   private final Tunnel tunnel;
   private final OuttakeTunnelFeedStateMachine stateMachine;
   Timer tunnelDelayTimer = new Timer();
+  Timer restartFeedTimer = new Timer();
 
   public OuttakeTunnelFeed() {
     tunnel = Tunnel.getInstance();
@@ -45,9 +46,19 @@ public class OuttakeTunnelFeed extends Command {
         break;
       case NOTE_PAST_TUNNEL:
         tunnel.stopTunnel();
+        if (!tunnel.isStopped(0.1)) {
+          restartFeedTimer.start();
+        } else {
+          restartFeedTimer.stop();
+        }
         tunnelDelayTimer.start();
         if (tunnelDelayTimer.hasElapsed(0.5)) {
           stateMachine.fire(OuttakeTunnelFeedTrigger.TUNNEL_BEAM_NOT_BROKEN);
+        }
+        if (restartFeedTimer.hasElapsed(0.160)) {
+          restartFeedTimer.stop();
+          restartFeedTimer.reset();
+          stateMachine.fire(OuttakeTunnelFeedTrigger.STOP_DELAY_DETECTED);
         }
         break;
       case NOTE_IDLE_IN_TUNNEL:
@@ -69,8 +80,11 @@ public class OuttakeTunnelFeed extends Command {
   public void end(boolean interrupted) {
     // needed to reset state machine
     stateMachine.fire(OuttakeTunnelFeedTrigger.ENABLE_STATE_RESET);
+    tunnel.stopTunnel();
+
     tunnelDelayTimer.stop();
     tunnelDelayTimer.reset();
-    tunnel.stopTunnel();
+    restartFeedTimer.stop();
+    restartFeedTimer.reset();
   }
 }

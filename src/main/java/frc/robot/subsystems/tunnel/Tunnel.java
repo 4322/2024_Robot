@@ -3,6 +3,7 @@ package frc.robot.subsystems.tunnel;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.TunnelConstants;
+import frc.utility.OrangeMath;
 import org.littletonrobotics.junction.Logger;
 
 public class Tunnel extends SubsystemBase {
@@ -100,5 +101,9 @@ public class Tunnel extends SubsystemBase {
       Logger.recordOutput(TunnelConstants.Logging.key + "TunnelTargetVoltage", 0.0);
       Logger.recordOutput(TunnelConstants.Logging.key + "TunnelStopped", true);
     }
+  }
+
+  public boolean isStopped(double epsilon) {
+    return OrangeMath.equalToEpsilon(0, inputs.tunnelRotationsPerSec, epsilon);
   }
 }
