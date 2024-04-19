@@ -10,9 +10,9 @@ public class OuttakeTunnelFeedStateMachine {
 
   public enum OuttakeTunnelFeedState {
     NO_NOTE,
-    NOTE_PASSING_TUNNEL,
-    NOTE_PAST_TUNNEL,
-    NOTE_IDLE_IN_TUNNEL
+    NOTE_ENTERING_TUNNEL,
+    NOTE_IN_TUNNEL,
+    NOTE_PUSHING_UP
   }
 
   public enum OuttakeTunnelFeedTrigger {
@@ -26,31 +26,31 @@ public class OuttakeTunnelFeedStateMachine {
     config
         .configure(OuttakeTunnelFeedState.NO_NOTE)
         .permit(
-            OuttakeTunnelFeedTrigger.TUNNEL_BEAM_BROKEN, OuttakeTunnelFeedState.NOTE_PASSING_TUNNEL)
+            OuttakeTunnelFeedTrigger.TUNNEL_BEAM_BROKEN, OuttakeTunnelFeedState.NOTE_ENTERING_TUNNEL)
         .permitReentry(OuttakeTunnelFeedTrigger.TUNNEL_BEAM_NOT_BROKEN)
         .permitReentry(OuttakeTunnelFeedTrigger.ENABLE_STATE_RESET)
         .permitReentry(OuttakeTunnelFeedTrigger.STOP_DELAY_DETECTED);
 
     config
-        .configure(OuttakeTunnelFeedState.NOTE_PASSING_TUNNEL)
+        .configure(OuttakeTunnelFeedState.NOTE_ENTERING_TUNNEL)
         .permit(
             OuttakeTunnelFeedTrigger.TUNNEL_BEAM_NOT_BROKEN,
-            OuttakeTunnelFeedState.NOTE_PAST_TUNNEL)
+            OuttakeTunnelFeedState.NOTE_IN_TUNNEL)
         .permit(OuttakeTunnelFeedTrigger.ENABLE_STATE_RESET, OuttakeTunnelFeedState.NO_NOTE)
         .permitReentry(OuttakeTunnelFeedTrigger.TUNNEL_BEAM_BROKEN)
         .permitReentry(OuttakeTunnelFeedTrigger.STOP_DELAY_DETECTED);
 
     config
-        .configure(OuttakeTunnelFeedState.NOTE_PAST_TUNNEL)
+        .configure(OuttakeTunnelFeedState.NOTE_IN_TUNNEL)
         .permit(
             OuttakeTunnelFeedTrigger.TUNNEL_BEAM_NOT_BROKEN,
-            OuttakeTunnelFeedState.NOTE_IDLE_IN_TUNNEL)
+            OuttakeTunnelFeedState.NOTE_PUSHING_UP)
         .permit(OuttakeTunnelFeedTrigger.ENABLE_STATE_RESET, OuttakeTunnelFeedState.NO_NOTE)
-        .permit(OuttakeTunnelFeedTrigger.STOP_DELAY_DETECTED, OuttakeTunnelFeedState.NOTE_PASSING_TUNNEL)
+        .permit(OuttakeTunnelFeedTrigger.STOP_DELAY_DETECTED, OuttakeTunnelFeedState.NOTE_ENTERING_TUNNEL)
         .permitReentry(OuttakeTunnelFeedTrigger.TUNNEL_BEAM_BROKEN);
 
     config
-        .configure(OuttakeTunnelFeedState.NOTE_IDLE_IN_TUNNEL)
+        .configure(OuttakeTunnelFeedState.NOTE_PUSHING_UP)
         .permit(OuttakeTunnelFeedTrigger.ENABLE_STATE_RESET, OuttakeTunnelFeedState.NO_NOTE)
         .permitReentry(OuttakeTunnelFeedTrigger.TUNNEL_BEAM_BROKEN)
         .permitReentry(OuttakeTunnelFeedTrigger.TUNNEL_BEAM_NOT_BROKEN)

@@ -38,13 +38,13 @@ public class OuttakeTunnelFeed extends Command {
           stateMachine.fire(OuttakeTunnelFeedTrigger.TUNNEL_BEAM_BROKEN);
         }
         break;
-      case NOTE_PASSING_TUNNEL:
+      case NOTE_ENTERING_TUNNEL:
         tunnel.reverseFeed();
         if (!NoteTracker.getInstance().tunnelBeamBroken()) {
           stateMachine.fire(OuttakeTunnelFeedTrigger.TUNNEL_BEAM_NOT_BROKEN);
         }
         break;
-      case NOTE_PAST_TUNNEL:
+      case NOTE_IN_TUNNEL:
         tunnel.stopTunnel();
         if (!tunnel.isStopped(0.1)) {
           restartFeedTimer.start();
@@ -61,7 +61,7 @@ public class OuttakeTunnelFeed extends Command {
           stateMachine.fire(OuttakeTunnelFeedTrigger.STOP_DELAY_DETECTED);
         }
         break;
-      case NOTE_IDLE_IN_TUNNEL:
+      case NOTE_PUSHING_UP:
         // delay of 0.5 needed before entering this state in order to stop tunnel from reversing
         // direction immediately and causing wear in pulleys
         tunnel.pushUp();
@@ -71,7 +71,7 @@ public class OuttakeTunnelFeed extends Command {
 
   @Override
   public boolean isFinished() {
-    return (stateMachine.getState() == OuttakeTunnelFeedState.NOTE_IDLE_IN_TUNNEL
+    return (stateMachine.getState() == OuttakeTunnelFeedState.NOTE_PUSHING_UP
             && RobotCoordinator.getInstance().noteInFiringPosition())
         || (OuttakeManual.getState() != OuttakeManualState.FEED);
   }
