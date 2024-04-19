@@ -84,6 +84,12 @@ public final class Constants {
     public static final String joysticks = "Joysticks";
   }
 
+  public static final class ControllerRumbleTimes {
+    // seconds
+    public static final double longRumbleTime = 0.75;
+    public static final double shortRumbleTime = 0.25;
+  }
+
   public static final class Demo {
     public enum DriveMode {
       OFF,
