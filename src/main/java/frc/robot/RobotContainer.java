@@ -364,6 +364,7 @@ public class RobotContainer {
     tunnelStop.schedule(); // interrupt all tunnel commands
 
     driveManual.updateStateMachine(DriveManualTrigger.RESET_TO_DEFAULT);
+    outtakeManual.updateStateMachine(OuttakeManualTrigger.ENABLE_STOP);
 
     disableTimer.reset();
     disableTimer.start();
