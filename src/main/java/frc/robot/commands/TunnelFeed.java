@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants;
+import frc.robot.Constants.ControllerRumbleTimes;
 import frc.robot.subsystems.RobotCoordinator;
 import frc.robot.subsystems.tunnel.Tunnel;
 import org.littletonrobotics.junction.Logger;
@@ -88,7 +89,7 @@ public class TunnelFeed extends Command {
         if (RobotCoordinator.getInstance().noteInFiringPosition()) {
           tunnel.stopTunnel();
           adjustmentTimer.restart();
-          CommandScheduler.getInstance().schedule(new DriverXboxControllerRumble());
+          CommandScheduler.getInstance().schedule(new DriverXboxControllerRumble(ControllerRumbleTimes.longRumbleTime));
           state = State.stoppingAtOuttake;
         } else if (abortTimer.hasElapsed(Constants.TunnelConstants.feedAbortSec)) {
           state = State.abort;  // don't fry the motor
