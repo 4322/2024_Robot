@@ -17,7 +17,8 @@ public class OuttakeManualStateMachine {
     FEED,
     AMP,
     STARTING_CONFIG,
-    PASS;
+    WING_LINE_PASS,
+    FLAT_PASS
   }
 
   public enum OuttakeManualTrigger {
@@ -29,7 +30,8 @@ public class OuttakeManualStateMachine {
     ENABLE_FEED, 
     ENABLE_AMP,
     ENABLE_STARTING_CONFIG,
-    ENABLE_PASS;
+    ENABLE_WING_LINE_PASS,
+    ENABLE_FLAT_PASS
   }
 
   public OuttakeManualStateMachine(OuttakeManualState initialState) {
@@ -43,7 +45,8 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED)
         .permit(OuttakeManualTrigger.ENABLE_AMP, OuttakeManualState.AMP)
         .permit(OuttakeManualTrigger.ENABLE_STARTING_CONFIG, OuttakeManualState.STARTING_CONFIG)
-        .permit(OuttakeManualTrigger.ENABLE_PASS, OuttakeManualState.PASS);
+        .permit(OuttakeManualTrigger.ENABLE_WING_LINE_PASS, OuttakeManualState.WING_LINE_PASS)
+        .permit(OuttakeManualTrigger.ENABLE_FLAT_PASS, OuttakeManualState.FLAT_PASS);
 
     config
         .configure(OuttakeManualState.SUBWOOFER)
@@ -55,7 +58,8 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED)
         .permit(OuttakeManualTrigger.ENABLE_AMP, OuttakeManualState.AMP)
         .permit(OuttakeManualTrigger.ENABLE_STARTING_CONFIG, OuttakeManualState.STARTING_CONFIG)
-        .permit(OuttakeManualTrigger.ENABLE_PASS, OuttakeManualState.PASS);
+        .permit(OuttakeManualTrigger.ENABLE_WING_LINE_PASS, OuttakeManualState.WING_LINE_PASS)
+        .permit(OuttakeManualTrigger.ENABLE_FLAT_PASS, OuttakeManualState.FLAT_PASS);
 
     config
         .configure(OuttakeManualState.EJECT)
@@ -67,7 +71,8 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED)
         .permit(OuttakeManualTrigger.ENABLE_AMP, OuttakeManualState.AMP)
         .permit(OuttakeManualTrigger.ENABLE_STARTING_CONFIG, OuttakeManualState.STARTING_CONFIG)
-        .permit(OuttakeManualTrigger.ENABLE_PASS, OuttakeManualState.PASS);
+        .permit(OuttakeManualTrigger.ENABLE_WING_LINE_PASS, OuttakeManualState.WING_LINE_PASS)
+        .permit(OuttakeManualTrigger.ENABLE_FLAT_PASS, OuttakeManualState.FLAT_PASS);
 
     // lockout of presets until the note is safely in the outtake
     //
@@ -84,7 +89,8 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED)
         .permitReentry(OuttakeManualTrigger.ENABLE_AMP)
         .permit(OuttakeManualTrigger.ENABLE_STARTING_CONFIG, OuttakeManualState.STARTING_CONFIG)
-        .permit(OuttakeManualTrigger.ENABLE_PASS, OuttakeManualState.PASS);
+        .permitReentry(OuttakeManualTrigger.ENABLE_WING_LINE_PASS)
+        .permitReentry(OuttakeManualTrigger.ENABLE_FLAT_PASS);
 
     config
         .configure(OuttakeManualState.STOP)
@@ -96,7 +102,8 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED)
         .permit(OuttakeManualTrigger.ENABLE_AMP, OuttakeManualState.AMP)
         .permit(OuttakeManualTrigger.ENABLE_STARTING_CONFIG, OuttakeManualState.STARTING_CONFIG)
-        .permit(OuttakeManualTrigger.ENABLE_PASS, OuttakeManualState.PASS);
+        .permit(OuttakeManualTrigger.ENABLE_WING_LINE_PASS, OuttakeManualState.WING_LINE_PASS)
+        .permit(OuttakeManualTrigger.ENABLE_FLAT_PASS, OuttakeManualState.FLAT_PASS);
 
     config
         .configure(OuttakeManualState.FEED)
@@ -108,7 +115,8 @@ public class OuttakeManualStateMachine {
         .permitReentry(OuttakeManualTrigger.ENABLE_FEED)
         .permit(OuttakeManualTrigger.ENABLE_AMP, OuttakeManualState.AMP)
         .permit(OuttakeManualTrigger.ENABLE_STARTING_CONFIG, OuttakeManualState.STARTING_CONFIG)
-        .permit(OuttakeManualTrigger.ENABLE_PASS, OuttakeManualState.PASS);
+        .permit(OuttakeManualTrigger.ENABLE_WING_LINE_PASS, OuttakeManualState.WING_LINE_PASS)
+        .permit(OuttakeManualTrigger.ENABLE_FLAT_PASS, OuttakeManualState.FLAT_PASS);
 
     config.configure(OuttakeManualState.AMP)
         .permit(OuttakeManualTrigger.ENABLE_SMART_SHOOTING, OuttakeManualState.SMART_SHOOTING)
@@ -119,7 +127,8 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED)
         .permitReentry(OuttakeManualTrigger.ENABLE_AMP)
         .permit(OuttakeManualTrigger.ENABLE_STARTING_CONFIG, OuttakeManualState.STARTING_CONFIG)
-        .permit(OuttakeManualTrigger.ENABLE_PASS, OuttakeManualState.PASS);
+        .permit(OuttakeManualTrigger.ENABLE_WING_LINE_PASS, OuttakeManualState.WING_LINE_PASS)
+        .permit(OuttakeManualTrigger.ENABLE_FLAT_PASS, OuttakeManualState.FLAT_PASS);
 
     config.configure(OuttakeManualState.STARTING_CONFIG)
         .permit(OuttakeManualTrigger.ENABLE_SMART_SHOOTING, OuttakeManualState.SMART_SHOOTING)
@@ -130,9 +139,10 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED)
         .permit(OuttakeManualTrigger.ENABLE_AMP, OuttakeManualState.AMP)
         .permitReentry(OuttakeManualTrigger.ENABLE_STARTING_CONFIG)
-        .permit(OuttakeManualTrigger.ENABLE_PASS, OuttakeManualState.PASS);
+        .permit(OuttakeManualTrigger.ENABLE_WING_LINE_PASS, OuttakeManualState.WING_LINE_PASS)
+        .permit(OuttakeManualTrigger.ENABLE_FLAT_PASS, OuttakeManualState.FLAT_PASS);
     
-    config.configure(OuttakeManualState.PASS)
+    config.configure(OuttakeManualState.WING_LINE_PASS)
         .permit(OuttakeManualTrigger.ENABLE_SMART_SHOOTING, OuttakeManualState.SMART_SHOOTING)
         .permit(OuttakeManualTrigger.ENABLE_SUBWOOFER, OuttakeManualState.SUBWOOFER)
         .permit(OuttakeManualTrigger.ENABLE_EJECT, OuttakeManualState.EJECT)
@@ -141,7 +151,20 @@ public class OuttakeManualStateMachine {
         .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED)
         .permit(OuttakeManualTrigger.ENABLE_AMP, OuttakeManualState.AMP)
         .permit(OuttakeManualTrigger.ENABLE_STARTING_CONFIG, OuttakeManualState.STARTING_CONFIG)
-        .permitReentry(OuttakeManualTrigger.ENABLE_PASS);
+        .permitReentry(OuttakeManualTrigger.ENABLE_WING_LINE_PASS)
+        .permit(OuttakeManualTrigger.ENABLE_FLAT_PASS, OuttakeManualState.FLAT_PASS);
+
+    config.configure(OuttakeManualState.FLAT_PASS)
+        .permit(OuttakeManualTrigger.ENABLE_SMART_SHOOTING, OuttakeManualState.SMART_SHOOTING)
+        .permit(OuttakeManualTrigger.ENABLE_SUBWOOFER, OuttakeManualState.SUBWOOFER)
+        .permit(OuttakeManualTrigger.ENABLE_EJECT, OuttakeManualState.EJECT)
+        .permit(OuttakeManualTrigger.ENABLE_COLLECTING_NOTE, OuttakeManualState.COLLECTING_NOTE)
+        .permit(OuttakeManualTrigger.ENABLE_STOP, OuttakeManualState.STOP)
+        .permit(OuttakeManualTrigger.ENABLE_FEED, OuttakeManualState.FEED)
+        .permit(OuttakeManualTrigger.ENABLE_AMP, OuttakeManualState.AMP)
+        .permit(OuttakeManualTrigger.ENABLE_STARTING_CONFIG, OuttakeManualState.STARTING_CONFIG)
+        .permit(OuttakeManualTrigger.ENABLE_WING_LINE_PASS, OuttakeManualState.WING_LINE_PASS)
+        .permitReentry(OuttakeManualTrigger.ENABLE_FLAT_PASS);
 
     stateMachine = new StateMachine<OuttakeManualState, OuttakeManualTrigger>(initialState, config);
   }
