@@ -5,36 +5,36 @@ import frc.utility.OrangeMath;
 public class NemoConstants implements RobotChooserInterface {
   // drive IDs
   public int getFrontLeftDriveID() {
-    return 17;
-  }
-
-  public int getFrontRightDriveID() {
-    return 18;
-  }
-
-  public int getBackRightDriveID() {
     return 19;
   }
 
+  public int getFrontRightDriveID() {
+    return 20;
+  }
+
+  public int getBackRightDriveID() {
+    return 21;
+  }
+
   public int getBackLeftDriveID() {
-    return 16;
+    return 15;
   }
 
   // rotation IDs
   public int getFrontLeftRotationID() {
-    return 21;
-  }
-
-  public int getFrontRightRotationID() {
-    return 15;
-  }
-
-  public int getBackRightRotationID() {
     return 22;
   }
 
+  public int getFrontRightRotationID() {
+    return 16;
+  }
+
+  public int getBackRightRotationID() {
+    return 17;
+  }
+
   public int getBackLeftRotationID() {
-    return 20;
+    return 18;
   }
 
   // measured distance between wheels (24 and 11/16 in)
