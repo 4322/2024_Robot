@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants;
@@ -146,6 +147,9 @@ public class SwerveModuleIOSparkMax implements SwerveModuleIO {
     inputs.turnAppliedVolts = turningMotor.getAppliedOutput() * turningMotor.getBusVoltage();
     inputs.turnSupplyCurrentAmps = turningMotor.getOutputCurrent();
     inputs.turnDegrees = encoder.getPosition();
+    inputs.wheelDegreesTo360 =
+        MathUtil.inputModulus(
+            inputs.turnDegrees / robotSpecificConstants.getRotationGearRatio(), 0, 360);
 
     inputs.calculatedFF = calcFeedForwardVoltsOverMetersPerSec;
     inputs.calculatedVolts = desiredVolts;
